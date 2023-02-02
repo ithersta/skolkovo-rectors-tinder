@@ -1,6 +1,7 @@
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.10"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    application
 }
 
 group = "ru.spbstu"
@@ -8,6 +9,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://repo.repsy.io/mvn/ithersta/tgbotapi")
 }
 
 dependencies {
@@ -22,5 +24,9 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(17)
+}
+
+application {
+    mainClass.set("MainKt")
 }
