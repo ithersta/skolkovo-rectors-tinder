@@ -1,16 +1,18 @@
-FROM eclipse-temurin:18 AS build-kotlin
-USER 1000
+FROM ghcr.io/graalvm/graalvm-ce:22.3.1 AS build-kotlin
+USER root
 WORKDIR /project
-COPY --chown=1000 . /project
+COPY . /project
 RUN chmod +x ./gradlew && ./gradlew distTar
 
-FROM eclipse-temurin:19
-ENTRYPOINT ["skolkovo-rectors-tinder-1.0-SNAPSHOT/bin/skolkovo-rectors-tinder"]
+FROM ghcr.io/graalvm/graalvm-ce:22.3.1
+ENV APP_NAME="skolkovo-rectors-tinder"
+ENV WITH_VERSION="$APP_NAME-1.0-SNAPSHOT"
+ENTRYPOINT /$WITH_VERSION/bin/$APP_NAME
 USER root
-COPY --from=build-kotlin /project/build/distributions/skolkovo-rectors-tinder-1.0-SNAPSHOT.tar dist.tar
-RUN tar -xf dist.tar \
+COPY --from=build-kotlin /project/build/distributions/$WITH_VERSION.tar dist.tar
+RUN tar -xf dist.tar -C / \
     && rm dist.tar \
-    && mkdir /bot \
-    && chown -R 1000 /bot skolkovo-rectors-tinder-1.0-SNAPSHOT
+    && mkdir /db \
+    && chown -R 1000 /db /$WITH_VERSION
 USER 1000
-WORKDIR /bot
+WORKDIR /db
