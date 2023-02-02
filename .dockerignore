@@ -1,0 +1,12 @@
+.github
+.gradle
+.idea
+.git
+config
+build
+.gitignore
+.jscpd.json
+.mega-linter.yml
+.dockerignore
+docker-compose.yml
+Dockerfile
