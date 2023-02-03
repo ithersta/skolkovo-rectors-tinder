@@ -15,7 +15,7 @@ repositories {
 dependencies {
     implementation("com.ithersta.tgbotapi:fsm:0.22.0")
     implementation("com.ithersta.tgbotapi:sqlite-persistence:0.3.0")
-    implementation("com.ithersta.tgbotapi:commands:0.1.0")
+    implementation("com.ithersta.tgbotapi:commands:0.2.0")
     testImplementation(kotlin("test"))
 }
 
