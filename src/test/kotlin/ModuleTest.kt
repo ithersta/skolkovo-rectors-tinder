@@ -5,7 +5,7 @@ internal class ModuleTest {
     @Test
     fun `Koin definitions are complete`() {
         checkModules {
-            module
+            modules(module)
         }
     }
 }
