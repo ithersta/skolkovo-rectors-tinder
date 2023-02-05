@@ -1,4 +1,4 @@
-name: detekt with type resolution
+name: Detekt
 
 on:
   push:
