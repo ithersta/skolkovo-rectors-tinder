@@ -23,6 +23,8 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:2.2.3")
     implementation("org.hibernate.orm:hibernate-core:6.1.6.Final")
     implementation("com.h2database:h2:2.1.214")
+    implementation("org.jsoup:jsoup:1.15.3")
+    implementation("com.jayway.jsonpath:json-path:2.7.0")
     compileOnly("io.insert-koin:koin-annotations:1.1.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
     testImplementation(kotlin("test"))
