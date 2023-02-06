@@ -16,7 +16,7 @@ repositories {
     maven("https://repo.repsy.io/mvn/ithersta/tgbotapi")
 }
 
-val exposedVersion: String by project
+val exposedVersion = "0.41.1"
 dependencies {
     implementation("com.ithersta.tgbotapi:fsm:0.23.0")
     implementation("com.ithersta.tgbotapi:sqlite-persistence:0.4.0")
