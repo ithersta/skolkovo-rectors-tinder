@@ -1,5 +1,5 @@
-import auth.domain.usecases.GetUserUseCase
 import auth.domain.entities.User
+import auth.domain.usecases.GetUserUseCase
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
