@@ -16,12 +16,15 @@ repositories {
     maven("https://repo.repsy.io/mvn/ithersta/tgbotapi")
 }
 
+val exposedVersion: String by project
 dependencies {
     implementation("com.ithersta.tgbotapi:fsm:0.23.0")
     implementation("com.ithersta.tgbotapi:sqlite-persistence:0.4.0")
     implementation("com.ithersta.tgbotapi:commands:0.2.0")
     implementation("io.ktor:ktor-client-okhttp:2.2.3")
-    implementation("org.hibernate.orm:hibernate-core:6.1.6.Final")
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
     implementation("com.h2database:h2:2.1.214")
     compileOnly("io.insert-koin:koin-annotations:1.1.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
