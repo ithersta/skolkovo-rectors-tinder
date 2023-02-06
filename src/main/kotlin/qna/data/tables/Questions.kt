@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 import qna.domain.entities.QuestionArea
 
 object Questions : LongIdTable() {
-    val authorId: Column<EntityID<Long>> = reference("author_id", Users)
+    val authorId: Column<EntityID<Long>> = reference("author_id", Users).index()
     val subject: Column<String> = varchar("subject", length = 256)
     val text: Column<String> = varchar("text", length = 1024)
     val area: Column<QuestionArea> = enumeration("area")

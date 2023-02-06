@@ -15,7 +15,14 @@ val dataModule = module(createdAtStart = true) {
     single {
         Database.connect("jdbc:h2:./database", driver = "org.h2.Driver").also { database ->
             transaction(database) {
-                SchemaUtils.create(PhoneNumbers, Users, Questions, Responses, Feedback, MuteSettings)
+                SchemaUtils.createMissingTablesAndColumns(
+                    PhoneNumbers,
+                    Users,
+                    Questions,
+                    Responses,
+                    Feedback,
+                    MuteSettings
+                )
             }
         }
     }
