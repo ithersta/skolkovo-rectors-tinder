@@ -1,6 +1,5 @@
 package auth.data.tables
 
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 
