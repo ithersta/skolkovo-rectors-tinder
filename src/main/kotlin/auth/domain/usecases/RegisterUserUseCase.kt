@@ -16,11 +16,15 @@ class RegisterUserUseCase(
         object OK : Result
         object DuplicatePhoneNumber : Result
         object PhoneNumberNotAllowed : Result
+        object AlreadyRegistered : Result
         class Error(val message: String) : Result
     }
 
     operator fun invoke(userDetails: User.Details): Result = transaction {
         runCatching {
+            if (userRepository.get(userDetails.id) != null) {
+                return@transaction Result.AlreadyRegistered
+            }
             if (phoneNumberRepository.isActive(userDetails.phoneNumber).not()) {
                 return@transaction Result.PhoneNumberNotAllowed
             }
