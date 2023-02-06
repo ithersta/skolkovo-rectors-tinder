@@ -26,6 +26,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
     implementation("com.h2database:h2:2.1.214")
+    implementation("org.slf4j:slf4j-simple:2.0.4")
     compileOnly("io.insert-koin:koin-annotations:1.1.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
