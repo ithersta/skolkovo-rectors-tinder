@@ -1,9 +1,12 @@
 package states
 
+import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import kotlinx.serialization.Serializable
 
 @Serializable
 object ChooseCityState : DialogState
+
 
 @Serializable
 class WriteProfessionState(
