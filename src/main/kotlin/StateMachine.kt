@@ -11,6 +11,9 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     initialState = DialogState.Empty,
     includeHelp = true
 ) {
+    onException { _, throwable ->
+        throwable.printStackTrace()
+    }
     cancelCommand(initialState = DialogState.Empty)
     role<User.Unauthenticated> { }
     role<User.Normal> { }
