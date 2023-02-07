@@ -25,7 +25,8 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     compileOnly("io.insert-koin:koin-annotations:1.1.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
-    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+    testImplementation("io.insert-koin:koin-test-junit5:3.3.2")
 }
 
 tasks.test {

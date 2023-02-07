@@ -1,0 +1,27 @@
+name: Unit tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '19'
+          distribution: 'temurin'
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@6c561573985cd8bd4d64efcfe270d51682d210e2
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@59d37bdb619feb5c23a98c4eb6df30c36b64d88c
+        with:
+          arguments: test
