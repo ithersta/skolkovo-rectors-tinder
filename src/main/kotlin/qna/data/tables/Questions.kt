@@ -6,7 +6,6 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
-import qna.domain.entities.QuestionArea
 
 object Questions : LongIdTable() {
     val authorId: Column<EntityID<Long>> = reference("author_id", Users).index()
