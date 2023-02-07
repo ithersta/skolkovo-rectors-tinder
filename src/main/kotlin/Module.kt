@@ -1,4 +1,5 @@
 import auth.data.tables.PhoneNumbers
+import auth.data.tables.UserAreas
 import auth.data.tables.Users
 import config.readBotConfig
 import feedback.data.tables.Feedback
@@ -8,6 +9,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.dsl.module
 import org.koin.ksp.generated.defaultModule
+import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
 
@@ -18,7 +20,9 @@ val dataModule = module(createdAtStart = true) {
                 SchemaUtils.createMissingTablesAndColumns(
                     PhoneNumbers,
                     Users,
+                    UserAreas,
                     Questions,
+                    QuestionAreas,
                     Responses,
                     Feedback,
                     MuteSettings
