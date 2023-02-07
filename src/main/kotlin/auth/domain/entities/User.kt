@@ -1,9 +1,11 @@
 package auth.domain.entities
 
+import qna.domain.entities.QuestionArea
+
 sealed interface User {
     object Unauthenticated : User
     object Admin : User
-    data class Normal(val details: Details) : User
+    object Normal : User
 
     data class Details(
         val id: Long,
@@ -12,6 +14,7 @@ sealed interface User {
         val job: String,
         val organization: String,
         val professionalAreas: String,
-        val activityDescription: String
+        val activityDescription: String,
+        val areas: Set<QuestionArea>
     )
 }

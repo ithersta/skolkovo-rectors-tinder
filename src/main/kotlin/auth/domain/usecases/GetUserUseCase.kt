@@ -13,10 +13,9 @@ class GetUserUseCase(
     private val transaction: Transaction
 ) {
     operator fun invoke(id: Long): User = transaction {
-        val details = userRepository.get(id)
         when {
             botConfig.adminId == id -> User.Admin
-            details != null -> User.Normal(details)
+            userRepository.isRegistered(id) -> User.Normal
             else -> User.Unauthenticated
         }
     }

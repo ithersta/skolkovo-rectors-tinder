@@ -6,5 +6,6 @@ import auth.domain.entities.User
 interface UserRepository {
     fun add(user: User.Details)
     fun get(id: Long): User.Details?
+    fun isRegistered(id: Long): Boolean
     fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean
 }
