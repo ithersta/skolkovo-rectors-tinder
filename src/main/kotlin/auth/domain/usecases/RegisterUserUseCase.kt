@@ -22,15 +22,19 @@ class RegisterUserUseCase(
     }
 
     operator fun invoke(userDetails: User.Details): Result = transaction {
-        if (userDetails.areas.isEmpty())
+        if (userDetails.areas.isEmpty()) {
             return@transaction Result.NoAreasSet
+        }
         runCatching {
-            if (userRepository.isRegistered(userDetails.id))
+            if (userRepository.isRegistered(userDetails.id)) {
                 return@transaction Result.AlreadyRegistered
-            if (userRepository.containsUserWithPhoneNumber(userDetails.phoneNumber))
+            }
+            if (userRepository.containsUserWithPhoneNumber(userDetails.phoneNumber)) {
                 return@transaction Result.DuplicatePhoneNumber
-            if (phoneNumberRepository.isActive(userDetails.phoneNumber).not())
+            }
+            if (phoneNumberRepository.isActive(userDetails.phoneNumber).not()) {
                 return@transaction Result.PhoneNumberNotAllowed
+            }
             userRepository.add(userDetails)
         }.onFailure {
             Result.Error(it.message.toString())
