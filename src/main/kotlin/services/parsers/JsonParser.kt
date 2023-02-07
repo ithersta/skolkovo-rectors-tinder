@@ -5,7 +5,6 @@ import com.jayway.jsonpath.JsonPath
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import java.io.File
 
-
 class JsonParser {
     private val jsonFilePath: String = "cities.json"
     private val jsonData: String = File(jsonFilePath).readText()

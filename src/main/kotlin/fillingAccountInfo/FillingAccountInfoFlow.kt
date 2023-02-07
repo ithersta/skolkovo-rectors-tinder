@@ -16,7 +16,6 @@ import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import services.parsers.JsonParser
 import states.*
 
-
 val keyboard = InlineKeyboardMarkup(
     listOf(
         JsonParser().getCountries()
