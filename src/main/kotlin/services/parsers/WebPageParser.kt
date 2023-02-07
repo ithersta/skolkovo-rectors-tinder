@@ -1,4 +1,4 @@
-package parsers
+package services.parsers
 
 import org.jsoup.Jsoup
 import java.io.IOException

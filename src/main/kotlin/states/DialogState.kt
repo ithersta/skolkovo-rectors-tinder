@@ -1,3 +1,5 @@
+package states
+
 import kotlinx.serialization.Serializable
 
 @Serializable
