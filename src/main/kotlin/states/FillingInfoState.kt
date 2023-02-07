@@ -1,7 +1,5 @@
 package states
 
-import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
-import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -20,16 +18,25 @@ class WriteOrganizationState(
 ):DialogState
 
 @Serializable
-class WriteProfessionalActivityState(
+class ChooseProfessionalAreasState(
     val city: String,
     val profession: String,
     val organization: String
 ):DialogState
 
 @Serializable
-class ChooseProfessionalAreasState(
+class WriteProfessionalDescriptionState(
     val city: String,
     val profession: String,
     val organization: String,
-    val activityDescription: String
+    val professionalAreas: List<String>
+):DialogState
+
+@Serializable
+class ChooseQuestionAreasState(
+    val city: String,
+    val profession: String,
+    val organization: String,
+    val professionalAreas: List<String>,
+    val professionalDescription: String
 ):DialogState
