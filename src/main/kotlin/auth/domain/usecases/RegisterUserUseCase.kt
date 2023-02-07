@@ -15,22 +15,22 @@ class RegisterUserUseCase(
     sealed interface Result {
         object OK : Result
         object DuplicatePhoneNumber : Result
-        object PhoneNumberNotAllowed : Result
         object AlreadyRegistered : Result
+        object PhoneNumberNotAllowed : Result
+        object NoAreasSet : Result
         class Error(val message: String) : Result
     }
 
     operator fun invoke(userDetails: User.Details): Result = transaction {
+        if (userDetails.areas.isEmpty())
+            return@transaction Result.NoAreasSet
         runCatching {
-            if (userRepository.get(userDetails.id) != null) {
+            if (userRepository.isRegistered(userDetails.id))
                 return@transaction Result.AlreadyRegistered
-            }
-            if (phoneNumberRepository.isActive(userDetails.phoneNumber).not()) {
-                return@transaction Result.PhoneNumberNotAllowed
-            }
-            if (userRepository.containsUserWithPhoneNumber(userDetails.phoneNumber)) {
+            if (userRepository.containsUserWithPhoneNumber(userDetails.phoneNumber))
                 return@transaction Result.DuplicatePhoneNumber
-            }
+            if (phoneNumberRepository.isActive(userDetails.phoneNumber).not())
+                return@transaction Result.PhoneNumberNotAllowed
             userRepository.add(userDetails)
         }.onFailure {
             Result.Error(it.message.toString())

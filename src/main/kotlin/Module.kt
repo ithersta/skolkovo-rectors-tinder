@@ -2,7 +2,6 @@ import auth.data.tables.PhoneNumbers
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
 import config.readBotConfig
-import feedback.data.tables.Feedback
 import mute.data.entities.MuteSettings
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -24,7 +23,6 @@ val dataModule = module(createdAtStart = true) {
                     Questions,
                     QuestionAreas,
                     Responses,
-                    Feedback,
                     MuteSettings
                 )
             }
