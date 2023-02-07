@@ -21,7 +21,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
-                ////сначала проверить номер на наличие в базе данных
+                // //сначала проверить номер на наличие в базе данных
                 state.override { ChooseCityState }
             }
         }
@@ -31,4 +31,3 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     role<User.Admin> { }
     fallback()
 }
-
