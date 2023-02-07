@@ -21,7 +21,7 @@ dependencies {
     implementation("com.ithersta.tgbotapi:sqlite-persistence:0.4.0")
     implementation("com.ithersta.tgbotapi:commands:0.2.0")
     implementation("io.ktor:ktor-client-okhttp:2.2.3")
-    implementation("org.hibernate.orm:hibernate-core:6.1.6.Final")
+    implementation("org.hibernate.orm:hibernate-core:6.1.7.Final")
     implementation("com.h2database:h2:2.1.214")
     compileOnly("io.insert-koin:koin-annotations:1.1.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
