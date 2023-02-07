@@ -7,17 +7,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 object ChooseCityState : DialogState
 
-
 @Serializable
 class WriteProfessionState(
     val city: String
-):DialogState
+) : DialogState
 
 @Serializable
 class WriteOrganizationState(
     val city: String,
     val profession: String
-):DialogState
+) : DialogState
 
 @Serializable
 class ChooseProfessionalAreasState(
@@ -25,22 +24,23 @@ class ChooseProfessionalAreasState(
     val profession: String,
     val organization: String,
     val professionalAreas: List<String>
-):DialogState
+) : DialogState
 
 @Serializable
-class AddProfessionalAreasState(///TODO: понадобится, когда список компетенций дадут и надо будет реализовать "Другое"
+class AddProfessionalAreasState( // /TODO: понадобится, когда список компетенций дадут и надо будет реализовать "Другое"
     val city: String,
     val profession: String,
     val organization: String,
     val professionalAreas: List<String>
-):DialogState
+) : DialogState
+
 @Serializable
 class WriteProfessionalDescriptionState(
     val city: String,
     val profession: String,
     val organization: String,
     val professionalAreas: List<String>
-):DialogState
+) : DialogState
 
 @Serializable
 class ChooseQuestionAreasState(
@@ -51,5 +51,4 @@ class ChooseQuestionAreasState(
     val professionalDescription: String,
     val questionAreas: List<QuestionArea>,
     val messageId: MessageId? = null
-):DialogState
-
+) : DialogState

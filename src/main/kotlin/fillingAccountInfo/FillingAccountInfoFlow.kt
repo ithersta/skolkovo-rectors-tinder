@@ -58,13 +58,13 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             sendTextMessage(
                 it,
                 ChooseCity
-                ////TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
+                // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             )
         }
         onText {
-            ////TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
+            // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             val city =
-                it.content.text///мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
+                it.content.text // /мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
             state.override { WriteProfessionState(city) }
         }
     }
@@ -76,7 +76,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val profession = it.content.text//мб валидация нужна какая-нибудь?
+            val profession = it.content.text // мб валидация нужна какая-нибудь?
             state.override { WriteOrganizationState(city, profession) }
         }
     }
@@ -88,7 +88,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val organization = it.content.text//мб валидация нужна какая-нибудь?
+            val organization = it.content.text // мб валидация нужна какая-нибудь?
             state.override { ChooseProfessionalAreasState(city, profession, organization, emptyList()) }
         }
     }
@@ -97,11 +97,11 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             sendTextMessage(
                 it,
                 ChooseProfessionalAreas
-                ////TODO: где-то тут видимо прикол с множественным выбором и видимо обработчиками
-                ///!!!!обработчик "Другое" просит ввода и принимает его
+                // //TODO: где-то тут видимо прикол с множественным выбором и видимо обработчиками
+                // /!!!!обработчик "Другое" просит ввода и принимает его
             )
-            ////надо бы и приколы из другого отображать так же
-            ////после того, как все нужные сферы выбраны, переходим в следующее состояние
+            // //надо бы и приколы из другого отображать так же
+            // //после того, как все нужные сферы выбраны, переходим в следующее состояние
             state.override {
                 WriteProfessionalDescriptionState(
                     city,
@@ -109,7 +109,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     organization,
                     emptyList()
                 )
-            }//пока пусть эмпти будет
+            } // пока пусть эмпти будет
         }
     }
     state<WriteProfessionalDescriptionState> {
@@ -120,7 +120,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val activity = it.content.text//мб валидация нужна какая-нибудь?
+            val activity = it.content.text // мб валидация нужна какая-нибудь?
             state.override {
                 ChooseQuestionAreasState(
                     city,
@@ -169,8 +169,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 }
             }
         }
-        ///создание пользователя в базе данных
-        ///ну я думаю, обработчик будет собирать все номера в лист, а потом создавать в базе им штучки
+        // /создание пользователя в базе данных
+        // /ну я думаю, обработчик будет собирать все номера в лист, а потом создавать в базе им штучки
         onDataCallbackQuery(SelectQuery::class) { (data, query) ->
             state.override {
                 ChooseQuestionAreasState(
