@@ -17,7 +17,6 @@ class JsonParser {
     private val jsonpathCitiesPattern: String = "$..country"
     private val jsonpathDistrictsPattern: String = "$..district"
 
-
     private fun createList(pattern: String): HashSet<String> {
         val countriesButton = mutableListOf<CallbackDataInlineKeyboardButton>()
         return HashSet(jsonContext.read<Collection<String>>(pattern))
@@ -25,7 +24,8 @@ class JsonParser {
 
     fun getCountries(): ReplyKeyboardMarkup {
         val nameReplyMarkup = replyKeyboard(
-            resizeKeyboard = true, oneTimeKeyboard = true
+            resizeKeyboard = true,
+            oneTimeKeyboard = true
         ) {
             createList(jsonpathCitiesPattern).forEach {
                 row {
@@ -38,21 +38,22 @@ class JsonParser {
 
     fun getDistricts(): ReplyKeyboardMarkup {
         val nameReplyMarkup = replyKeyboard(
-            resizeKeyboard = true, oneTimeKeyboard = true
+            resizeKeyboard = true,
+            oneTimeKeyboard = true
         ) {
             createList(jsonpathDistrictsPattern).forEach {
                 row {
                     simpleButton(it)
                 }
             }
-
         }
         return nameReplyMarkup
     }
 
     fun getCitiesFromCIS(country: String): ReplyKeyboardMarkup {
         val nameReplyMarkup = replyKeyboard(
-            resizeKeyboard = true, oneTimeKeyboard = true
+            resizeKeyboard = true,
+            oneTimeKeyboard = true
         ) {
             createList("$.[?(@.country == '$country')].city").forEach {
                 row {
@@ -65,7 +66,8 @@ class JsonParser {
 
     fun getRegionsByDistrict(district: String): ReplyKeyboardMarkup {
         val nameReplyMarkup = replyKeyboard(
-            resizeKeyboard = true, oneTimeKeyboard = true
+            resizeKeyboard = true,
+            oneTimeKeyboard = true
         ) {
             createList("$.[?(@.district ==  '$district')].region").forEach {
                 row {
@@ -78,7 +80,8 @@ class JsonParser {
 
     fun getCitiesByRegion(region: String): ReplyKeyboardMarkup {
         val nameReplyMarkup = replyKeyboard(
-            resizeKeyboard = true, oneTimeKeyboard = true
+            resizeKeyboard = true,
+            oneTimeKeyboard = true
         ) {
             createList("$.[?(@.region ==  '$region')].city").forEach {
                 row {

@@ -20,7 +20,6 @@ class ChooseRegion(
     val district: String
 ) : DialogState
 
-
 @Serializable
 class ChooseCity(
     val region: String
@@ -33,7 +32,8 @@ class WriteProfessionState(
 
 @Serializable
 class WriteOrganizationState(
-    val city: String, val profession: String
+    val city: String,
+    val profession: String
 ) : DialogState
 
 @Serializable
