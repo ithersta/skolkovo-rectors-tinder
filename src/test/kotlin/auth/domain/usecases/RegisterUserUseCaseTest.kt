@@ -18,6 +18,7 @@ internal class RegisterUserUseCaseTest {
     private val sampleUserDetails = User.Details(
         id = sampleUserId,
         phoneNumber = samplePhoneNumber,
+        name = "Александр",
         city = "Санкт-Петербург",
         job = "Главный специалист",
         organization = "Организация",
@@ -84,6 +85,7 @@ internal class RegisterUserUseCaseTest {
         val userRepository = mockk<UserRepository>()
         every { userRepository.isRegistered(sampleUserId) } returns false
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
+        every { userRepository.add(details) } returns Unit
         val phoneNumberRepository = mockk<PhoneNumberRepository>()
         every { phoneNumberRepository.isActive(samplePhoneNumber) } returns true
         val registerUser = RegisterUserUseCase(phoneNumberRepository, userRepository, NoOpTransaction)
