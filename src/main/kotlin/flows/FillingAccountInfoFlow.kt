@@ -22,7 +22,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseCountry> {
         onEnter {
             sendTextMessage(
-                it, Strings.AccountInfo.ChooseCountry, replyMarkup = jsonParser.getCountries()
+                it,
+                Strings.AccountInfo.ChooseCountry,
+                replyMarkup = jsonParser.getCountries()
             )
         }
         onDataCallbackQuery(Regex("🇷🇺")) { state.override { ChooseDistrict(it.data) } }
@@ -32,7 +34,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseCityInCIS> {
         onEnter {
             sendTextMessage(
-                it, Strings.AccountInfo.ChooseCity, replyMarkup = jsonParser.getCitiesFromCIS(state.snapshot.county)
+                it,
+                Strings.AccountInfo.ChooseCity,
+                replyMarkup = jsonParser.getCitiesFromCIS(state.snapshot.county)
             )
         }
         onDataCallbackQuery(Regex("\\W+")) {
@@ -44,7 +48,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseDistrict> {
         onEnter {
             sendTextMessage(
-                it, Strings.AccountInfo.ChooseDistrict, replyMarkup = jsonParser.getDistricts()
+                it,
+                Strings.AccountInfo.ChooseDistrict,
+                replyMarkup = jsonParser.getDistricts()
             )
         }
         onDataCallbackQuery(Regex("\\W+")) {
@@ -68,7 +74,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseCity> {
         onEnter {
             sendTextMessage(
-                it, Strings.AccountInfo.ChooseCity, replyMarkup = jsonParser.getCitiesByRegion(state.snapshot.region)
+                it,
+                Strings.AccountInfo.ChooseCity,
+                replyMarkup = jsonParser.getCitiesByRegion(state.snapshot.region)
             )
         }
         onDataCallbackQuery(Regex("\\W+")) {

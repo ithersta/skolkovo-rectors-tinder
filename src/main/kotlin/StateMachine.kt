@@ -32,7 +32,6 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
                 state.override { MeetingState }
             }
         }
-
     }
     role<User.Normal> {
 //        meetingFlow()
@@ -41,7 +40,6 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
                 state.override { MeetingState }
             }
         }
-
     }
     role<User.Admin> { }
     fallback()

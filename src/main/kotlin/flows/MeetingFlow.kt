@@ -10,18 +10,15 @@ import services.parsers.WebPageParser
 import states.DialogState
 import states.MeetingState
 
-
 val webPageParser: WebPageParser = WebPageParser()
-
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.meetingFlow() {
     state<MeetingState> {
         onEnter {
             sendTextMessage(
-                it, Strings.MeetingInfo.info
+                it,
+                Strings.MeetingInfo.info
             )
         }
     }
 }
-
-
