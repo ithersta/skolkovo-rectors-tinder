@@ -12,6 +12,6 @@ value class PhoneNumber private constructor(
                 .filterNot { it.isWhitespace() }
                 .filterNot { it in punctuation }
                 .removePrefix("+")
-        ).takeIf { it.value.length == 11 && it.value.startsWith('7') }
+        ).takeIf { "7\\d{10}".toRegex().matches(it.value) }
     }
 }
