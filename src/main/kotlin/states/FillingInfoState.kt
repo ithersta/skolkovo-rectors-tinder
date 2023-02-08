@@ -3,7 +3,28 @@ package states
 import kotlinx.serialization.Serializable
 
 @Serializable
-object ChooseCityState : DialogState
+object ChooseCountry : DialogState
+
+@Serializable
+class ChooseCityInCIS(
+    val county: String
+) : DialogState
+
+@Serializable
+class ChooseDistrict(
+    val county: String
+) : DialogState
+
+@Serializable
+class ChooseRegion(
+    val district: String
+) : DialogState
+
+
+@Serializable
+class ChooseCity(
+    val region: String
+) : DialogState
 
 @Serializable
 class WriteProfessionState(
@@ -12,8 +33,7 @@ class WriteProfessionState(
 
 @Serializable
 class WriteOrganizationState(
-    val city: String,
-    val profession: String
+    val city: String, val profession: String
 ) : DialogState
 
 @Serializable

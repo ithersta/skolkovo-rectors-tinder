@@ -1,6 +1,6 @@
 package fillingAccountInfo
 
-import Strings.AccountInfo.ChooseCity
+import Strings
 import Strings.AccountInfo.ChooseProfessionalAreas
 import Strings.AccountInfo.WriteOrganization
 import Strings.AccountInfo.WriteProfession
@@ -12,30 +12,74 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
-import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import services.parsers.JsonParser
 import states.*
 
-val keyboard = InlineKeyboardMarkup(
-    listOf(
-        JsonParser().getCountries()
-    )
-)
+val jsonParser: JsonParser = JsonParser()
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
-    state<ChooseCityState> {
+    state<ChooseCountry> {
         onEnter {
             sendTextMessage(
                 it,
-                ChooseCity,
-                replyMarkup = keyboard
-                // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
+                Strings.AccountInfo.ChooseCountry,
+                replyMarkup = jsonParser.getCountries()
             )
         }
-        onText {
-            // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
-            val city =
-                it.content.text // /мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
+        onText("🇷🇺") { state.override { ChooseDistrict(county = "🇷🇺") } }
+        onText("🇰🇿") { state.override { ChooseCityInCIS(county = "🇰🇿") } }
+        onText("🇺🇿") { state.override { ChooseCityInCIS(county = "🇺🇿") } }
+    }
+    state<ChooseCityInCIS> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.AccountInfo.ChooseCity,
+                replyMarkup = jsonParser.getCitiesFromCIS(state.snapshot.county)
+            )
+        }
+        onText { message ->
+            val city = message.content.text
+            state.override { WriteProfessionState(city) }
+        }
+    }
+
+    state<ChooseDistrict> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.AccountInfo.ChooseDistrict,
+                replyMarkup = jsonParser.getDistricts()
+            )
+        }
+        onText { message ->
+            val district = message.content.text
+            state.override { ChooseRegion(district) }
+        }
+    }
+    state<ChooseRegion> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.AccountInfo.ChooseRegion,
+                replyMarkup = jsonParser.getRegionsByDistrict(state.snapshot.district)
+            )
+        }
+        onText { message ->
+            val region = message.content.text
+            state.override { ChooseCity(region) }
+        }
+    }
+    state<ChooseCity> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.AccountInfo.ChooseCity,
+                replyMarkup = jsonParser.getCitiesByRegion(state.snapshot.region)
+            )
+        }
+        onText { message ->
+            val city = message.content.text
             state.override { WriteProfessionState(city) }
         }
     }

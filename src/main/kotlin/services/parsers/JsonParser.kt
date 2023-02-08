@@ -2,7 +2,11 @@ package services.parsers
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardMarkup
+import dev.inmo.tgbotapi.utils.row
 import java.io.File
 
 class JsonParser {
@@ -13,32 +17,75 @@ class JsonParser {
     private val jsonpathCitiesPattern: String = "$..country"
     private val jsonpathDistrictsPattern: String = "$..district"
 
-    private fun createList(pattern: String): List<CallbackDataInlineKeyboardButton> {
+
+    private fun createList(pattern: String): HashSet<String> {
         val countriesButton = mutableListOf<CallbackDataInlineKeyboardButton>()
-        val hashSet: HashSet<String> = HashSet(jsonContext.read<Collection<String>>(pattern))
-        for (item in hashSet) {
-            countriesButton.add(CallbackDataInlineKeyboardButton(text = item, callbackData = item))
+        return HashSet(jsonContext.read<Collection<String>>(pattern))
+    }
+
+    fun getCountries(): ReplyKeyboardMarkup {
+        val nameReplyMarkup = replyKeyboard(
+            resizeKeyboard = true, oneTimeKeyboard = true
+        ) {
+            createList(jsonpathCitiesPattern).forEach {
+                row {
+                    simpleButton(it)
+                }
+            }
         }
-        return countriesButton.toList()
+        return nameReplyMarkup
     }
 
-    fun getCountries(): List<CallbackDataInlineKeyboardButton> {
-        return createList(jsonpathCitiesPattern)
+    fun getDistricts(): ReplyKeyboardMarkup {
+        val nameReplyMarkup = replyKeyboard(
+            resizeKeyboard = true, oneTimeKeyboard = true
+        ) {
+            createList(jsonpathDistrictsPattern).forEach {
+                row {
+                    simpleButton(it)
+                }
+            }
+
+        }
+        return nameReplyMarkup
     }
 
-    fun getDistricts(): List<CallbackDataInlineKeyboardButton> {
-        return createList(jsonpathDistrictsPattern)
+    fun getCitiesFromCIS(country: String): ReplyKeyboardMarkup {
+        val nameReplyMarkup = replyKeyboard(
+            resizeKeyboard = true, oneTimeKeyboard = true
+        ) {
+            createList("$.[?(@.country == '$country')].city").forEach {
+                row {
+                    simpleButton(it)
+                }
+            }
+        }
+        return nameReplyMarkup
     }
 
-    fun getCitiesFromCIS(country: String): List<CallbackDataInlineKeyboardButton> {
-        return createList("$.[?(@.country == '$country')].city")
+    fun getRegionsByDistrict(district: String): ReplyKeyboardMarkup {
+        val nameReplyMarkup = replyKeyboard(
+            resizeKeyboard = true, oneTimeKeyboard = true
+        ) {
+            createList("$.[?(@.district ==  '$district')].region").forEach {
+                row {
+                    simpleButton(it)
+                }
+            }
+        }
+        return nameReplyMarkup
     }
 
-    fun getRegionsByDistrict(district: String): List<CallbackDataInlineKeyboardButton> {
-        return createList("$.[?(@.district ==  '$district')].region")
-    }
-
-    fun getCitiesByRegion(region: String): List<CallbackDataInlineKeyboardButton> {
-        return createList("$.[?(@.region ==  '$region')].city")
+    fun getCitiesByRegion(region: String): ReplyKeyboardMarkup {
+        val nameReplyMarkup = replyKeyboard(
+            resizeKeyboard = true, oneTimeKeyboard = true
+        ) {
+            createList("$.[?(@.region ==  '$region')].city").forEach {
+                row {
+                    simpleButton(it)
+                }
+            }
+        }
+        return nameReplyMarkup
     }
 }
