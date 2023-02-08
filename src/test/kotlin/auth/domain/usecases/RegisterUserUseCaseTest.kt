@@ -16,14 +16,14 @@ internal class RegisterUserUseCaseTest {
     private val samplePhoneNumber = PhoneNumber.of("79000000000")!!
     private val sampleUserId = 123L
     private val sampleUserDetails = User.Details(
-        sampleUserId,
-        samplePhoneNumber,
-        "",
-        "",
-        "",
-        "",
-        "",
-        setOf(QuestionArea.Campus, QuestionArea.Finance)
+        id = sampleUserId,
+        phoneNumber = samplePhoneNumber,
+        city = "Санкт-Петербург",
+        job = "Главный специалист",
+        organization = "Организация",
+        professionalAreas = "Области",
+        activityDescription = "Описание деятельности",
+        areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
     )
 
     @Test
