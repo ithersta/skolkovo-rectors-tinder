@@ -33,4 +33,8 @@ object Strings {
             "11) иное"
         )
     }
+
+    object MeetingInfo {
+        val info: String = "Календаря мероприятий"
+    }
 }

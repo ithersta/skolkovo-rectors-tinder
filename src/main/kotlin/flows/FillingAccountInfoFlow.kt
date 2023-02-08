@@ -1,4 +1,4 @@
-package fillingAccountInfo
+package flows
 
 import Strings
 import Strings.AccountInfo.ChooseProfessionalAreas
@@ -8,6 +8,7 @@ import Strings.AccountInfo.WriteProfessionalActivity
 import Strings.Question.ChooseQuestionArea
 import auth.User
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
+import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -21,25 +22,21 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseCountry> {
         onEnter {
             sendTextMessage(
-                it,
-                Strings.AccountInfo.ChooseCountry,
-                replyMarkup = jsonParser.getCountries()
+                it, Strings.AccountInfo.ChooseCountry, replyMarkup = jsonParser.getCountries()
             )
         }
-        onText("🇷🇺") { state.override { ChooseDistrict(county = "🇷🇺") } }
-        onText("🇰🇿") { state.override { ChooseCityInCIS(county = "🇰🇿") } }
-        onText("🇺🇿") { state.override { ChooseCityInCIS(county = "🇺🇿") } }
+        onDataCallbackQuery(Regex("🇷🇺")) { state.override { ChooseDistrict(it.data) } }
+        onDataCallbackQuery(Regex("🇰🇿")) { state.override { ChooseCityInCIS(it.data) } }
+        onDataCallbackQuery(Regex("🇺🇿")) { state.override { ChooseCityInCIS(it.data) } }
     }
     state<ChooseCityInCIS> {
         onEnter {
             sendTextMessage(
-                it,
-                Strings.AccountInfo.ChooseCity,
-                replyMarkup = jsonParser.getCitiesFromCIS(state.snapshot.county)
+                it, Strings.AccountInfo.ChooseCity, replyMarkup = jsonParser.getCitiesFromCIS(state.snapshot.county)
             )
         }
-        onText { message ->
-            val city = message.content.text
+        onDataCallbackQuery(Regex("\\W+")) {
+            val city = it.data
             state.override { WriteProfessionState(city) }
         }
     }
@@ -47,13 +44,11 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseDistrict> {
         onEnter {
             sendTextMessage(
-                it,
-                Strings.AccountInfo.ChooseDistrict,
-                replyMarkup = jsonParser.getDistricts()
+                it, Strings.AccountInfo.ChooseDistrict, replyMarkup = jsonParser.getDistricts()
             )
         }
-        onText { message ->
-            val district = message.content.text
+        onDataCallbackQuery(Regex("\\W+")) {
+            val district = it.data
             state.override { ChooseRegion(district) }
         }
     }
@@ -65,21 +60,19 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 replyMarkup = jsonParser.getRegionsByDistrict(state.snapshot.district)
             )
         }
-        onText { message ->
-            val region = message.content.text
+        onDataCallbackQuery(Regex("\\W+")) {
+            val region = it.data
             state.override { ChooseCity(region) }
         }
     }
     state<ChooseCity> {
         onEnter {
             sendTextMessage(
-                it,
-                Strings.AccountInfo.ChooseCity,
-                replyMarkup = jsonParser.getCitiesByRegion(state.snapshot.region)
+                it, Strings.AccountInfo.ChooseCity, replyMarkup = jsonParser.getCitiesByRegion(state.snapshot.region)
             )
         }
-        onText { message ->
-            val city = message.content.text
+        onDataCallbackQuery(Regex("\\W+")) {
+            val city = it.data
             state.override { WriteProfessionState(city) }
         }
     }
