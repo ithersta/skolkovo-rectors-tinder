@@ -1,3 +1,4 @@
+import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.GetUserUseCase
 import auth.telegram.flows.fillingAccountInfoFlow
@@ -25,7 +26,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         anyState {
             onCommand("start", null) {
                 // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WriteNameState }
+                state.override { WriteNameState(PhoneNumber.of("79290367450")!!) }///ну пока так
             }
         }
     }

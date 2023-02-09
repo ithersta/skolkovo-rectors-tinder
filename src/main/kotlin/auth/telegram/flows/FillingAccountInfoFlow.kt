@@ -1,6 +1,10 @@
 package auth.telegram.flows
 
 import auth.domain.entities.User
+import auth.domain.repository.PhoneNumberRepository
+import auth.domain.repository.UserRepository
+import auth.domain.usecases.RegisterUserUseCase
+import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseCity
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.WriteName
@@ -18,12 +22,14 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import common.domain.Transaction
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
+import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
 import queries.FinishQuery
 import queries.SelectQuery
@@ -32,6 +38,10 @@ import states.*
 import states.DialogState
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
+    val userRepository: UserRepository by inject()
+    val phoneNumberRepository: PhoneNumberRepository by inject()
+    val transaction: Transaction by inject()
+
     state<WriteNameState> {
         onEnter {
             sendTextMessage(
@@ -41,7 +51,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
         onText {
             val name = it.content.text
-            state.override { ChooseCityState(name) }
+            state.override { ChooseCityState(phoneNumber, name) }
         }
     }
     state<ChooseCityState> {
@@ -56,7 +66,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             val city =
                 it.content.text // /мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
-            state.override { WriteProfessionState(name, city) }
+            state.override { WriteProfessionState(phoneNumber, name, city) }
         }
     }
     state<WriteProfessionState> {
@@ -68,7 +78,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
         onText {
             val profession = it.content.text // мб валидация нужна какая-нибудь?
-            state.override { WriteOrganizationState(name, city, profession) }
+            state.override { WriteOrganizationState(phoneNumber, name, city, profession) }
         }
     }
     state<WriteOrganizationState> {
@@ -80,7 +90,16 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
         onText {
             val organization = it.content.text // мб валидация нужна какая-нибудь?
-            state.override { ChooseProfessionalAreasState(name, city, profession, organization, emptyList()) }
+            state.override {
+                ChooseProfessionalAreasState(
+                    phoneNumber,
+                    name,
+                    city,
+                    profession,
+                    organization,
+                    emptyList()
+                )
+            }
         }
     }
     state<ChooseProfessionalAreasState> {
@@ -113,6 +132,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     )
                 state.overrideQuietly {
                     ChooseProfessionalAreasState(
+                        phoneNumber,
                         name,
                         city,
                         profession,
@@ -124,9 +144,10 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             }
         }
         onDataCallbackQuery(SelectQuery::class) { (data, query) ->
-            if (data.area.equals(professionalAreas.last())) {
+            if (!data.area.equals(professionalAreas.last())) {
                 state.override {
                     ChooseProfessionalAreasState(
+                        phoneNumber,
                         name,
                         city,
                         profession,
@@ -138,6 +159,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             } else {
                 state.override {
                     AddProfessionalAreasState(
+                        phoneNumber,
                         name,
                         city,
                         profession,
@@ -152,6 +174,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onDataCallbackQuery(UnselectQuery::class) { (data, query) ->
             state.override {
                 ChooseProfessionalAreasState(
+                    phoneNumber,
                     name,
                     city,
                     profession,
@@ -165,6 +188,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onDataCallbackQuery(FinishQuery::class) { (_, query) ->
             state.override {
                 WriteProfessionalDescriptionState(
+                    phoneNumber,
                     name,
                     city,
                     profession,
@@ -186,6 +210,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val area = it.content.text
             state.override {
                 ChooseProfessionalAreasState(
+                    phoneNumber,
                     name,
                     city,
                     profession,
@@ -207,13 +232,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val activity = it.content.text // мб валидация нужна какая-нибудь?
             state.override {
                 ChooseQuestionAreasState(
+                    phoneNumber,
                     name,
                     city,
                     profession,
                     organization,
                     professionalAreas,
                     activity,
-                    emptyList()
+                    emptySet()
                 )
             }
         }
@@ -247,6 +273,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 )
                 state.overrideQuietly {
                     ChooseQuestionAreasState(
+                        phoneNumber,
                         name,
                         city,
                         profession,
@@ -263,6 +290,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             state.override {
                 val area = stringToQuestionArea.get(data.area)!!
                 ChooseQuestionAreasState(
+                    phoneNumber,
                     name,
                     city,
                     profession,
@@ -279,6 +307,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             state.override {
                 val area = stringToQuestionArea.get(data.area)!!
                 ChooseQuestionAreasState(
+                    phoneNumber,
                     name,
                     city,
                     profession,
@@ -294,6 +323,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onDataCallbackQuery(FinishQuery::class) { (_, query) ->
             state.override {
                 AddAccountInfoToDataBaseState(
+                    phoneNumber,
                     name,
                     city,
                     profession,
@@ -306,8 +336,80 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             answer(query)
         }
     }
+
     state<AddAccountInfoToDataBaseState> {
-        // ///добавление пользователя в базу данных
-        // //добавление этому пользователю сфер
+        onEnter {
+            val sb = StringBuilder()
+            state.snapshot.professionalAreas.forEach { sb.append("$it, ") }
+            val professionalAreasToString = sb.toString()
+
+            val details = User.Details(
+                it.chatId,
+                state.snapshot.phoneNumber,
+                state.snapshot.name, state.snapshot.city,
+                state.snapshot.profession,
+                state.snapshot.organization,
+                professionalAreasToString,
+                state.snapshot.professionalDescription,
+                state.snapshot.questionAreas
+            )
+            val registerUser = RegisterUserUseCase(phoneNumberRepository, userRepository, transaction)
+            val Result = registerUser(details)
+
+            when (Result) {
+                RegisterUserUseCase.Result.DuplicatePhoneNumber -> {
+                    sendTextMessage(
+                        it,
+                        Strings.AuthenticationResults.DuplicatePhoneNumber
+                    )
+                    state.override { DialogState.Empty }
+                }
+
+                RegisterUserUseCase.Result.AlreadyRegistered -> {
+                    sendTextMessage(
+                        it,
+                        Strings.AuthenticationResults.AlreadyRegistered
+                    )
+                    state.override { DialogState.Empty }
+                }
+
+                RegisterUserUseCase.Result.PhoneNumberNotAllowed -> {
+                    sendTextMessage(
+                        it,
+                        Strings.AuthenticationResults.PhoneNumberNotAllowed
+                    )
+                    state.override { DialogState.Empty }
+                }
+
+                RegisterUserUseCase.Result.OK -> {
+                    sendTextMessage(
+                        it,
+                        Strings.AuthenticationResults.OK
+                    )
+                    state.override { DialogState.Empty }///TODO: поменять на состояние, где будут кнопки с меню, что можно делать дальше
+                }
+
+                RegisterUserUseCase.Result.NoAreasSet -> {
+                    sendTextMessage(
+                        it,
+                        Strings.AuthenticationResults.NoAreaSet
+                    )
+                    state.override {
+                        ChooseQuestionAreasState(
+                            phoneNumber,
+                            name,
+                            city,
+                            profession,
+                            organization,
+                            professionalAreas,
+                            professionalDescription,
+                            questionAreas
+                        )
+                    }
+                }
+
+            }
+        }
+
     }
 }
