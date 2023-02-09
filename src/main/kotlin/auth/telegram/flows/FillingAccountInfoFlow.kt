@@ -25,25 +25,11 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea
+import queries.FinishQuery
+import queries.SelectQuery
+import queries.UnselectQuery
 import states.*
-
-@Serializable
-sealed interface Query
-
-@Serializable
-@SerialName("s")
-class SelectQuery(val area: String) : Query
-
-@Serializable
-@SerialName("u")
-class UnselectQuery(val area: String) : Query
-
-@Serializable
-@SerialName("f")
-object FinishQuery : Query
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     state<WriteNameState> {
