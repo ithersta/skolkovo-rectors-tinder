@@ -6,8 +6,8 @@ import com.ithersta.tgbotapi.fsm.builders.stateMachine
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.persistence.SqliteStateRepository
 import fillingAccountInfo.fillingAccountInfoFlow
-import states.ChooseCityState
 import states.DialogState
+import states.WriteNameState
 
 fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     getUser = { getUser(it.chatId) },
@@ -21,8 +21,8 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
-                // //сначала проверить номер на наличие в базе данных
-                state.override { ChooseCityState }
+                // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
+                state.override { WriteNameState }
             }
         }
     }
