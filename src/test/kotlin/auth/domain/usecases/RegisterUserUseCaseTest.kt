@@ -14,12 +14,24 @@ import kotlin.test.assertEquals
 
 internal class RegisterUserUseCaseTest {
     private val samplePhoneNumber = PhoneNumber.of("79000000000")!!
+    private val sampleUserId = 123L
+    private val sampleUserDetails = User.Details(
+        id = sampleUserId,
+        phoneNumber = samplePhoneNumber,
+        name = "Александр",
+        city = "Санкт-Петербург",
+        job = "Главный специалист",
+        organization = "Организация",
+        professionalAreas = "Области",
+        activityDescription = "Описание деятельности",
+        areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
+    )
 
     @Test
     fun `No areas set`() {
-        val details = User.Details(0L, samplePhoneNumber, "", "", "", "", "", emptySet())
+        val details = sampleUserDetails.copy(areas = emptySet())
         val userRepository = mockk<UserRepository>()
-        every { userRepository.isRegistered(0L) } returns false
+        every { userRepository.isRegistered(sampleUserId) } returns false
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
         val phoneNumberRepository = mockk<PhoneNumberRepository>()
         every { phoneNumberRepository.isActive(samplePhoneNumber) } returns true
@@ -30,9 +42,9 @@ internal class RegisterUserUseCaseTest {
 
     @Test
     fun `Already registered`() {
-        val details = User.Details(0L, samplePhoneNumber, "", "", "", "", "", setOf(QuestionArea.Campus))
+        val details = sampleUserDetails
         val userRepository = mockk<UserRepository>()
-        every { userRepository.isRegistered(0L) } returns true
+        every { userRepository.isRegistered(sampleUserId) } returns true
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
         val phoneNumberRepository = mockk<PhoneNumberRepository>()
         every { phoneNumberRepository.isActive(samplePhoneNumber) } returns true
@@ -43,9 +55,9 @@ internal class RegisterUserUseCaseTest {
 
     @Test
     fun `Duplicate phone number`() {
-        val details = User.Details(0L, samplePhoneNumber, "", "", "", "", "", setOf(QuestionArea.Campus))
+        val details = sampleUserDetails
         val userRepository = mockk<UserRepository>()
-        every { userRepository.isRegistered(0L) } returns false
+        every { userRepository.isRegistered(sampleUserId) } returns false
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns true
         val phoneNumberRepository = mockk<PhoneNumberRepository>()
         every { phoneNumberRepository.isActive(samplePhoneNumber) } returns true
@@ -56,9 +68,9 @@ internal class RegisterUserUseCaseTest {
 
     @Test
     fun `Phone number not allowed`() {
-        val details = User.Details(0L, samplePhoneNumber, "", "", "", "", "", setOf(QuestionArea.Campus))
+        val details = sampleUserDetails
         val userRepository = mockk<UserRepository>()
-        every { userRepository.isRegistered(0L) } returns false
+        every { userRepository.isRegistered(sampleUserId) } returns false
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
         val phoneNumberRepository = mockk<PhoneNumberRepository>()
         every { phoneNumberRepository.isActive(samplePhoneNumber) } returns false
@@ -69,10 +81,11 @@ internal class RegisterUserUseCaseTest {
 
     @Test
     fun ok() {
-        val details = User.Details(0L, samplePhoneNumber, "", "", "", "", "", setOf(QuestionArea.Campus))
+        val details = sampleUserDetails
         val userRepository = mockk<UserRepository>()
-        every { userRepository.isRegistered(0L) } returns false
+        every { userRepository.isRegistered(sampleUserId) } returns false
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
+        every { userRepository.add(details) } returns Unit
         val phoneNumberRepository = mockk<PhoneNumberRepository>()
         every { phoneNumberRepository.isActive(samplePhoneNumber) } returns true
         val registerUser = RegisterUserUseCase(phoneNumberRepository, userRepository, NoOpTransaction)

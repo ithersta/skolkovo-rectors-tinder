@@ -18,27 +18,22 @@ class RegisterUserUseCase(
         object AlreadyRegistered : Result
         object PhoneNumberNotAllowed : Result
         object NoAreasSet : Result
-        class Error(val message: String) : Result
     }
 
     operator fun invoke(userDetails: User.Details): Result = transaction {
         if (userDetails.areas.isEmpty()) {
             return@transaction Result.NoAreasSet
         }
-        runCatching {
-            if (userRepository.isRegistered(userDetails.id)) {
-                return@transaction Result.AlreadyRegistered
-            }
-            if (userRepository.containsUserWithPhoneNumber(userDetails.phoneNumber)) {
-                return@transaction Result.DuplicatePhoneNumber
-            }
-            if (phoneNumberRepository.isActive(userDetails.phoneNumber).not()) {
-                return@transaction Result.PhoneNumberNotAllowed
-            }
-            userRepository.add(userDetails)
-        }.onFailure {
-            Result.Error(it.message.toString())
+        if (userRepository.isRegistered(userDetails.id)) {
+            return@transaction Result.AlreadyRegistered
         }
+        if (userRepository.containsUserWithPhoneNumber(userDetails.phoneNumber)) {
+            return@transaction Result.DuplicatePhoneNumber
+        }
+        if (phoneNumberRepository.isActive(userDetails.phoneNumber).not()) {
+            return@transaction Result.PhoneNumberNotAllowed
+        }
+        userRepository.add(userDetails)
         Result.OK
     }
 }

@@ -15,6 +15,7 @@ class UserRepositoryImpl : UserRepository {
     override fun add(user: User.Details) {
         Users.insert {
             it[phoneNumber] = user.phoneNumber.value
+            it[name] = user.name
             it[city] = user.city
             it[job] = user.job
             it[organization] = user.organization
@@ -33,6 +34,7 @@ class UserRepositoryImpl : UserRepository {
             User.Details(
                 id = it[Users.id].value,
                 phoneNumber = PhoneNumber.of(it[Users.phoneNumber])!!,
+                name = it[Users.name],
                 city = it[Users.city],
                 professionalAreas = it[Users.professionalAreas],
                 job = it[Users.job],
