@@ -30,7 +30,7 @@ dependencies {
     compileOnly("io.insert-koin:koin-annotations:1.1.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
-    testImplementation("io.insert-koin:koin-test-junit5:3.3.2")
+    testImplementation("io.insert-koin:koin-test-junit5:3.3.3")
     testImplementation("io.mockk:mockk:1.13.4")
 }
 
