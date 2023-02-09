@@ -141,7 +141,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             }
         }
         onDataCallbackQuery(SelectQuery::class) { (data, query) ->
-            if (data.area.equals(professionalAreas.last())) {
+            if (!data.area.equals(professionalAreas.last())) {
                 state.override {
                     ChooseProfessionalAreasState(
                         name,
