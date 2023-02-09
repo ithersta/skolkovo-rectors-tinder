@@ -66,13 +66,13 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             sendTextMessage(
                 it,
                 ChooseCity
-                ////TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
+                // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             )
         }
         onText {
-            ////TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
+            // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             val city =
-                it.content.text///мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
+                it.content.text // /мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
             state.override { WriteProfessionState(name, city) }
         }
     }
@@ -84,7 +84,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val profession = it.content.text//мб валидация нужна какая-нибудь?
+            val profession = it.content.text // мб валидация нужна какая-нибудь?
             state.override { WriteOrganizationState(name, city, profession) }
         }
     }
@@ -96,7 +96,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val organization = it.content.text//мб валидация нужна какая-нибудь?
+            val organization = it.content.text // мб валидация нужна какая-нибудь?
             state.override { ChooseProfessionalAreasState(name, city, profession, organization, emptyList()) }
         }
     }
@@ -106,7 +106,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 professionalAreas.forEach { area ->
                     row {
                         if (area in state.snapshot.professionalAreas) {
-                            dataButton("✅${area}", UnselectQuery(area))
+                            dataButton("✅$area", UnselectQuery(area))
                         } else {
                             dataButton(area, SelectQuery(area))
                         }
@@ -125,7 +125,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     sendTextMessage(
                         it,
                         ChooseProfessionalAreas,
-                        ///!!!!обработчик "Другое" просит ввода и принимает его
+                        // /!!!!обработчик "Другое" просит ввода и принимает его
                         replyMarkup = keyboard
                     )
                 state.overrideQuietly {
@@ -163,7 +163,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                         messageId
                     )
                 }
-
             }
             answer(query)
         }
@@ -222,7 +221,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val activity = it.content.text//мб валидация нужна какая-нибудь?
+            val activity = it.content.text // мб валидация нужна какая-нибудь?
             state.override {
                 ChooseQuestionAreasState(
                     name,
@@ -243,8 +242,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     row {
                         val areaToString = questionAreaToString.get(area)
                         if (area in state.snapshot.questionAreas) {
-
-                            dataButton("✅${areaToString}", UnselectQuery(areaToString!!))
+                            dataButton("✅$areaToString", UnselectQuery(areaToString!!))
                         } else {
                             dataButton(areaToString!!, SelectQuery(areaToString))
                         }
@@ -326,7 +324,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
     }
     state<AddAccountInfoToDataBaseState> {
-        /////добавление пользователя в базу данных
-        ////добавление этому пользователю сфер
+        // ///добавление пользователя в базу данных
+        // //добавление этому пользователю сфер
     }
 }
