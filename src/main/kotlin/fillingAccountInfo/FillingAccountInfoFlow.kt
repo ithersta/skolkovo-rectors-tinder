@@ -2,16 +2,10 @@ package fillingAccountInfo
 
 import Strings.AccountInfo.ChooseCity
 import Strings.AccountInfo.ChooseProfessionalAreas
-import Strings.AccountInfo.WriteName
 import Strings.AccountInfo.WriteOrganization
 import Strings.AccountInfo.WriteProfession
 import Strings.AccountInfo.WriteProfessionalActivity
-import Strings.AccountInfo.WriteProfessionalArea
-import Strings.AccountInfo.professionalAreas
-import Strings.FinishChoosing
 import Strings.Question.ChooseQuestionArea
-import Strings.questionAreaToString
-import Strings.stringToQuestionArea
 import auth.User
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
@@ -38,42 +32,40 @@ sealed interface Query
 
 @Serializable
 @SerialName("s")
-class SelectQuery(val area: String) : Query
+class SelectQuery(val area: QuestionArea) : Query
 
 @Serializable
 @SerialName("u")
-class UnselectQuery(val area: String) : Query
+class UnselectQuery(val area: QuestionArea) : Query
 
-@Serializable
-@SerialName("f")
-object FinishQuery : Query
+private var questionAreaToString = mapOf<QuestionArea, String>(
+    QuestionArea.Science to Strings.Question.Science,
+    QuestionArea.Education to Strings.Question.Education,
+    QuestionArea.Innovations to Strings.Question.Innovations,
+    QuestionArea.Entrepreneurship to Strings.Question.Entrepreneurship,
+    QuestionArea.Finances to Strings.Question.Finances,
+    QuestionArea.Youngsters to Strings.Question.Youngsters,
+    QuestionArea.Staff to Strings.Question.Staff,
+    QuestionArea.Campus to Strings.Question.Campus,
+    QuestionArea.Society to Strings.Question.Society,
+    QuestionArea.Strategy to Strings.Question.Strategy,
+    QuestionArea.Others to Strings.Question.Others,
+)
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
-    state<WriteNameState> {
-        onEnter {
-            sendTextMessage(
-                it,
-                WriteName
-            )
-        }
-        onText {
-            val name = it.content.text
-            state.override { ChooseCityState(name) }
-        }
-    }
     state<ChooseCityState> {
         onEnter {
             sendTextMessage(
                 it,
                 ChooseCity
-                ////TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
+                // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             )
         }
         onText {
-            ////TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
+            // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             val city =
-                it.content.text///мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
-            state.override { WriteProfessionState(name, city) }
+                it.content.text // /мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
+            state.override { WriteProfessionState(city) }
         }
     }
     state<WriteProfessionState> {
@@ -84,8 +76,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val profession = it.content.text//мб валидация нужна какая-нибудь?
-            state.override { WriteOrganizationState(name, city, profession) }
+            val profession = it.content.text // мб валидация нужна какая-нибудь?
+            state.override { WriteOrganizationState(city, profession) }
         }
     }
     state<WriteOrganizationState> {
@@ -96,122 +88,28 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val organization = it.content.text//мб валидация нужна какая-нибудь?
-            state.override { ChooseProfessionalAreasState(name, city, profession, organization, emptyList()) }
+            val organization = it.content.text // мб валидация нужна какая-нибудь?
+            state.override { ChooseProfessionalAreasState(city, profession, organization, emptyList()) }
         }
     }
     state<ChooseProfessionalAreasState> {
         onEnter {
-            val keyboard = inlineKeyboard {
-                professionalAreas.forEach { area ->
-                    row {
-                        if (area in state.snapshot.professionalAreas) {
-                            dataButton("✅${area}", UnselectQuery(area))
-                        } else {
-                            dataButton(area, SelectQuery(area))
-                        }
-                    }
-                }
-                row {
-                    dataButton(FinishChoosing, FinishQuery)
-                }
-            }
-            state.snapshot.messageId?.let { id ->
-                runCatching {
-                    editMessageReplyMarkup(it, id, keyboard)
-                }
-            } ?: run {
-                val message =
-                    sendTextMessage(
-                        it,
-                        ChooseProfessionalAreas,
-                        ///!!!!обработчик "Другое" просит ввода и принимает его
-                        replyMarkup = keyboard
-                    )
-                state.overrideQuietly {
-                    ChooseProfessionalAreasState(
-                        name,
-                        city,
-                        profession,
-                        organization,
-                        professionalAreas,
-                        message.messageId
-                    )
-                }
-            }
-        }
-        onDataCallbackQuery(SelectQuery::class) { (data, query) ->
-            if (!data.area.equals(professionalAreas.last())) {
-                state.override {
-                    ChooseProfessionalAreasState(
-                        name,
-                        city,
-                        profession,
-                        organization,
-                        professionalAreas + data.area,
-                        messageId
-                    )
-                }
-            } else {
-                state.override {
-                    AddProfessionalAreasState(
-                        name,
-                        city,
-                        profession,
-                        organization,
-                        professionalAreas + data.area,
-                        messageId
-                    )
-                }
-
-            }
-            answer(query)
-        }
-        onDataCallbackQuery(UnselectQuery::class) { (data, query) ->
-            state.override {
-                ChooseProfessionalAreasState(
-                    name,
-                    city,
-                    profession,
-                    organization,
-                    professionalAreas - data.area,
-                    messageId
-                )
-            }
-            answer(query)
-        }
-        onDataCallbackQuery(FinishQuery::class) { (_, query) ->
-            state.override {
-                WriteProfessionalDescriptionState(
-                    name,
-                    city,
-                    profession,
-                    organization,
-                    professionalAreas
-                )
-            }
-            answer(query)
-        }
-    }
-    state<AddProfessionalAreasState> {
-        onEnter {
             sendTextMessage(
                 it,
-                WriteProfessionalArea
+                ChooseProfessionalAreas
+                // //TODO: где-то тут видимо прикол с множественным выбором и видимо обработчиками
+                // /!!!!обработчик "Другое" просит ввода и принимает его
             )
-        }
-        onText {
-            val area = it.content.text
+            // //надо бы и приколы из другого отображать так же
+            // //после того, как все нужные сферы выбраны, переходим в следующее состояние
             state.override {
-                ChooseProfessionalAreasState(
-                    name,
+                WriteProfessionalDescriptionState(
                     city,
                     profession,
                     organization,
-                    professionalAreas + area,
-                    messageId
+                    emptyList()
                 )
-            }
+            } // пока пусть эмпти будет
         }
     }
     state<WriteProfessionalDescriptionState> {
@@ -222,10 +120,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onText {
-            val activity = it.content.text//мб валидация нужна какая-нибудь?
+            val activity = it.content.text // мб валидация нужна какая-нибудь?
             state.override {
                 ChooseQuestionAreasState(
-                    name,
                     city,
                     profession,
                     organization,
@@ -241,17 +138,12 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val keyboard = inlineKeyboard {
                 QuestionArea.values().forEach { area ->
                     row {
-                        val areaToString = questionAreaToString.get(area)
                         if (area in state.snapshot.questionAreas) {
-
-                            dataButton("✅${areaToString}", UnselectQuery(areaToString!!))
+                            dataButton("✅${questionAreaToString.get(area)}", UnselectQuery(area))
                         } else {
-                            dataButton(areaToString!!, SelectQuery(areaToString))
+                            dataButton(questionAreaToString.get(area)!!, SelectQuery(area))
                         }
                     }
-                }
-                row {
-                    dataButton(FinishChoosing, FinishQuery)
                 }
             }
             state.snapshot.messageId?.let { id ->
@@ -266,7 +158,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 )
                 state.overrideQuietly {
                     ChooseQuestionAreasState(
-                        name,
                         city,
                         profession,
                         organization,
@@ -278,17 +169,17 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 }
             }
         }
+        // /создание пользователя в базе данных
+        // /ну я думаю, обработчик будет собирать все номера в лист, а потом создавать в базе им штучки
         onDataCallbackQuery(SelectQuery::class) { (data, query) ->
             state.override {
-                val area = stringToQuestionArea.get(data.area)!!
                 ChooseQuestionAreasState(
-                    name,
                     city,
                     profession,
                     organization,
                     professionalAreas,
                     professionalDescription,
-                    questionAreas + area,
+                    questionAreas + data.area,
                     messageId
                 )
             }
@@ -296,37 +187,17 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
         onDataCallbackQuery(UnselectQuery::class) { (data, query) ->
             state.override {
-                val area = stringToQuestionArea.get(data.area)!!
                 ChooseQuestionAreasState(
-                    name,
                     city,
                     profession,
                     organization,
                     professionalAreas,
                     professionalDescription,
-                    questionAreas - area,
+                    questionAreas - data.area,
                     messageId
                 )
             }
             answer(query)
         }
-        onDataCallbackQuery(FinishQuery::class) { (_, query) ->
-            state.override {
-                AddAccountInfoToDataBaseState(
-                    name,
-                    city,
-                    profession,
-                    organization,
-                    professionalAreas,
-                    professionalDescription,
-                    questionAreas,
-                )
-            }
-            answer(query)
-        }
-    }
-    state<AddAccountInfoToDataBaseState> {
-        /////добавление пользователя в базу данных
-        ////добавление этому пользователю сфер
     }
 }
