@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation("com.ithersta.tgbotapi:fsm:0.23.0")
-    implementation("com.ithersta.tgbotapi:sqlite-persistence:0.4.0")
+    implementation("com.ithersta.tgbotapi:sqlite-persistence:0.5.0")
     implementation("com.ithersta.tgbotapi:commands:0.2.0")
     implementation("io.ktor:ktor-client-okhttp:2.2.3")
     implementation("org.hibernate.orm:hibernate-core:6.1.6.Final")
