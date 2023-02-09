@@ -386,7 +386,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                         it,
                         Strings.AuthenticationResults.OK
                     )
-                    state.override { DialogState.Empty }///TODO: поменять на состояние, где будут кнопки с меню, что можно делать дальше
+                    state.override { DialogState.Empty } // /TODO: поменять на состояние, где будут кнопки с меню, что можно делать дальше
                 }
 
                 RegisterUserUseCase.Result.NoAreasSet -> {
@@ -407,9 +407,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                         )
                     }
                 }
-
             }
         }
-
     }
 }

@@ -57,11 +57,11 @@ object Strings {
     )
     var stringToQuestionArea = questionAreaToString.map { it.value to it.key }.toMap()
 
-    object AuthenticationResults{
+    object AuthenticationResults {
         val OK = "Вы успешно зарегистрированы."
         val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
-        val PhoneNumberNotAllowed="Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
-        val NoAreaSet="Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
+        val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
+        val NoAreaSet = "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
     }
 }
