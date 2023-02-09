@@ -1,18 +1,19 @@
-package fillingAccountInfo
+package auth.telegram.flows
 
-import Strings.AccountInfo.ChooseCity
-import Strings.AccountInfo.ChooseProfessionalAreas
-import Strings.AccountInfo.WriteName
-import Strings.AccountInfo.WriteOrganization
-import Strings.AccountInfo.WriteProfession
-import Strings.AccountInfo.WriteProfessionalActivity
-import Strings.AccountInfo.WriteProfessionalArea
-import Strings.AccountInfo.professionalAreas
-import Strings.FinishChoosing
-import Strings.Question.ChooseQuestionArea
-import Strings.questionAreaToString
-import Strings.stringToQuestionArea
-import auth.User
+import states.DialogState
+import auth.telegram.Strings.AccountInfo.ChooseCity
+import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
+import auth.telegram.Strings.AccountInfo.WriteName
+import auth.telegram.Strings.AccountInfo.WriteOrganization
+import auth.telegram.Strings.AccountInfo.WriteProfession
+import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
+import auth.telegram.Strings.AccountInfo.WriteProfessionalArea
+import auth.telegram.Strings.AccountInfo.professionalAreas
+import auth.telegram.Strings.FinishChoosing
+import auth.telegram.Strings.Question.ChooseQuestionArea
+import auth.telegram.Strings.questionAreaToString
+import auth.telegram.Strings.stringToQuestionArea
+import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
@@ -26,12 +27,8 @@ import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import qna.domain.entities.QuestionArea
 import states.*
-
-@Serializable
-enum class QuestionArea {
-    Science, Education, Innovations, Entrepreneurship, Finances, Youngsters, Staff, Campus, Society, Strategy, Others
-}
 
 @Serializable
 sealed interface Query

@@ -1,4 +1,6 @@
-import fillingAccountInfo.QuestionArea
+package auth.telegram
+
+import qna.domain.entities.QuestionArea
 
 object Strings {
     object AccountInfo {
@@ -43,15 +45,15 @@ object Strings {
     var questionAreaToString = mapOf<QuestionArea, String>(
         QuestionArea.Science to Question.Science,
         QuestionArea.Education to Question.Education,
-        QuestionArea.Innovations to Question.Innovations,
+        QuestionArea.Innovation to Question.Innovations,
         QuestionArea.Entrepreneurship to Question.Entrepreneurship,
-        QuestionArea.Finances to Question.Finances,
-        QuestionArea.Youngsters to Question.Youngsters,
-        QuestionArea.Staff to Question.Staff,
+        QuestionArea.Finance to Question.Finances,
+        QuestionArea.Youth to Question.Youngsters,
+        QuestionArea.HumanResources to Question.Staff,
         QuestionArea.Campus to Question.Campus,
         QuestionArea.Society to Question.Society,
         QuestionArea.Strategy to Question.Strategy,
-        QuestionArea.Others to Question.Others,
+        QuestionArea.Other to Question.Others,
     )
     var stringToQuestionArea = questionAreaToString.map { it.value to it.key }.toMap()
 }

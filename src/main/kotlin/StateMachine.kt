@@ -1,11 +1,11 @@
 import auth.domain.entities.User
 import auth.domain.usecases.GetUserUseCase
+import auth.telegram.flows.fillingAccountInfoFlow
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.persistence.SqliteStateRepository
-import fillingAccountInfo.fillingAccountInfoFlow
 import states.DialogState
 import states.WriteNameState
 

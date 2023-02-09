@@ -1,8 +1,8 @@
 package states
 
 import dev.inmo.tgbotapi.types.MessageId
-import fillingAccountInfo.QuestionArea
 import kotlinx.serialization.Serializable
+import qna.domain.entities.QuestionArea
 
 @Serializable
 object WriteNameState : DialogState
