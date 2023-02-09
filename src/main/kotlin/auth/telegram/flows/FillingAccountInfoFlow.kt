@@ -1,6 +1,6 @@
 package auth.telegram.flows
 
-import states.DialogState
+import auth.domain.entities.User
 import auth.telegram.Strings.AccountInfo.ChooseCity
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.WriteName
@@ -13,7 +13,6 @@ import auth.telegram.Strings.FinishChoosing
 import auth.telegram.Strings.Question.ChooseQuestionArea
 import auth.telegram.Strings.questionAreaToString
 import auth.telegram.Strings.stringToQuestionArea
-import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
@@ -29,6 +28,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea
 import states.*
+import states.DialogState
 
 @Serializable
 sealed interface Query
