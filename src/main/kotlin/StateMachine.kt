@@ -26,7 +26,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         anyState {
             onCommand("start", null) {
                 // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WriteNameState(PhoneNumber.of("79290367450")!!) }///ну пока так
+                state.override { WriteNameState(PhoneNumber.of("79290367450")!!) } // /ну пока так
             }
         }
     }

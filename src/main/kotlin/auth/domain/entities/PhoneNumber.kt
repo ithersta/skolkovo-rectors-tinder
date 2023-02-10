@@ -2,7 +2,6 @@ package auth.domain.entities
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 @JvmInline
 value class PhoneNumber private constructor(
