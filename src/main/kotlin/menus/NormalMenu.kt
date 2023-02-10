@@ -3,7 +3,7 @@ package menus
 import auth.domain.entities.User
 import auth.telegram.Strings
 import com.ithersta.tgbotapi.menu.builders.menu
-import states.DialogState
+import common.telegram.DialogState
 import states.MenuState
 
 val normalMenu = menu<DialogState, User, User.Unauthenticated>(Strings.RoleMenu.Normal, DialogState.Empty) {

@@ -17,21 +17,21 @@ import auth.telegram.Strings.FinishChoosing
 import auth.telegram.Strings.Question.ChooseQuestionArea
 import auth.telegram.Strings.questionAreaToString
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
-import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import dataButton
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
+import onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
 import queries.*
 import states.*
-import states.DialogState
+import common.telegram.DialogState
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
