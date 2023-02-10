@@ -35,6 +35,6 @@ object Strings {
     }
 
     object MeetingInfo {
-        val info: String = "Календаря мероприятий"
+        val linkInEvent: String = "Ссылка на метроприятия: https://www.skolkovo.ru/navigator/events/"
     }
 }

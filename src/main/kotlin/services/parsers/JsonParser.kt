@@ -9,20 +9,42 @@ import dev.inmo.tgbotapi.utils.row
 import java.io.File
 
 class JsonParser {
-    private val jsonFilePath: String = "cities.json"
+    private val jsonFilePath: String = "src/main/resources/cities.json"
     private val jsonData: String = File(jsonFilePath).readText()
     private val jsonContext: DocumentContext = JsonPath.parse(jsonData)
 
-    private val jsonpathCitiesPattern: String = "$..country"
+    private val jsonpathCountiesPattern: String = "$..country"
     private val jsonpathDistrictsPattern: String = "$..district"
+    private val jsonpathRegionPattern: String = "$..region"
+    private val jsonpathCityPattern: String = "$..city"
+
+    private fun jsonpathCitiesInCISByCountry(country: String): String {
+        return "$.[?(@.country == '$country')].city"
+    }
+
+    private fun jsonpathRegionByDistrict(district: String): String {
+        return "$.[?(@.district ==  '$district')].region"
+    }
+
+    private fun jsonpathCityByRegion(region: String): String {
+        return "$.[?(@.region ==  '$region')].city"
+    }
 
     private fun createList(pattern: String): List<String> {
         return HashSet(jsonContext.read<Collection<String>>(pattern)).sorted()
     }
 
+    private fun createRegex(pattern: String): Regex {
+        return Regex(createList(pattern).joinToString(separator = "|"))
+    }
+
+    val districtsRegex: Regex = createRegex(jsonpathDistrictsPattern)
+    val regionRegex: Regex = createRegex(jsonpathRegionPattern)
+    val cityRegex: Regex = createRegex(jsonpathCityPattern)
+
     fun getCountries(): InlineKeyboardMarkup {
         return inlineKeyboard {
-            createList(jsonpathCitiesPattern).forEach {
+            createList(jsonpathCountiesPattern).forEach {
                 row {
                     dataButton(it, it)
                 }
@@ -42,7 +64,7 @@ class JsonParser {
 
     fun getCitiesFromCIS(country: String): InlineKeyboardMarkup {
         return inlineKeyboard {
-            createList("$.[?(@.country == '$country')].city").forEach {
+            createList(jsonpathCitiesInCISByCountry(country)).forEach {
                 row {
                     dataButton(it, it)
                 }
@@ -52,7 +74,7 @@ class JsonParser {
 
     fun getRegionsByDistrict(district: String): InlineKeyboardMarkup {
         return inlineKeyboard {
-            createList("$.[?(@.district ==  '$district')].region").forEach {
+            createList(jsonpathRegionByDistrict(district)).forEach {
                 row {
                     dataButton(it, it)
                 }
@@ -62,7 +84,7 @@ class JsonParser {
 
     fun getCitiesByRegion(region: String): InlineKeyboardMarkup {
         return inlineKeyboard {
-            createList("$.[?(@.region ==  '$region')].city").forEach {
+            createList(jsonpathCityByRegion(region)).forEach {
                 row {
                     dataButton(it, it)
                 }

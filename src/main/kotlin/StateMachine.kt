@@ -21,22 +21,17 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
 
     role<User.Unauthenticated> {
         fillingAccountInfoFlow()
-        meetingFlow()
-
         anyState {
             onCommand("start", null) {
                 // //сначала проверить номер на наличие в базе данных
                 state.override { ChooseCountry }
             }
-            onCommand("ask", null) {
-                state.override { MeetingState }
-            }
         }
     }
     role<User.Normal> {
-//        meetingFlow()
+        meetingFlow()
         anyState {
-            onCommand("ask", null) {
+            onCommand("events", null) {
                 state.override { MeetingState }
             }
         }

@@ -39,12 +39,11 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 replyMarkup = jsonParser.getCitiesFromCIS(state.snapshot.county)
             )
         }
-        onDataCallbackQuery(Regex("\\W+")) {
+        onDataCallbackQuery(jsonParser.cityRegex) {
             val city = it.data
             state.override { WriteProfessionState(city) }
         }
     }
-
     state<ChooseDistrict> {
         onEnter {
             sendTextMessage(
@@ -52,8 +51,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 Strings.AccountInfo.ChooseDistrict,
                 replyMarkup = jsonParser.getDistricts()
             )
+            println(jsonParser.districtsRegex)
         }
-        onDataCallbackQuery(Regex("\\W+")) {
+        onDataCallbackQuery(jsonParser.districtsRegex) {
             val district = it.data
             state.override { ChooseRegion(district) }
         }
@@ -65,8 +65,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 Strings.AccountInfo.ChooseRegion,
                 replyMarkup = jsonParser.getRegionsByDistrict(state.snapshot.district)
             )
+            println(jsonParser.regionRegex)
         }
-        onDataCallbackQuery(Regex("\\W+")) {
+        onDataCallbackQuery(jsonParser.regionRegex) {
             val region = it.data
             state.override { ChooseCity(region) }
         }
@@ -78,8 +79,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 Strings.AccountInfo.ChooseCity,
                 replyMarkup = jsonParser.getCitiesByRegion(state.snapshot.region)
             )
+            println(jsonParser.cityRegex)
         }
-        onDataCallbackQuery(Regex("\\W+")) {
+        onDataCallbackQuery(jsonParser.cityRegex) {
             val city = it.data
             state.override { WriteProfessionState(city) }
         }
