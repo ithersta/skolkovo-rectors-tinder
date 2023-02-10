@@ -19,6 +19,7 @@ import auth.telegram.Strings.questionAreaToString
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import common.telegram.DialogState
 import dataButton
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
@@ -31,7 +32,6 @@ import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
 import queries.*
 import states.*
-import common.telegram.DialogState
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()

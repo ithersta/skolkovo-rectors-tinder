@@ -8,11 +8,11 @@ import com.ithersta.tgbotapi.commands.fallback
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import common.telegram.DialogState
+import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import menus.normalMenu
-import common.telegram.DialogState
-import common.telegram.Query
 import states.WriteNameState
 
 @StateMachine(baseQueryKClass = Query::class)
