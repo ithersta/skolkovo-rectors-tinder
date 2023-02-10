@@ -1,22 +1,22 @@
 package auth.telegram.flows
 
 import auth.domain.entities.User
+import auth.domain.usecases.GetUserUseCase
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseCity
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.NoProfessionalArea
+import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import auth.telegram.Strings.AccountInfo.WriteName
 import auth.telegram.Strings.AccountInfo.WriteOrganization
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.AccountInfo.WriteProfessionalArea
 import auth.telegram.Strings.AccountInfo.professionalAreas
-import auth.telegram.Strings.AuthenticationResults.failedAuthentication
 import auth.telegram.Strings.FinishChoosing
 import auth.telegram.Strings.Question.ChooseQuestionArea
 import auth.telegram.Strings.questionAreaToString
-import auth.telegram.Strings.stringToQuestionArea
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
@@ -30,14 +30,13 @@ import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
-import queries.FinishQuery
-import queries.SelectQuery
-import queries.UnselectQuery
+import queries.*
 import states.*
 import states.DialogState
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
+    val getUserUseCase: GetUserUseCase by inject()
 
     state<WriteNameState> {
         onEnter {
@@ -266,14 +265,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     row {
                         val areaToString = questionAreaToString.get(area)
                         if (area in state.snapshot.questionAreas) {
-                            dataButton("✅$areaToString", UnselectQuery(areaToString!!))
+                            dataButton("✅$areaToString", UnselectQuestionQuery(area))
                         } else {
-                            dataButton(areaToString!!, SelectQuery(areaToString))
+                            dataButton(areaToString!!, SelectQuestionQuery(area))
                         }
                     }
                 }
                 row {
-                    dataButton(FinishChoosing, FinishQuery)
+                    dataButton(FinishChoosing, FinishQuestionQuery)
                 }
             }
             state.snapshot.messageId?.let { id ->
@@ -301,9 +300,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 }
             }
         }
-        onDataCallbackQuery(SelectQuery::class) { (data, query) ->
+        onDataCallbackQuery(SelectQuestionQuery::class) { (data, query) ->
             state.override {
-                val area = stringToQuestionArea.get(data.area)!!
                 ChooseQuestionAreasState(
                     phoneNumber,
                     name,
@@ -312,15 +310,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     organization,
                     professionalAreas,
                     professionalDescription,
-                    questionAreas + area,
+                    questionAreas + data.area,
                     messageId
                 )
             }
             answer(query)
         }
-        onDataCallbackQuery(UnselectQuery::class) { (data, query) ->
+        onDataCallbackQuery(UnselectQuestionQuery::class) { (data, query) ->
             state.override {
-                val area = stringToQuestionArea.get(data.area)!!
                 ChooseQuestionAreasState(
                     phoneNumber,
                     name,
@@ -329,24 +326,44 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     organization,
                     professionalAreas,
                     professionalDescription,
-                    questionAreas - area,
+                    questionAreas - data.area,
                     messageId
                 )
             }
             answer(query)
         }
-        onDataCallbackQuery(FinishQuery::class) { (_, query) ->
-            state.override {
-                AddAccountInfoToDataBaseState(
-                    phoneNumber,
-                    name,
-                    city,
-                    profession,
-                    organization,
-                    professionalAreas,
-                    professionalDescription,
-                    questionAreas,
+        onDataCallbackQuery(FinishQuestionQuery::class) { (_, query) ->
+            if (state.snapshot.questionAreas.isEmpty()) {
+                sendTextMessage(
+                    query.user.id,
+                    NoQuestionArea
                 )
+                state.override {
+                    ChooseQuestionAreasState(
+                        phoneNumber,
+                        name,
+                        city,
+                        profession,
+                        organization,
+                        professionalAreas,
+                        professionalDescription,
+                        questionAreas,
+                        messageId
+                    )
+                }
+            } else {
+                state.override {
+                    AddAccountInfoToDataBaseState(
+                        phoneNumber,
+                        name,
+                        city,
+                        profession,
+                        organization,
+                        professionalAreas,
+                        professionalDescription,
+                        questionAreas,
+                    )
+                }
             }
             answer(query)
         }
@@ -364,9 +381,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas
             )
-            val result = registerUserUseCase(details)
 
-            val resultResponse = when (result) {
+            val resultResponse = when (registerUserUseCase(details)) {
                 RegisterUserUseCase.Result.DuplicatePhoneNumber ->
                     Strings.AuthenticationResults.DuplicatePhoneNumber
 
@@ -386,9 +402,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 it,
                 resultResponse
             )
-            if (failedAuthentication.contains(resultResponse)) {
-                state.override { DialogState.Empty }
-            } else if (resultResponse.equals(NoProfessionalArea)) {
+            if (resultResponse.equals(NoProfessionalArea)) {
                 state.override {
                     ChooseQuestionAreasState(
                         phoneNumber,
@@ -402,8 +416,28 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     )
                 }
             } else {
-                state.override { DialogState.Empty }///////TODO: поменять на состояние, где будут кнопки с меню, что можно делать дальше
+                state.override { DialogState.Empty }
             }
         }
     }
+    state<DialogState.Empty> {
+        onEnter {
+            val roleMessage = when (getUserUseCase(it.chatId)) {
+                User.Admin ->
+                    Strings.RoleMenu.Admin
+
+                User.Unauthenticated ->
+                    Strings.RoleMenu.Unauthenticated
+
+                User.Normal ->
+                    Strings.RoleMenu.Normal
+            }
+            sendTextMessage(
+                it,
+                roleMessage////TODO:ну и сюда потом клавиатурку с возобновить бота/остановить бота, календарем мероприятий,
+                ///отправлением вопроса, получением своих вопросов, получением вопросов по сфере
+            )
+        }
+    }
 }
+

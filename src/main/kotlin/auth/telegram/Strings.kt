@@ -1,5 +1,6 @@
 package auth.telegram
 
+import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import qna.domain.entities.QuestionArea
 
 object Strings {
@@ -21,6 +22,8 @@ object Strings {
         val WriteProfessionalArea = "Введите свою зону профессиональных компетенций"
         val NoProfessionalArea =
             "Вы не выбрали ни одной сферы профессионаьных компетенций. Для регистрации необходимо выбрать хотя бы одну сферу."
+        val NoQuestionArea =
+            "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
 
         val WriteProfessionalActivity =
             "Напишите о своей деятельности - что именно Вы делаете на работе, с какими задачами сталкиваетесь"
@@ -58,15 +61,17 @@ object Strings {
         QuestionArea.Strategy to Question.Strategy,
         QuestionArea.Other to Question.Others,
     )
-    var stringToQuestionArea = questionAreaToString.map { it.value to it.key }.toMap()
 
     object AuthenticationResults {
         val OK = "Вы успешно зарегистрированы."
         val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
         val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
-        val NoAreaSet =
-            "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
-        val failedAuthentication= listOf(DuplicatePhoneNumber, AlreadyRegistered, PhoneNumberNotAllowed)
+        val NoAreaSet = NoQuestionArea
+    }
+    object RoleMenu{
+        val Admin="Меню администратора"
+        val Unauthenticated="Неудачная попытка авторизации."
+        val Normal="Меню пользователя"
     }
 }
