@@ -25,14 +25,14 @@ val normalMenu = menu<DialogState, User, User.Unauthenticated>(Strings.RoleMenu.
                 button(
                     Strings.MenuButtons.Questions.MyQuestions.ActualQuestions,
                     DialogState.Empty
-                )///ну видимо хендлер надо тоже
+                ) // /ну видимо хендлер надо тоже
                 button(
                     Strings.MenuButtons.Questions.MyQuestions.OldQuestions,
                     DialogState.Empty
-                )///ну видимо хендлер надо тоже
+                ) // /ну видимо хендлер надо тоже
             }
-            button(Strings.MenuButtons.Questions.InterestingQuestions, DialogState.Empty)///ну видимо хендлер надо тоже
+            button(Strings.MenuButtons.Questions.InterestingQuestions, DialogState.Empty) // /ну видимо хендлер надо тоже
         }
-        button( Strings.MenuButtons.Questions.Ask,DialogState.Empty)///ну видимо хендлер надо тоже
+        button(Strings.MenuButtons.Questions.Ask, DialogState.Empty) // /ну видимо хендлер надо тоже
     }
 }

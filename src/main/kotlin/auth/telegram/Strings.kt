@@ -34,7 +34,7 @@ object Strings {
     object Question {
         val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
-                    "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
+                "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
         val Science = "наука"
         val Education = "образование"
         val Innovations = "инновации"
@@ -79,25 +79,25 @@ object Strings {
     object MenuButtons {
         val AddUser = "Добавить пользователей"
         object Questions {
-            val Question="Вопрос"
-            val QuestionDesciption="Выберите, что вы хотите сделать"
-            val Ask="Задать вопрос сообществу"
-            val Get="Получить список вопросов"
-            val Description="Выберите категорию вопроса"
+            val Question = "Вопрос"
+            val QuestionDesciption = "Выберите, что вы хотите сделать"
+            val Ask = "Задать вопрос сообществу"
+            val Get = "Получить список вопросов"
+            val Description = "Выберите категорию вопроса"
             object MyQuestions {
-                val Main="Мои вопросы"
-                val Description="Выберите тип вопроса"
+                val Main = "Мои вопросы"
+                val Description = "Выберите тип вопроса"
                 val ActualQuestions = "Актуальные"
                 val OldQuestions = "Старые(закрытые)"
             }
-            val InterestingQuestions="По сферам"
+            val InterestingQuestions = "По сферам"
         }
-        object Notifications{
-            val Main= "Оповещения"
-            val Description="Выберите, что вы хотите сделать"
-            val On="Включить"
-            val Off="Выключить"
+        object Notifications {
+            val Main = "Оповещения"
+            val Description = "Выберите, что вы хотите сделать"
+            val On = "Включить"
+            val Off = "Выключить"
         }
-        val ChangeSccountInfo="Изменить данные аккаунта"
+        val ChangeSccountInfo = "Изменить данные аккаунта"
     }
 }

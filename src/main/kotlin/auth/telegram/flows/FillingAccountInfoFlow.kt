@@ -1,7 +1,6 @@
 package auth.telegram.flows
 
 import auth.domain.entities.User
-import auth.domain.usecases.GetUserUseCase
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseCity
@@ -439,4 +438,3 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 //        }
 //    }
 }
-
