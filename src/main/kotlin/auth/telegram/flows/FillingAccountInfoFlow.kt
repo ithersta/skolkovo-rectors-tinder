@@ -1,18 +1,18 @@
 package auth.telegram.flows
 
 import auth.domain.entities.User
-import auth.domain.repository.PhoneNumberRepository
-import auth.domain.repository.UserRepository
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseCity
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
+import auth.telegram.Strings.AccountInfo.NoProfessionalArea
 import auth.telegram.Strings.AccountInfo.WriteName
 import auth.telegram.Strings.AccountInfo.WriteOrganization
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.AccountInfo.WriteProfessionalArea
 import auth.telegram.Strings.AccountInfo.professionalAreas
+import auth.telegram.Strings.AuthenticationResults.failedAuthentication
 import auth.telegram.Strings.FinishChoosing
 import auth.telegram.Strings.Question.ChooseQuestionArea
 import auth.telegram.Strings.questionAreaToString
@@ -22,7 +22,6 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
-import common.domain.Transaction
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -38,9 +37,7 @@ import states.*
 import states.DialogState
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
-    val userRepository: UserRepository by inject()
-    val phoneNumberRepository: PhoneNumberRepository by inject()
-    val transaction: Transaction by inject()
+    val registerUserUseCase: RegisterUserUseCase by inject()
 
     state<WriteNameState> {
         onEnter {
@@ -186,15 +183,33 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             answer(query)
         }
         onDataCallbackQuery(FinishQuery::class) { (_, query) ->
-            state.override {
-                WriteProfessionalDescriptionState(
-                    phoneNumber,
-                    name,
-                    city,
-                    profession,
-                    organization,
-                    professionalAreas
+            if (state.snapshot.professionalAreas.isEmpty()) {
+                sendTextMessage(
+                    query.user.id,
+                    NoProfessionalArea
                 )
+                state.override {
+                    ChooseProfessionalAreasState(
+                        phoneNumber,
+                        name,
+                        city,
+                        profession,
+                        organization,
+                        professionalAreas,
+                        messageId
+                    )
+                }
+            } else {
+                state.override {
+                    WriteProfessionalDescriptionState(
+                        phoneNumber,
+                        name,
+                        city,
+                        profession,
+                        organization,
+                        professionalAreas
+                    )
+                }
             }
             answer(query)
         }
@@ -339,77 +354,56 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<AddAccountInfoToDataBaseState> {
         onEnter {
-            val sb = StringBuilder()
-            state.snapshot.professionalAreas.forEach { sb.append("$it, ") }
-            val professionalAreasToString = sb.toString()
-
             val details = User.Details(
                 it.chatId,
                 state.snapshot.phoneNumber,
                 state.snapshot.name, state.snapshot.city,
                 state.snapshot.profession,
                 state.snapshot.organization,
-                professionalAreasToString,
+                state.snapshot.professionalAreas.joinToString(),
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas
             )
-            val registerUser = RegisterUserUseCase(phoneNumberRepository, userRepository, transaction)
-            val Result = registerUser(details)
+            val result = registerUserUseCase(details)
 
-            when (Result) {
-                RegisterUserUseCase.Result.DuplicatePhoneNumber -> {
-                    sendTextMessage(
-                        it,
-                        Strings.AuthenticationResults.DuplicatePhoneNumber
+            val resultResponse = when (result) {
+                RegisterUserUseCase.Result.DuplicatePhoneNumber ->
+                    Strings.AuthenticationResults.DuplicatePhoneNumber
+
+                RegisterUserUseCase.Result.AlreadyRegistered ->
+                    Strings.AuthenticationResults.AlreadyRegistered
+
+                RegisterUserUseCase.Result.PhoneNumberNotAllowed ->
+                    Strings.AuthenticationResults.PhoneNumberNotAllowed
+
+                RegisterUserUseCase.Result.OK ->
+                    Strings.AuthenticationResults.OK
+
+                RegisterUserUseCase.Result.NoAreasSet ->
+                    Strings.AuthenticationResults.NoAreaSet
+            }
+            sendTextMessage(
+                it,
+                resultResponse
+            )
+            if (failedAuthentication.contains(resultResponse)) {
+                state.override { DialogState.Empty }
+            } else if (resultResponse.equals(NoProfessionalArea)) {
+                state.override {
+                    ChooseQuestionAreasState(
+                        phoneNumber,
+                        name,
+                        city,
+                        profession,
+                        organization,
+                        professionalAreas,
+                        professionalDescription,
+                        questionAreas
                     )
-                    state.override { DialogState.Empty }
                 }
-
-                RegisterUserUseCase.Result.AlreadyRegistered -> {
-                    sendTextMessage(
-                        it,
-                        Strings.AuthenticationResults.AlreadyRegistered
-                    )
-                    state.override { DialogState.Empty }
-                }
-
-                RegisterUserUseCase.Result.PhoneNumberNotAllowed -> {
-                    sendTextMessage(
-                        it,
-                        Strings.AuthenticationResults.PhoneNumberNotAllowed
-                    )
-                    state.override { DialogState.Empty }
-                }
-
-                RegisterUserUseCase.Result.OK -> {
-                    sendTextMessage(
-                        it,
-                        Strings.AuthenticationResults.OK
-                    )
-                    state.override { DialogState.Empty }///TODO: поменять на состояние, где будут кнопки с меню, что можно делать дальше
-                }
-
-                RegisterUserUseCase.Result.NoAreasSet -> {
-                    sendTextMessage(
-                        it,
-                        Strings.AuthenticationResults.NoAreaSet
-                    )
-                    state.override {
-                        ChooseQuestionAreasState(
-                            phoneNumber,
-                            name,
-                            city,
-                            profession,
-                            organization,
-                            professionalAreas,
-                            professionalDescription,
-                            questionAreas
-                        )
-                    }
-                }
-
+            } else {
+                state.override { DialogState.Empty }///////TODO: поменять на состояние, где будут кнопки с меню, что можно делать дальше
             }
         }
-
     }
 }
