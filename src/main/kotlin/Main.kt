@@ -9,7 +9,6 @@ import io.ktor.client.engine.okhttp.*
 import org.koin.core.context.startKoin
 
 suspend fun main() {
-    println(stateMachineSerializersModule)
     val application = startKoin { modules(module) }
     val stateMachine: RegularEngine<*, *, *> = application.koin.get()
     val backupRunner: BackupRunner = application.koin.get()
