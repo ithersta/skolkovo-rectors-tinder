@@ -34,7 +34,7 @@ object Strings {
     object Question {
         val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
-                    "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
+                "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
         val Science = "наука"
         val Education = "образование"
         val Innovations = "инновации"
@@ -69,9 +69,9 @@ object Strings {
         val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
         val NoAreaSet = NoQuestionArea
     }
-    object RoleMenu{
-        val Admin="Меню администратора"
-        val Unauthenticated="Неудачная попытка авторизации."
-        val Normal="Меню пользователя"
+    object RoleMenu {
+        val Admin = "Меню администратора"
+        val Unauthenticated = "Неудачная попытка авторизации."
+        val Normal = "Меню пользователя"
     }
 }
