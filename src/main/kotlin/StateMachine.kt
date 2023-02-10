@@ -1,12 +1,16 @@
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.GetUserUseCase
+import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
+import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.persistence.SqliteStateRepository
+import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import menus.normalMenu
 import states.DialogState
 import states.WriteNameState
 
@@ -22,6 +26,8 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     cancelCommand(initialState = DialogState.Empty)
 
     role<User.Unauthenticated> {
+        with(normalMenu) { invoke() }///TODO: потом убрать
+
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
@@ -29,9 +35,35 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
                 state.override { WriteNameState(PhoneNumber.of("79290367450")!!) } // /ну пока так
             }
         }
+        state<DialogState.Empty> {
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.RoleMenu.Unauthenticated
+                )
+            }
+        }
     }
     role<User.Normal> {
+        ///with(normalMenu) { invoke() }
+        state<DialogState.Empty> {
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.RoleMenu.Normal
+                )
+            }
+        }
     }
-    role<User.Admin> { }
+    role<User.Admin> {
+        state<DialogState.Empty> {
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.RoleMenu.Admin
+                )
+            }
+        }
+    }
     fallback()
 }

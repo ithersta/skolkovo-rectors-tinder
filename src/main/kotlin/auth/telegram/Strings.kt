@@ -69,9 +69,35 @@ object Strings {
         val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
         val NoAreaSet = NoQuestionArea
     }
-    object RoleMenu{
-        val Admin="Меню администратора"
-        val Unauthenticated="Неудачная попытка авторизации."
-        val Normal="Меню пользователя"
+
+    object RoleMenu {
+        val Admin = "Меню администратора"
+        val Unauthenticated = "Неудачная попытка авторизации."
+        val Normal = "Меню пользователя"
+    }
+
+    object MenuButtons {
+        val AddUser = "Добавить пользователей"
+        object Questions {
+            val Question="Вопрос"
+            val QuestionDesciption="Выберите, что вы хотите сделать"
+            val Ask="Задать вопрос сообществу"
+            val Get="Получить список вопросов"
+            val Description="Выберите категорию вопроса"
+            object MyQuestions {
+                val Main="Мои вопросы"
+                val Description="Выберите тип вопроса"
+                val ActualQuestions = "Актуальные"
+                val OldQuestions = "Старые(закрытые)"
+            }
+            val InterestingQuestions="По сферам"
+        }
+        object Notifications{
+            val Main= "Оповещения"
+            val Description="Выберите, что вы хотите сделать"
+            val On="Включить"
+            val Off="Выключить"
+        }
+        val ChangeSccountInfo="Изменить данные аккаунта"
     }
 }

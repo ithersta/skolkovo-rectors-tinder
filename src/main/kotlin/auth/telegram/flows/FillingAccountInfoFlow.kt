@@ -36,7 +36,6 @@ import states.DialogState
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
-    val getUserUseCase: GetUserUseCase by inject()
 
     state<WriteNameState> {
         onEnter {
@@ -420,24 +419,24 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             }
         }
     }
-    state<DialogState.Empty> {
-        onEnter {
-            val roleMessage = when (getUserUseCase(it.chatId)) {
-                User.Admin ->
-                    Strings.RoleMenu.Admin
-
-                User.Unauthenticated ->
-                    Strings.RoleMenu.Unauthenticated
-
-                User.Normal ->
-                    Strings.RoleMenu.Normal
-            }
-            sendTextMessage(
-                it,
-                roleMessage////TODO:ну и сюда потом клавиатурку с возобновить бота/остановить бота, календарем мероприятий,
-                ///отправлением вопроса, получением своих вопросов, получением вопросов по сфере
-            )
-        }
-    }
+//    state<DialogState.Empty> {
+//        onEnter {
+//            val roleMessage = when (getUserUseCase(it.chatId)) {
+//                User.Admin ->
+//                    Strings.RoleMenu.Admin
+//
+//                User.Unauthenticated ->
+//                    Strings.RoleMenu.Unauthenticated
+//
+//                User.Normal ->
+//                    Strings.RoleMenu.Normal
+//            }
+//            sendTextMessage(
+//                it,
+//                roleMessage////TODO:ну и сюда потом клавиатурку с возобновить бота/остановить бота, календарем мероприятий,
+//                ///отправлением вопроса, получением своих вопросов, получением вопросов по сфере
+//            )
+//        }
+//    }
 }
 
