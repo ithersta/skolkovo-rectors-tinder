@@ -22,7 +22,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.contactWi
     val userRepository: UserRepository by inject()
     val userAreasRepository: UserAreasRepository by inject()
     state<AnswerToQuestion> {
-         // посмотреть инфу из preaccelerator
+        // посмотреть инфу из preaccelerator
 //        onEnter{
 //            sendTextMessage(it, Strings.ToAnswerUser.message("que"), //поменять на переменную текста вопроса (берем из бд)
 //                replyMarkup = replyKeyboard (
