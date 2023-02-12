@@ -11,7 +11,6 @@ import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
 import dev.inmo.tgbotapi.extensions.utils.extensions.raw.message
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.extensions.utils.withContent
@@ -70,7 +69,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                     message.asMessageCallbackQuery()?.message?.withContent<TextContent>() ?: return@onDataCallbackQuery,
                     replyMarkup = null
                 )
-                //todo: override state to start_state???
+                // todo: override state to start_state???
             }
             onDataCallbackQuery(Regex("no")) { message ->
                 editMessageReplyMarkup(

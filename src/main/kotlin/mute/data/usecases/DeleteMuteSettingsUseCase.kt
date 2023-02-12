@@ -1,8 +1,8 @@
-package mute.data.usecases;
+package mute.data.usecases
 
-import common.domain.Transaction;
-import mute.data.repository.MuteSettingsRepository;
-import org.koin.core.annotation.Single;
+import common.domain.Transaction
+import mute.data.repository.MuteSettingsRepository
+import org.koin.core.annotation.Single
 
 @Single
 class DeleteMuteSettingsUseCase(
