@@ -1,5 +1,5 @@
-import auth.GetUserUseCase
-import auth.User
+import auth.domain.entities.User
+import auth.domain.usecases.GetUserUseCase
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
@@ -15,6 +15,9 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     initialState = DialogState.Empty,
     includeHelp = true
 ) {
+    onException { _, throwable ->
+        throwable.printStackTrace()
+    }
     cancelCommand(initialState = DialogState.Empty)
 
     role<User.Unauthenticated> {
