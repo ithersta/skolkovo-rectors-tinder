@@ -4,21 +4,21 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@SerialName("selectCountry")
+@SerialName("Country")
 class SelectCountryQuery(val countryFlagSmile: String) : Query
 
 @Serializable
-@SerialName("selectCityInCIS")
+@SerialName("CIS")
 class SelectCityInCIS(val city: String) : Query
 
 @Serializable
-@SerialName("selectDistrict")
+@SerialName("Area")
 class SelectDistrict(val district: String) : Query
 
 @Serializable
-@SerialName("selectRegion")
+@SerialName("region")
 class SelectRegion(val region: String) : Query
 
 @Serializable
-@SerialName("selectCity")
+@SerialName("City")
 class SelectCity(val city: String) : Query
