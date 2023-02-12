@@ -14,6 +14,7 @@ import dev.inmo.tgbotapi.types.UserId
 import org.koin.core.component.inject
 import dev.inmo.tgbotapi.utils.row
 import kotlinx.coroutines.launch
+import qna.domain.entities.QuestionArea
 import states.*
 import strings.ButtonStrings
 import strings.Strings
@@ -38,12 +39,12 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.contactWi
 //        }
         onEnter{
             sendTextMessage(it, "Задайте свой вопрос") //сделала для тестирования
-            //тут для полноценной проверки нужно задать сферу вопроса и все остальное... HELP
         }
-        onText{message->
+        onText{
+
             //тут добавляем проверку на area question и user question(их может быть 1 и более) что и активный пользователь(если нет таблицы mutesettings) и отправляем всем, кто подходит(кроме того, кто задал вопрос)
             coroutineScope.launch {
-                userAreasRepository.getAllByArea()
+               userAreasRepository.getAllByArea(QuestionArea.Strategy).toString()
             }
         }
 //        onText(ButtonStrings.Yes){
