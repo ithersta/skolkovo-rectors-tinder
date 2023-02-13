@@ -1,7 +1,6 @@
 package auth.domain.usecases
 
 import auth.domain.entities.User
-import auth.domain.repository.PhoneNumberRepository
 import auth.domain.repository.UserRepository
 import common.domain.Transaction
 import org.koin.core.annotation.Single

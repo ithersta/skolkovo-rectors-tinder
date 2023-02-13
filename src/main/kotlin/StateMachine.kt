@@ -1,6 +1,7 @@
 import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
+import auth.telegram.states.WaitingForContact
 import com.ithersta.tgbotapi.boot.annotations.StateMachine
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
@@ -13,7 +14,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import menus.adminMenu
 import menus.normalMenu
-import states.WaitingForContact
+
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(

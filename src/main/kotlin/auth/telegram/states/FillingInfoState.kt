@@ -1,4 +1,4 @@
-package states
+package auth.telegram.states
 
 import auth.domain.entities.PhoneNumber
 import common.telegram.DialogState
