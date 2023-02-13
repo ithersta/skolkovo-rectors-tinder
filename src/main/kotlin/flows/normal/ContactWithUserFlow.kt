@@ -2,8 +2,6 @@ package flows.normal
 
 
 import auth.domain.entities.User
-import auth.domain.repository.UserAreasRepository
-import auth.domain.repository.UserRepository
 import auth.domain.usecases.GetUsersByAreaUseCase
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
@@ -22,9 +20,6 @@ import strings.ButtonStrings
 import strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.contactWithUserFlow() { //User.Normal
-
-    val userRepository: UserRepository by inject()
-    val userAreasRepository: UserAreasRepository by inject()
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
     state<AnswerToQuestion> {//посмотреть инфу из preaccelerator
 //        onEnter{
@@ -46,7 +41,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.contactWi
         }
         onText {
             //тут добавляем проверку на area question и user question(их может быть 1 и более) что и активный пользователь(если нет таблицы mutesettings) и отправляем всем, кто подходит(кроме того, кто задал вопрос)
-            println(getUsersByAreaUseCase(QuestionArea.Education).toString())
+            println(getUsersByAreaUseCase(QuestionArea.Education, userId = 4).toString())
 //            coroutineScope.launch {
 
 //            }

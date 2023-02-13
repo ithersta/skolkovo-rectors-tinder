@@ -1,5 +1,6 @@
 package auth.domain.usecases
 
+import auth.data.repository.MuteSettingsRepositoryImpl
 import auth.domain.repository.UserAreasRepository
 import org.koin.core.annotation.Single
 import qna.domain.entities.QuestionArea
@@ -7,11 +8,23 @@ import qna.domain.entities.QuestionArea
 @Single
 class GetUsersByAreaUseCase(
     private val userAreasRepository: UserAreasRepository,
+    private val muteSettingsRepositoryImpl: MuteSettingsRepositoryImpl,
     private val transaction: common.domain.Transaction
 ) {
-    // получить потенциальных ответчиков…
-    // проверить на мут …
-    operator fun invoke(questionArea: QuestionArea): List<Long> = transaction {
-        userAreasRepository.getUsersByArea(questionArea)
+    private fun getUniqueElements(sheet1: List<Long>, sheet2: List<Long>): List<Long> {
+        val uniqueElements = mutableListOf<Long>()
+        for (element in sheet1) {
+            if (!sheet2.contains(element)) {
+                uniqueElements.add(element)
+            }
+        }
+        return uniqueElements
+    }
+
+    operator fun invoke(questionArea: QuestionArea, userId: Long): List<Long> = transaction {
+        //проверка на mute и на то, что пользователь не тот, который задал вопрос
+        val mute = muteSettingsRepositoryImpl.getAll()
+        val all = userAreasRepository.getUsersByArea(questionArea, userId)
+        return@transaction getUniqueElements(all, mute).toSet().toList()
     }
 }
