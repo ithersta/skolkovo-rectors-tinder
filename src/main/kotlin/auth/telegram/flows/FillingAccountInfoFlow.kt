@@ -1,5 +1,6 @@
 package auth.telegram.flows
 
+import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
@@ -14,17 +15,19 @@ import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.AccountInfo.WriteProfessionalArea
 import auth.telegram.Strings.AccountInfo.professionalAreas
 import auth.telegram.Strings.FinishChoosing
+import auth.telegram.Strings.InvalidShare
 import auth.telegram.Strings.Question.ChooseQuestionArea
+import auth.telegram.Strings.ShareContact
+import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.questionAreaToString
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
-import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
-import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
-import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import com.ithersta.tgbotapi.fsm.entities.triggers.*
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import org.koin.core.component.inject
@@ -35,6 +38,25 @@ import states.DialogState
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
+
+    state<WaitingForContact> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Welcome,
+                replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
+                    requestContactButton(ShareContact)
+                }
+            )
+        }
+        onContact { message ->
+            val contact = message.content.contact
+            require(contact.userId == message.chat.id)
+            val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
+            state.override {WriteNameState(phoneNumber)}
+        }
+        onText { sendTextMessage(it.chat, InvalidShare) }
+    }
 
     state<WriteNameState> {
         onEnter {

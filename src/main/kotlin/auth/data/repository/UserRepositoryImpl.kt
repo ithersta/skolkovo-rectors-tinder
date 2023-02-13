@@ -14,6 +14,7 @@ import org.koin.core.annotation.Single
 class UserRepositoryImpl : UserRepository {
     override fun add(user: User.Details) {
         Users.insert {
+            it[id]=user.id
             it[phoneNumber] = user.phoneNumber.value
             it[name] = user.name
             it[city] = user.city

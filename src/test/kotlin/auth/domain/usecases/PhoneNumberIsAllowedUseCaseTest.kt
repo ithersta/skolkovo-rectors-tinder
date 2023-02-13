@@ -40,6 +40,4 @@ internal class PhoneNumberIsAllowedUseCaseTest{
         val phoneNumberIsAllowed = PhoneNumberIsAllowedUseCase(phoneNumberRepository, userRepository, NoOpTransaction)
         assertEquals(PhoneNumberIsAllowedUseCase.Result.OK, phoneNumberIsAllowed(samplePhoneNumber))
     }
-
-
 }

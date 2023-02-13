@@ -1,4 +1,3 @@
-import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.GetUserUseCase
 import auth.telegram.Strings
@@ -13,7 +12,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import menus.adminMenu
 import menus.normalMenu
 import states.DialogState
-import states.WriteNameState
+import states.WaitingForContact
 
 fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     getUser = { getUser(it.chatId) },
@@ -31,7 +30,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         anyState {
             onCommand("start", null) {
                 // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WriteNameState(PhoneNumber.of("79290367450")!!) } // /ну пока так
+                state.override { WaitingForContact} // /ну пока так
             }
         }
         state<DialogState.Empty> {
