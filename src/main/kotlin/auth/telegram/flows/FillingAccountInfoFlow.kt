@@ -53,7 +53,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val contact = message.content.contact
             require(contact.userId == message.chat.id)
             val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
-            state.override {WriteNameState(phoneNumber)}
+            state.override { WriteNameState(phoneNumber) }
         }
         onText { sendTextMessage(it.chat, InvalidShare) }
     }

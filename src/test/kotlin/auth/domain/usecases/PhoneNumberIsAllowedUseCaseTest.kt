@@ -9,8 +9,9 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-internal class PhoneNumberIsAllowedUseCaseTest{
+internal class PhoneNumberIsAllowedUseCaseTest {
     private val samplePhoneNumber = PhoneNumber.of("+79290367450")!!
+
     @Test
     fun `Duplicate phone number`() {
         val userRepository = mockk<UserRepository>()

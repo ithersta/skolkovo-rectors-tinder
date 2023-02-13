@@ -30,7 +30,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         anyState {
             onCommand("start", null) {
                 // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WaitingForContact} // /ну пока так
+                state.override { WaitingForContact } // /ну пока так
             }
         }
         state<DialogState.Empty> {

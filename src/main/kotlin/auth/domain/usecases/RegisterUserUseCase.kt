@@ -33,7 +33,7 @@ class RegisterUserUseCase(
         }
         if (phoneNumberRepository.isActive(userDetails.phoneNumber).not()) {
             return@transaction Result.PhoneNumberNotAllowed
-        }//TODO: заменить на использование PhoneNumberIsAllowedUseCase?
+        } // TODO: заменить на использование PhoneNumberIsAllowedUseCase?
         userRepository.add(userDetails)
         Result.OK
     }
