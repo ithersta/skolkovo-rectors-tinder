@@ -1,7 +1,6 @@
 package auth.telegram.flows
 
 import auth.domain.entities.User
-import auth.domain.usecases.GetUserUseCase
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseCity
@@ -122,7 +121,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     sendTextMessage(
                         it,
                         ChooseProfessionalAreas,
-                        // /!!!!обработчик "Другое" просит ввода и принимает его
                         replyMarkup = keyboard
                     )
                 state.overrideQuietly {
@@ -419,24 +417,5 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             }
         }
     }
-//    state<DialogState.Empty> {
-//        onEnter {
-//            val roleMessage = when (getUserUseCase(it.chatId)) {
-//                User.Admin ->
-//                    Strings.RoleMenu.Admin
-//
-//                User.Unauthenticated ->
-//                    Strings.RoleMenu.Unauthenticated
-//
-//                User.Normal ->
-//                    Strings.RoleMenu.Normal
-//            }
-//            sendTextMessage(
-//                it,
-//                roleMessage////TODO:ну и сюда потом клавиатурку с возобновить бота/остановить бота, календарем мероприятий,
-//                ///отправлением вопроса, получением своих вопросов, получением вопросов по сфере
-//            )
-//        }
-//    }
 }
 
