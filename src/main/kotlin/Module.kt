@@ -4,6 +4,7 @@ import auth.data.tables.Users
 import auth.domain.usecases.GetUserUseCase
 import com.ithersta.tgbotapi.fsm.engines.regularEngine
 import config.readBotConfig
+import generated.sqliteStateRepository
 import mute.data.entities.MuteSettings
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
