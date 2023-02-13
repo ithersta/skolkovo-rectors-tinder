@@ -10,6 +10,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.persistence.SqliteStateRepository
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import menus.adminMenu
 import menus.normalMenu
 import states.DialogState
 import states.WriteNameState
@@ -26,8 +27,6 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     cancelCommand(initialState = DialogState.Empty)
 
     role<User.Unauthenticated> {
-        with(normalMenu) { invoke() } // /TODO: потом убрать
-
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
@@ -45,7 +44,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         }
     }
     role<User.Normal> {
-        // /with(normalMenu) { invoke() }
+        with(normalMenu) { invoke() }
         state<DialogState.Empty> {
             onEnter {
                 sendTextMessage(
@@ -56,6 +55,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         }
     }
     role<User.Admin> {
+        with(adminMenu) { invoke() }
         state<DialogState.Empty> {
             onEnter {
                 sendTextMessage(

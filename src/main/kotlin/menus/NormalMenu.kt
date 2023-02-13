@@ -6,7 +6,7 @@ import com.ithersta.tgbotapi.menu.builders.menu
 import states.DialogState
 import states.MenuState
 
-val normalMenu = menu<DialogState, User, User.Unauthenticated>(Strings.RoleMenu.Normal, DialogState.Empty) {
+val normalMenu = menu<DialogState, User, User.Normal>(Strings.RoleMenu.Normal, DialogState.Empty) {
     submenu(
         Strings.MenuButtons.Questions.Question,
         Strings.MenuButtons.Questions.QuestionDesciption,
@@ -35,4 +35,10 @@ val normalMenu = menu<DialogState, User, User.Unauthenticated>(Strings.RoleMenu.
         }
         button( Strings.MenuButtons.Questions.Ask,  MenuState.Questions.AskQuestion )///ну видимо хендлер надо тоже или стейт нормальный реализовать
     }
+    button(
+        Strings.MenuButtons.Notifications.Main,
+        MenuState.Notifications
+    )///TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
+    ///если оповещения включены, и "возобновить", если оповещения выключены
+    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo)////TODO: это я потом реализую
 }

@@ -98,6 +98,6 @@ object Strings {
             val On = "Включить"
             val Off = "Выключить"
         }
-        val ChangeSccountInfo = "Изменить данные аккаунта"
+        val ChangeAccountInfo = "Изменить данные аккаунта"
     }
 }
