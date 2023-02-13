@@ -6,6 +6,4 @@ import org.koin.core.annotation.Single
 @Single
 class FeedbackRequester(
     private val getFeedbackRequestsFlow: GetFeedbackRequestsFlowUseCase
-) {
-
-}
+)
