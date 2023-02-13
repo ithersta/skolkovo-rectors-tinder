@@ -7,8 +7,19 @@ object MenuState {
     @Serializable
     object AddUser : DialogState
 
-    @Serializable
-    object Questions : DialogState
+    object Questions {
+        @Serializable
+        object Main : DialogState
+
+        @Serializable
+        object GetQuestion : DialogState
+
+        @Serializable
+        object GetMyQuestion : DialogState
+
+        @Serializable
+        object AskQuestion : DialogState
+    }
 
     @Serializable
     object Notifications : DialogState

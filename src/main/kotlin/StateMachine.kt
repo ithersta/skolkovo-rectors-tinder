@@ -12,6 +12,7 @@ import common.telegram.DialogState
 import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
+import menus.adminMenu
 import menus.normalMenu
 import states.WriteNameState
 
@@ -23,8 +24,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     cancelCommand(initialState = DialogState.Empty)
 
     role<User.Unauthenticated> {
-        with(normalMenu) { invoke() } // /TODO: потом убрать
-
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
@@ -42,7 +41,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         }
     }
     role<User.Normal> {
-        // /with(normalMenu) { invoke() }
+        with(normalMenu) { invoke() }
         state<DialogState.Empty> {
             onEnter {
                 sendTextMessage(
@@ -53,6 +52,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         }
     }
     role<User.Admin> {
+        with(adminMenu) { invoke() }
         state<DialogState.Empty> {
             onEnter {
                 sendTextMessage(
