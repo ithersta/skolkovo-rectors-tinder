@@ -31,9 +31,15 @@ val normalMenu = menu<DialogState, User, User.Normal>(Strings.RoleMenu.Normal, D
                     DialogState.Empty
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
             }
-            button(Strings.MenuButtons.Questions.InterestingQuestions, DialogState.Empty) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+            button(
+                Strings.MenuButtons.Questions.InterestingQuestions,
+                DialogState.Empty
+            ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
         }
-        button(Strings.MenuButtons.Questions.Ask, MenuState.Questions.AskQuestion) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+        button(
+            Strings.MenuButtons.Questions.Ask,
+            MenuState.Questions.AskQuestion
+        ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
     }
     button(
         Strings.MenuButtons.Notifications.Main,
@@ -41,4 +47,8 @@ val normalMenu = menu<DialogState, User, User.Normal>(Strings.RoleMenu.Normal, D
     ) // /TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
     // /если оповещения включены, и "возобновить", если оповещения выключены
     button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo) // //TODO: это я потом реализую
+    button(
+        Strings.MenuButtons.Events,
+        MenuState.Events
+    )///TODO: в этом стейте Глебу реализовать логику вывода мероприятий
 }

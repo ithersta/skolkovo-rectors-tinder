@@ -25,4 +25,7 @@ object MenuState {
 
     @Serializable
     object ChangeAccountInfo : DialogState
+
+    @Serializable
+    object Events : DialogState
 }
