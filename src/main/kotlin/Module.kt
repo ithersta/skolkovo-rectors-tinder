@@ -2,6 +2,7 @@ import auth.data.tables.PhoneNumbers
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
 import config.readBotConfig
+import kotlinx.datetime.Clock
 import mute.data.entities.MuteSettings
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -34,4 +35,5 @@ val module = module(createdAtStart = true) {
     includes(defaultModule, dataModule)
     single { readBotConfig() }
     single { stateMachine(get()) }
+    single { Clock.System }
 }

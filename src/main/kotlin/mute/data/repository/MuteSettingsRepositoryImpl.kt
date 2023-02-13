@@ -12,10 +12,10 @@ import kotlin.time.Duration
 
 @Single
 class MuteSettingsRepositoryImpl : MuteSettingsRepository {
-    override fun insert(userIdVal: Long, duration: Duration) {
+    override fun insert(userIdVal: Long, dateMute: Instant) {
         MuteSettings.insert {
             it[userId] = userIdVal
-            it[until] = Clock.System.now().plus(duration)
+            it[until] = dateMute
         }
     }
 
@@ -24,13 +24,7 @@ class MuteSettingsRepositoryImpl : MuteSettingsRepository {
     }
 
     override fun getEarliest(): Pair<Long, Instant>? {
-        val res = MuteSettings.selectAll().minByOrNull { row ->
-            row[MuteSettings.until]
-        }
-        return if (res != null) {
-            Pair(res[MuteSettings.userId].value, res[MuteSettings.until])
-        } else {
-            null
-        }
+        val res = MuteSettings.selectAll().orderBy(MuteSettings.until).limit(1).firstOrNull()
+        return res?.let { Pair(it[MuteSettings.userId].value, it[MuteSettings.until]) }
     }
 }
