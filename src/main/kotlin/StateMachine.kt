@@ -26,7 +26,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     cancelCommand(initialState = DialogState.Empty)
 
     role<User.Unauthenticated> {
-        with(normalMenu) { invoke() }///TODO: потом убрать
+        with(normalMenu) { invoke() } // /TODO: потом убрать
 
         fillingAccountInfoFlow()
         anyState {
@@ -45,7 +45,7 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         }
     }
     role<User.Normal> {
-        ///with(normalMenu) { invoke() }
+        // /with(normalMenu) { invoke() }
         state<DialogState.Empty> {
             onEnter {
                 sendTextMessage(

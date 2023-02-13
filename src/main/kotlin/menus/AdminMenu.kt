@@ -1,4 +1,3 @@
 package menus
 
-class AdminMenu {
-}
+class AdminMenu
