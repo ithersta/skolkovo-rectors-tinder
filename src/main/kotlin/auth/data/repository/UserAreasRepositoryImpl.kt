@@ -8,7 +8,7 @@ import qna.domain.entities.QuestionArea
 
 @Single
 class UserAreasRepositoryImpl: UserAreasRepository{
-    override fun getAllByArea(questionArea: QuestionArea): List<Long>{
+    override fun getUsersByArea(questionArea: QuestionArea): List<Long>{
         return UserAreas.select { UserAreas.area eq questionArea }.map { it[UserAreas.userId].value }
     }
 }

@@ -4,7 +4,7 @@ package flows.normal
 import auth.domain.entities.User
 import auth.domain.repository.UserAreasRepository
 import auth.domain.repository.UserRepository
-import auth.domain.usecases.GetUsersIdByArea
+import auth.domain.usecases.GetUsersByAreaUseCase
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
@@ -25,7 +25,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.contactWi
 
     val userRepository: UserRepository by inject()
     val userAreasRepository: UserAreasRepository by inject()
-    val getUsersIdByArea: GetUsersIdByArea by inject()
+    val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
     state<AnswerToQuestion> {//посмотреть инфу из preaccelerator
 //        onEnter{
 //            sendTextMessage(it, Strings.ToAnswerUser.message("que"), //поменять на переменную текста вопроса (берем из бд)
@@ -46,7 +46,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.contactWi
         }
         onText {
             //тут добавляем проверку на area question и user question(их может быть 1 и более) что и активный пользователь(если нет таблицы mutesettings) и отправляем всем, кто подходит(кроме того, кто задал вопрос)
-            println(getUsersIdByArea(QuestionArea.Education).toString())
+            println(getUsersByAreaUseCase(QuestionArea.Education).toString())
 //            coroutineScope.launch {
 
 //            }
