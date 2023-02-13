@@ -53,6 +53,8 @@ internal class RegisterUserUseCaseTest {
         verify(exactly = 0) { userRepository.add(any()) }
     }
 
+    // /нужны ли эти тесты, если подобное уже тестируется в PhoneNumberIsAllowedUsecaseTest
+    // мб их тогда просто переписать?
     @Test
     fun `Duplicate phone number`() {
         val details = sampleUserDetails

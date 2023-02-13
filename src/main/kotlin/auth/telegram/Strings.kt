@@ -4,6 +4,12 @@ import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import qna.domain.entities.QuestionArea
 
 object Strings {
+    val Welcome =
+        "Дорогой участник, приветствуем тебя в боте сообщества выпускников." +
+            " Для того, чтобы попасть в пространство единомышленников поделитесь контактом, нажав соответсвующую кнопку"
+    val ShareContact = "Поделиться номером телефона"
+    val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
+
     object AccountInfo {
         val WriteName = "Введите своё имя"
         val ChooseCity =
@@ -78,26 +84,31 @@ object Strings {
 
     object MenuButtons {
         val AddUser = "Добавить пользователей"
+
         object Questions {
             val Question = "Вопрос"
             val QuestionDesciption = "Выберите, что вы хотите сделать"
             val Ask = "Задать вопрос сообществу"
             val Get = "Получить список вопросов"
             val Description = "Выберите категорию вопроса"
+
             object MyQuestions {
                 val Main = "Мои вопросы"
                 val Description = "Выберите тип вопроса"
                 val ActualQuestions = "Актуальные"
                 val OldQuestions = "Старые(закрытые)"
             }
+
             val InterestingQuestions = "По сферам"
         }
+
         object Notifications {
             val Main = "Оповещения"
             val Description = "Выберите, что вы хотите сделать"
             val On = "Включить"
             val Off = "Выключить"
         }
+
         val ChangeAccountInfo = "Изменить данные аккаунта"
     }
 }

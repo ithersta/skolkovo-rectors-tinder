@@ -1,4 +1,3 @@
-import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
@@ -14,7 +13,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import menus.adminMenu
 import menus.normalMenu
-import states.WriteNameState
+import states.WaitingForContact
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -28,7 +27,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         anyState {
             onCommand("start", null) {
                 // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WriteNameState(PhoneNumber.of("79290367450")!!) } // /ну пока так
+                state.override { WaitingForContact } // /ну пока так
             }
         }
         state<DialogState.Empty> {

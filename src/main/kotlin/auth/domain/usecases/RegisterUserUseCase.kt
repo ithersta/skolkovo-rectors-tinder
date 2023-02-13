@@ -27,12 +27,13 @@ class RegisterUserUseCase(
         if (userRepository.isRegistered(userDetails.id)) {
             return@transaction Result.AlreadyRegistered
         }
+        //
         if (userRepository.containsUserWithPhoneNumber(userDetails.phoneNumber)) {
             return@transaction Result.DuplicatePhoneNumber
         }
         if (phoneNumberRepository.isActive(userDetails.phoneNumber).not()) {
             return@transaction Result.PhoneNumberNotAllowed
-        }
+        } // TODO: заменить на использование PhoneNumberIsAllowedUseCase?
         userRepository.add(userDetails)
         Result.OK
     }

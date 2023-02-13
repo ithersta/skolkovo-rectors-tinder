@@ -7,6 +7,9 @@ import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea
 
 @Serializable
+object WaitingForContact : DialogState
+
+@Serializable
 class WriteNameState(
     val phoneNumber: PhoneNumber
 ) : DialogState
