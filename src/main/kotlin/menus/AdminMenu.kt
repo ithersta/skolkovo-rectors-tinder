@@ -25,30 +25,30 @@ val adminMenu = menu<DialogState, User, User.Admin>(Strings.RoleMenu.Normal, Dia
                 button(
                     Strings.MenuButtons.Questions.MyQuestions.ActualQuestions,
                     DialogState.Empty
-                )///ну видимо хендлер надо тоже или стейт нормальный реализовать
+                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
                 button(
                     Strings.MenuButtons.Questions.MyQuestions.OldQuestions,
                     DialogState.Empty
-                )///ну видимо хендлер надо тоже или стейт нормальный реализовать
+                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
             }
             button(
                 Strings.MenuButtons.Questions.InterestingQuestions,
                 DialogState.Empty
-            )///ну видимо хендлер надо тоже или стейт нормальный реализовать
+            ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
         }
         button(
             Strings.MenuButtons.Questions.Ask,
             MenuState.Questions.AskQuestion
-        )///ну видимо хендлер надо тоже или стейт нормальный реализовать
+        ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
     }
     button(
         Strings.MenuButtons.AddUser,
         MenuState.AddUser
-    )///ну видимо хендлер надо тоже или стейт нормальный реализовать
+    ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
     button(
         Strings.MenuButtons.Notifications.Main,
         MenuState.Notifications
-    )///TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
-    ///если оповещения включены, и "возобновить", если оповещения выключены
-    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo)////TODO: это я потом реализую
+    ) // /TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
+    // /если оповещения включены, и "возобновить", если оповещения выключены
+    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo) // //TODO: это я потом реализую
 }

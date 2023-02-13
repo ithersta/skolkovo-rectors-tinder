@@ -38,7 +38,7 @@ val normalMenu = menu<DialogState, User, User.Normal>(Strings.RoleMenu.Normal, D
     button(
         Strings.MenuButtons.Notifications.Main,
         MenuState.Notifications
-    )///TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
-    ///если оповещения включены, и "возобновить", если оповещения выключены
-    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo)////TODO: это я потом реализую
+    ) // /TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
+    // /если оповещения включены, и "возобновить", если оповещения выключены
+    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo) // //TODO: это я потом реализую
 }
