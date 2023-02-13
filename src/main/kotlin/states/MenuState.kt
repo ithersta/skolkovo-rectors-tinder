@@ -6,16 +6,18 @@ object MenuState {
     @Serializable
     object AddUser : DialogState
 
-    object Questions{
+    object Questions {
         @Serializable
         object Main : DialogState
+
         @Serializable
         object GetQuestion : DialogState
 
         @Serializable
-        object GetMyQuestion :DialogState
+        object GetMyQuestion : DialogState
+
         @Serializable
-        object AskQuestion: DialogState
+        object AskQuestion : DialogState
     }
 
     @Serializable
