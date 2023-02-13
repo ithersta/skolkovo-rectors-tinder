@@ -1,5 +1,6 @@
 package states
 
+import common.telegram.DialogState
 import kotlinx.serialization.Serializable
 
 object MenuState {

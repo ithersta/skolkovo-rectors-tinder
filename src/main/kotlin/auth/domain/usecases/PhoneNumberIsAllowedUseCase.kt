@@ -28,4 +28,3 @@ class PhoneNumberIsAllowedUseCase(
         PhoneNumberIsAllowedUseCase.Result.OK
     }
 }
-

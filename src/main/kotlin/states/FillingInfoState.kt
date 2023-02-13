@@ -1,6 +1,7 @@
 package states
 
 import auth.domain.entities.PhoneNumber
+import common.telegram.DialogState
 import dev.inmo.tgbotapi.types.MessageId
 import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea

@@ -22,6 +22,9 @@ import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.questionAreaToString
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.*
+import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -30,11 +33,12 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
+import generated.dataButton
+import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
 import queries.*
 import states.*
-import states.DialogState
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
@@ -53,7 +57,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val contact = message.content.contact
             require(contact.userId == message.chat.id)
             val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
-            state.override {WriteNameState(phoneNumber)}
+            state.override { WriteNameState(phoneNumber) }
         }
         onText { sendTextMessage(it.chat, InvalidShare) }
     }
