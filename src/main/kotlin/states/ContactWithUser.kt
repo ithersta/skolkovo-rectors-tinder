@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 object AnswerToQuestion : DialogState
+
 @Serializable
 object CommunicateWithUser : DialogState
 
