@@ -2,7 +2,6 @@ package mute.data.usecases
 
 import common.domain.Transaction
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import mute.data.repository.MuteSettingsRepository
 import org.koin.core.annotation.Single
 import kotlin.time.Duration
