@@ -37,7 +37,7 @@ val dataModule = module(createdAtStart = true) {
 val module = module(createdAtStart = true) {
     includes(defaultModule, dataModule)
     single { readBotConfig() }
-    single { Clock.System }
+    single<Clock> { Clock.System }
     single {
         stateMachine.regularEngine(
             getUser = { get<GetUserUseCase>()(it.chatId) },
