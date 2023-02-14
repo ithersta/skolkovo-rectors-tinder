@@ -1,5 +1,5 @@
 package qna.domain.entities
 
-enum class QuestionType {
+enum class QuestionIntent {
     TestHypothesis, Consultation, FreeForm
 }

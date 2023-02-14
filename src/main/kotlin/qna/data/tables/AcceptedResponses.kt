@@ -10,5 +10,6 @@ object AcceptedResponses : Table() {
     val responseId: Column<EntityID<Long>> = reference("response_id", Responses)
     val at: Column<Instant> = timestamp("at")
     val isSuccessful: Column<Boolean?> = bool("is_successful").nullable().default(null)
+    val didAskFeedback: Column<Boolean> = bool("did_ask_feedback").default(false)
     override val primaryKey = PrimaryKey(responseId)
 }
