@@ -12,6 +12,7 @@ import common.telegram.DialogState
 import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
+import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
 
@@ -42,6 +43,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     }
     role<User.Normal> {
         with(normalMenu) { invoke() }
+        feedbackFlow()
         state<DialogState.Empty> {
             onEnter {
                 sendTextMessage(
