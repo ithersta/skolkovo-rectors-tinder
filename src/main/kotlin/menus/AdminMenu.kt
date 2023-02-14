@@ -54,5 +54,5 @@ val adminMenu = menu<DialogState, User, User.Admin>(Strings.RoleMenu.Normal, Dia
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
-    )///TODO: в этом стейте Глебу реализовать логику вывода мероприятий
+    ) // /TODO: в этом стейте Глебу реализовать логику вывода мероприятий
 }
