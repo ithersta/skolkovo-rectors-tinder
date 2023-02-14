@@ -1,8 +1,6 @@
 plugins {
     kotlin("jvm") version "1.8.10"
     kotlin("plugin.serialization") version "1.8.10"
-    kotlin("plugin.jpa") version "1.8.10"
-    kotlin("plugin.allopen") version "1.8.10"
     id("com.google.devtools.ksp") version "1.8.10-1.0.9"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
     application
@@ -32,6 +30,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.3.3")
     testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("app.cash.turbine:turbine:0.12.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 }
 
 tasks.test {
@@ -44,8 +44,4 @@ kotlin {
 
 application {
     mainClass.set("MainKt")
-}
-
-allOpen {
-    annotations("javax.persistence.Entity", "javax.persistence.MappedSuperclass", "javax.persistence.Embedabble")
 }
