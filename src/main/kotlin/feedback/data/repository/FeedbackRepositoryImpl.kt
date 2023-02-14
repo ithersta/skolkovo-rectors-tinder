@@ -14,7 +14,7 @@ import qna.data.tables.Responses
 class FeedbackRepositoryImpl : FeedbackRepository {
     override fun getFeedbackRequests(atUntil: Instant): List<FeedbackRequest> {
         return (Responses innerJoin Users)
-            .select { (Responses.at less atUntil) and (Responses.askedForFeedback eq false) }
+            .select { (Responses.at less atUntil) and (Responses.askedForFeedback eq false) and (Responses.isSuccessful eq null) }
             .map {
                 FeedbackRequest(
                     responseId = it[Responses.id].value,
