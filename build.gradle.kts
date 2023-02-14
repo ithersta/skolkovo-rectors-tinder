@@ -28,8 +28,6 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.6")
     compileOnly("io.insert-koin:koin-annotations:1.1.1")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
-    compileOnly("io.insert-koin:koin-annotations:1.1.0")
-    ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.3")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.3.3")
