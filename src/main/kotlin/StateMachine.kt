@@ -15,7 +15,6 @@ import dev.inmo.tgbotapi.types.UserId
 import menus.adminMenu
 import menus.normalMenu
 
-
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
     initialState = DialogState.Empty,

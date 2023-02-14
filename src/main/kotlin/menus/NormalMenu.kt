@@ -11,7 +11,7 @@ val normalMenu = menu<DialogState, User, User.Normal>(Strings.RoleMenu.Normal, D
     extracted()
 }
 
-fun <S:User> MenuBuilder<DialogState, User,S>.extracted() {
+fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     submenu(
         Strings.MenuButtons.Questions.Question,
         Strings.MenuButtons.Questions.QuestionDesciption,
@@ -55,5 +55,5 @@ fun <S:User> MenuBuilder<DialogState, User,S>.extracted() {
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
-    )///TODO: в этом стейте Глебу реализовать логику вывода мероприятий
+    ) // /TODO: в этом стейте Глебу реализовать логику вывода мероприятий
 }
