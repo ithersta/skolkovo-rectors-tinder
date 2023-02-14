@@ -3,14 +3,10 @@ package services.parsers
 import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.utils.row
-import queries.SelectCity
-import queries.SelectCityInCIS
-import queries.SelectDistrict
-import queries.SelectRegion
+import queries.*
 import java.io.File
 
 class JsonParser {
@@ -51,7 +47,7 @@ class JsonParser {
         return inlineKeyboard {
             createList(jsonpathCountiesPattern).forEach {
                 row {
-                    dataButton(it, it)
+                    dataButton(it, SelectCountryQuery(it))
                 }
             }
         }

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("Country")
-class SelectCountryQuery(val countryFlagSmile: String) : Query
+class SelectCountryQuery(val country: String) : Query
 
 @Serializable
 @SerialName("CIS")

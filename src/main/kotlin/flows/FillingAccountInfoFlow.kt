@@ -13,10 +13,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
-import queries.SelectCity
-import queries.SelectCityInCIS
-import queries.SelectDistrict
-import queries.SelectRegion
+import queries.*
 import services.parsers.JsonParser
 import states.*
 
@@ -31,9 +28,17 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 replyMarkup = jsonParser.getCountries()
             )
         }
-        onDataCallbackQuery(Regex("🇷🇺")) { state.override { ChooseDistrict(it.data) } }
-        onDataCallbackQuery(Regex("🇰🇿")) { state.override { ChooseCityInCIS(it.data) } }
-        onDataCallbackQuery(Regex("🇺🇿")) { state.override { ChooseCityInCIS(it.data) } }
+        onDataCallbackQuery(SelectCountryQuery::class) { (data, query) ->
+            when (data.country) {
+                "\uD83C\uDDF7\uD83C\uDDFA" -> {
+                    state.override { ChooseDistrict(data.country) }
+                }
+
+                else -> {
+                    state.override { ChooseCityInCIS(data.country) }
+                }
+            }
+        }
     }
     state<ChooseCityInCIS> {
         onEnter {
