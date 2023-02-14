@@ -39,7 +39,6 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
-import queries.*
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
