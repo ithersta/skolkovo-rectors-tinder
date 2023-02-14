@@ -35,5 +35,5 @@ val module = module(createdAtStart = true) {
     includes(defaultModule, dataModule)
     single { readBotConfig() }
     single { stateMachine(get()) }
-    single { Clock.System }
+    single<Clock> { Clock.System }
 }
