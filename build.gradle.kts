@@ -1,8 +1,6 @@
 plugins {
     kotlin("jvm") version "1.8.10"
     kotlin("plugin.serialization") version "1.8.10"
-    kotlin("plugin.jpa") version "1.8.10"
-    kotlin("plugin.allopen") version "1.8.10"
     id("com.google.devtools.ksp") version "1.8.10-1.0.9"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
     application
@@ -44,8 +42,4 @@ kotlin {
 
 application {
     mainClass.set("MainKt")
-}
-
-allOpen {
-    annotations("javax.persistence.Entity", "javax.persistence.MappedSuperclass", "javax.persistence.Embedabble")
 }
