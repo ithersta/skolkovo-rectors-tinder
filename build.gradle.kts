@@ -26,6 +26,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
     implementation("com.h2database:h2:2.1.214")
     implementation("org.slf4j:slf4j-simple:2.0.6")
+    compileOnly("io.insert-koin:koin-annotations:1.1.1")
+    ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
     compileOnly("io.insert-koin:koin-annotations:1.1.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.0")
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.3")
