@@ -5,7 +5,7 @@ import auth.telegram.Strings
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import common.telegram.DialogState
 import generated.menu
-import states.MenuState
+import menus.states.MenuState
 
 val normalMenu = menu<User.Normal>(Strings.RoleMenu.Normal, DialogState.Empty) {
     extracted()
