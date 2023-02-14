@@ -10,6 +10,4 @@ import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 object Responses : LongIdTable() {
     val questionId: Column<EntityID<Long>> = reference("question_id", Questions).index()
     val respondentId: Column<EntityID<Long>> = reference("respondent_id", Users).index()
-    val isSuccessful: Column<Boolean?> = bool("is_successful").nullable()
-    val at: Column<Instant> = timestamp("at")
 }
