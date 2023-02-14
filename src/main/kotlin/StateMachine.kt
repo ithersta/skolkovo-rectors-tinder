@@ -16,7 +16,6 @@ import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
 
-
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
     initialState = DialogState.Empty,

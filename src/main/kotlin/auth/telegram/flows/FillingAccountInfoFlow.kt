@@ -3,7 +3,6 @@ package auth.telegram.flows
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.RegisterUserUseCase
-import common.telegram.DialogState
 import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseCity
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
@@ -26,6 +25,7 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.*
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
