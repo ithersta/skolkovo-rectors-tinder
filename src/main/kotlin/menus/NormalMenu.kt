@@ -2,11 +2,16 @@ package menus
 
 import auth.domain.entities.User
 import auth.telegram.Strings
+import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import com.ithersta.tgbotapi.menu.builders.menu
 import common.telegram.DialogState
 import states.MenuState
 
 val normalMenu = menu<DialogState, User, User.Normal>(Strings.RoleMenu.Normal, DialogState.Empty) {
+    extracted()
+}
+
+fun <S:User> MenuBuilder<DialogState, User,S>.extracted() {
     submenu(
         Strings.MenuButtons.Questions.Question,
         Strings.MenuButtons.Questions.QuestionDesciption,
