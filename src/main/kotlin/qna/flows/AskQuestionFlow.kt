@@ -58,7 +58,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
     state<ChooseQuestionAreas> {
         onEnter {
-            //множественный выбор из областей (inline кнопки)
             val keyboard = inlineKeyboard {
                 QuestionArea.values().forEach { area ->
                     row {
@@ -144,7 +143,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
     state<ChooseQuestionIntent> {
         onEnter {
-            //цель вопроса (3 кнопки)
             sendTextMessage(
                 it,
                 Strings.Question.AskingQuestionIntent,
