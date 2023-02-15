@@ -8,14 +8,19 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.annotation.Single
+import qna.data.tables.AcceptedResponses
 import qna.data.tables.Questions
 import qna.data.tables.Responses
 
 @Single
 class FeedbackRepositoryImpl : FeedbackRepository {
     override fun getFeedbackRequests(atUntil: Instant): List<FeedbackRequest> {
-        return (Responses innerJoin Users innerJoin Questions)
-            .select { (Responses.at less atUntil) and (Responses.askedForFeedback eq false) and (Responses.isSuccessful eq null) }
+        return (AcceptedResponses innerJoin Responses innerJoin Users innerJoin Questions)
+            .select {
+                (AcceptedResponses.at less atUntil) and
+                        (AcceptedResponses.didAskFeedback eq false) and
+                        (AcceptedResponses.isSuccessful eq null)
+            }
             .map {
                 FeedbackRequest(
                     responseId = it[Responses.id].value,
@@ -33,14 +38,14 @@ class FeedbackRepositoryImpl : FeedbackRepository {
     }
 
     override fun markAsAsked(responseId: Long) {
-        Responses.update({ Responses.id eq responseId }) {
-            it[askedForFeedback] = true
+        AcceptedResponses.update({ AcceptedResponses.responseId eq responseId }) {
+            it[didAskFeedback] = true
         }
     }
 
     override fun setFeedback(responseId: Long, isSuccessful: Boolean) {
-        Responses.update({ Responses.id eq responseId }) {
-            it[Responses.isSuccessful] = isSuccessful
+        AcceptedResponses.update({ AcceptedResponses.responseId eq responseId }) {
+            it[AcceptedResponses.isSuccessful] = isSuccessful
         }
     }
 }

@@ -43,25 +43,9 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Normal> {
         with(normalMenu) { invoke() }
         feedbackFlow()
-        state<DialogState.Empty> {
-            onEnter {
-                sendTextMessage(
-                    it,
-                    Strings.RoleMenu.Normal
-                )
-            }
-        }
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }
-        state<DialogState.Empty> {
-            onEnter {
-                sendTextMessage(
-                    it,
-                    Strings.RoleMenu.Admin
-                )
-            }
-        }
     }
     fallback()
 }
