@@ -48,7 +48,6 @@ class ChooseCity(
     val region: String
 ) : DialogState
 
-
 @Serializable
 class WriteProfessionState(
     val phoneNumber: PhoneNumber,

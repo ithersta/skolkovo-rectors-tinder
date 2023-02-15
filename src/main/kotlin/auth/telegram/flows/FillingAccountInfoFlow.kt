@@ -103,7 +103,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onDataCallbackQuery(SelectCityInCIS::class) { (data, query) ->
-            state.override { WriteProfessionState(state.snapshot.phoneNumber,state.snapshot.name, data.city) }
+            state.override { WriteProfessionState(state.snapshot.phoneNumber, state.snapshot.name, data.city) }
         }
     }
     state<ChooseDistrict> {
@@ -115,7 +115,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onDataCallbackQuery(SelectDistrict::class) { (data, query) ->
-            state.override { ChooseRegion(state.snapshot.phoneNumber,state.snapshot.name, data.district) }
+            state.override { ChooseRegion(state.snapshot.phoneNumber, state.snapshot.name, data.district) }
         }
     }
     state<ChooseRegion> {
@@ -127,7 +127,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             )
         }
         onDataCallbackQuery(SelectRegion::class) { (data, query) ->
-            state.override { ChooseCity(state.snapshot.phoneNumber,state.snapshot.name, data.region) }
+            state.override { ChooseCity(state.snapshot.phoneNumber, state.snapshot.name, data.region) }
         }
     }
     state<ChooseCity> {
@@ -141,11 +141,10 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onDataCallbackQuery(SelectCity::class) { (data, query) ->
             val city: String = data.city
             if (jsonParser.cityRegex.matches(city)) {
-                state.override { WriteProfessionState(state.snapshot.phoneNumber,state.snapshot.name, city) }
+                state.override { WriteProfessionState(state.snapshot.phoneNumber, state.snapshot.name, city) }
             }
         }
     }
-
 
     state<WriteProfessionState> {
         onEnter {
