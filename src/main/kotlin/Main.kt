@@ -1,3 +1,4 @@
+import backup.BackupRunner
 import com.ithersta.tgbotapi.fsm.entities.StateMachine
 import config.readToken
 import dev.inmo.tgbotapi.bot.ktor.telegramBot
@@ -12,10 +13,12 @@ suspend fun main() {
         modules(module)
     }
     val stateMachine: StateMachine<*, *, *> = application.koin.get()
+    val backupRunner: BackupRunner = application.koin.get()
     telegramBot(readToken()) {
         requestsLimiter = CommonLimiter(lockCount = 30, regenTime = 1000)
         client = HttpClient(OkHttp)
     }.buildBehaviourWithLongPolling {
         with(stateMachine) { collect() }
+        with(backupRunner) { setup() }
     }.join()
 }
