@@ -27,31 +27,39 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.contactWithUserFlo
     //удалю позже
     state<SendingQuestionToCommunity> {
         onEnter {
-            sendTextMessage(it, "Ваш вопрос успешно отправлен!")
+            sendTextMessage(
+                it,
+                "Ваш вопрос успешно отправлен!"
+            )
         }
         onText { message ->
             //TODO: не отправляется с inline, но отправляется с reply
             coroutineScope.launch {
                 val listOfValidUsers: List<Long> =
-                    getUsersByAreaUseCase(QuestionArea.Education, userId = message.chat.id.chatId) //брать areas, которую задал пользователь
+                    getUsersByAreaUseCase(
+                        QuestionArea.Education,
+                        userId = message.chat.id.chatId
+                    ) //брать areas, которую задал пользователь
                 listOfValidUsers.forEach {
                     println(it.toChatId())
                     runCatching {
-                        sendTextMessage( it.toChatId(),
+                        sendTextMessage(
+                            it.toChatId(),
                             Strings.ToAnswerUser.message("вопрос"),
                             replyMarkup = inlineKeyboard {
                                 row {
-                                    dataButton(ButtonStrings.Yes, "Да")
+                                    dataButton(ButtonStrings.Option.Yes, "Да")
                                 }
                                 row {
-                                    dataButton(ButtonStrings.No, "Нет")
+                                    dataButton(ButtonStrings.Option.No, "Нет")
                                 }
                             }
                         )
                     }
                 }
-           }
+            }
         }
+    }
 //        onText(ButtonStrings.Yes){
 //            sendTextMessage(it.chat, Strings.SentAgreement)
 //            //отправлять согласие владельцу вопроса
@@ -62,32 +70,33 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.contactWithUserFlo
 //            //удалять сообщение о предложении ответить на вопрос
 //            //остаемся в состоянии, которое было до перехода в это состояние
 //        }
-    }
-    state<CommunicateWithUser> {
-        onEnter {
-            sendTextMessage(it,
-                Strings.ToAskUser.message("profile"), //поменять на переменную профиля участника (берем из бд)
-                replyMarkup = replyKeyboard(
-                    resizeKeyboard = true,
-                    oneTimeKeyboard = true
-                ) {
-                    row {
-                        simpleButton(ButtonStrings.Yes)
-                        simpleButton(ButtonStrings.No)
-                    }
-                }
-            )
-        }
-        onText(ButtonStrings.Yes) {
-            sendTextMessage(it.chat, Strings.WriteToCompanion)
-            sendTextMessage(it.chat, Strings.CopyQuestion)
-            sendTextMessage(it.chat, "question") //тут отправка вопроса (берем из бд)
-            //отправлять инфу о согласии тому, кто вызывался ответить на вопрос
-            //думаю, что нужно переходить в др состояние
-        }
-        onText(ButtonStrings.No) {
-            //отправлять инфу о несогласии тому, кто вызывался ответить на вопрос
-            //думаю, что нужно переходить в др состояние
-        }
-    }
+//    }
+//    state<CommunicateWithUser> {
+//        onEnter {
+//            sendTextMessage(
+//                it,
+//                Strings.ToAskUser.message("profile"), //поменять на переменную профиля участника (берем из бд)
+//                replyMarkup = replyKeyboard(
+//                    resizeKeyboard = true,
+//                    oneTimeKeyboard = true
+//                ) {
+//                    row {
+//                        simpleButton(ButtonStrings.Yes)
+//                        simpleButton(ButtonStrings.No)
+//                    }
+//                }
+//            )
+//        }
+//        onText(ButtonStrings.Yes) {
+//            sendTextMessage(it.chat, Strings.WriteToCompanion)
+//            sendTextMessage(it.chat, Strings.CopyQuestion)
+//            sendTextMessage(it.chat, "question") //тут отправка вопроса (берем из бд)
+//            //отправлять инфу о согласии тому, кто вызывался ответить на вопрос
+//            //думаю, что нужно переходить в др состояние
+//        }
+//        onText(ButtonStrings.No) {
+//            //отправлять инфу о несогласии тому, кто вызывался ответить на вопрос
+//            //думаю, что нужно переходить в др состояние
+//        }
+//    }
 }

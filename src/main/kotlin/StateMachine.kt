@@ -14,6 +14,8 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import menus.adminMenu
 import menus.normalMenu
+import qna.flows.askQuestionFlow
+import qna.flows.contactWithUserFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -32,20 +34,15 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         state<DialogState.Empty> {
             onEnter {
                 sendTextMessage(
-                    it,
-                    Strings.RoleMenu.Unauthenticated
+                    it, Strings.RoleMenu.Unauthenticated
                 )
             }
         }
     }
     role<User.Normal> {
         with(normalMenu) { invoke() }
+        askQuestionFlow()
         //contactWithUserFlow()
-//        anyState {
-//            onCommand("start", null) {
-//                state.override { SendingQuestionToCommunity }
-//            }
-//        }
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }

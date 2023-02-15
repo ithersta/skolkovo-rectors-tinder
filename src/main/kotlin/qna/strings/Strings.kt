@@ -22,15 +22,20 @@ object Strings {
 
     }
 
-    object Intent {
-        const val TestHypothesis = "Хочу проверить гипотезу (посоветоваться)"
-        const val Consultation = "У меня есть запрос на консультацию по теме"
-        const val FreeForm = "Хочу задать вопрос участникам сообщества (в свободной форме)"
-    }
+    object Question {
+        object Intent {
+            const val TestHypothesis = "Хочу проверить гипотезу (посоветоваться)"
+            const val Consultation = "У меня есть запрос на консультацию по теме"
+            const val FreeForm = "Хочу задать вопрос участникам сообщества (в свободной форме)"
+        }
 
-    var questionIntentToString = mapOf<QuestionIntent, String> (
-        QuestionIntent.TestHypothesis to Intent.TestHypothesis,
-        QuestionIntent.Consultation to Intent.Consultation,
-        QuestionIntent.FreeForm to Intent.FreeForm
-    )
+        var questionIntentToString = mapOf<QuestionIntent, String>(
+            QuestionIntent.TestHypothesis to Intent.TestHypothesis,
+            QuestionIntent.Consultation to Intent.Consultation,
+            QuestionIntent.FreeForm to Intent.FreeForm
+        )
+
+        const val WordingQuestion = "Сформулируйте свой вопрос"
+        const val AskingQuestionIntent = "Выберите цель вопроса"
+    }
 }

@@ -1,16 +1,19 @@
 package qna.states
 
 import common.telegram.DialogState
+import dev.inmo.tgbotapi.types.MessageId
 import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 
 @Serializable
-class ChooseOfQuestionAreas(
-    val question: String
+class ChooseQuestionAreas(
+    val question: String,
+    val areas: Set<QuestionArea>,
+    val messageId: MessageId? = null
 ) : DialogState
 
-class ChoosePurposeOfQuestion(
+class ChooseQuestionIntent(
     val question: String,
     val areas: Set<QuestionArea>
 ): DialogState
@@ -18,5 +21,5 @@ class ChoosePurposeOfQuestion(
 class SendQuestionToCommunity(
     val question: String,
     val areas: Set<QuestionArea>,
-    val intent: Set<QuestionIntent>
+    val intent: QuestionIntent
 ): DialogState
