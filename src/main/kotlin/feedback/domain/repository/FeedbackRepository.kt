@@ -8,4 +8,5 @@ interface FeedbackRepository {
     fun getAuthorId(responseId: Long): Long?
     fun markAsAsked(responseId: Long)
     fun setFeedback(responseId: Long, isSuccessful: Boolean)
+    fun closeAssociatedQuestion(responseId: Long)
 }

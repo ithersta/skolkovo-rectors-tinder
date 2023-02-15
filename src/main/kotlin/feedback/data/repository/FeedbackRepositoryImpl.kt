@@ -18,8 +18,8 @@ class FeedbackRepositoryImpl : FeedbackRepository {
         return (AcceptedResponses innerJoin Responses innerJoin Users innerJoin Questions)
             .select {
                 (AcceptedResponses.at less atUntil) and
-                    (AcceptedResponses.didAskFeedback eq false) and
-                    (AcceptedResponses.isSuccessful eq null)
+                        (AcceptedResponses.didAskFeedback eq false) and
+                        (AcceptedResponses.isSuccessful eq null)
             }
             .map {
                 FeedbackRequest(
@@ -46,6 +46,12 @@ class FeedbackRepositoryImpl : FeedbackRepository {
     override fun setFeedback(responseId: Long, isSuccessful: Boolean) {
         AcceptedResponses.update({ AcceptedResponses.responseId eq responseId }) {
             it[AcceptedResponses.isSuccessful] = isSuccessful
+        }
+    }
+
+    override fun closeAssociatedQuestion(responseId: Long) {
+        (Questions innerJoin Responses).update({ Responses.id eq responseId }) {
+            it[Questions.isClosed] = true
         }
     }
 }
