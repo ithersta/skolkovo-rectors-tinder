@@ -22,8 +22,8 @@ class FeedbackRepositoryImpl : FeedbackRepository {
             .join(Questions, JoinType.INNER, Responses.questionId, Questions.id)
             .select {
                 (AcceptedResponses.at less atUntil) and
-                        (AcceptedResponses.didAskFeedback eq false) and
-                        (AcceptedResponses.isSuccessful eq null)
+                    (AcceptedResponses.didAskFeedback eq false) and
+                    (AcceptedResponses.isSuccessful eq null)
             }
             .map {
                 FeedbackRequest(
