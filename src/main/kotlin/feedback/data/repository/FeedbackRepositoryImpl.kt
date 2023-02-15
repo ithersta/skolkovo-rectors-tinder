@@ -18,8 +18,8 @@ class FeedbackRepositoryImpl : FeedbackRepository {
         return (AcceptedResponses innerJoin Responses innerJoin Users innerJoin Questions)
             .select {
                 (AcceptedResponses.at less atUntil) and
-                        (AcceptedResponses.didAskFeedback eq false) and
-                        (AcceptedResponses.isSuccessful eq null)
+                    (AcceptedResponses.didAskFeedback eq false) and
+                    (AcceptedResponses.isSuccessful eq null)
             }
             .map {
                 FeedbackRequest(
