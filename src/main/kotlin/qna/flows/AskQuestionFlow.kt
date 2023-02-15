@@ -1,6 +1,7 @@
 package qna.flows
 
 import auth.domain.entities.User
+import auth.domain.usecases.GetUsersByAreaUseCase
 import auth.telegram.queries.FinishQuestionQuery
 import auth.telegram.queries.SelectQuestionQuery
 import auth.telegram.queries.UnselectQuestionQuery
@@ -11,14 +12,18 @@ import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
+import kotlinx.coroutines.launch
 import menus.states.MenuState
+import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 import qna.states.*
@@ -26,7 +31,7 @@ import qna.strings.ButtonStrings
 import qna.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
-
+    val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -163,16 +168,19 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                         SendQuestionToCommunity(subject, question, areas, QuestionIntent.FreeForm)
                     }
                 }
+
                 Strings.Question.Intent.Consultation -> {
                     state.override {
                         SendQuestionToCommunity(subject, question, areas, QuestionIntent.Consultation)
                     }
                 }
+
                 Strings.Question.Intent.TestHypothesis -> {
                     state.override {
                         SendQuestionToCommunity(subject, question, areas, QuestionIntent.TestHypothesis)
                     }
                 }
+
                 else -> {
                     //TODO: сообщение, что необходимо выбрать из кнопочного меню
                     state.override { ChooseQuestionIntent(subject, question, areas) }
@@ -185,22 +193,49 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             //TODO: придумать текст
             sendTextMessage(
                 it,
-                "Отлично, вопрос сформирован!",
+                Strings.Question.CompletedQuestion,
                 replyMarkup = replyKeyboard {
-                    row{
+                    row {
                         simpleButton(ButtonStrings.SendQuestion)
                     }
                 }
             )
         }
-        onText(ButtonStrings.SendQuestion){message ->
-            //добавление вопроса в бд
-            sendTextMessage(message.chat, "Вопрос успешно отправлен в сообщество")
-            //сообщение о том, что вопрос успешно отправлен
-            //отправка вопроса в сообщество
-            //возвращаемся в состояние меню(DialogState.Empty)
+        onText(ButtonStrings.SendQuestion) { message ->
+            //TODO добавление вопроса в бд
+            sendTextMessage(
+                message.chat,
+                Strings.Question.Success
+            )
+            //TODO: не отправляется с inline, но отправляется с reply
+            coroutineScope.launch {
+                val listOfValidUsers: List<Long> =
+                    getUsersByAreaUseCase(
+                        QuestionArea.Education, //заменить на areas из state (forEach и тд)
+                        userId = message.chat.id.chatId
+                    )
+                listOfValidUsers.forEach {
+                    runCatching {
+                        sendTextMessage(
+                            it.toChatId(),
+                            Strings.ToAnswerUser.message("вопрос"), //брать вопрос из state
+                            replyMarkup = inlineKeyboard {
+                                row {
+                                    dataButton(
+                                        ButtonStrings.Option.Yes,
+                                        "Да"
+                                    ) //вот тут я не совсем понимаю, как работает
+                                    //мб из-за этого не отправляет
+                                }
+                                row {
+                                    dataButton(ButtonStrings.Option.No, "Нет")
+                                }
+                            }
+                        )
+                    }
+                }
+            }
             state.override { DialogState.Empty }
         }
     }
-    //еще один state для отправки сообщения в сообщество
 }
