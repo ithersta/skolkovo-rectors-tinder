@@ -10,6 +10,13 @@ import flows.meetingFlow
 import states.ChooseCountry
 import states.DialogState
 import states.MeetingState
+import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import common.telegram.DialogState
+import common.telegram.Query
+import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.types.UserId
+import menus.adminMenu
+import menus.normalMenu
 
 fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
     getUser = { getUser(it.chatId) },
@@ -26,19 +33,24 @@ fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
-                // //сначала проверить номер на наличие в базе данных
-                state.override { ChooseCountry }
+                // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
+                state.override { WaitingForContact } // /ну пока так
+            }
+        }
+        state<DialogState.Empty> {
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.RoleMenu.Unauthenticated
+                )
             }
         }
     }
     role<User.Normal> {
-        meetingFlow()
-        anyState {
-            onCommand("events", null) {
-                state.override { MeetingState }
-            }
-        }
+        with(normalMenu) { invoke() }
     }
-    role<User.Admin> { }
+    role<User.Admin> {
+        with(adminMenu) { invoke() }
+    }
     fallback()
 }
