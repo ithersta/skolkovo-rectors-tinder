@@ -12,10 +12,8 @@ import common.telegram.DialogState
 import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
-import flows.fillingAccountInfoFlow
 import menus.adminMenu
 import menus.normalMenu
-import states.DialogState
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(

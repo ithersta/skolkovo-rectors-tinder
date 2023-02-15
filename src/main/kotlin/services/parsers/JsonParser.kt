@@ -1,12 +1,12 @@
 package services.parsers
 
-import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
+import auth.telegram.queries.*
+import generated.dataButton
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.utils.row
-import queries.*
 import java.io.File
 
 class JsonParser {

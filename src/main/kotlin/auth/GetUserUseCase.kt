@@ -1,5 +1,6 @@
 package auth
 
+import auth.domain.entities.User
 import org.koin.core.annotation.Single
 
 @Single

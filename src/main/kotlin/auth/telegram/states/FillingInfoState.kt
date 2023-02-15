@@ -15,10 +15,39 @@ class WriteNameState(
 ) : DialogState
 
 @Serializable
-class ChooseCityState(
+class ChooseCountry(
     val phoneNumber: PhoneNumber,
     val name: String
 ) : DialogState
+
+@Serializable
+class ChooseCityInCIS(
+    val phoneNumber: PhoneNumber,
+    val name: String,
+    val city: String
+) : DialogState
+
+@Serializable
+class ChooseDistrict(
+    val phoneNumber: PhoneNumber,
+    val name: String,
+    val county: String
+) : DialogState
+
+@Serializable
+class ChooseRegion(
+    val phoneNumber: PhoneNumber,
+    val name: String,
+    val district: String
+) : DialogState
+
+@Serializable
+class ChooseCity(
+    val phoneNumber: PhoneNumber,
+    val name: String,
+    val region: String
+) : DialogState
+
 
 @Serializable
 class WriteProfessionState(
