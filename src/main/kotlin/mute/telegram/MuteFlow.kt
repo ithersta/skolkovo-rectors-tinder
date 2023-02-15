@@ -1,12 +1,11 @@
 package mute.telegram
 
-import DialogState
-import MuteStates
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
@@ -21,6 +20,7 @@ import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import mute.Strings
 import mute.data.usecases.InsertMuteSettingsUseCase
+import mute.telegram.states.MuteStates
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.days
 

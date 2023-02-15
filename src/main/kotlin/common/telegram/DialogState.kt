@@ -1,7 +1,8 @@
+package common.telegram
+
 import kotlinx.serialization.Serializable
 
-@Serializable
-sealed interface DialogState {
+interface DialogState {
     @Serializable
     object Empty : DialogState
 }
