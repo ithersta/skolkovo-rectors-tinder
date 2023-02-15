@@ -1,4 +1,4 @@
-package queries
+package auth.telegram.queries
 
 import common.telegram.Query
 import kotlinx.serialization.SerialName

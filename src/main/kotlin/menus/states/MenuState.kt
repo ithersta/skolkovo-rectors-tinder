@@ -1,4 +1,4 @@
-package states
+package menus.states
 
 import common.telegram.DialogState
 import kotlinx.serialization.Serializable

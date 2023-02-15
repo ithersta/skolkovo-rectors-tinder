@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.dsl.module
 import org.koin.ksp.generated.defaultModule
+import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
@@ -26,6 +27,7 @@ val dataModule = module(createdAtStart = true) {
                     Questions,
                     QuestionAreas,
                     Responses,
+                    AcceptedResponses,
                     MuteSettings
                 )
             }

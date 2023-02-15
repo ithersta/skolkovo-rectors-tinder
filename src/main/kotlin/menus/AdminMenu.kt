@@ -2,11 +2,11 @@ package menus
 
 import auth.domain.entities.User
 import auth.telegram.Strings
-import com.ithersta.tgbotapi.menu.builders.menu
 import common.telegram.DialogState
-import states.MenuState
+import generated.menu
+import menus.states.MenuState
 
-val adminMenu = menu<DialogState, User, User.Admin>(Strings.RoleMenu.Normal, DialogState.Empty) {
+val adminMenu = menu<User.Admin>(Strings.RoleMenu.Normal, DialogState.Empty) {
     extracted()
     button(
         Strings.MenuButtons.AddUser,
