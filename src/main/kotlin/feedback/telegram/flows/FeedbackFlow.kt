@@ -18,11 +18,12 @@ fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
     anyState {
         onDataCallbackQuery(FeedbackQuery.SendFeedback::class) { (data, query) ->
             val result = setFeedback(query.from.id.chatId, data.responseId, data.isSuccessful)
-            check(result == SetFeedbackUseCase.Result.OK)
-            val message = query.asMessageCallbackQuery()?.message
-                ?.withContent<TextContent>() ?: return@onDataCallbackQuery
-            val text = if (data.isSuccessful) Strings.IfSuccessful else Strings.IfUnsuccessful
-            edit(message, text = text, replyMarkup = null)
+            if (result == SetFeedbackUseCase.Result.OK) {
+                val message = query.asMessageCallbackQuery()?.message
+                    ?.withContent<TextContent>() ?: return@onDataCallbackQuery
+                val text = if (data.isSuccessful) Strings.IfSuccessful else Strings.IfUnsuccessful
+                edit(message, text = text, replyMarkup = null)
+            }
             answer(query)
         }
     }

@@ -13,12 +13,23 @@ internal class SetFeedbackUseCaseTest {
     private val sampleFromUserId = 1000L
 
     @Test
-    fun ok() {
+    fun `Set successful`() {
         val feedbackRepository = mockk<FeedbackRepository>(relaxUnitFun = true)
         every { feedbackRepository.getAuthorId(sampleResponseId) } returns sampleFromUserId
         val setFeedback = SetFeedbackUseCase(feedbackRepository, NoOpTransaction)
         assertEquals(SetFeedbackUseCase.Result.OK, setFeedback(sampleFromUserId, sampleResponseId, true))
         verify(exactly = 1) { feedbackRepository.setFeedback(sampleResponseId, true) }
+        verify(exactly = 1) { feedbackRepository.closeAssociatedQuestion(sampleResponseId) }
+    }
+
+    @Test
+    fun `Set unsuccessful`() {
+        val feedbackRepository = mockk<FeedbackRepository>(relaxUnitFun = true)
+        every { feedbackRepository.getAuthorId(sampleResponseId) } returns sampleFromUserId
+        val setFeedback = SetFeedbackUseCase(feedbackRepository, NoOpTransaction)
+        assertEquals(SetFeedbackUseCase.Result.OK, setFeedback(sampleFromUserId, sampleResponseId, false))
+        verify(exactly = 1) { feedbackRepository.setFeedback(sampleResponseId, false) }
+        verify(exactly = 0) { feedbackRepository.closeAssociatedQuestion(any()) }
     }
 
     @Test
