@@ -1,52 +1,36 @@
-package flows.normal
-
+package qna.flows
 
 import auth.domain.entities.User
 import auth.domain.usecases.GetUsersByAreaUseCase
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.entities.triggers.dataButton
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
-import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
-import states.AnswerToQuestion
-import states.CommunicateWithUser
-import states.DialogState
-import strings.ButtonStrings
-import strings.Strings
+import qna.states.SendingQuestionToCommunity
+import qna.states.CommunicateWithUser
+import qna.strings.ButtonStrings
+import qna.strings.Strings
 
-fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.contactWithUserFlow() { //User.Normal
+fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.contactWithUserFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
-    state<AnswerToQuestion> {//посмотреть инфу из preaccelerator
-//        onEnter{
-//            sendTextMessage(it, Strings.ToAnswerUser.message("que"), //поменять на переменную текста вопроса (берем из бд)
-//                replyMarkup = replyKeyboard (
-//                    resizeKeyboard = true,
-//                    oneTimeKeyboard = true
-//            ) {
-//                    row{
-//                        simpleButton(ButtonStrings.Yes)
-//                        simpleButton(ButtonStrings.No)
-//                    }
-//                }
-//            )
-//        }
+    //удалю позже
+    state<SendingQuestionToCommunity> {
         onEnter {
-            sendTextMessage(it, "Задайте свой вопрос") //сделала для тестирования
-            //тут для полноценной проверки нужно задать сферу вопроса и все остальное... HELP
+            sendTextMessage(it, "Ваш вопрос успешно отправлен!")
         }
         onText { message ->
-            //не отправляется с inline, но отправляется с reply
+            //TODO: не отправляется с inline, но отправляется с reply
             coroutineScope.launch {
                 val listOfValidUsers: List<Long> =
                     getUsersByAreaUseCase(QuestionArea.Education, userId = message.chat.id.chatId) //брать areas, которую задал пользователь

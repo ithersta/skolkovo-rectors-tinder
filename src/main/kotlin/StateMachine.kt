@@ -7,11 +7,6 @@ import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
-import com.ithersta.tgbotapi.persistence.SqliteStateRepository
-import flows.normal.contactWithUserFlow
-import states.AnswerToQuestion
-import states.DialogState
-import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.telegram.DialogState
 import common.telegram.Query
@@ -26,25 +21,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     includeHelp = true
 ) {
     cancelCommand(initialState = DialogState.Empty)
-
-    role<User.Unauthenticated> {
-        contactWithUserFlow()
-        anyState {
-            onCommand("start", null) {
-                state.override { AnswerToQuestion }
-            }
-        }
-    }
-    role<User.Normal> {
-//        contactWithUserFlow()
-//        anyState {
-//            onCommand("start", null) {
-//                state.override { AnswerToQuestion }
-//            }
-//        }
-    }
-    role<User.Admin> { }
-
     role<User.Unauthenticated> {
         fillingAccountInfoFlow()
         anyState {
@@ -64,6 +40,12 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     }
     role<User.Normal> {
         with(normalMenu) { invoke() }
+        //contactWithUserFlow()
+//        anyState {
+//            onCommand("start", null) {
+//                state.override { SendingQuestionToCommunity }
+//            }
+//        }
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }

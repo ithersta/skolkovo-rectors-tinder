@@ -1,4 +1,4 @@
-package strings
+package qna.strings
 
 object Strings {
     object ToAnswerUser {

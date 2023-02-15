@@ -44,7 +44,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         button(
             Strings.MenuButtons.Questions.Ask,
             MenuState.Questions.AskQuestion
-        ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+        ) //задать вопрос (в процессе разработки)
     }
     button(
         Strings.MenuButtons.Notifications.Main,
