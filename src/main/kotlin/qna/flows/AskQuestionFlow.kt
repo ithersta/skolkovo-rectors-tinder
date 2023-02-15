@@ -156,7 +156,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 }
             )
         }
-        //написала по-тупому, надо будет переделать
         onText { message ->
             when (message.content.text) {
                 Strings.Question.Intent.FreeForm -> {
