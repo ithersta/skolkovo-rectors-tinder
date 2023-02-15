@@ -1,5 +1,8 @@
 import auth.domain.entities.User
-import auth.domain.usecases.GetUserUseCase
+import auth.telegram.Strings
+import auth.telegram.flows.fillingAccountInfoFlow
+import auth.telegram.states.WaitingForContact
+import com.ithersta.tgbotapi.boot.annotations.StateMachine
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
@@ -18,15 +21,11 @@ import dev.inmo.tgbotapi.types.UserId
 import menus.adminMenu
 import menus.normalMenu
 
-fun stateMachine(getUser: GetUserUseCase) = stateMachine<DialogState, _>(
-    getUser = { getUser(it.chatId) },
-    stateRepository = SqliteStateRepository.create(historyDepth = 1),
+@StateMachine(baseQueryKClass = Query::class)
+val stateMachine = stateMachine<DialogState, User, UserId>(
     initialState = DialogState.Empty,
     includeHelp = true
 ) {
-    onException { _, throwable ->
-        throwable.printStackTrace()
-    }
     cancelCommand(initialState = DialogState.Empty)
 
     role<User.Unauthenticated> {

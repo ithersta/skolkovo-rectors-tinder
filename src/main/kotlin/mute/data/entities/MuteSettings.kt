@@ -9,6 +9,6 @@ import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 
 object MuteSettings : Table() {
     val userId: Column<EntityID<Long>> = reference("user_id", Users)
-    val until: Column<Instant> = timestamp("until")
+    val until: Column<Instant> = timestamp("until").index()
     override val primaryKey = PrimaryKey(userId)
 }
