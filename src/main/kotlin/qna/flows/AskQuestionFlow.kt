@@ -26,7 +26,20 @@ import qna.strings.ButtonStrings
 import qna.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
+
     state<MenuState.Questions.AskQuestion> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.Question.SubjectQuestion
+            )
+        }
+        onText { message ->
+            val subject = message.content.text
+            state.override { AskFullQuestion(subject) }
+        }
+    }
+    state<AskFullQuestion> {
         onEnter {
             sendTextMessage(
                 it,
@@ -35,7 +48,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         }
         onText { message ->
             val question = message.content.text
-            state.override { ChooseQuestionAreas(question, emptySet()) }
+            state.override { ChooseQuestionAreas(subject, question, emptySet()) }
         }
     }
     state<ChooseQuestionAreas> {
@@ -68,6 +81,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 )
                 state.overrideQuietly {
                     ChooseQuestionAreas(
+                        subject,
                         question,
                         areas,
                         message.messageId
@@ -78,6 +92,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         onDataCallbackQuery(SelectQuestionQuery::class) { (data, query) ->
             state.override {
                 ChooseQuestionAreas(
+                    subject,
                     question,
                     areas + data.area,
                     messageId
@@ -88,6 +103,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         onDataCallbackQuery(UnselectQuestionQuery::class) { (data, query) ->
             state.override {
                 ChooseQuestionAreas(
+                    subject,
                     question,
                     areas - data.area,
                     messageId
@@ -103,6 +119,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 )
                 state.override {
                     ChooseQuestionAreas(
+                        subject,
                         question,
                         areas,
                         messageId
@@ -111,6 +128,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             } else {
                 state.override {
                     ChooseQuestionIntent(
+                        subject,
                         question,
                         areas
                     )
@@ -138,24 +156,28 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 }
             )
         }
-        //написала по-тупому, потом переделаю
+        //написала по-тупому, надо будет переделать
         onText { message ->
-            if (message.equals(QuestionIntent.FreeForm)) {
-                state.override {
-                    SendQuestionToCommunity(question, areas, QuestionIntent.FreeForm)
-                }
-            } else if (message.equals(QuestionIntent.Consultation)) {
+            when (message.content.text) {
+                Strings.Question.Intent.FreeForm -> {
                     state.override {
-                        SendQuestionToCommunity(question, areas, QuestionIntent.Consultation)
+                        SendQuestionToCommunity(subject, question, areas, QuestionIntent.FreeForm)
                     }
                 }
-            else if (message.equals(QuestionIntent.TestHypothesis)) {
-                state.override {
-                    SendQuestionToCommunity(question, areas, QuestionIntent.TestHypothesis)
+                Strings.Question.Intent.Consultation -> {
+                    state.override {
+                        SendQuestionToCommunity(subject, question, areas, QuestionIntent.Consultation)
+                    }
                 }
-            } else {
-                //TODO: сообщение, что необходимо выбрать из кнопочного меню
-                state.override { ChooseQuestionIntent(question, areas) }
+                Strings.Question.Intent.TestHypothesis -> {
+                    state.override {
+                        SendQuestionToCommunity(subject, question, areas, QuestionIntent.TestHypothesis)
+                    }
+                }
+                else -> {
+                    //TODO: сообщение, что необходимо выбрать из кнопочного меню
+                    state.override { ChooseQuestionIntent(subject, question, areas) }
+                }
             }
         }
     }
@@ -172,8 +194,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 }
             )
         }
-        onText(ButtonStrings.SendQuestion){
+        onText(ButtonStrings.SendQuestion){message ->
             //добавление вопроса в бд
+            sendTextMessage(message.chat, "Вопрос успешно отправлен в сообщество")
             //сообщение о том, что вопрос успешно отправлен
             //отправка вопроса в сообщество
             //возвращаемся в состояние меню(DialogState.Empty)

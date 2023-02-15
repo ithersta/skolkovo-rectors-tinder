@@ -34,7 +34,7 @@ object Strings {
             QuestionIntent.Consultation to Intent.Consultation,
             QuestionIntent.FreeForm to Intent.FreeForm
         )
-
+        const val SubjectQuestion = "Напишите тему вопроса (краткая формулировка)"
         const val WordingQuestion = "Сформулируйте свой вопрос"
         const val AskingQuestionIntent = "Выберите цель вопроса"
     }
