@@ -29,7 +29,6 @@ class UnselectQuestionQuery(val area: QuestionArea) : Query
 @SerialName("fq")
 object FinishQuestionQuery : Query
 
-
 @Serializable
 @SerialName("Country")
 class SelectCountryQuery(val country: String) : Query

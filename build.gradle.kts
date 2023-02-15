@@ -32,7 +32,6 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.4")
     implementation("org.jsoup:jsoup:1.15.3")
     implementation("com.jayway.jsonpath:json-path:2.7.0")
-
 }
 
 tasks.test {
