@@ -1,7 +1,5 @@
 package qna.strings
 
-import qna.domain.entities.QuestionIntent
-
 object Strings {
     object ToAnswerUser {
         fun message(question: String) = "Добрый день, один из участников сообщества хотел бы " +
@@ -17,9 +15,8 @@ object Strings {
             "$profile Вы согласны пообщаться?"
 
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
-                "и формате встречи - онлайн или оффлайн. А через неделю мы напишем Вам как все прошло."
+            "и формате встречи - онлайн или оффлайн. А через неделю мы напишем Вам как все прошло."
         const val CopyQuestion = "Скопируйте вопрос для отправки собеседнику"
-
     }
 
     object Question {

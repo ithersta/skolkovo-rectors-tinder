@@ -24,7 +24,7 @@ class ChooseQuestionIntent(
     val subject: String,
     val question: String,
     val areas: Set<QuestionArea>
-): DialogState
+) : DialogState
 
 @Serializable
 class SendQuestionToCommunity(
@@ -32,4 +32,4 @@ class SendQuestionToCommunity(
     val question: String,
     val areas: Set<QuestionArea>,
     val intent: QuestionIntent
-): DialogState
+) : DialogState

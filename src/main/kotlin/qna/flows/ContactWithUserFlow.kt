@@ -9,8 +9,6 @@ import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
@@ -18,13 +16,12 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
 import qna.states.SendingQuestionToCommunity
-import qna.states.CommunicateWithUser
 import qna.strings.ButtonStrings
 import qna.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.contactWithUserFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
-    //удалю позже
+    // удалю позже
     state<SendingQuestionToCommunity> {
         onEnter {
             sendTextMessage(
@@ -33,13 +30,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.contactWithUserFlo
             )
         }
         onText { message ->
-            //TODO: не отправляется с inline, но отправляется с reply
+            // TODO: не отправляется с inline, но отправляется с reply
             coroutineScope.launch {
                 val listOfValidUsers: List<Long> =
                     getUsersByAreaUseCase(
                         QuestionArea.Education,
                         userId = message.chat.id.chatId
-                    ) //брать areas, которую задал пользователь
+                    ) // брать areas, которую задал пользователь
                 listOfValidUsers.forEach {
                     println(it.toChatId())
                     runCatching {
