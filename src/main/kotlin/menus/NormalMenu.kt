@@ -44,8 +44,8 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         button(
             Strings.MenuButtons.Questions.Ask,
             MenuState.Questions.AskQuestion
-        ) //задать вопрос (в процессе разработки)
-        //надо удалять replyKeabord, если это возможно
+        ) // задать вопрос (в процессе разработки)
+        // надо удалять replyKeabord, если это возможно
     }
     button(
         Strings.MenuButtons.Notifications.Main,

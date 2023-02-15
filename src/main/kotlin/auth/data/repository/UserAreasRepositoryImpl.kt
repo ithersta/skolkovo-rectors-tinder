@@ -7,8 +7,8 @@ import org.koin.core.annotation.Single
 import qna.domain.entities.QuestionArea
 
 @Single
-class UserAreasRepositoryImpl: UserAreasRepository{
-    override fun getUsersByArea(questionArea: QuestionArea, userId: Long): List<Long>{
-        return UserAreas.select { UserAreas.area eq questionArea }.map { it[UserAreas.userId].value }.filterNot{it == userId}
+class UserAreasRepositoryImpl : UserAreasRepository {
+    override fun getUsersByArea(questionArea: QuestionArea, userId: Long): List<Long> {
+        return UserAreas.select { UserAreas.area eq questionArea }.map { it[UserAreas.userId].value }.filterNot { it == userId }
     }
 }

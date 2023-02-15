@@ -180,7 +180,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 }
 
                 else -> {
-                    //TODO: сообщение, что необходимо выбрать из кнопочного меню
+                    // TODO: сообщение, что необходимо выбрать из кнопочного меню
                     state.override { ChooseQuestionIntent(subject, question, areas) }
                 }
             }
@@ -188,7 +188,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
     state<SendQuestionToCommunity> {
         onEnter {
-            //TODO: придумать текст
+            // TODO: придумать текст
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
@@ -200,16 +200,16 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText(ButtonStrings.SendQuestion) { message ->
-            //TODO добавление вопроса в бд
+            // TODO добавление вопроса в бд
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
             )
-            //TODO: не отправляется с inline, но отправляется с reply
+            // TODO: не отправляется с inline, но отправляется с reply
             coroutineScope.launch {
                 val listOfValidUsers: List<Long> =
                     getUsersByAreaUseCase(
-                        QuestionArea.Education, //заменить на areas из state (forEach и тд)
+                        QuestionArea.Education, // заменить на areas из state (forEach и тд)
                         userId = message.chat.id.chatId
                     )
                 listOfValidUsers.forEach {
@@ -223,7 +223,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                                         ButtonStrings.Option.Yes,
                                         "Да"
                                     ) //вот тут я не совсем понимаю, как работает
-                                      //мб из-за этого не отправляет
+                                    //мб из-за этого не отправляет
                                 }
                                 row {
                                     dataButton(ButtonStrings.Option.No, "Нет")
