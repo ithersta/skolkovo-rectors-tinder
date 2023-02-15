@@ -18,7 +18,7 @@ object Strings {
     object Question {
         val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (множественный выбор из областей)\n" +
-                    "Области:"
+                "Области:"
         var QuestionAreas = listOf(
             "1) наука",
             "2) образование",

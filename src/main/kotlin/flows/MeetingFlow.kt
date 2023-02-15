@@ -9,15 +9,13 @@ import dev.inmo.tgbotapi.types.UserId
 import states.DialogState
 import states.MeetingState
 
-
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.meetingFlow() {
     state<MeetingState> {
         onEnter {
             sendTextMessage(
-                it, Strings.MeetingInfo.linkInEvent
+                it,
+                Strings.MeetingInfo.linkInEvent
             )
         }
     }
 }
-
-
