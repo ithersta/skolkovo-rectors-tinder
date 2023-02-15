@@ -216,14 +216,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                     runCatching {
                         sendTextMessage(
                             it.toChatId(),
-                            Strings.ToAnswerUser.message("вопрос"), //брать вопрос из state
+                            Strings.ToAnswerUser.message(state.snapshot.question), //возможно нужна еще тема вопроса(но это не точно)
                             replyMarkup = inlineKeyboard {
                                 row {
                                     dataButton(
                                         ButtonStrings.Option.Yes,
                                         "Да"
                                     ) //вот тут я не совсем понимаю, как работает
-                                    //мб из-за этого не отправляет
+                                      //мб из-за этого не отправляет
                                 }
                                 row {
                                     dataButton(ButtonStrings.Option.No, "Нет")

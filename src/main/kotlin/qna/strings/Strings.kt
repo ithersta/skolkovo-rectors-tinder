@@ -4,6 +4,8 @@ import qna.domain.entities.QuestionIntent
 
 object Strings {
     object ToAnswerUser {
+
+        //тут надо помимо вопроса еще тему?
         fun message(question: String) = "Добрый день, один из участников сообщества хотел бы " +
             "выйти в коммуникацию по следующему вопросу: $question. Готовы ответить?"
 
@@ -13,6 +15,7 @@ object Strings {
     }
 
     object ToAskUser {
+        //TODO: придумать вид профиля участника
         fun message(profile: String) = "Профиль участника сообщества, согласившегося ответить вам - " +
             "$profile Вы согласны пообщаться?"
 
