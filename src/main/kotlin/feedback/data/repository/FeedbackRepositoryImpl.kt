@@ -4,6 +4,7 @@ import auth.data.tables.Users
 import feedback.domain.entities.FeedbackRequest
 import feedback.domain.repository.FeedbackRepository
 import kotlinx.datetime.Instant
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
@@ -15,11 +16,14 @@ import qna.data.tables.Responses
 @Single
 class FeedbackRepositoryImpl : FeedbackRepository {
     override fun getFeedbackRequests(atUntil: Instant): List<FeedbackRequest> {
-        return (AcceptedResponses innerJoin Responses innerJoin Users innerJoin Questions)
+        return AcceptedResponses
+            .join(Responses, JoinType.INNER, AcceptedResponses.responseId, Responses.id)
+            .join(Users, JoinType.INNER, Responses.respondentId, Users.id)
+            .join(Questions, JoinType.INNER, Responses.questionId, Questions.id)
             .select {
                 (AcceptedResponses.at less atUntil) and
-                    (AcceptedResponses.didAskFeedback eq false) and
-                    (AcceptedResponses.isSuccessful eq null)
+                        (AcceptedResponses.didAskFeedback eq false) and
+                        (AcceptedResponses.isSuccessful eq null)
             }
             .map {
                 FeedbackRequest(
@@ -50,7 +54,12 @@ class FeedbackRepositoryImpl : FeedbackRepository {
     }
 
     override fun closeAssociatedQuestion(responseId: Long) {
-        (Questions innerJoin Responses).update({ Responses.id eq responseId }) {
+        val questionId = Responses
+            .slice(Responses.questionId)
+            .select { Responses.id eq responseId }
+            .firstOrNull()
+            ?.let { it[Responses.questionId]?.value }
+        Questions.update(where = { Questions.id eq questionId }) {
             it[Questions.isClosed] = true
         }
     }
