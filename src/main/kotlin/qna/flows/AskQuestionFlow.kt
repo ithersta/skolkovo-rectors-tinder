@@ -17,6 +17,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
@@ -36,7 +37,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         onEnter {
             sendTextMessage(
                 it,
-                Strings.Question.SubjectQuestion
+                Strings.Question.SubjectQuestion,
+                replyMarkup = ReplyKeyboardRemove()
             )
         }
         onText { message ->
