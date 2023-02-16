@@ -222,8 +222,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                                     dataButton(
                                         ButtonStrings.Option.Yes,
                                         "Да"
-                                    ) //вот тут я не совсем понимаю, как работает
-                                    //мб из-за этого не отправляет
+                                    ) // вот тут я не совсем понимаю, как работает
+                                    // мб из-за этого не отправляет
                                 }
                                 row {
                                     dataButton(ButtonStrings.Option.No, "Нет")
