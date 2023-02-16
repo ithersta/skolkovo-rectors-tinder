@@ -2,6 +2,7 @@ package mute.data.repository
 
 import kotlinx.datetime.Instant
 import mute.data.entities.MuteSettings
+import mute.data.entities.MuteSettingsRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -22,9 +23,9 @@ class MuteSettingsRepositoryImpl : MuteSettingsRepository {
         MuteSettings.deleteWhere(op = { MuteSettings.userId eq userIdVal })
     }
 
-    override fun getEarliest(): Pair<Long, Instant>? {
+    override fun getEarliest(): MuteSettingsRow? {
         val res = MuteSettings.selectAll().orderBy(MuteSettings.until).limit(1).firstOrNull()
-        return res?.let { Pair(it[MuteSettings.userId].value, it[MuteSettings.until]) }
+        return res?.let { MuteSettingsRow(it[MuteSettings.userId].value, it[MuteSettings.until]) }
     }
 
     override fun containsById(userIdVal: Long): Boolean {

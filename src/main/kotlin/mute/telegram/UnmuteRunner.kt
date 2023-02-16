@@ -20,15 +20,16 @@ import kotlin.time.Duration.Companion.hours
 @Single
 class UnmuteRunner(
     private val getEarliestMuteSettingsUseCase: GetEarliestMuteSettingsUseCase,
-    private val deleteMuteSettingsUseCase: DeleteMuteSettingsUseCase
+    private val deleteMuteSettingsUseCase: DeleteMuteSettingsUseCase,
+    private val clock: Clock
 ) {
     fun BehaviourContext.unmute() = launch {
         while (true) {
             val pair = getEarliestMuteSettingsUseCase()
-            if (pair != null && Clock.System.now().compareTo(pair.second) != -1) {
-                deleteMuteSettingsUseCase(pair.first)
+            if (pair != null && clock.now().compareTo(pair.until) != -1) {
+                deleteMuteSettingsUseCase(pair.userId)
                 sendTextMessage(
-                    UserId(pair.first),
+                    UserId(pair.userId),
                     Strings.unmuteQuestion,
                     replyMarkup = inlineKeyboard {
                         row {

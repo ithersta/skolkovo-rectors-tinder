@@ -41,12 +41,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         }
     }
     role<User.Normal> {
-        anyState {
-            onCommand("start", null) {
-                // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WaitingForContact } // /ну пока так
-            }
-        }
         with(normalMenu) { invoke() }
     }
     role<User.Admin> {

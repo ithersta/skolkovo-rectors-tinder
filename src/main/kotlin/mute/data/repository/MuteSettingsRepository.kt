@@ -1,10 +1,11 @@
 package mute.data.repository
 
 import kotlinx.datetime.Instant
+import mute.data.entities.MuteSettingsRow
 
 interface MuteSettingsRepository {
     fun insert(userIdVal: Long, dateMute: Instant)
     fun delete(userIdVal: Long)
-    fun getEarliest(): Pair<Long, Instant>?
+    fun getEarliest(): MuteSettingsRow?
     fun containsById(userIdVal: Long): Boolean
 }
