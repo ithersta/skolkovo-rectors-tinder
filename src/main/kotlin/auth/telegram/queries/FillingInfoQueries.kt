@@ -42,7 +42,7 @@ class SelectCityInCIS(val city: String) : Query
 class SelectDistrict(val district: String) : Query
 
 @Serializable
-@SerialName("region")
+@SerialName("r")
 class SelectRegion(val region: String) : Query
 
 @Serializable

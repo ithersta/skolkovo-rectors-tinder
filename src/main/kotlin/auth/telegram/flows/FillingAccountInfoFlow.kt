@@ -116,6 +116,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
         onDataCallbackQuery(SelectDistrict::class) { (data, query) ->
             state.override { ChooseRegion(state.snapshot.phoneNumber, state.snapshot.name, data.district) }
+            answer(query)
         }
     }
     state<ChooseRegion> {
