@@ -6,12 +6,14 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
+import generated.dataButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import mute.Strings
 import mute.data.usecases.DeleteMuteSettingsUseCase
 import mute.data.usecases.GetEarliestMuteSettingsUseCase
+import mute.telegram.queries.YesNoMuteQuery
 import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.hours
 
@@ -30,8 +32,8 @@ class UnmuteRunner(
                     Strings.unmuteQuestion,
                     replyMarkup = inlineKeyboard {
                         row {
-                            dataButton(Strings.yes, "yes")
-                            dataButton(Strings.no, "no")
+                            dataButton(Strings.yes, YesNoMuteQuery(true))
+                            dataButton(Strings.no, YesNoMuteQuery(false))
                         }
                     }
                 )

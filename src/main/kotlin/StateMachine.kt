@@ -15,6 +15,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import menus.adminMenu
 import menus.normalMenu
+import mute.telegram.muteFlow
 
 
 @StateMachine(baseQueryKClass = Query::class)
@@ -42,10 +43,17 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         }
     }
     role<User.Normal> {
+        anyState {
+            onCommand("start", null) {
+                // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
+                state.override { WaitingForContact } // /ну пока так
+            }
+        }
         with(normalMenu) { invoke() }
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }
     }
+    muteFlow()
     fallback()
 }
