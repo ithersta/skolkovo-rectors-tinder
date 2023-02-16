@@ -9,14 +9,14 @@ import qna.data.tables.Questions
 
 class QuestionRepositoryImpl : QuestionRepository {
     override fun add(question: Question.Details) {
-        Questions.insert{
+        Questions.insert {
             it[authorId] = question.authorId
             it[intent] = question.intent
             it[subject] = question.subject
             it[text] = question.text
         }
-        QuestionAreas.batchInsert(question.areas){
-            //тут нужно передавать id вопроса, пока не уверена в правильности
+        QuestionAreas.batchInsert(question.areas) {
+            // тут нужно передавать id вопроса, пока не уверена в правильности
             this[QuestionAreas.questionId] = Questions.id
             this[QuestionAreas.area] = it
         }
