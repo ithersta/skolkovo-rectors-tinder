@@ -216,7 +216,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                     runCatching {
                         sendTextMessage(
                             it.toChatId(),
-                            Strings.ToAnswerUser.message(state.snapshot.question), //возможно нужна еще тема вопроса(но это не точно)
+                            Strings.ToAnswerUser.message(state.snapshot.subject, state.snapshot.question),
                             replyMarkup = inlineKeyboard {
                                 row {
                                     dataButton(

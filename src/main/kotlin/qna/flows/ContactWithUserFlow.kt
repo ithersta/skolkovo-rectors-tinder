@@ -42,7 +42,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.contactWithUserFlo
                     runCatching {
                         sendTextMessage(
                             it.toChatId(),
-                            Strings.ToAnswerUser.message("вопрос"),
+                            Strings.ToAnswerUser.message("тема","вопрос"),
                             replyMarkup = inlineKeyboard {
                                 row {
                                     dataButton(ButtonStrings.Option.Yes, "Да")

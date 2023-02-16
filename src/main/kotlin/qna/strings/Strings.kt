@@ -3,9 +3,10 @@ package qna.strings
 object Strings {
     object ToAnswerUser {
 
-        //тут надо помимо вопроса еще тему?
-        fun message(question: String) = "Добрый день, один из участников сообщества хотел бы " +
-            "выйти в коммуникацию по следующему вопросу: $question. Готовы ответить?"
+        //TODO: придумать вид тема+вопрос
+        fun message(subject: String,question: String) = "Добрый день, один из участников сообщества хотел бы " +
+            "выйти в коммуникацию по следующему вопросу: $subject\n" +
+                " $question. Готовы ответить?"
 
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
         const val WaitingForCompanion = "Владелец вопроса свяжется с Вами."
