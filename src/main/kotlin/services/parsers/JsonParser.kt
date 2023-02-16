@@ -10,9 +10,8 @@ import generated.dataButton
 import java.io.File
 
 class JsonParser {
-    private val jsonFilePath: String = "src/main/resources/cities.json"
-    private val jsonData: String = File(jsonFilePath).readText()
-    private val jsonContext: DocumentContext = JsonPath.parse(jsonData)
+    private val inputStream = this::class.java.getResourceAsStream("/cities.json")
+    private val jsonContext: DocumentContext = JsonPath.parse(inputStream)
 
     private val jsonpathCountiesPattern: String = "$..country"
     private val jsonpathDistrictsPattern: String = "$..district"
