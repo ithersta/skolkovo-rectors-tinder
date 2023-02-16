@@ -30,15 +30,15 @@ class UnselectQuestionQuery(val area: QuestionArea) : Query
 object FinishQuestionQuery : Query
 
 @Serializable
-@SerialName("Country")
+@SerialName("country")
 class SelectCountryQuery(val country: String) : Query
 
 @Serializable
-@SerialName("CIS")
+@SerialName("cis")
 class SelectCityInCIS(val city: String) : Query
 
 @Serializable
-@SerialName("Area")
+@SerialName("area")
 class SelectDistrict(val district: String) : Query
 
 @Serializable
@@ -46,5 +46,5 @@ class SelectDistrict(val district: String) : Query
 class SelectRegion(val region: String) : Query
 
 @Serializable
-@SerialName("City")
+@SerialName("city")
 class SelectCity(val city: String) : Query

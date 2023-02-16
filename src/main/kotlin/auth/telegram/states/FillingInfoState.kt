@@ -30,8 +30,7 @@ class ChooseCityInCIS(
 @Serializable
 class ChooseDistrict(
     val phoneNumber: PhoneNumber,
-    val name: String,
-    val county: String
+    val name: String
 ) : DialogState
 
 @Serializable

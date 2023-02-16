@@ -22,7 +22,9 @@ import auth.telegram.Strings.questionAreaToString
 import auth.telegram.queries.*
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.entities.triggers.*
+import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
+import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
@@ -85,13 +87,13 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onDataCallbackQuery(SelectCountryQuery::class) { (data, query) ->
             when (data.country) {
                 "\uD83C\uDDF7\uD83C\uDDFA" -> {
-                    state.override { ChooseDistrict(state.snapshot.phoneNumber, state.snapshot.name, data.country) }
+                    state.override { ChooseDistrict(state.snapshot.phoneNumber, state.snapshot.name) }
                 }
-
                 else -> {
                     state.override { ChooseCityInCIS(state.snapshot.phoneNumber, state.snapshot.name, data.country) }
                 }
             }
+            answer(query)
         }
     }
     state<ChooseCityInCIS> {
@@ -104,6 +106,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
         onDataCallbackQuery(SelectCityInCIS::class) { (data, query) ->
             state.override { WriteProfessionState(state.snapshot.phoneNumber, state.snapshot.name, data.city) }
+            answer(query)
         }
     }
     state<ChooseDistrict> {
@@ -129,6 +132,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
         onDataCallbackQuery(SelectRegion::class) { (data, query) ->
             state.override { ChooseCity(state.snapshot.phoneNumber, state.snapshot.name, data.region) }
+            answer(query)
         }
     }
     state<ChooseCity> {
@@ -144,6 +148,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             if (jsonParser.cityRegex.matches(city)) {
                 state.override { WriteProfessionState(state.snapshot.phoneNumber, state.snapshot.name, city) }
             }
+            answer(query)
         }
     }
 
