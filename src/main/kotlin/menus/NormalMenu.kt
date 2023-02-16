@@ -11,7 +11,7 @@ val normalMenu = menu<User.Normal>(Strings.RoleMenu.Normal, DialogState.Empty) {
     extracted()
 }
 
-fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
+fun <S : User.Normal> MenuBuilder<DialogState, User, S>.extracted() {
     submenu(
         Strings.MenuButtons.Questions.Question,
         Strings.MenuButtons.Questions.QuestionDesciption,
@@ -27,7 +27,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 Strings.MenuButtons.Questions.MyQuestions.Description,
                 MenuState.Questions.GetMyQuestion
             ) {
-                button(
+                button(//TODO
                     Strings.MenuButtons.Questions.MyQuestions.ActualQuestions,
                     DialogState.Empty
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
