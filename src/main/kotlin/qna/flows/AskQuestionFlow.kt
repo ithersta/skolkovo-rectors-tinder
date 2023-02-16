@@ -1,7 +1,7 @@
 package qna.flows
 
 import auth.domain.entities.User
-import auth.domain.usecases.GetUsersByAreaUseCase
+import qna.domain.usecases.GetUsersByAreaUseCase
 import auth.telegram.queries.FinishQuestionQuery
 import auth.telegram.queries.SelectQuestionQuery
 import auth.telegram.queries.UnselectQuestionQuery
@@ -10,8 +10,11 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
+import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
+import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
@@ -30,6 +33,8 @@ import qna.domain.entities.QuestionIntent
 import qna.states.*
 import qna.strings.ButtonStrings
 import qna.strings.Strings
+import qna.telegram.queries.AcceptQuestionQuery
+import qna.telegram.queries.DeclineQuestionQuery
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
@@ -227,12 +232,15 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                                 row {
                                     dataButton(
                                         ButtonStrings.Option.Yes,
-                                        "Да"
+                                        AcceptQuestionQuery(1)
                                     ) // вот тут я не совсем понимаю, как работает
                                     // мб из-за этого не отправляет
                                 }
                                 row {
-                                    dataButton(ButtonStrings.Option.No, "Нет")
+                                    dataButton(
+                                        ButtonStrings.Option.No,
+                                        DeclineQuestionQuery
+                                    )
                                 }
                             }
                         )
@@ -240,6 +248,12 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 }
             }
             state.override { DialogState.Empty }
+        }
+    }
+    anyState {
+        onDataCallbackQuery(DeclineQuestionQuery::class){ (_, query)->
+            val message = query.messageCallbackQueryOrNull()?.message ?: return@onDataCallbackQuery
+            delete(message)
         }
     }
 }

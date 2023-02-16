@@ -1,4 +1,4 @@
-package auth.domain.usecases
+package qna.domain.usecases
 
 import auth.data.repository.MuteSettingsRepositoryImpl
 import auth.domain.repository.UserAreasRepository
@@ -22,9 +22,9 @@ class GetUsersByAreaUseCase(
     }
 
     operator fun invoke(questionArea: QuestionArea, userId: Long): List<Long> = transaction {
-        // проверка на mute и на то, что пользователь не тот, который задал вопрос
+        //потом убрать функцию
         val mute = muteSettingsRepositoryImpl.getAll()
-        val all = userAreasRepository.getUsersByArea(questionArea, userId)
+        val all = userAreasRepository.getUsersByArea(questionArea, userId).filterNot { it == userId }
         return@transaction getUniqueElements(all, mute).toSet().toList()
     }
 }

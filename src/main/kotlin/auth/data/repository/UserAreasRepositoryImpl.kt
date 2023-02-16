@@ -10,6 +10,7 @@ import qna.domain.entities.QuestionArea
 @Single
 class UserAreasRepositoryImpl : UserAreasRepository {
     override fun getUsersByArea(questionArea: QuestionArea, userId: Long): List<Long> {
+        //тут исключать mute пользователей
         val exceptUser = UserAreas.select { UserAreas.userId eq userId }
         return UserAreas.select { UserAreas.area eq questionArea }.except(exceptUser).map { it[UserAreas.userId].value }
     }
