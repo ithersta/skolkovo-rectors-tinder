@@ -33,6 +33,7 @@ object Strings {
         const val SubjectQuestion = "Напишите тему вопроса (краткая формулировка)"
         const val WordingQuestion = "Сформулируйте свой вопрос"
         const val AskingQuestionIntent = "Выберите цель вопроса"
+        const val InvalidQuestionIntent = "Пожалуйста, выберите цель вопроса из кнопочного меню"
         const val CompletedQuestion = "Отлично, вопрос сформирован!"
         const val Success = "Вопрос успешно отправлен в сообщество"
     }

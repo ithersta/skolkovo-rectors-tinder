@@ -183,6 +183,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
 
                 else -> {
                     // TODO: сообщение, что необходимо выбрать из кнопочного меню
+                    // надо придумать, как лучше будет отправлять
+                    sendTextMessage(message.chat, Strings.Question.InvalidQuestionIntent)
                     state.override { ChooseQuestionIntent(subject, question, areas) }
                 }
             }
