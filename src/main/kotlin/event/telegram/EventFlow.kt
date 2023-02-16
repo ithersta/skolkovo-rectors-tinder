@@ -19,7 +19,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.eventFlow() {
                 )
                 state.override { DialogState.Empty }
             }
-
         }
     }
 }
