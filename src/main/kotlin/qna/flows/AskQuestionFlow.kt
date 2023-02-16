@@ -1,7 +1,6 @@
 package qna.flows
 
 import auth.domain.entities.User
-import qna.domain.usecases.GetUsersByAreaUseCase
 import auth.telegram.queries.FinishQuestionQuery
 import auth.telegram.queries.SelectQuestionQuery
 import auth.telegram.queries.UnselectQuestionQuery
@@ -13,7 +12,6 @@ import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
@@ -30,6 +28,7 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
+import qna.domain.usecases.GetUsersByAreaUseCase
 import qna.states.*
 import qna.strings.ButtonStrings
 import qna.strings.Strings
@@ -251,7 +250,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         }
     }
     anyState {
-        onDataCallbackQuery(DeclineQuestionQuery::class){ (_, query)->
+        onDataCallbackQuery(DeclineQuestionQuery::class) { (_, query) ->
             val message = query.messageCallbackQueryOrNull()?.message ?: return@onDataCallbackQuery
             delete(message)
         }

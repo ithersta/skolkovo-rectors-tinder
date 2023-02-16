@@ -22,7 +22,7 @@ class GetUsersByAreaUseCase(
     }
 
     operator fun invoke(questionArea: QuestionArea, userId: Long): List<Long> = transaction {
-        //потом убрать функцию
+        // потом убрать функцию
         val mute = muteSettingsRepositoryImpl.getAll()
         val all = userAreasRepository.getUsersByArea(questionArea, userId).filterNot { it == userId }
         return@transaction getUniqueElements(all, mute).toSet().toList()
