@@ -27,7 +27,7 @@ fun <S : User.Normal> MenuBuilder<DialogState, User, S>.extracted() {
                 Strings.MenuButtons.Questions.MyQuestions.Description,
                 MenuState.Questions.GetMyQuestion
             ) {
-                button(//TODO
+                button( // TODO
                     Strings.MenuButtons.Questions.MyQuestions.ActualQuestions,
                     DialogState.Empty
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
