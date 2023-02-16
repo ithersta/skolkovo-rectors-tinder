@@ -47,5 +47,4 @@ val module = module(createdAtStart = true) {
             exceptionHandler = { _, throwable -> throwable.printStackTrace() }
         )
     }
-
 }

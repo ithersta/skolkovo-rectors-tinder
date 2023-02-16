@@ -4,19 +4,14 @@ import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onDataCallbackQuery
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
-import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-
 import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.UserId
-import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.MarkdownV2
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.toChatId
@@ -67,7 +62,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                         )
                         state.override { DialogState.Empty }
                     } else {
-                        //todo: off, when off; how it will work???
+                        // todo: off, when off; how it will work???
                     }
                 } else {
                     if (data.on) {
@@ -113,8 +108,11 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                     message.asMessageCallbackQuery()?.message?.withContent<TextContent>() ?: return@onDataCallbackQuery,
                     replyMarkup = null
                 )
-                if (data.yes) state.override { DialogState.Empty }
-                else state.override { MuteStates.StartMute }
+                if (data.yes) {
+                    state.override { DialogState.Empty }
+                } else {
+                    state.override { MuteStates.StartMute }
+                }
             }
         }
     }

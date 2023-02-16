@@ -1,5 +1,4 @@
 import auth.domain.entities.User
-
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
 import auth.telegram.states.WaitingForContact
@@ -16,7 +15,6 @@ import dev.inmo.tgbotapi.types.UserId
 import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.muteFlow
-
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
