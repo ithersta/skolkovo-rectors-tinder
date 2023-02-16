@@ -33,6 +33,7 @@ import qna.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
+
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -205,6 +206,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         }
         onText(ButtonStrings.SendQuestion) { message ->
             // TODO добавление вопроса в бд
+
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success

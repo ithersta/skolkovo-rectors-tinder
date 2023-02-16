@@ -1,4 +1,4 @@
-package auth.domain.repository
+package qna.domain.repository
 
 import auth.domain.entities.Question
 
