@@ -11,6 +11,6 @@ class QuestionsRepositoryImpl : QuestionsRepository {
     override fun getListOfCurrentIssues(userSubject: String): List<String> {
         return Questions.slice(Questions.text)
             .select { (Questions.isClosed eq false) and (Questions.subject eq userSubject) }
-            .map {  it[Questions.text] }
+            .map { it[Questions.text] }
     }
 }
