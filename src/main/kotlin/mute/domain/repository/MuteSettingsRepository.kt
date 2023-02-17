@@ -1,4 +1,4 @@
-package mute.data.repository
+package mute.domain.repository
 
 import kotlinx.datetime.Instant
 import mute.data.entities.MuteSettingsRow

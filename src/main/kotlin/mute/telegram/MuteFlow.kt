@@ -18,9 +18,9 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import mute.Strings
-import mute.data.usecases.ContainsByIdMuteSettingsUseCase
-import mute.data.usecases.DeleteMuteSettingsUseCase
-import mute.data.usecases.InsertMuteSettingsUseCase
+import mute.domain.usecases.ContainsByIdMuteSettingsUseCase
+import mute.domain.usecases.DeleteMuteSettingsUseCase
+import mute.domain.usecases.InsertMuteSettingsUseCase
 import mute.telegram.queries.OnOffMuteQuery
 import mute.telegram.queries.WeekMonthMuteQuery
 import mute.telegram.queries.YesNoMuteQuery
@@ -40,8 +40,11 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                     auth.telegram.Strings.MenuButtons.Notifications.Description,
                     replyMarkup = inlineKeyboard {
                         row {
-                            dataButton(auth.telegram.Strings.MenuButtons.Notifications.On, OnOffMuteQuery(true))
-                            dataButton(auth.telegram.Strings.MenuButtons.Notifications.Off, OnOffMuteQuery(false))
+                            if (containsByIdMuteSettingsUseCase(user.chatId)) {
+                                dataButton(auth.telegram.Strings.MenuButtons.Notifications.On, OnOffMuteQuery(true))
+                            } else {
+                                dataButton(auth.telegram.Strings.MenuButtons.Notifications.Off, OnOffMuteQuery(false))
+                            }
                         }
                     }
                 )
@@ -51,27 +54,15 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                     message.asMessageCallbackQuery()?.message?.withContent<TextContent>() ?: return@onDataCallbackQuery,
                     replyMarkup = null
                 )
-                if (containsByIdMuteSettingsUseCase(message.user.id.chatId)) {
-                    if (data.on) {
-                        deleteMuteSettingsUseCase(message.user.id.chatId)
-                        sendTextMessage(
-                            message.user,
-                            Strings.muteOff
-                        )
-                        state.override { DialogState.Empty }
-                    } else {
-                        // todo: off, when off; how it will work???
-                    }
+                if (data.on) {
+                    deleteMuteSettingsUseCase(message.user.id.chatId)
+                    sendTextMessage(
+                        message.user,
+                        Strings.muteOff
+                    )
+                    state.override { DialogState.Empty }
                 } else {
-                    if (data.on) {
-                        sendTextMessage(
-                            message.user,
-                            Strings.muteOff
-                        )
-                        state.override { DialogState.Empty }
-                    } else {
-                        state.override { MuteStates.StartMute }
-                    }
+                    state.override { MuteStates.StartMute }
                 }
             }
         }
@@ -80,7 +71,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                 sendTextMessage(
                     user.toChatId(),
                     Strings.muteBot,
-                    parseMode = MarkdownV2,
                     replyMarkup = inlineKeyboard {
                         row {
                             dataButton(Strings.muteWeek, WeekMonthMuteQuery(true))
@@ -94,7 +84,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                 sendTextMessage(
                     message.user,
                     Strings.muteDays(7),
-                    parseMode = MarkdownV2,
                 )
                 insertMuteSettingsUseCase(message.user.id.chatId, day.days)
                 state.override { DialogState.Empty }

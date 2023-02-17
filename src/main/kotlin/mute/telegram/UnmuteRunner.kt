@@ -2,7 +2,6 @@ package mute.telegram
 
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
@@ -11,8 +10,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import mute.Strings
-import mute.data.usecases.DeleteMuteSettingsUseCase
-import mute.data.usecases.GetEarliestMuteSettingsUseCase
+import mute.domain.usecases.DeleteMuteSettingsUseCase
+import mute.domain.usecases.GetEarliestMuteSettingsUseCase
 import mute.telegram.queries.YesNoMuteQuery
 import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.hours

@@ -1,4 +1,4 @@
-package mute.data.repository
+package mute.domain.repository
 
 import kotlinx.datetime.Instant
 import mute.data.entities.MuteSettings
@@ -14,8 +14,8 @@ import org.koin.core.annotation.Single
 class MuteSettingsRepositoryImpl : MuteSettingsRepository {
     override fun insert(userIdVal: Long, dateMute: Instant) {
         MuteSettings.insert {
-            it[userId] = userIdVal
-            it[until] = dateMute
+            it[MuteSettings.userId] = userIdVal
+            it[MuteSettings.until] = dateMute
         }
     }
 
