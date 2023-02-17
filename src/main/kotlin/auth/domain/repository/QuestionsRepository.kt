@@ -1,5 +1,5 @@
 package auth.domain.repository
 
 interface QuestionsRepository {
-    fun getListOfCurrentIssues(): List<String>
+    fun getListOfCurrentIssues(userSubject: String): List<String>
 }
