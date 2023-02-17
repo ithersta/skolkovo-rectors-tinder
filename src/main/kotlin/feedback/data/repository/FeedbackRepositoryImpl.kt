@@ -52,15 +52,4 @@ class FeedbackRepositoryImpl : FeedbackRepository {
             it[AcceptedResponses.isSuccessful] = isSuccessful
         }
     }
-
-    override fun closeAssociatedQuestion(responseId: Long) {
-        val questionId = Responses
-            .slice(Responses.questionId)
-            .select { Responses.id eq responseId }
-            .firstOrNull()
-            ?.let { it[Responses.questionId]?.value }
-        Questions.update(where = { Questions.id eq questionId }) {
-            it[Questions.isClosed] = true
-        }
-    }
 }

@@ -7,7 +7,7 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import dev.inmo.tgbotapi.types.toChatId
 import feedback.domain.usecases.GetFeedbackRequestsFlowUseCase
-import feedback.telegram.queries.FeedbackQuery
+import feedback.telegram.queries.FeedbackQueries
 import generated.dataButton
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
@@ -23,8 +23,8 @@ class FeedbackRequester(
                 chatId = feedbackRequest.questionAuthorUserId.toChatId(),
                 text = Strings.feedbackRequest(feedbackRequest.respondentName),
                 replyMarkup = flatInlineKeyboard {
-                    dataButton(ButtonStrings.No, FeedbackQuery.SendFeedback(feedbackRequest.responseId, false))
-                    dataButton(ButtonStrings.Yes, FeedbackQuery.SendFeedback(feedbackRequest.responseId, true))
+                    dataButton(ButtonStrings.No, FeedbackQueries.SendFeedback(feedbackRequest.responseId, false))
+                    dataButton(ButtonStrings.Yes, FeedbackQueries.SendFeedback(feedbackRequest.responseId, true))
                 }
             )
             massSendLimiter.wait()
