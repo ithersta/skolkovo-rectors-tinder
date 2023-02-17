@@ -1,8 +1,9 @@
-package mute.domain.repository
+package mute.data.repository
 
 import kotlinx.datetime.Instant
 import mute.data.entities.MuteSettings
-import mute.data.entities.MuteSettingsRow
+import mute.domain.entities.MuteSettingsRow
+import mute.domain.repository.MuteSettingsRepository
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert

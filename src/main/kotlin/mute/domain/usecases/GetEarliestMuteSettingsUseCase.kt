@@ -1,7 +1,7 @@
 package mute.domain.usecases
 
 import common.domain.Transaction
-import mute.data.entities.MuteSettingsRow
+import mute.domain.entities.MuteSettingsRow
 import mute.domain.repository.MuteSettingsRepository
 import org.koin.core.annotation.Single
 

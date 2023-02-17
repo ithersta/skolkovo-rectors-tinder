@@ -1,12 +1,12 @@
 package mute
 
 object Strings {
-    const val muteOff = "уведомления включены"
+    const val muteOff = "Уведомления включены"
     const val muteBot = "Приостановить бота"
-    const val muteWeek = "на 7 дней"
-    const val muteMonth = "на 30 дней"
-    const val yes = "да"
-    const val no = "нет"
+    const val muteWeek = "На 7 дней"
+    const val muteMonth = "На 30 дней"
+    const val yes = "Да"
+    const val no = "Нет"
     const val unmuteQuestion = "Включить оповещения?"
-    fun muteDays(days: Int) = "Уведомления бота отключены на $days дней"
+    fun muteDays(days: Long) = "Уведомления бота отключены на $days дней"
 }

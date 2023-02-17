@@ -1,4 +1,4 @@
-package mute.data.entities
+package mute.domain.entities
 
 import kotlinx.datetime.Instant
 

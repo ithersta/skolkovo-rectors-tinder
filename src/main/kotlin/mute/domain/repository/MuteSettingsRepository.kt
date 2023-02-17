@@ -1,7 +1,7 @@
 package mute.domain.repository
 
 import kotlinx.datetime.Instant
-import mute.data.entities.MuteSettingsRow
+import mute.domain.entities.MuteSettingsRow
 
 interface MuteSettingsRepository {
     fun insert(userIdVal: Long, dateMute: Instant)

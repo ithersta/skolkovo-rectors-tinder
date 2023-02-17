@@ -24,11 +24,11 @@ class UnmuteRunner(
 ) {
     fun BehaviourContext.unmute() = launch {
         while (true) {
-            val pair = getEarliestMuteSettingsUseCase()
-            if (pair != null && clock.now().compareTo(pair.until) != -1) {
-                deleteMuteSettingsUseCase(pair.userId)
+            val earliestRow = getEarliestMuteSettingsUseCase()
+            if (earliestRow != null && clock.now().compareTo(earliestRow.until) != -1) {
+                deleteMuteSettingsUseCase(earliestRow.userId)
                 sendTextMessage(
-                    UserId(pair.userId),
+                    UserId(earliestRow.userId),
                     Strings.unmuteQuestion,
                     replyMarkup = inlineKeyboard {
                         row {

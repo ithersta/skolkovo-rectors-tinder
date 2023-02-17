@@ -20,10 +20,9 @@ import mute.Strings
 import mute.domain.usecases.ContainsByIdMuteSettingsUseCase
 import mute.domain.usecases.DeleteMuteSettingsUseCase
 import mute.domain.usecases.InsertMuteSettingsUseCase
+import mute.telegram.queries.DurationMuteQuery
 import mute.telegram.queries.OnOffMuteQuery
-import mute.telegram.queries.WeekMonthMuteQuery
 import mute.telegram.queries.YesNoMuteQuery
-import mute.telegram.states.MuteStates
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.days
 
@@ -61,30 +60,24 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                     )
                     state.override { DialogState.Empty }
                 } else {
-                    state.override { MuteStates.StartMute }
+                    sendTextMessage(
+                        message.from.id,
+                        Strings.muteBot,
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                dataButton(Strings.muteWeek, DurationMuteQuery(7.days))
+                                dataButton(Strings.muteMonth, DurationMuteQuery(30.days))
+                            }
+                        }
+                    )
                 }
             }
-        }
-        state<MuteStates.StartMute> {
-            onEnter { user ->
-                sendTextMessage(
-                    user.toChatId(),
-                    Strings.muteBot,
-                    replyMarkup = inlineKeyboard {
-                        row {
-                            dataButton(Strings.muteWeek, WeekMonthMuteQuery(true))
-                            dataButton(Strings.muteMonth, WeekMonthMuteQuery(false))
-                        }
-                    }
-                )
-            }
-            onDataCallbackQuery(WeekMonthMuteQuery::class) { (data, message) ->
-                val day = if (data.week) 7 else 30
+            onDataCallbackQuery(DurationMuteQuery::class) { (data, message) ->
                 sendTextMessage(
                     message.user,
-                    Strings.muteDays(7),
+                    Strings.muteDays(data.duration.inWholeDays),
                 )
-                insertMuteSettingsUseCase(message.user.id.chatId, day.days)
+                insertMuteSettingsUseCase(message.user.id.chatId, data.duration)
                 state.override { DialogState.Empty }
             }
         }
@@ -97,7 +90,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                 if (data.yes) {
                     state.override { DialogState.Empty }
                 } else {
-                    state.override { MuteStates.StartMute }
+                    state.override { MenuState.Notifications }
                 }
             }
         }
