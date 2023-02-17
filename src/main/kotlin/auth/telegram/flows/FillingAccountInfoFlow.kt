@@ -19,6 +19,7 @@ import auth.telegram.Strings.Question.ChooseQuestionArea
 import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.questionAreaToString
+import auth.telegram.parsers.JsonParser
 import auth.telegram.queries.*
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
@@ -38,7 +39,6 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
-import auth.telegram.parsers.JsonParser
 
 val jsonParser: JsonParser = JsonParser()
 
