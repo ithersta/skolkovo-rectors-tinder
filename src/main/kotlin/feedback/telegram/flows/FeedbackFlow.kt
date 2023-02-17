@@ -2,6 +2,7 @@ package feedback.telegram.flows
 
 import auth.domain.entities.User
 import common.telegram.ButtonStrings
+import common.telegram.deleteAfterDelay
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
@@ -16,6 +17,8 @@ import feedback.telegram.queries.FeedbackQueries
 import generated.RoleFilterBuilder
 import generated.dataButton
 import generated.onDataCallbackQuery
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
@@ -38,9 +41,11 @@ fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
                     edit(message, text = Strings.shouldCloseQuestion(question.subject), replyMarkup = keyboard)
                 } else {
                     edit(message, text = Strings.IfSuccessful, replyMarkup = null)
+                    deleteAfterDelay(message)
                 }
             } else {
                 edit(message, text = Strings.IfUnsuccessful, replyMarkup = null)
+                deleteAfterDelay(message)
             }
             answer(query)
         }
@@ -50,12 +55,14 @@ fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
             val message = query.messageCallbackQueryOrNull()?.message
                 ?.withContent<TextContent>() ?: return@onDataCallbackQuery
             edit(message, text = Strings.QuestionClosed, replyMarkup = null)
+            deleteAfterDelay(message)
             answer(query)
         }
         onDataCallbackQuery(FeedbackQueries.DoNotCloseQuestion::class) { (_, query) ->
             val message = query.messageCallbackQueryOrNull()?.message
                 ?.withContent<TextContent>() ?: return@onDataCallbackQuery
-            edit(message, text = Strings.IfSuccessful, replyMarkup = null)
+            edit(message, text = Strings.QuestionNotClosed, replyMarkup = null)
+            deleteAfterDelay(message)
             answer(query)
         }
     }
