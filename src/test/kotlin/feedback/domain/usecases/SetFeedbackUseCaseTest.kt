@@ -19,7 +19,6 @@ internal class SetFeedbackUseCaseTest {
         val setFeedback = SetFeedbackUseCase(feedbackRepository, NoOpTransaction)
         assertEquals(SetFeedbackUseCase.Result.OK, setFeedback(sampleFromUserId, sampleResponseId, true))
         verify(exactly = 1) { feedbackRepository.setFeedback(sampleResponseId, true) }
-        verify(exactly = 1) { feedbackRepository.closeAssociatedQuestion(sampleResponseId) }
     }
 
     @Test
@@ -29,7 +28,6 @@ internal class SetFeedbackUseCaseTest {
         val setFeedback = SetFeedbackUseCase(feedbackRepository, NoOpTransaction)
         assertEquals(SetFeedbackUseCase.Result.OK, setFeedback(sampleFromUserId, sampleResponseId, false))
         verify(exactly = 1) { feedbackRepository.setFeedback(sampleResponseId, false) }
-        verify(exactly = 0) { feedbackRepository.closeAssociatedQuestion(any()) }
     }
 
     @Test

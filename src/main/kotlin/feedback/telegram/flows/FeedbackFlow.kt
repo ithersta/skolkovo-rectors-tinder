@@ -3,7 +3,7 @@ package feedback.telegram.flows
 import auth.domain.entities.User
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
-import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
+import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import feedback.domain.usecases.SetFeedbackUseCase
@@ -19,7 +19,7 @@ fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
         onDataCallbackQuery(FeedbackQuery.SendFeedback::class) { (data, query) ->
             val result = setFeedback(query.from.id.chatId, data.responseId, data.isSuccessful)
             if (result == SetFeedbackUseCase.Result.OK) {
-                val message = query.asMessageCallbackQuery()?.message
+                val message = query.messageCallbackQueryOrNull()?.message
                     ?.withContent<TextContent>() ?: return@onDataCallbackQuery
                 val text = if (data.isSuccessful) Strings.IfSuccessful else Strings.IfUnsuccessful
                 edit(message, text = text, replyMarkup = null)

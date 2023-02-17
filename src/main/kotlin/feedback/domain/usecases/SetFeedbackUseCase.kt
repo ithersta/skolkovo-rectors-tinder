@@ -17,9 +17,6 @@ class SetFeedbackUseCase(
     operator fun invoke(fromUserId: Long, responseId: Long, isSuccessful: Boolean) = transaction {
         if (feedbackRepository.getAuthorId(responseId) != fromUserId) return@transaction Result.Unauthorized
         feedbackRepository.setFeedback(responseId, isSuccessful)
-        if (isSuccessful) {
-            feedbackRepository.closeAssociatedQuestion(responseId)
-        }
         Result.OK
     }
 }
