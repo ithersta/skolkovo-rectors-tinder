@@ -17,8 +17,6 @@ import feedback.telegram.queries.FeedbackQueries
 import generated.RoleFilterBuilder
 import generated.dataButton
 import generated.onDataCallbackQuery
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
