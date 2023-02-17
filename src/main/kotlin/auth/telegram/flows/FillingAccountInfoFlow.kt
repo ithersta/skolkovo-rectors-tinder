@@ -38,7 +38,7 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
-import services.parsers.JsonParser
+import auth.telegram.parsers.JsonParser
 
 val jsonParser: JsonParser = JsonParser()
 

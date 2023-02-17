@@ -1,4 +1,4 @@
-package services.parsers
+package auth.telegram.parsers
 
 import auth.telegram.queries.*
 import com.jayway.jsonpath.DocumentContext
@@ -37,8 +37,6 @@ class JsonParser {
         return Regex(createList(pattern).joinToString(separator = "|"))
     }
 
-    val districtsRegex: Regex = createRegex(jsonpathDistrictsPattern)
-    val regionRegex: Regex = createRegex(jsonpathRegionPattern)
     val cityRegex: Regex = createRegex(jsonpathCityPattern)
 
     fun getCountries(): InlineKeyboardMarkup {
