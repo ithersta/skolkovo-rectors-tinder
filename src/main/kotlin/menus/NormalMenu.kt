@@ -38,8 +38,8 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             }
             button(
                 Strings.MenuButtons.Questions.InterestingQuestions,
-                DialogState.Empty
-            ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+                MenuState.CurrentIssues
+            ) // todo: ГЛЕБ
         }
         button(
             Strings.MenuButtons.Questions.Ask,
@@ -49,11 +49,11 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     button(
         Strings.MenuButtons.Notifications.Main,
         MenuState.Notifications
-    ) // /TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
+    )
     // /если оповещения включены, и "возобновить", если оповещения выключены
-    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo) // //TODO: это я потом реализую
+    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo)
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
-    ) // /TODO: в этом стейте Глебу реализовать логику вывода мероприятий
+    )
 }

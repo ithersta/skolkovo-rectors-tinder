@@ -79,11 +79,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             sendTextMessage(
                 it,
                 ChooseCity
-                // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             )
         }
         onText {
-            // //TODO: здесь внедрить часть Глеба с выбором города из сложного кнопочного меню
             val city =
                 it.content.text // /мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
             state.override { WriteProfessionState(phoneNumber, name, city) }

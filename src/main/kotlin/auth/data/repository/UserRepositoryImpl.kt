@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.koin.core.annotation.Single
+import qna.domain.entities.QuestionArea
 
 @Single
 class UserRepositoryImpl : UserRepository {
@@ -30,7 +31,7 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun get(id: Long): User.Details? {
-        val areas = UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
+        val areas: Set<QuestionArea> = UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
         return Users.select { Users.id eq id }.firstOrNull()?.let {
             User.Details(
                 id = it[Users.id].value,
@@ -52,5 +53,9 @@ class UserRepositoryImpl : UserRepository {
 
     override fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean {
         return Users.select { Users.phoneNumber eq phoneNumber.value }.empty().not()
+    }
+
+    override fun getAreasByChatId(id: Long): Set<QuestionArea> {
+        return UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
     }
 }
