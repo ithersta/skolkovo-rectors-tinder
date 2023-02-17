@@ -14,7 +14,6 @@ class JsonParser {
 
     private val jsonpathCountiesPattern: String = "$..country"
     private val jsonpathDistrictsPattern: String = "$..district"
-    private val jsonpathRegionPattern: String = "$..region"
     private val jsonpathCityPattern: String = "$..city"
 
     private fun jsonpathCitiesInCISByCountry(country: String): String {
