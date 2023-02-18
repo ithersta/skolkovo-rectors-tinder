@@ -28,25 +28,9 @@ import kotlin.time.Duration.Companion.days
 
 fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
     val insertMuteSettingsUseCase: InsertMuteSettingsUseCase by inject()
-    val containsByIdMuteSettingsUseCase: ContainsByIdMuteSettingsUseCase by inject()
     val deleteMuteSettingsUseCase: DeleteMuteSettingsUseCase by inject()
     role<User.Normal> {
-        state<MenuState.Notifications> {
-            onEnter { user ->
-                sendTextMessage(
-                    user.toChatId(),
-                    auth.telegram.Strings.MenuButtons.Notifications.Description,
-                    replyMarkup = inlineKeyboard {
-                        row {
-                            if (containsByIdMuteSettingsUseCase(user.chatId)) {
-                                dataButton(auth.telegram.Strings.MenuButtons.Notifications.On, OnOffMuteQuery(true))
-                            } else {
-                                dataButton(auth.telegram.Strings.MenuButtons.Notifications.Off, OnOffMuteQuery(false))
-                            }
-                        }
-                    }
-                )
-            }
+        anyState {
             onDataCallbackQuery(OnOffMuteQuery::class) { (data, message) ->
                 editMessageReplyMarkup(
                     message.asMessageCallbackQuery()?.message?.withContent<TextContent>() ?: return@onDataCallbackQuery,
@@ -80,8 +64,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                 insertMuteSettingsUseCase(message.user.id.chatId, data.duration)
                 state.override { DialogState.Empty }
             }
-        }
-        anyState {
             onDataCallbackQuery(YesNoMuteQuery::class) { (data, message) ->
                 editMessageReplyMarkup(
                     message.asMessageCallbackQuery()?.message?.withContent<TextContent>() ?: return@onDataCallbackQuery,
