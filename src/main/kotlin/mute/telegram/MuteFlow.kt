@@ -2,7 +2,6 @@ package mute.telegram
 
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
-import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -11,13 +10,11 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.message.content.TextContent
-import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import mute.Strings
-import mute.domain.usecases.ContainsByIdMuteSettingsUseCase
 import mute.domain.usecases.DeleteMuteSettingsUseCase
 import mute.domain.usecases.InsertMuteSettingsUseCase
 import mute.telegram.queries.DurationMuteQuery

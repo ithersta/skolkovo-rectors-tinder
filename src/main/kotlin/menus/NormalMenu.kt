@@ -5,13 +5,10 @@ import auth.telegram.Strings
 import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import common.telegram.DialogState
-import dev.inmo.tgbotapi.extensions.api.bot.getMe
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.formatting.makeDeepLink
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
-import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.menu
@@ -73,7 +70,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     ) // /TODO: в этом стейте Глебу реализовать логику вывода мероприятий
 }
 
-private suspend fun <S: User> StatefulContext<DialogState, User, *, S>.sendMuteRequest(message: CommonMessage<TextContent>) {
+private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendMuteRequest(message: CommonMessage<TextContent>) {
     sendTextMessage(
         message.chat,
         Strings.MenuButtons.Notifications.Description,
