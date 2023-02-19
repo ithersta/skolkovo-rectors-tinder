@@ -1,8 +1,8 @@
 package auth.data.repository
 
 import auth.data.tables.UserAreas
-import mute.data.entities.MuteSettings
 import auth.domain.repository.UserAreasRepository
+import mute.data.entities.MuteSettings
 import org.jetbrains.exposed.sql.except
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
