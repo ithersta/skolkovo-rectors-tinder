@@ -13,7 +13,6 @@ import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
@@ -215,7 +214,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 message.chat,
                 Strings.Question.Success
             )
-            // TODO: не отправляется с inline, но отправляется с reply
             coroutineScope.launch {
                 val listOfValidUsers: List<Long> =
                     getUsersByAreaUseCase(
@@ -232,8 +230,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                                     dataButton(
                                         ButtonStrings.Option.Yes,
                                         AcceptQuestionQuery(1)
-                                    ) // вот тут я не совсем понимаю, как работает
-                                    // мб из-за этого не отправляет
+                                    )
                                 }
                                 row {
                                     dataButton(

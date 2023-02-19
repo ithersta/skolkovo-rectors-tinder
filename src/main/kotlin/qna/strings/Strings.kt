@@ -2,7 +2,6 @@ package qna.strings
 
 object Strings {
     object ToAnswerUser {
-
         // TODO: придумать вид тема+вопрос
         fun message(subject: String, question: String) = "Добрый день, один из участников сообщества хотел бы " +
             "выйти в коммуникацию по следующему вопросу: $subject\n" +
