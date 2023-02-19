@@ -12,6 +12,7 @@ import common.telegram.DialogState
 import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
+import event.telegram.eventFlow
 import menus.adminMenu
 import menus.normalMenu
 import qna.flows.askQuestionFlow
@@ -47,5 +48,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Admin> {
         with(adminMenu) { invoke() }
     }
+    eventFlow()
     fallback()
 }
