@@ -4,7 +4,6 @@ import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
-import auth.telegram.Strings.AccountInfo.ChooseCity
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.NoProfessionalArea
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
@@ -20,10 +19,11 @@ import auth.telegram.Strings.Question.ChooseQuestionArea
 import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.questionAreaToString
+import auth.telegram.parsers.JsonParser
 import auth.telegram.queries.*
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.entities.triggers.*
+import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
@@ -39,6 +39,8 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.entities.QuestionArea
+
+val jsonParser: JsonParser = JsonParser()
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
@@ -71,22 +73,85 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
         onText {
             val name = it.content.text
-            state.override { ChooseCityState(phoneNumber, name) }
+            state.override { ChooseCountry(phoneNumber, name) }
         }
     }
-    state<ChooseCityState> {
+    state<ChooseCountry> {
         onEnter {
             sendTextMessage(
                 it,
-                ChooseCity
+                Strings.AccountInfo.ChooseCountry,
+                replyMarkup = jsonParser.getCountries()
             )
         }
-        onText {
-            val city =
-                it.content.text // /мб если хранить все города листом, то город учстника хранить не словами, а номером в листе?
-            state.override { WriteProfessionState(phoneNumber, name, city) }
+        onDataCallbackQuery(SelectCountryQuery::class) { (data, query) ->
+            when (data.country) {
+                "\uD83C\uDDF7\uD83C\uDDFA" -> {
+                    state.override { ChooseDistrict(state.snapshot.phoneNumber, state.snapshot.name) }
+                }
+                else -> {
+                    state.override { ChooseCityInCIS(state.snapshot.phoneNumber, state.snapshot.name, data.country) }
+                }
+            }
+            answer(query)
         }
     }
+    state<ChooseCityInCIS> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.AccountInfo.ChooseCity,
+                replyMarkup = jsonParser.getCitiesFromCIS(state.snapshot.city)
+            )
+        }
+        onDataCallbackQuery(SelectCityInCIS::class) { (data, query) ->
+            state.override { WriteProfessionState(state.snapshot.phoneNumber, state.snapshot.name, data.city) }
+            answer(query)
+        }
+    }
+    state<ChooseDistrict> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.AccountInfo.ChooseDistrict,
+                replyMarkup = jsonParser.getDistricts()
+            )
+        }
+        onDataCallbackQuery(SelectDistrict::class) { (data, query) ->
+            state.override { ChooseRegion(state.snapshot.phoneNumber, state.snapshot.name, data.district) }
+            answer(query)
+        }
+    }
+    state<ChooseRegion> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.AccountInfo.ChooseRegion,
+                replyMarkup = jsonParser.getRegionsByDistrict(state.snapshot.district)
+            )
+        }
+        onDataCallbackQuery(SelectRegion::class) { (data, query) ->
+            state.override { ChooseCity(state.snapshot.phoneNumber, state.snapshot.name, data.region) }
+            answer(query)
+        }
+    }
+    state<ChooseCity> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.AccountInfo.ChooseCity,
+                replyMarkup = jsonParser.getCitiesByRegion(state.snapshot.region)
+            )
+        }
+        onDataCallbackQuery(SelectCity::class) { (data, query) ->
+            val city: String = data.city
+            if (jsonParser.cityRegex.matches(city)) {
+                state.override { WriteProfessionState(state.snapshot.phoneNumber, state.snapshot.name, city) }
+            }
+            answer(query)
+        }
+    }
+
     state<WriteProfessionState> {
         onEnter {
             sendTextMessage(

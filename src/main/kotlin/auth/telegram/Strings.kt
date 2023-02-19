@@ -11,6 +11,9 @@ object Strings {
     val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
     object AccountInfo {
+        val ChooseCountry = "Укажите из какой Вы страны"
+        val ChooseDistrict = "Укажите из какого Вы округа"
+        val ChooseRegion = "Укажите из какого Вы региона"
         val WriteName = "Введите своё имя"
         val ChooseCity =
             "Укажите из какого Вы города " // /мб надо будет поменять, с указанием, что надо выбрать из выпадающего списка
