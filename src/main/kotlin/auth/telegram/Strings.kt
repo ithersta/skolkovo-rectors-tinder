@@ -12,11 +12,10 @@ object Strings {
 
     object AccountInfo {
         const val WriteName = "Введите своё имя"
-        val ChooseCountry = "Укажите из какой Вы страны"
-        val ChooseDistrict = "Укажите из какого Вы округа"
-        val ChooseRegion = "Укажите из какого Вы региона"
-        val WriteName = "Введите своё имя"
-        val ChooseCity =
+        const val ChooseCountry = "Укажите из какой Вы страны"
+        const val ChooseDistrict = "Укажите из какого Вы округа"
+        const val ChooseRegion = "Укажите из какого Вы региона"
+        const val ChooseCity =
             "Укажите из какого Вы города " // /мб надо будет поменять, с указанием, что надо выбрать из выпадающего списка
         const val WriteProfession = "Напишите Вашу должность"
         const val WriteOrganization = "Напишите название Вашей организации"
