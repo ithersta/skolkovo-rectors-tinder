@@ -14,7 +14,7 @@ val normalMenu = menu<User.Normal>(Strings.RoleMenu.Normal, DialogState.Empty) {
 fun <S : User.Normal> MenuBuilder<DialogState, User, S>.extracted() {
     submenu(
         Strings.MenuButtons.Questions.Question,
-        Strings.MenuButtons.Questions.QuestionDesciption,
+        Strings.MenuButtons.Questions.QuestionDescription,
         MenuState.Questions.Main
     ) {
         submenu(

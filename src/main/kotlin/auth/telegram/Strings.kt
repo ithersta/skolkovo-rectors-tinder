@@ -91,7 +91,7 @@ object Strings {
 
         object Questions {
             const val Question = "Вопрос"
-            const val QuestionDesciption = "Выберите, что вы хотите сделать"
+            const val QuestionDescription = "Выберите, что вы хотите сделать"
             const val Ask = "Задать вопрос сообществу"
             const val Get = "Получить список вопросов"
             const val Description = "Выберите категорию вопроса"
