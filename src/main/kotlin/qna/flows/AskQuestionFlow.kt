@@ -202,7 +202,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
     state<SendQuestionToCommunity> {
         onEnter {
-            // TODO: придумать текст
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
