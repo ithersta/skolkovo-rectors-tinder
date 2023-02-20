@@ -18,9 +18,19 @@ object Strings {
 
     object ToAskUser {
         // TODO: придумать вид профиля участника
-        fun message(profile: String) = "Профиль участника сообщества, согласившегося ответить вам - " +
-            "$profile Вы согласны пообщаться?"
+        // Профиль состоит из:
+        // Имя
+        // Город
+        // Должность
+        // Организация
+        // Профессиональные зоны компетенции
+        // Деятельность
+        fun message(name: String, city: String, job: String, organisation: String, profAreas: String, activityDescr: String ) =
+            buildEntities {
+                regular("Профиль участника сообщества, согласившегося ответить вам:")
 
+                boldln("Вы согласны пообщаться?")
+            }
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
             "и формате встречи - онлайн или оффлайн. А через неделю мы напишем Вам как все прошло."
         const val CopyQuestion = "Скопируйте вопрос для отправки собеседнику"

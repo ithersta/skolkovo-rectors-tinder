@@ -11,3 +11,12 @@ class AcceptQuestionQuery(val questionId: Long) : Query
 @Serializable
 @SerialName("d")
 object DeclineQuestionQuery : Query
+
+@Serializable
+@SerialName("ac")
+object AcceptUserQuery : Query
+
+@Serializable
+@SerialName("de")
+object DeclineUserQuery : Query
+

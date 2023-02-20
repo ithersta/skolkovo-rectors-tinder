@@ -1,6 +1,7 @@
 package qna.flows
 
 import auth.domain.entities.User
+import auth.domain.usecases.GetUserUseCase
 import auth.telegram.queries.FinishQuestionQuery
 import auth.telegram.queries.SelectQuestionQuery
 import auth.telegram.queries.UnselectQuestionQuery
@@ -35,12 +36,15 @@ import qna.states.*
 import qna.strings.ButtonStrings
 import qna.strings.Strings
 import qna.telegram.queries.AcceptQuestionQuery
+import qna.telegram.queries.AcceptUserQuery
 import qna.telegram.queries.DeclineQuestionQuery
+import qna.telegram.queries.DeclineUserQuery
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getUserIdUseCase: GetUserIdUseCase by inject()
+    val getUserUseCase: GetUserUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -268,12 +272,27 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.ToAnswerUser.SentAgreement
             )
             coroutineScope.launch {
+                val userId = getUserIdUseCase(questionId.questionId)
+                val user = getUserUseCase(userId)
                 sendTextMessage(
-                    getUserIdUseCase(questionId.questionId).toChatId(),
-                    "Профиль пользователя, который вам ответит на вопрос"
+                    userId.toChatId(),
+                    "тестовое сообщение",
+                    //Strings.ToAskUser.message(), //тут нужно из user всю инфу вытянуть + как-то отправлять ссылку на его профиль
+                    replyMarkup = inlineKeyboard {
+                        row{
+                            dataButton(
+                                ButtonStrings.Option.Yes, //отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
+                                AcceptUserQuery           //тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
+                            )
+                        }
+                        row{
+                            dataButton(
+                                ButtonStrings.Option.No, //отправлять спс, но не нужна помощь
+                                DeclineUserQuery
+                            )
+                        }
+                    }
                 )
-                //отправка сообщения о профиле пользователя, который согласился ответить
-                //тоже query (Да/Нет) - там 2 разных сообщения отправляется согласившемуся ответить
             }
         }
     }
