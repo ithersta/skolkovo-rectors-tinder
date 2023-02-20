@@ -6,7 +6,7 @@ import qna.domain.repository.QuestionRepository
 class AddQuestionUseCase(
     private val questionRepository: QuestionRepository
 ) {
-    operator fun invoke (questionDetails: Question.Details) {
+    operator fun invoke(questionDetails: Question.Details) {
         questionRepository.add(questionDetails)
     }
 }

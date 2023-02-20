@@ -1,10 +1,10 @@
 package qna.data.repository
 
-import qna.domain.entities.Question
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insertAndGetId
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
+import qna.domain.entities.Question
 import qna.domain.repository.QuestionRepository
 
 class QuestionRepositoryImpl : QuestionRepository {
