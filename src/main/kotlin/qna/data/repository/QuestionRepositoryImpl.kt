@@ -10,7 +10,7 @@ import qna.domain.repository.QuestionRepository
 
 @Single
 class QuestionRepositoryImpl : QuestionRepository {
-    override fun add(question: Question.Details) : Long {
+    override fun add(question: Question.Details): Long {
         val id = Questions.insertAndGetId {
             it[authorId] = question.authorId
             it[intent] = question.intent
