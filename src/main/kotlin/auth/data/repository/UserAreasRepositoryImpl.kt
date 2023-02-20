@@ -16,7 +16,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
         return UserAreas
             .join(QuestionAreas, JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area })
             .join(Questions, JoinType.INNER, additionalConstraint = { Questions.id eq QuestionAreas.questionId })
-            .select(where = UserAreas.userId eq userId and  Questions.isClosed.eq(false))
+            .select(where = UserAreas.userId eq userId and Questions.isClosed.eq(false))
             .filterNot { userId == it[Questions.authorId].value }
             .map { it[Questions.subject] }
             .distinct()
