@@ -1,7 +1,4 @@
-package auth.domain.entities
-
-import qna.domain.entities.QuestionArea
-import qna.domain.entities.QuestionIntent
+package qna.domain.entities
 
 sealed interface Question {
     data class Details(
@@ -9,6 +6,7 @@ sealed interface Question {
         val intent: QuestionIntent,
         val subject: String,
         val text: String,
+        val isClosed: Boolean,
         val areas: Set<QuestionArea>
     )
 }

@@ -25,8 +25,10 @@ import generated.onDataCallbackQuery
 import kotlinx.coroutines.launch
 import menus.states.MenuState
 import org.koin.core.component.inject
+import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
+import qna.domain.usecases.AddQuestionUseCase
 import qna.domain.usecases.GetUsersByAreaUseCase
 import qna.states.*
 import qna.strings.ButtonStrings
@@ -36,7 +38,7 @@ import qna.telegram.queries.DeclineQuestionQuery
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
-
+    val addQuestionUseCase: AddQuestionUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -208,7 +210,15 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText(ButtonStrings.SendQuestion) { message ->
-            // TODO добавление вопроса в бд
+            val details = Question.Details(
+                message.chat.id.chatId,
+                state.snapshot.intent,
+                state.snapshot.subject,
+                state.snapshot.question,
+                false,
+                state.snapshot.areas
+            )
+            addQuestionUseCase(details)
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
