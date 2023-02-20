@@ -237,7 +237,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                                     row {
                                         dataButton(
                                             ButtonStrings.Option.Yes,
-                                            //TODO тут получать id вопроса по его теме или по всем полям из questions?
+                                            // TODO тут получать id вопроса по его теме или по всем полям из questions?
                                             AcceptQuestionQuery(1)
                                         )
                                     }
@@ -261,8 +261,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val message = query.messageCallbackQueryOrNull()?.message ?: return@onDataCallbackQuery
             delete(message)
         }
-        //onDataCallbackQuery(AcceptQuestionQuery::class)  {
+        // onDataCallbackQuery(AcceptQuestionQuery::class)  {
 //
-      //  }
+        //  }
     }
 }
