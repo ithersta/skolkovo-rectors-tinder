@@ -25,7 +25,7 @@ object Strings {
         // Организация
         // Профессиональные зоны компетенции
         // Деятельность
-        fun message(name: String, city: String, job: String, organisation: String, profAreas: String, activityDescr: String ) =
+        fun message(name: String, city: String, job: String, organisation: String, profAreas: String, activityDescr: String) =
             buildEntities {
                 regular("Профиль участника сообщества, согласившегося ответить вам:")
 
