@@ -2,8 +2,8 @@ package qna.data.repository
 
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insertAndGetId
-import org.koin.core.annotation.Single
 import org.jetbrains.exposed.sql.select
+import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.domain.entities.Question
@@ -27,7 +27,6 @@ class QuestionRepositoryImpl : QuestionRepository {
     }
 
     override fun getUserId(questionId: Long): Long {
-        return Questions.select{ Questions.id eq questionId}.map{it[Questions.authorId]}.first().value
+        return Questions.select { Questions.id eq questionId }.map { it[Questions.authorId] }.first().value
     }
-
 }
