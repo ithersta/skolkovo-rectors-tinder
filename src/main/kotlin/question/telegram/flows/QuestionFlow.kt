@@ -1,33 +1,36 @@
 package question.telegram.flows
 
 import auth.domain.entities.User
+import auth.telegram.queries.SelectSubject
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.toChatId
+import dev.inmo.tgbotapi.utils.row
+import generated.dataButton
 import menus.states.MenuState
 import org.koin.core.component.inject
-import qna.domain.usecase.GetUserIdUserCase
-import qna.domain.usecase.QuestionsUseCase
+import qna.domain.usecase.UserAreasUseCase
+
 
 fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
-    val questions: QuestionsUseCase by inject()
-    val getUserId: GetUserIdUserCase by inject()
+    val user: UserAreasUseCase by inject()
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
             onEnter {
-                val chatId = it.toChatId()
-                val text: String = ""
-                for (area in getUserId(chatId.chatId)) {
-                    println(area)
-                    text.plus(questions.invoke(userSubject = area.toString()))
-                }
-                println(text)
                 sendTextMessage(
                     it.toChatId(),
-                    text
+                    "Вопросы на вашим сферам",
+                    replyMarkup = inlineKeyboard {
+                        user.invoke(it.chatId).forEach {
+                            row {
+                                dataButton(it, SelectSubject(it))
+                            }
+                        }
+                    }
                 )
             }
         }

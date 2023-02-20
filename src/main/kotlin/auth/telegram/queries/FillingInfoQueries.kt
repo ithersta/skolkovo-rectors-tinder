@@ -48,3 +48,7 @@ class SelectRegion(val region: String) : Query
 @Serializable
 @SerialName("city")
 class SelectCity(val city: String) : Query
+
+@Serializable
+@SerialName("su")
+class SelectSubject(val subject: String) : Query
