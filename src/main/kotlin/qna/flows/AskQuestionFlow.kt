@@ -29,6 +29,7 @@ import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.AddQuestionUseCase
+import qna.domain.usecases.GetUserIdUseCase
 import qna.domain.usecases.GetUsersByAreaUseCase
 import qna.states.*
 import qna.strings.ButtonStrings
@@ -39,6 +40,7 @@ import qna.telegram.queries.DeclineQuestionQuery
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
     val addQuestionUseCase: AddQuestionUseCase by inject()
+    val getUserIdUseCase: GetUserIdUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -260,8 +262,19 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val message = query.messageCallbackQueryOrNull()?.message ?: return@onDataCallbackQuery
             delete(message)
         }
-        //onDataCallbackQuery(AcceptQuestionQuery::class)  {
-//
-      //  }
+        onDataCallbackQuery(AcceptQuestionQuery::class) { (questionId, query) ->
+            sendTextMessage(
+                query.user.id,
+                Strings.ToAnswerUser.SentAgreement
+            )
+            coroutineScope.launch {
+                sendTextMessage(
+                    getUserIdUseCase(questionId.questionId).toChatId(),
+                    "Профиль пользователя, который вам ответит на вопрос"
+                )
+                //отправка сообщения о профиле пользователя, который согласился ответить
+                //тоже query (Да/Нет) - там 2 разных сообщения отправляется согласившемуся ответить
+            }
+        }
     }
 }

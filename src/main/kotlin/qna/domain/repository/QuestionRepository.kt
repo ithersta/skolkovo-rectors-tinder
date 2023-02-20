@@ -4,4 +4,5 @@ import qna.domain.entities.Question
 
 interface QuestionRepository {
     fun add(question: Question.Details): Long
+    fun getUserId(questionId: Long): Long
 }
