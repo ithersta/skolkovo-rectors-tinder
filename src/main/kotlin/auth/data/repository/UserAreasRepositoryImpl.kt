@@ -12,13 +12,13 @@ import qna.data.tables.Questions
 
 @Single
 class UserAreasRepositoryImpl : UserAreasRepository {
-    override fun getSubjectsByChatId(userId: Long): Set<String> {
-        // todo: toSet временное решение тк удаляет все сферы которые похожи по названию, что не есть хорошо, но пока нет умных решений
+    override fun getSubjectsByChatId(userId: Long): List<String> {
         return UserAreas
             .join(QuestionAreas, JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area })
             .join(Questions, JoinType.INNER, additionalConstraint = { Questions.id eq QuestionAreas.questionId })
-            .select(where = UserAreas.userId eq userId and Questions.isClosed.eq(false))
+            .select(where = UserAreas.userId eq userId and  Questions.isClosed.eq(false))
+            .filterNot { userId == it[Questions.authorId].value }
             .map { it[Questions.subject] }
-            .toSet()
+            .distinct()
     }
 }

@@ -9,7 +9,7 @@ class UserAreasUseCase(
     private val userAreasRepository: UserAreasRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(userId: Long): Set<String> = transaction {
+    operator fun invoke(userId: Long): List<String> = transaction {
         return@transaction userAreasRepository.getSubjectsByChatId(userId)
     }
 }
