@@ -1,7 +1,7 @@
-package auth.data.repository
+package qna.data.repository
 
 import auth.data.tables.UserAreas
-import auth.domain.repository.UserAreasRepository
+import qna.domain.repository.UserAreasRepository
 import mute.data.entities.MuteSettings
 import org.jetbrains.exposed.sql.except
 import org.jetbrains.exposed.sql.select

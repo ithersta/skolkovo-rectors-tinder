@@ -1,6 +1,6 @@
 package qna.domain.usecases
 
-import auth.domain.repository.UserAreasRepository
+import qna.domain.repository.UserAreasRepository
 import org.koin.core.annotation.Single
 import qna.domain.entities.QuestionArea
 

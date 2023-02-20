@@ -209,37 +209,38 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         }
         onText(ButtonStrings.SendQuestion) { message ->
             // TODO добавление вопроса в бд
-
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
             )
             coroutineScope.launch {
-                val listOfValidUsers: List<Long> =
-                    getUsersByAreaUseCase(
-                        QuestionArea.Education, // заменить на areas из state (forEach и тд)
-                        userId = message.chat.id.chatId
-                    )
-                listOfValidUsers.forEach {
-                    runCatching {
-                        sendTextMessage(
-                            it.toChatId(),
-                            Strings.ToAnswerUser.message(state.snapshot.subject, state.snapshot.question),
-                            replyMarkup = inlineKeyboard {
-                                row {
-                                    dataButton(
-                                        ButtonStrings.Option.Yes,
-                                        AcceptQuestionQuery(1)
-                                    )
-                                }
-                                row {
-                                    dataButton(
-                                        ButtonStrings.Option.No,
-                                        DeclineQuestionQuery
-                                    )
-                                }
-                            }
+                state.snapshot.areas.forEach {
+                    val listOfValidUsers: List<Long> =
+                        getUsersByAreaUseCase(
+                            it,
+                            userId = message.chat.id.chatId
                         )
+                    listOfValidUsers.forEach {
+                        runCatching {
+                            sendTextMessage(
+                                it.toChatId(),
+                                Strings.ToAnswerUser.message(state.snapshot.subject, state.snapshot.question),
+                                replyMarkup = inlineKeyboard {
+                                    row {
+                                        dataButton(
+                                            ButtonStrings.Option.Yes,
+                                            AcceptQuestionQuery(1)
+                                        )
+                                    }
+                                    row {
+                                        dataButton(
+                                            ButtonStrings.Option.No,
+                                            DeclineQuestionQuery
+                                        )
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }
