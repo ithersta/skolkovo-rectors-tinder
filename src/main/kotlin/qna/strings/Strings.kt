@@ -1,12 +1,16 @@
 package qna.strings
 
+import dev.inmo.tgbotapi.utils.*
+
 object Strings {
     object ToAnswerUser {
-        // TODO: придумать вид тема+вопрос
-        fun message(subject: String, question: String) = "Добрый день, один из участников сообщества хотел бы " +
-            "выйти в коммуникацию по следующему вопросу: $subject\n" +
-            " $question. Готовы ответить?"
-
+        fun message(subject: String, question: String) =
+            buildEntities {
+                regular("Добрый день, один из участников сообщества хотел бы выйти в коммуникацию по следующему вопросу:\n\n" )
+                boldln(subject)
+                regularln(question + "\n")
+                boldln("Готовы ответить?")
+            }
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
         const val WaitingForCompanion = "Владелец вопроса свяжется с Вами."
         const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"

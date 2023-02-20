@@ -188,8 +188,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 }
 
                 else -> {
-                    // TODO: сообщение, что необходимо выбрать из кнопочного меню
-                    // надо придумать, как лучше будет отправлять
                     sendTextMessage(message.chat, Strings.Question.InvalidQuestionIntent)
                     state.override { ChooseQuestionIntent(subject, question, areas) }
                 }
@@ -239,6 +237,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                                     row {
                                         dataButton(
                                             ButtonStrings.Option.Yes,
+                                            //TODO тут получать id вопроса по его теме или по всем полям из questions?
                                             AcceptQuestionQuery(1)
                                         )
                                     }
@@ -262,5 +261,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val message = query.messageCallbackQueryOrNull()?.message ?: return@onDataCallbackQuery
             delete(message)
         }
+        //onDataCallbackQuery(AcceptQuestionQuery::class)  {
+//
+      //  }
     }
 }
