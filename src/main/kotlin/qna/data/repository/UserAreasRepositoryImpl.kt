@@ -1,13 +1,13 @@
 package qna.data.repository
 
 import auth.data.tables.UserAreas
-import qna.domain.repository.UserAreasRepository
 import mute.data.entities.MuteSettings
 import org.jetbrains.exposed.sql.except
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.koin.core.annotation.Single
 import qna.domain.entities.QuestionArea
+import qna.domain.repository.UserAreasRepository
 
 @Single
 class UserAreasRepositoryImpl : UserAreasRepository {

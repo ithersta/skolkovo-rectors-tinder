@@ -1,8 +1,8 @@
 package qna.domain.usecases
 
-import qna.domain.repository.UserAreasRepository
 import org.koin.core.annotation.Single
 import qna.domain.entities.QuestionArea
+import qna.domain.repository.UserAreasRepository
 
 @Single
 class GetUsersByAreaUseCase(
