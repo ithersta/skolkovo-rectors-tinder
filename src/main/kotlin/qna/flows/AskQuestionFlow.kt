@@ -196,6 +196,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
     state<SendQuestionToCommunity> {
         onEnter {
+            // TODO: придумать текст
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
@@ -259,8 +260,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val message = query.messageCallbackQueryOrNull()?.message ?: return@onDataCallbackQuery
             delete(message)
         }
-        onDataCallbackQuery(AcceptQuestionQuery::class)  {
-
-        }
+        //onDataCallbackQuery(AcceptQuestionQuery::class)  {
+//
+      //  }
     }
 }

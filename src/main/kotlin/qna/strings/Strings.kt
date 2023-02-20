@@ -6,7 +6,7 @@ object Strings {
     object ToAnswerUser {
         fun message(subject: String, question: String) =
             buildEntities {
-                regular("Добрый день, один из участников сообщества хотел бы выйти в коммуникацию по следующему вопросу:\n\n" )
+                regular("Добрый день, один из участников сообщества хотел бы выйти в коммуникацию по следующему вопросу:\n\n")
                 boldln(subject)
                 regularln(question + "\n")
                 boldln("Готовы ответить?")
