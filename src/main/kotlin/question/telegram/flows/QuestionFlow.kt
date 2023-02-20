@@ -15,7 +15,6 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.usecase.UserAreasUseCase
 
-
 fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     val user: UserAreasUseCase by inject()
     role<User.Normal> {
