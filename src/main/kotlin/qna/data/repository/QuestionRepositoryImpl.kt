@@ -1,11 +1,11 @@
 package qna.data.repository
 
-import qna.domain.entities.Question
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
+import qna.domain.entities.Question
 import qna.domain.repository.QuestionRepository
 
 @Single
