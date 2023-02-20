@@ -10,7 +10,7 @@ import qna.domain.repository.QuestionRepository
 
 @Single
 class QuestionRepositoryImpl : QuestionRepository {
-    override fun add(question: Question.Details) {
+    override fun add(question: Question.Details) : Long {
         val id = Questions.insertAndGetId {
             it[authorId] = question.authorId
             it[intent] = question.intent
@@ -22,9 +22,6 @@ class QuestionRepositoryImpl : QuestionRepository {
             this[QuestionAreas.questionId] = id
             this[QuestionAreas.area] = it
         }
-    }
-
-    override fun get(userId: Long): Question.Details? {
-        TODO("Not yet implemented")
+        return id.value
     }
 }

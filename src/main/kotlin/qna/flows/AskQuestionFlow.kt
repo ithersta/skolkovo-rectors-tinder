@@ -196,7 +196,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
     state<SendQuestionToCommunity> {
         onEnter {
-            // TODO: придумать текст
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
@@ -216,7 +215,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 false,
                 state.snapshot.areas
             )
-            addQuestionUseCase(details)
+            val questionId = addQuestionUseCase(details)
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
@@ -237,8 +236,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                                     row {
                                         dataButton(
                                             ButtonStrings.Option.Yes,
-                                            //TODO тут получать id вопроса по его теме или по всем полям из questions?
-                                            AcceptQuestionQuery(1)
+                                            AcceptQuestionQuery(questionId)
                                         )
                                     }
                                     row {
@@ -261,8 +259,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val message = query.messageCallbackQueryOrNull()?.message ?: return@onDataCallbackQuery
             delete(message)
         }
-        //onDataCallbackQuery(AcceptQuestionQuery::class)  {
-//
-      //  }
+        onDataCallbackQuery(AcceptQuestionQuery::class)  {
+
+        }
     }
 }
