@@ -19,4 +19,3 @@ object AcceptUserQuery : Query
 @Serializable
 @SerialName("de")
 object DeclineUserQuery : Query
-
