@@ -40,7 +40,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                 )
             }
             onDataCallbackQuery(SelectSubject::class) { (data, query) ->
-//                todo: state
                 sendTextMessage(
                     query.user.id,
                     textByQuestionId.invoke(data.questionId),
@@ -54,7 +53,16 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                 )
                 answer(query)
             }
+            onDataCallbackQuery(AnswerUser::class) { (data, query) ->
+                if (data.answer == "Нет") {
+                    state.override { DialogState.Empty }
+                } else {
+                    sendTextMessage(
+                        query.user.id,
+                        "text"
+                    )
+                }
+            }
         }
-//        state<> {  }
     }
 }
