@@ -31,6 +31,6 @@ class QuestionRepositoryImpl : QuestionRepository {
     }
 
     override fun getTextById(questionId: Long): String {
-        return Questions.select {Questions.id eq questionId}.map{it[Questions.text]}.first()
+        return Questions.select { Questions.id eq questionId }.map { it[Questions.text] }.first()
     }
 }
