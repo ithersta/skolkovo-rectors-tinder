@@ -1,7 +1,6 @@
 package qna.flows
 
 import auth.domain.entities.User
-import auth.domain.usecases.GetUserUseCase
 import auth.telegram.queries.FinishQuestionQuery
 import auth.telegram.queries.SelectQuestionQuery
 import auth.telegram.queries.UnselectQuestionQuery
@@ -286,23 +285,23 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                             user.activityDescription
                         ),
                         replyMarkup = inlineKeyboard {
-                            row{
+                            row {
                                 dataButton(
-                                    ButtonStrings.Option.Yes, //отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
-                                    AcceptUserQuery           //тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
+                                    ButtonStrings.Option.Yes, // отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
+                                    AcceptUserQuery // тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
                                 )
                             }
-                            row{
+                            row {
                                 dataButton(
-                                    ButtonStrings.Option.No, //отправлять спс, но не нужна помощь
+                                    ButtonStrings.Option.No, // отправлять спс, но не нужна помощь
                                     DeclineUserQuery
                                 )
                             }
                         }
                     )
                 }
-                //отправка сообщения о профиле пользователя, который согласился ответить
-                //тоже query (Да/Нет) - там 2 разных сообщения отправляется согласившемуся ответить
+                // отправка сообщения о профиле пользователя, который согласился ответить
+                // тоже query (Да/Нет) - там 2 разных сообщения отправляется согласившемуся ответить
             }
             answer(query)
         }

@@ -25,7 +25,7 @@ object Strings {
         // Организация
         // Профессиональные зоны компетенции
         // Деятельность
-        fun message(name: String, city: String, job: String, organisation: String, activityDescr: String ) =
+        fun message(name: String, city: String, job: String, organisation: String, activityDescr: String) =
             buildEntities {
                 regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
                 bold("Имя: ")
