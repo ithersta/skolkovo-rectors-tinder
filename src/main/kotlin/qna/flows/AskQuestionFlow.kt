@@ -11,6 +11,7 @@ import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
+import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
@@ -43,6 +44,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val getUserIdUseCase: GetUserIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val getQuestionTextByIdUseCase: GetQuestionTextByIdUseCase by inject()
+    val getPhoneNumberUseCase: GetPhoneNumberUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -296,6 +298,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                                 )
                             }
                         }
+                    )
+                    sendContact(
+                        userId.toChatId(),
+                        phoneNumber = getPhoneNumberUseCase(userId),
+                        firstName = user.name,
                     )
                 }
             }

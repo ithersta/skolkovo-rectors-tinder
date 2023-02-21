@@ -43,7 +43,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Normal> {
         with(normalMenu) { invoke() }
         askQuestionFlow()
-        // contactWithUserFlow()
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }
