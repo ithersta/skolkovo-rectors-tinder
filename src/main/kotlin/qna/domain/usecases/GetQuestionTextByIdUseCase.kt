@@ -9,7 +9,7 @@ class GetQuestionTextByIdUseCase(
     private val questionRepository: QuestionRepository,
     private val transaction: Transaction
 ) {
-   operator fun invoke(questionId: Long): String = transaction {
-       return@transaction questionRepository.getTextById(questionId)
-   }
+    operator fun invoke(questionId: Long): String = transaction {
+        return@transaction questionRepository.getTextById(questionId)
+    }
 }

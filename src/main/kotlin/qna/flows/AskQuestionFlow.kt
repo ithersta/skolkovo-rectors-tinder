@@ -1,7 +1,6 @@
 package qna.flows
 
 import auth.domain.entities.User
-import auth.domain.usecases.GetUserUseCase
 import auth.telegram.queries.FinishQuestionQuery
 import auth.telegram.queries.SelectQuestionQuery
 import auth.telegram.queries.UnselectQuestionQuery
@@ -284,13 +283,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                             user.activityDescription
                         ),
                         replyMarkup = inlineKeyboard {
-                            row{
+                            row {
                                 dataButton(
                                     ButtonStrings.Option.Yes,
                                     AcceptUserQuery(query.user.id.chatId, data.questionId)
                                 )
                             }
-                            row{
+                            row {
                                 dataButton(
                                     ButtonStrings.Option.No,
                                     DeclineUserQuery(query.user.id.chatId)
@@ -302,14 +301,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             }
             answer(query)
         }
-        onDataCallbackQuery(DeclineUserQuery::class){ (data, query)->
+        onDataCallbackQuery(DeclineUserQuery::class) { (data, query) ->
             sendTextMessage(
                 data.userId.toChatId(),
                 Strings.ToAnswerUser.QuestionResolved
             )
             answer(query)
         }
-        onDataCallbackQuery(AcceptUserQuery::class){ (data, query)->
+        onDataCallbackQuery(AcceptUserQuery::class) { (data, query) ->
             sendTextMessage(
                 data.userId.toChatId(),
                 Strings.ToAnswerUser.WaitingForCompanion

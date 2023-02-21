@@ -43,7 +43,7 @@ object Strings {
             }
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
             "и формате встречи - онлайн или оффлайн. А через неделю мы напишем Вам как все прошло."
-        val CopyQuestion = buildEntities{bold("Скопируйте вопрос для отправки собеседнику")}
+        val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседнику") }
     }
 
     object Question {
