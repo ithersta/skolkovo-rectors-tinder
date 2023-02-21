@@ -1,7 +1,6 @@
 package qna.flows
 
 import auth.domain.entities.User
-import auth.domain.usecases.GetUserUseCase
 import auth.telegram.queries.FinishQuestionQuery
 import auth.telegram.queries.SelectQuestionQuery
 import auth.telegram.queries.UnselectQuestionQuery
