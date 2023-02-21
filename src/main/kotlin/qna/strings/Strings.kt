@@ -17,7 +17,7 @@ object Strings {
     }
 
     object ToAskUser {
-        // TODO: придумать вид профиля участника
+        // TODO: можно что-то добавить(emoji например)?
         // Профиль состоит из:
         // Имя
         // Город
@@ -25,10 +25,20 @@ object Strings {
         // Организация
         // Профессиональные зоны компетенции
         // Деятельность
-        fun message(name: String, city: String, job: String, organisation: String, profAreas: String, activityDescr: String ) =
+        fun message(name: String, city: String, job: String, organisation: String, activityDescr: String ) =
             buildEntities {
-                regular("Профиль участника сообщества, согласившегося ответить вам:")
-
+                regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
+                bold("Имя: ")
+                regularln(name)
+                bold("Город: ")
+                regularln(city)
+                bold("Должность: ")
+                regularln(job)
+                bold("Организация: ")
+                regularln(organisation)
+                bold("Деятельность: ")
+                regularln(activityDescr)
+                regularln("")
                 boldln("Вы согласны пообщаться?")
             }
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +

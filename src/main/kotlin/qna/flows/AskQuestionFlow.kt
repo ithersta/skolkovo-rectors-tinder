@@ -30,6 +30,7 @@ import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.AddQuestionUseCase
+import qna.domain.usecases.GetUserDetailsUseCase
 import qna.domain.usecases.GetUserIdUseCase
 import qna.domain.usecases.GetUsersByAreaUseCase
 import qna.states.*
@@ -44,7 +45,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getUserIdUseCase: GetUserIdUseCase by inject()
-    val getUserUseCase: GetUserUseCase by inject()
+    val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -264,6 +265,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         onDataCallbackQuery(DeclineQuestionQuery::class) { (_, query) ->
             val message = query.messageCallbackQueryOrNull()?.message ?: return@onDataCallbackQuery
             delete(message)
+            answer(query)
         }
         onDataCallbackQuery(AcceptQuestionQuery::class) { (questionId, query) ->
             sendTextMessage(
@@ -272,29 +274,37 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
             coroutineScope.launch {
                 val userId = getUserIdUseCase(questionId.questionId)
-                val user = getUserUseCase(userId)
-                sendTextMessage(
-                    userId.toChatId(),
-                    "тестовое сообщение",
-                    //Strings.ToAskUser.message(), //тут нужно из user всю инфу вытянуть + как-то отправлять ссылку на его профиль
-                    replyMarkup = inlineKeyboard {
-                        row{
-                            dataButton(
-                                ButtonStrings.Option.Yes, //отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
-                                AcceptUserQuery           //тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
-                            )
+                val user = getUserDetailsUseCase(userId)
+                if (user != null) {
+                    sendTextMessage(
+                        userId.toChatId(),
+                        Strings.ToAskUser.message(
+                            user.name,
+                            user.city,
+                            user.job,
+                            user.organization,
+                            user.activityDescription
+                        ),
+                        replyMarkup = inlineKeyboard {
+                            row{
+                                dataButton(
+                                    ButtonStrings.Option.Yes, //отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
+                                    AcceptUserQuery           //тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
+                                )
+                            }
+                            row{
+                                dataButton(
+                                    ButtonStrings.Option.No, //отправлять спс, но не нужна помощь
+                                    DeclineUserQuery
+                                )
+                            }
                         }
-                        row{
-                            dataButton(
-                                ButtonStrings.Option.No, //отправлять спс, но не нужна помощь
-                                DeclineUserQuery
-                            )
-                        }
-                    }
-                )
+                    )
+                }
                 //отправка сообщения о профиле пользователя, который согласился ответить
                 //тоже query (Да/Нет) - там 2 разных сообщения отправляется согласившемуся ответить
             }
+            answer(query)
         }
     }
 }
