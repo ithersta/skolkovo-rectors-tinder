@@ -6,11 +6,11 @@ import common.domain.Transaction
 import org.koin.core.annotation.Single
 
 @Single
-class GetUserDetailsUseCase (
+class GetUserDetailsUseCase(
     private val userRepository: UserRepository,
     private val transaction: Transaction
-){
-    operator fun invoke(id: Long): User.Details? = transaction{
+) {
+    operator fun invoke(id: Long): User.Details? = transaction {
         return@transaction userRepository.get(id)
     }
 }
