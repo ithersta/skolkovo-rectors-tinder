@@ -97,7 +97,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                         replyMarkup = null
                     )
                     state.override { DialogState.Empty }
-
                 }
             }
         }
