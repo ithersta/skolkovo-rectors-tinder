@@ -1,7 +1,6 @@
 package qna.telegram.queries
 
 import common.telegram.Query
-import dev.inmo.tgbotapi.types.UserId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -15,7 +14,7 @@ object DeclineQuestionQuery : Query
 
 @Serializable
 @SerialName("ac")
-class AcceptUserQuery(val userId: Long) : Query
+class AcceptUserQuery(val userId: Long, val questionId: Long) : Query
 
 @Serializable
 @SerialName("de")

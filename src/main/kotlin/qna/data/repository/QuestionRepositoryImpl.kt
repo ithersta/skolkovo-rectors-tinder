@@ -29,4 +29,8 @@ class QuestionRepositoryImpl : QuestionRepository {
     override fun getUserId(questionId: Long): Long {
         return Questions.select { Questions.id eq questionId }.map { it[Questions.authorId] }.first().value
     }
+
+    override fun getTextById(questionId: Long): String {
+        return Questions.select {Questions.id eq questionId}.map{it[Questions.text]}.first()
+    }
 }

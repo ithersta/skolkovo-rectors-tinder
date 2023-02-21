@@ -29,10 +29,7 @@ import org.koin.core.component.inject
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
-import qna.domain.usecases.AddQuestionUseCase
-import qna.domain.usecases.GetUserDetailsUseCase
-import qna.domain.usecases.GetUserIdUseCase
-import qna.domain.usecases.GetUsersByAreaUseCase
+import qna.domain.usecases.*
 import qna.states.*
 import qna.strings.ButtonStrings
 import qna.strings.Strings
@@ -46,6 +43,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getUserIdUseCase: GetUserIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
+    val getQuestionTextByIdUseCase: GetQuestionTextByIdUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -288,8 +286,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                         replyMarkup = inlineKeyboard {
                             row{
                                 dataButton(
-                                    ButtonStrings.Option.Yes, //отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
-                                    AcceptUserQuery(query.user.id.chatId)           //тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
+                                    ButtonStrings.Option.Yes,
+                                    AcceptUserQuery(query.user.id.chatId, data.questionId)
                                 )
                             }
                             row{
@@ -308,6 +306,25 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(
                 data.userId.toChatId(),
                 Strings.ToAnswerUser.QuestionResolved
+            )
+            answer(query)
+        }
+        onDataCallbackQuery(AcceptUserQuery::class){ (data, query)->
+            sendTextMessage(
+                data.userId.toChatId(),
+                Strings.ToAnswerUser.WaitingForCompanion
+            )
+            sendTextMessage(
+                query.user.id,
+                Strings.ToAskUser.WriteToCompanion
+            )
+            sendTextMessage(
+                query.user.id,
+                getQuestionTextByIdUseCase(data.questionId)
+            )
+            sendTextMessage(
+                query.user.id,
+                Strings.ToAskUser.CopyQuestion
             )
             answer(query)
         }
