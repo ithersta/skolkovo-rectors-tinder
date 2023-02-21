@@ -267,13 +267,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             delete(message)
             answer(query)
         }
-        onDataCallbackQuery(AcceptQuestionQuery::class) { (questionId, query) ->
+        onDataCallbackQuery(AcceptQuestionQuery::class) { (data, query) ->
             sendTextMessage(
                 query.user.id,
                 Strings.ToAnswerUser.SentAgreement
             )
             coroutineScope.launch {
-                val userId = getUserIdUseCase(questionId.questionId)
+                val userId = getUserIdUseCase(data.questionId)
                 val user = getUserDetailsUseCase(userId)
                 if (user != null) {
                     sendTextMessage(
@@ -289,21 +289,26 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                             row{
                                 dataButton(
                                     ButtonStrings.Option.Yes, //отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
-                                    AcceptUserQuery           //тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
+                                    AcceptUserQuery(query.user.id.chatId)           //тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
                                 )
                             }
                             row{
                                 dataButton(
-                                    ButtonStrings.Option.No, //отправлять спс, но не нужна помощь
-                                    DeclineUserQuery
+                                    ButtonStrings.Option.No,
+                                    DeclineUserQuery(query.user.id.chatId)
                                 )
                             }
                         }
                     )
                 }
-                //отправка сообщения о профиле пользователя, который согласился ответить
-                //тоже query (Да/Нет) - там 2 разных сообщения отправляется согласившемуся ответить
             }
+            answer(query)
+        }
+        onDataCallbackQuery(DeclineUserQuery::class){ (data, query)->
+            sendTextMessage(
+                data.userId.toChatId(),
+                Strings.ToAnswerUser.QuestionResolved
+            )
             answer(query)
         }
     }
