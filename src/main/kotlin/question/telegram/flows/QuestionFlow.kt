@@ -7,6 +7,7 @@ import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
+import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
@@ -16,12 +17,14 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
+import qna.domain.usecase.ContactUseCase
 import qna.domain.usecase.SubjectsUseCase
 import qna.domain.usecase.TextsUseCase
 
 fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     val subjectsByChatId: SubjectsUseCase by inject()
     val textByQuestionId: TextsUseCase by inject()
+    val concatByQuestionId: ContactUseCase by inject()
     val answerForUser: List<String> = listOf("Да", "Нет")
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
@@ -46,7 +49,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                     replyMarkup = inlineKeyboard {
                         answerForUser.forEach {
                             row {
-                                dataButton(it, AnswerUser(it))
+                                dataButton(it, AnswerUser(data.questionId, it))
                             }
                         }
                     }
@@ -57,11 +60,13 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                 if (data.answer == "Нет") {
                     state.override { DialogState.Empty }
                 } else {
-                    sendTextMessage(
+                    sendContact(
                         query.user.id,
-                        "text"
+                        phoneNumber = concatByQuestionId.invoke(data.questionId).phoneNumber.value,
+                        firstName = concatByQuestionId.invoke(data.questionId).name
                     )
                 }
+                answer(query)
             }
         }
     }

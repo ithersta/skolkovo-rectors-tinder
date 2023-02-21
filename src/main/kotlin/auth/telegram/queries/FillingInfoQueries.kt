@@ -55,4 +55,4 @@ class SelectSubject(val questionId: Long) : Query
 
 @Serializable
 @SerialName("answer")
-class AnswerUser(val answer: String) : Query
+class AnswerUser(val questionId:Long ,val answer: String) : Query
