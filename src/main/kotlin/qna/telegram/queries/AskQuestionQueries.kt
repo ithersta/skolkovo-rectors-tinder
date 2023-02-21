@@ -1,7 +1,6 @@
 package qna.telegram.queries
 
 import common.telegram.Query
-import dev.inmo.tgbotapi.types.UserId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

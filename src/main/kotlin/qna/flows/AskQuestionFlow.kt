@@ -1,7 +1,6 @@
 package qna.flows
 
 import auth.domain.entities.User
-import auth.domain.usecases.GetUserUseCase
 import auth.telegram.queries.FinishQuestionQuery
 import auth.telegram.queries.SelectQuestionQuery
 import auth.telegram.queries.UnselectQuestionQuery
@@ -286,13 +285,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                             user.activityDescription
                         ),
                         replyMarkup = inlineKeyboard {
-                            row{
+                            row {
                                 dataButton(
-                                    ButtonStrings.Option.Yes, //отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
-                                    AcceptUserQuery(query.user.id.chatId)           //тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
+                                    ButtonStrings.Option.Yes, // отправлять владелец вопроса свяжется с вами челу, который согл ответить на вопрос
+                                    AcceptUserQuery(query.user.id.chatId) // тот, кто нажал кнопку, должен получить сообщение - напишите собеседнику... скопируйте вопрос для отправки сообщения
                                 )
                             }
-                            row{
+                            row {
                                 dataButton(
                                     ButtonStrings.Option.No,
                                     DeclineUserQuery(query.user.id.chatId)
@@ -304,7 +303,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             }
             answer(query)
         }
-        onDataCallbackQuery(DeclineUserQuery::class){ (data, query)->
+        onDataCallbackQuery(DeclineUserQuery::class) { (data, query) ->
             sendTextMessage(
                 data.userId.toChatId(),
                 Strings.ToAnswerUser.QuestionResolved
