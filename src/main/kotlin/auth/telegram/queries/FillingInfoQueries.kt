@@ -51,4 +51,8 @@ class SelectCity(val city: String) : Query
 
 @Serializable
 @SerialName("su")
-class SelectSubject(val subject: String) : Query
+class SelectSubject(val questionId: Long) : Query
+
+@Serializable
+@SerialName("answer")
+class AnswerUser(val answer: String) : Query
