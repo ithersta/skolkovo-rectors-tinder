@@ -4,7 +4,7 @@ import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
-import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContent
@@ -13,8 +13,8 @@ import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
-import menus.states.MenuState
 import mute.Strings
+import mute.domain.usecases.ContainsByIdMuteSettingsUseCase
 import mute.domain.usecases.DeleteMuteSettingsUseCase
 import mute.domain.usecases.InsertMuteSettingsUseCase
 import mute.telegram.queries.DurationMuteQuery
@@ -26,6 +26,7 @@ import kotlin.time.Duration.Companion.days
 fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
     val insertMuteSettingsUseCase: InsertMuteSettingsUseCase by inject()
     val deleteMuteSettingsUseCase: DeleteMuteSettingsUseCase by inject()
+    val containsByIdMuteSettingsUseCase: ContainsByIdMuteSettingsUseCase by inject()
     role<User.Normal> {
         anyState {
             onDataCallbackQuery(OnOffMuteQuery::class) { (data, message) ->
@@ -35,28 +36,33 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                 )
                 if (data.on) {
                     deleteMuteSettingsUseCase(message.user.id.chatId)
-                    sendTextMessage(
-                        message.user,
-                        Strings.muteOff
+                    editMessageText(
+                        message.asMessageCallbackQuery()?.message?.withContent<TextContent>()
+                            ?: return@onDataCallbackQuery,
+                        Strings.MuteOff,
+                        replyMarkup = null
                     )
                     state.override { DialogState.Empty }
                 } else {
-                    sendTextMessage(
-                        message.from.id,
-                        Strings.muteBot,
+                    editMessageText(
+                        message.asMessageCallbackQuery()?.message?.withContent<TextContent>()
+                            ?: return@onDataCallbackQuery,
+                        Strings.MuteBot,
                         replyMarkup = inlineKeyboard {
                             row {
-                                dataButton(Strings.muteWeek, DurationMuteQuery(7.days))
-                                dataButton(Strings.muteMonth, DurationMuteQuery(30.days))
+                                dataButton(Strings.MuteWeek, DurationMuteQuery(7.days))
+                                dataButton(Strings.MuteMonth, DurationMuteQuery(30.days))
                             }
                         }
                     )
                 }
             }
             onDataCallbackQuery(DurationMuteQuery::class) { (data, message) ->
-                sendTextMessage(
-                    message.user,
+                editMessageText(
+                    message.asMessageCallbackQuery()?.message?.withContent<TextContent>()
+                        ?: return@onDataCallbackQuery,
                     Strings.muteDays(data.duration.inWholeDays),
+                    replyMarkup = null
                 )
                 insertMuteSettingsUseCase(message.user.id.chatId, data.duration)
                 state.override { DialogState.Empty }
@@ -67,9 +73,31 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                     replyMarkup = null
                 )
                 if (data.yes) {
-                    state.override { DialogState.Empty }
+                    editMessageText(
+                        message.asMessageCallbackQuery()?.message?.withContent<TextContent>()
+                            ?: return@onDataCallbackQuery,
+                        Strings.MuteBot,
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                if (containsByIdMuteSettingsUseCase(message.user.id.chatId)) {
+                                    dataButton(auth.telegram.Strings.MenuButtons.Notifications.On, OnOffMuteQuery(true))
+                                } else {
+                                    dataButton(
+                                        auth.telegram.Strings.MenuButtons.Notifications.Off,
+                                        OnOffMuteQuery(false)
+                                    )
+                                }
+                            }
+                        }
+                    )
                 } else {
-                    state.override { MenuState.Notifications }
+                    editMessageReplyMarkup(
+                        message.asMessageCallbackQuery()?.message?.withContent<TextContent>()
+                            ?: return@onDataCallbackQuery,
+                        replyMarkup = null
+                    )
+                    state.override { DialogState.Empty }
+
                 }
             }
         }

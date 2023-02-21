@@ -29,11 +29,11 @@ class UnmuteRunner(
                 deleteMuteSettingsUseCase(earliestRow.userId)
                 sendTextMessage(
                     UserId(earliestRow.userId),
-                    Strings.unmuteQuestion,
+                    Strings.UnmuteQuestion,
                     replyMarkup = inlineKeyboard {
                         row {
-                            dataButton(Strings.yes, YesNoMuteQuery(true))
-                            dataButton(Strings.no, YesNoMuteQuery(false))
+                            dataButton(Strings.Yes, YesNoMuteQuery(true))
+                            dataButton(Strings.No, YesNoMuteQuery(false))
                         }
                     }
                 )
