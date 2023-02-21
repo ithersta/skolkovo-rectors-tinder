@@ -16,7 +16,7 @@ repositories {
 
 val exposedVersion = "0.41.1"
 dependencies {
-    implementation("com.ithersta.tgbotapi:boot:0.1.2")
+    implementation("com.ithersta.tgbotapi:boot:0.1.3")
     implementation("com.ithersta.tgbotapi:commands:0.2.0")
     implementation("io.ktor:ktor-client-okhttp:2.2.3")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -26,10 +26,12 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.6")
     compileOnly("io.insert-koin:koin-annotations:1.1.1")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
-    ksp("com.ithersta.tgbotapi:boot-ksp:0.1.7")
+    ksp("com.ithersta.tgbotapi:boot-ksp:0.1.10")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.3.3")
     testImplementation("io.mockk:mockk:1.13.4")
+    implementation("org.jsoup:jsoup:1.15.3")
+    implementation("com.jayway.jsonpath:json-path:2.7.0")
 }
 
 tasks.test {

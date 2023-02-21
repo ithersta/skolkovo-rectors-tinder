@@ -67,7 +67,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
-    ) // /TODO: в этом стейте Глебу реализовать логику вывода мероприятий
+    )
 }
 
 private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendMuteRequest(message: CommonMessage<TextContent>) {
