@@ -4,6 +4,8 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
+import com.ithersta.tgbotapi.pagination.PagerState
+import com.ithersta.tgbotapi.persistence.UserStates.state
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
@@ -48,7 +50,8 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             }
             button(
                 Strings.MenuButtons.Questions.InterestingQuestions,
-                MenuState.CurrentIssues
+                //todo: вот тут остановились
+//                { state.override { MenuState.CurrentIssues(it.chatId, PagerState()) } }
             )
         }
         button(

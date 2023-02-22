@@ -3,7 +3,6 @@ package question.telegram.flows
 import auth.domain.entities.User
 import auth.telegram.Strings.TargetArea.AnswerToPersonWhoAskedQuestion
 import auth.telegram.Strings.TargetArea.Good
-import auth.telegram.Strings.TargetArea.ListQuestion
 import auth.telegram.Strings.TargetArea.No
 import auth.telegram.Strings.TargetArea.ReplyToRespondent
 import auth.telegram.Strings.TargetArea.Yes
@@ -11,6 +10,7 @@ import auth.telegram.queries.AnswerUser
 import auth.telegram.queries.SelectSubject
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import com.ithersta.tgbotapi.pagination.statefulPager
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
@@ -34,19 +34,25 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     val answerForUser: List<String> = listOf(Yes, No)
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
-            onEnter {
-//                todo: пагинация
-                sendTextMessage(
-                    it.toChatId(),
-                    ListQuestion,
-                    replyMarkup = inlineKeyboard {
-                        subjectsByChatId.invoke(it.chatId).forEach {
-                            row {
-                                dataButton(it.value, SelectSubject(it.key))
-                            }
+            val numbers = subjectsByChatId.invoke(state.snapshot.userId.chatId(), 0, 10).toList()
+            val numbersPager = this@state.statefulPager(
+                id = "numbers",
+                onPagerStateChanged = { state.snapshot.copy(pagerState = it) }
+            ) {
+                val paginatedNumbers = numbers.drop(offset).take(limit)
+                inlineKeyboard {
+                    paginatedNumbers.forEach { item ->
+                        row {
+                            dataButton(item.second, SelectSubject(item.first))
                         }
                     }
-                )
+                    navigationRow(itemCount = numbers.size)
+                }
+            }
+            onEnter {
+                state.snapshot.userId
+//                todo: пагинация
+                with(statefulPager) { sendOrEditMessage(it.toChatId(), "Numbers", state.snapshot.pagerState) }
             }
             onDataCallbackQuery(SelectSubject::class) { (data, query) ->
                 sendTextMessage(
