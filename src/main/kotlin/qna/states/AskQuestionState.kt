@@ -12,7 +12,7 @@ class AskFullQuestion(
 ) : DialogState
 
 @Serializable
-class ChooseQuestionAreas(
+data class ChooseQuestionAreas(
     val subject: String,
     val question: String,
     val areas: Set<QuestionArea>,
@@ -20,14 +20,14 @@ class ChooseQuestionAreas(
 ) : DialogState
 
 @Serializable
-class ChooseQuestionIntent(
+data class ChooseQuestionIntent(
     val subject: String,
     val question: String,
     val areas: Set<QuestionArea>
 ) : DialogState
 
 @Serializable
-class SendQuestionToCommunity(
+data class SendQuestionToCommunity(
     val subject: String,
     val question: String,
     val areas: Set<QuestionArea>,
