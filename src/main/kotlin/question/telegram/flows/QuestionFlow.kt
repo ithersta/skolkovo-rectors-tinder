@@ -69,7 +69,8 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
             onDataCallbackQuery(AnswerUser::class) { (data, query) ->
                 if (data.answer == No) {
                     sendTextMessage(
-                        query.user.id, Good
+                        query.user.id,
+                        Good
                     )
                 } else {
                     val userId = userIdByQuestionId.invoke(data.questionId)
@@ -84,7 +85,8 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                         firstName = getFirstNameUseCase.invoke(userId)
                     )
                     sendTextMessage(
-                        query.user.id, ReplyToRespondent
+                        query.user.id,
+                        ReplyToRespondent
                     )
                 }
                 state.override { DialogState.Empty }

@@ -12,5 +12,4 @@ class GetPhoneNumberUseCase(
     operator fun invoke(id: Long): String = transaction {
         return@transaction userRepository.getPhoneNumber(id)
     }
-
 }

@@ -4,7 +4,6 @@ import auth.domain.repository.QuestionRepository
 import common.domain.Transaction
 import org.koin.core.annotation.Single
 
-
 @Single
 class UserIdUseCase(
     private val questionRepository: QuestionRepository,
