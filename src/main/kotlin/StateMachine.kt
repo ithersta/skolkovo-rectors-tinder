@@ -15,6 +15,7 @@ import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
 import menus.adminMenu
 import menus.normalMenu
+import mute.telegram.muteFlow
 import question.telegram.flows.feedbackFlow
 
 @StateMachine(baseQueryKClass = Query::class)
@@ -47,6 +48,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Admin> {
         with(adminMenu) { invoke() }
     }
+    muteFlow()
     eventFlow()
     feedbackFlow()
     fallback()
