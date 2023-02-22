@@ -5,11 +5,11 @@ import common.domain.Transaction
 import org.koin.core.annotation.Single
 
 @Single
-class GetPhoneNumberUseCase (
+class GetPhoneNumberUseCase(
     private val userRepository: UserRepository,
     private val transaction: Transaction
-){
-    operator fun invoke(id: Long): String = transaction{
+) {
+    operator fun invoke(id: Long): String = transaction {
         return@transaction userRepository.getPhoneNumber(id)
     }
 }

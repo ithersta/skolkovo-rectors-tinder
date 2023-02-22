@@ -47,7 +47,7 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun getPhoneNumber(id: Long): String {
-        return Users.select{Users.id eq id}.map { it[Users.phoneNumber] }.first()
+        return Users.select { Users.id eq id }.map { it[Users.phoneNumber] }.first()
     }
 
     override fun isRegistered(id: Long): Boolean {
