@@ -54,16 +54,17 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         button(
             Strings.MenuButtons.Questions.Ask,
             MenuState.Questions.AskQuestion
-        ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+        )
     }
     button(
         Strings.MenuButtons.Notifications.Main
     ) {
         sendMuteRequest(it)
     }
-    // /TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
-    // /если оповещения включены, и "возобновить", если оповещения выключены
-    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo) // //TODO: это я потом реализую
+    button(
+        Strings.MenuButtons.ChangeAccountInfo,
+        MenuState.ChangeAccountInfo
+    ) //TODO: это я потом реализую
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
