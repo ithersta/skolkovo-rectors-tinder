@@ -175,9 +175,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText { message ->
-            QuestionIntent.values().forEach { intent->
+            QuestionIntent.values().forEach { intent ->
                 val intentToString = Strings.Question.questionIntentToString[intent]
-                if(intentToString == message.content.text) {
+                if (intentToString == message.content.text) {
                     state.override {
                         SendQuestionToCommunity(subject, question, areas, intent)
                     }

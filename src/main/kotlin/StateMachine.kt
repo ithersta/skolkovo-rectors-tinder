@@ -15,8 +15,8 @@ import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
 import menus.adminMenu
 import menus.normalMenu
-import qna.flows.askQuestionFlow
 import mute.telegram.muteFlow
+import qna.flows.askQuestionFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
