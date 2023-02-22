@@ -1,7 +1,7 @@
 package mute.data.repository
 
 import kotlinx.datetime.Instant
-import mute.data.entities.MuteSettings
+import mute.data.tables.MuteSettings
 import mute.domain.entities.MuteSettingsRow
 import mute.domain.repository.MuteSettingsRepository
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

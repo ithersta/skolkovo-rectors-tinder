@@ -28,16 +28,12 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
-                // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WaitingForContact } // /ну пока так
+                state.override { WaitingForContact }
             }
         }
         state<DialogState.Empty> {
             onEnter {
-                sendTextMessage(
-                    it,
-                    Strings.RoleMenu.Unauthenticated
-                )
+                sendTextMessage(it, Strings.RoleMenu.Unauthenticated)
             }
         }
     }

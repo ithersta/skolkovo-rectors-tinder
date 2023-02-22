@@ -10,52 +10,52 @@ import qna.domain.entities.QuestionArea
 object WaitingForContact : DialogState
 
 @Serializable
-class WriteNameState(
+data class WriteNameState(
     val phoneNumber: PhoneNumber
 ) : DialogState
 
 @Serializable
-class ChooseCountry(
+data class ChooseCountry(
     val phoneNumber: PhoneNumber,
     val name: String
 ) : DialogState
 
 @Serializable
-class ChooseCityInCIS(
+data class ChooseCityInCIS(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String
 ) : DialogState
 
 @Serializable
-class ChooseDistrict(
+data class ChooseDistrict(
     val phoneNumber: PhoneNumber,
     val name: String
 ) : DialogState
 
 @Serializable
-class ChooseRegion(
+data class ChooseRegion(
     val phoneNumber: PhoneNumber,
     val name: String,
     val district: String
 ) : DialogState
 
 @Serializable
-class ChooseCity(
+data class ChooseCity(
     val phoneNumber: PhoneNumber,
     val name: String,
     val region: String
 ) : DialogState
 
 @Serializable
-class WriteProfessionState(
+data class WriteProfessionState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String
 ) : DialogState
 
 @Serializable
-class WriteOrganizationState(
+data class WriteOrganizationState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
@@ -63,7 +63,7 @@ class WriteOrganizationState(
 ) : DialogState
 
 @Serializable
-class ChooseProfessionalAreasState(
+data class ChooseProfessionalAreasState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
@@ -74,7 +74,7 @@ class ChooseProfessionalAreasState(
 ) : DialogState
 
 @Serializable
-class AddProfessionalAreasState(
+data class AddProfessionalAreasState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
@@ -85,7 +85,7 @@ class AddProfessionalAreasState(
 ) : DialogState
 
 @Serializable
-class WriteProfessionalDescriptionState(
+data class WriteProfessionalDescriptionState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
@@ -95,7 +95,7 @@ class WriteProfessionalDescriptionState(
 ) : DialogState
 
 @Serializable
-class ChooseQuestionAreasState(
+data class ChooseQuestionAreasState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
@@ -108,7 +108,7 @@ class ChooseQuestionAreasState(
 ) : DialogState
 
 @Serializable
-class AddAccountInfoToDataBaseState(
+data class AddAccountInfoToDataBaseState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,

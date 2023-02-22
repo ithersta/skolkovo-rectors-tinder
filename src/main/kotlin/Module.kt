@@ -6,7 +6,7 @@ import com.ithersta.tgbotapi.fsm.engines.regularEngine
 import config.readBotConfig
 import generated.sqliteStateRepository
 import kotlinx.datetime.Clock
-import mute.data.entities.MuteSettings
+import mute.data.tables.MuteSettings
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
