@@ -7,7 +7,7 @@ import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 
 @Serializable
-class AskFullQuestion(
+data class AskFullQuestion(
     val subject: String
 ) : DialogState
 
