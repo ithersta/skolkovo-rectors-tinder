@@ -1,6 +1,11 @@
 package question.telegram.flows
 
 import auth.domain.entities.User
+import auth.telegram.Strings.TargetArea.Good
+import auth.telegram.Strings.TargetArea.ListQuestion
+import auth.telegram.Strings.TargetArea.No
+import auth.telegram.Strings.TargetArea.ReplyToRespondent
+import auth.telegram.Strings.TargetArea.Yes
 import auth.telegram.queries.AnswerUser
 import auth.telegram.queries.SelectSubject
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
@@ -24,14 +29,14 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     val subjectsByChatId: SubjectsUseCase by inject()
     val textByQuestionId: TextsUseCase by inject()
     val userIdByQuestionId: UserIdUseCase by inject()
-    val answerForUser: List<String> = listOf("Да", "Нет")
+    val answerForUser: List<String> = listOf(Yes, No)
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
             onEnter {
 //                todo: пагинация
                 sendTextMessage(
                     it.toChatId(),
-                    "Список вопросов по вашей сфере, нажмите на тему что бы посмотреть в чем суть вопроса.",
+                    ListQuestion,
                     replyMarkup = inlineKeyboard {
                         subjectsByChatId.invoke(it.chatId).forEach {
                             row {
@@ -56,18 +61,17 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                 answer(query)
             }
             onDataCallbackQuery(AnswerUser::class) { (data, query) ->
-                if (data.answer.equals("Нет")) {
+                if (data.answer == No) {
                     sendTextMessage(
-                        query.user.id, "Хорошо"
+                        query.user.id, Good
                     )
-                } else { // если да то отправить сообщение хозяину вопроса
+                } else {
                     sendTextMessage(
                         userIdByQuestionId.invoke(data.questionId).toChatId(),
                         "text"
                     )
-
                     sendTextMessage(
-                        query.user.id, "Владелец вопроса свяжется с вами"
+                        query.user.id, ReplyToRespondent
                     )
                 }
                 state.override { DialogState.Empty }

@@ -115,4 +115,11 @@ object Strings {
         val ChangeAccountInfo = "Изменить данные аккаунта"
         val Events = "Получить календарь мероприятий"
     }
+    object TargetArea{
+        val Yes = "Да"
+        val No = "Нет"
+        val ListQuestion = "Список вопросов по вашей сфере, нажмите на тему что бы посмотреть в чем суть вопроса."
+        val Good = "Хорошо"
+        val ReplyToRespondent = "Владелец вопроса свяжется с вами если сочтет это нужным"
+    }
 }
