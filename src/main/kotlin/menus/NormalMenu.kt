@@ -39,7 +39,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             button(
                 Strings.MenuButtons.Questions.InterestingQuestions,
                 MenuState.CurrentIssues
-            ) // todo: ГЛЕБ
+            )
         }
         button(
             Strings.MenuButtons.Questions.Ask,
