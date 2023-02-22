@@ -14,6 +14,7 @@ import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.dataButton
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
@@ -84,7 +85,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                     }
                 }
                 row {
-                    dataButton(auth.telegram.Strings.FinishChoosing, FinishQuestionQuery)
+                    dataButton(auth.telegram.Strings.FinishChoosing, FinishQuestionQuery.toString())
                 }
             }
             state.snapshot.messageId?.let { id ->
@@ -213,7 +214,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText(ButtonStrings.SendQuestion) { message ->
-            val details = Question.Details(
+            val details = Question(
                 message.chat.id.chatId,
                 state.snapshot.intent,
                 state.snapshot.subject,
