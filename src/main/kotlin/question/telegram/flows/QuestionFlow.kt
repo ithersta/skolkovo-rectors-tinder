@@ -1,6 +1,7 @@
 package question.telegram.flows
 
 import auth.domain.entities.User
+import auth.telegram.Strings.TargetArea.AnswerToPersonWhoAskedQuestion
 import auth.telegram.Strings.TargetArea.Good
 import auth.telegram.Strings.TargetArea.ListQuestion
 import auth.telegram.Strings.TargetArea.No
@@ -12,6 +13,7 @@ import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
+import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
@@ -21,14 +23,14 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
-import qna.domain.usecase.SubjectsUseCase
-import qna.domain.usecase.TextsUseCase
-import qna.domain.usecase.UserIdUseCase
+import qna.domain.usecase.*
 
 fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     val subjectsByChatId: SubjectsUseCase by inject()
     val textByQuestionId: TextsUseCase by inject()
     val userIdByQuestionId: UserIdUseCase by inject()
+    val getPhoneNumberUseCase: GetPhoneNumberUseCase by inject()
+    val getFirstNameUseCase: GetFirstNameUseCase by inject()
     val answerForUser: List<String> = listOf(Yes, No)
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
@@ -66,9 +68,16 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                         query.user.id, Good
                     )
                 } else {
+                    val userId = userIdByQuestionId.invoke(data.questionId)
+                    val chatId = userId.toChatId()
                     sendTextMessage(
-                        userIdByQuestionId.invoke(data.questionId).toChatId(),
-                        "text"
+                        chatId,
+                        AnswerToPersonWhoAskedQuestion
+                    )
+                    sendContact(
+                        chatId,
+                        phoneNumber = getPhoneNumberUseCase.invoke(userId),
+                        firstName = getFirstNameUseCase.invoke(userId)
                     )
                     sendTextMessage(
                         query.user.id, ReplyToRespondent

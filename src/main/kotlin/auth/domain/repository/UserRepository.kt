@@ -8,4 +8,6 @@ interface UserRepository {
     fun get(id: Long): User.Details?
     fun isRegistered(id: Long): Boolean
     fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean
+    fun getPhoneNumber(id: Long): String
+    fun getFirstName(id:Long) : String
 }
