@@ -2,6 +2,7 @@ package menus
 
 import auth.domain.entities.User
 import auth.telegram.Strings
+import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -23,7 +24,7 @@ private val containsByIdMuteSettingsUseCase: ContainsByIdMuteSettingsUseCase by 
 fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     submenu(
         Strings.MenuButtons.Questions.Question,
-        Strings.MenuButtons.Questions.QuestionDesciption,
+        Strings.MenuButtons.Questions.QuestionDescription,
         MenuState.Questions.Main
     ) {
         submenu(
