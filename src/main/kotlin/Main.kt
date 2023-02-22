@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviourWithLongPoll
 import feedback.telegram.FeedbackRequester
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import mute.telegram.UnmuteRunner
 import org.koin.core.context.startKoin
 
 suspend fun main() {
@@ -14,6 +15,7 @@ suspend fun main() {
     val stateMachine: RegularEngine<*, *, *> = application.koin.get()
     val backupRunner: BackupRunner = application.koin.get()
     val feedbackRequester: FeedbackRequester = application.koin.get()
+    val unmuteRunner: UnmuteRunner = application.koin.get()
     telegramBot(readToken()) {
         requestsLimiter = CommonLimiter(lockCount = 30, regenTime = 1000)
         client = HttpClient(OkHttp)
@@ -21,5 +23,6 @@ suspend fun main() {
         with(stateMachine) { collectUpdates() }
         with(backupRunner) { setup() }
         with(feedbackRequester) { setup() }
+        with(unmuteRunner) { unmute() }
     }.join()
 }
