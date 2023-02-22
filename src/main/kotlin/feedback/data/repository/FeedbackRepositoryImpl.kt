@@ -1,6 +1,7 @@
 package feedback.data.repository
 
 import auth.data.tables.Users
+import auth.domain.entities.PhoneNumber
 import feedback.domain.entities.FeedbackRequest
 import feedback.domain.repository.FeedbackRepository
 import kotlinx.datetime.Instant
@@ -29,6 +30,7 @@ class FeedbackRepositoryImpl : FeedbackRepository {
                 FeedbackRequest(
                     responseId = it[Responses.id].value,
                     respondentName = it[Users.name],
+                    respondentPhoneNumber = PhoneNumber.of(it[Users.phoneNumber])!!,
                     questionAuthorUserId = it[Questions.authorId].value
                 )
             }
