@@ -16,6 +16,7 @@ import event.telegram.eventFlow
 import menus.adminMenu
 import menus.normalMenu
 import qna.flows.askQuestionFlow
+import mute.telegram.muteFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -23,6 +24,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     includeHelp = true
 ) {
     cancelCommand(initialState = DialogState.Empty)
+
     role<User.Unauthenticated> {
         fillingAccountInfoFlow()
         anyState {
@@ -47,6 +49,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Admin> {
         with(adminMenu) { invoke() }
     }
+    muteFlow()
     eventFlow()
     fallback()
 }
