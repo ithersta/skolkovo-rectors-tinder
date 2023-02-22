@@ -31,6 +31,7 @@ class FeedbackRepositoryImpl : FeedbackRepository {
                     responseId = it[Responses.id].value,
                     respondentName = it[Users.name],
                     respondentPhoneNumber = PhoneNumber.of(it[Users.phoneNumber])!!,
+                    respondentOrganization = it[Users.organization],
                     questionAuthorUserId = it[Questions.authorId].value
                 )
             }

@@ -21,7 +21,7 @@ class FeedbackRequester(
         getFeedbackRequestsFlow().collect { feedbackRequest ->
             send(
                 chatId = feedbackRequest.questionAuthorUserId.toChatId(),
-                entities = Strings.feedbackRequest(feedbackRequest.respondentName, feedbackRequest.respondentPhoneNumber),
+                entities = Strings.feedbackRequest(feedbackRequest),
                 replyMarkup = flatInlineKeyboard {
                     dataButton(ButtonStrings.No, FeedbackQueries.SendFeedback(feedbackRequest.responseId, false))
                     dataButton(ButtonStrings.Yes, FeedbackQueries.SendFeedback(feedbackRequest.responseId, true))

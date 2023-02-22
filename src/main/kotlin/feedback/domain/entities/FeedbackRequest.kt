@@ -6,5 +6,6 @@ class FeedbackRequest(
     val responseId: Long,
     val respondentName: String,
     val respondentPhoneNumber: PhoneNumber,
+    val respondentOrganization: String,
     val questionAuthorUserId: Long
 )
