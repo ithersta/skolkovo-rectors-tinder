@@ -32,9 +32,11 @@ class UserRepositoryImpl : UserRepository {
     override fun get(id: Long): User.Details? {
         val areas = UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
         return Users.select { Users.id eq id }.firstOrNull()?.let {
+            val phoneNumber = PhoneNumber.of(it[Users.phoneNumber])
+            checkNotNull(phoneNumber)
             User.Details(
                 id = it[Users.id].value,
-                phoneNumber = PhoneNumber.of(it[Users.phoneNumber])!!,
+                phoneNumber = phoneNumber,
                 name = it[Users.name],
                 city = it[Users.city],
                 professionalAreas = it[Users.professionalAreas],

@@ -40,7 +40,7 @@ val module = module(createdAtStart = true) {
     includes(defaultModule, dataModule)
     single { readBotConfig() }
     single<Clock> { Clock.System }
-    single {
+    single { _ ->
         stateMachine.regularEngine(
             getUser = { get<GetUserUseCase>()(it.chatId) },
             stateRepository = sqliteStateRepository(historyDepth = 1),

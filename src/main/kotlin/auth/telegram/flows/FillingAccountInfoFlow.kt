@@ -58,7 +58,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onContact { message ->
             val contact = message.content.contact
             require(contact.userId == message.chat.id)
-            val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
+            val phoneNumber = PhoneNumber.of(contact.phoneNumber)
+            checkNotNull(phoneNumber)
             state.override { WriteNameState(phoneNumber) }
         }
         onText { sendTextMessage(it.chat, InvalidShare) }
@@ -349,11 +350,11 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val keyboard = inlineKeyboard {
                 QuestionArea.values().forEach { area ->
                     row {
-                        val areaToString = questionAreaToString.get(area)
+                        val areaToString = questionAreaToString.getValue(area)
                         if (area in state.snapshot.questionAreas) {
                             dataButton("✅$areaToString", UnselectQuestionQuery(area))
                         } else {
-                            dataButton(areaToString!!, SelectQuestionQuery(area))
+                            dataButton(areaToString, SelectQuestionQuery(area))
                         }
                     }
                 }

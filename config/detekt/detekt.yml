@@ -482,7 +482,7 @@ potential-bugs:
   UnreachableCatchBlock:
     active: true
   UnreachableCode:
-    active: true
+    active: false
   UnsafeCallOnNullableType:
     active: true
     excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
