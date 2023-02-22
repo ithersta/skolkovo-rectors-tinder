@@ -8,6 +8,7 @@ import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContent
+import dev.inmo.tgbotapi.extensions.utils.withContentOrNull
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import feedback.domain.usecases.CloseQuestionUseCase
 import feedback.domain.usecases.GetAssociatedOpenQuestionUseCase
@@ -28,21 +29,17 @@ fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
             val result = setFeedback(query.from.id.chatId, data.responseId, data.isSuccessful)
             if (result != SetFeedbackUseCase.Result.OK) return@onDataCallbackQuery
             val message = query.messageCallbackQueryOrNull()?.message
-                ?.withContent<TextContent>() ?: return@onDataCallbackQuery
-            if (data.isSuccessful) {
-                val question = getAssociatedOpenQuestion(query.from.id.chatId, data.responseId)
-                if (question != null) {
-                    val keyboard = flatInlineKeyboard {
-                        dataButton(ButtonStrings.No, FeedbackQueries.DoNotCloseQuestion)
-                        dataButton(ButtonStrings.Yes, FeedbackQueries.CloseQuestion(question.id))
-                    }
-                    edit(message, text = Strings.shouldCloseQuestion(question.subject), replyMarkup = keyboard)
-                } else {
-                    edit(message, text = Strings.IfSuccessful, replyMarkup = null)
-                    deleteAfterDelay(message)
+                ?.withContentOrNull<TextContent>() ?: return@onDataCallbackQuery
+            val question = getAssociatedOpenQuestion(query.from.id.chatId, data.responseId)
+            if (data.isSuccessful && question != null) {
+                val keyboard = flatInlineKeyboard {
+                    dataButton(ButtonStrings.No, FeedbackQueries.DoNotCloseQuestion)
+                    dataButton(ButtonStrings.Yes, FeedbackQueries.CloseQuestion(question.id))
                 }
+                edit(message, text = Strings.shouldCloseQuestion(question.subject), replyMarkup = keyboard)
             } else {
-                edit(message, text = Strings.IfUnsuccessful, replyMarkup = null)
+                val text = if (data.isSuccessful) Strings.IfSuccessful else Strings.IfUnsuccessful
+                edit(message, text = text, replyMarkup = null)
                 deleteAfterDelay(message)
             }
             answer(query)
@@ -51,14 +48,14 @@ fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
             val result = closeQuestion(fromUserId = query.from.id.chatId, questionId = data.questionId)
             if (result != CloseQuestionUseCase.Result.OK) return@onDataCallbackQuery
             val message = query.messageCallbackQueryOrNull()?.message
-                ?.withContent<TextContent>() ?: return@onDataCallbackQuery
+                ?.withContentOrNull<TextContent>() ?: return@onDataCallbackQuery
             edit(message, text = Strings.QuestionClosed, replyMarkup = null)
             deleteAfterDelay(message)
             answer(query)
         }
         onDataCallbackQuery(FeedbackQueries.DoNotCloseQuestion::class) { (_, query) ->
             val message = query.messageCallbackQueryOrNull()?.message
-                ?.withContent<TextContent>() ?: return@onDataCallbackQuery
+                ?.withContentOrNull<TextContent>() ?: return@onDataCallbackQuery
             edit(message, text = Strings.QuestionNotClosed, replyMarkup = null)
             deleteAfterDelay(message)
             answer(query)
