@@ -43,7 +43,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
                 button(
                     Strings.MenuButtons.Questions.MyQuestions.OldQuestions,
-                    DialogState.Empty
+                    MenuState.OldQuestion
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
             }
             button(

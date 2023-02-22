@@ -115,4 +115,9 @@ object Strings {
         val ChangeAccountInfo = "Изменить данные аккаунта"
         val Events = "Получить календарь мероприятий"
     }
+
+    object OldQuestion {
+        val listClosedQuestions = "Список всех ваших закрытых вопросов"
+        val listOfDefendants = "Список всех кто отвечал на данный вопрос"
+    }
 }
