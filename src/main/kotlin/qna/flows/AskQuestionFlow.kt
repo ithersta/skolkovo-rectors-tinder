@@ -175,30 +175,16 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText { message ->
-            when (message.content.text) {
-                Strings.Question.Intent.FreeForm -> {
+            QuestionIntent.values().forEach { intent->
+                val intentToString = Strings.Question.questionIntentToString[intent]
+                if(intentToString == message.content.text) {
                     state.override {
-                        SendQuestionToCommunity(subject, question, areas, QuestionIntent.FreeForm)
+                        SendQuestionToCommunity(subject, question, areas, intent)
                     }
-                }
-
-                Strings.Question.Intent.Consultation -> {
-                    state.override {
-                        SendQuestionToCommunity(subject, question, areas, QuestionIntent.Consultation)
-                    }
-                }
-
-                Strings.Question.Intent.TestHypothesis -> {
-                    state.override {
-                        SendQuestionToCommunity(subject, question, areas, QuestionIntent.TestHypothesis)
-                    }
-                }
-
-                else -> {
-                    sendTextMessage(message.chat, Strings.Question.InvalidQuestionIntent)
-                    state.override { ChooseQuestionIntent(subject, question, areas) }
                 }
             }
+            sendTextMessage(message.chat, Strings.Question.InvalidQuestionIntent)
+            state.override { ChooseQuestionIntent(subject, question, areas) }
         }
     }
     state<SendQuestionToCommunity> {
