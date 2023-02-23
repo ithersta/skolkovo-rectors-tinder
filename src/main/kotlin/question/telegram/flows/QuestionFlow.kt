@@ -34,6 +34,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     val answerForUser: List<String> = listOf(Yes, No)
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
+//             ВЫБОР СФЕР В НАЧАЛЕ!
             val numbersPager = statefulPager(
                 id = "numbers",
                 onPagerStateChanged = { state.snapshot.copy(pagerState = it) }
