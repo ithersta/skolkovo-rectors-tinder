@@ -82,7 +82,7 @@ class WriteProfessionalDescriptionState(
     val city: String,
     val profession: String,
     val organization: String
-) : DialogState{
+) : DialogState {
     fun next(professionalDescription: String) = ChooseQuestionAreasState(phoneNumber, name, city, profession, organization, professionalDescription)
 }
 
@@ -98,7 +98,13 @@ data class ChooseQuestionAreasState(
     val messageId: MessageId? = null
 ) : DialogState {
     fun next() = AddAccountInfoToDataBaseState(
-        phoneNumber, name, city, profession, organization, professionalDescription, questionAreas
+        phoneNumber,
+        name,
+        city,
+        profession,
+        organization,
+        professionalDescription,
+        questionAreas
     )
 }
 

@@ -32,7 +32,6 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
-import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
 import qna.states.*
 import qna.strings.ButtonStrings
