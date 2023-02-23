@@ -1,6 +1,5 @@
 package qna.data.repository
 
-import auth.data.tables.UserAreas
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insertAndGetId
@@ -32,9 +31,9 @@ class QuestionRepositoryImpl : QuestionRepository {
         return Questions.select { Questions.id eq questionId }.map { it[Questions.authorId] }.first().value
     }
 
-    override fun getById(questionId: Long): Question{
+    override fun getById(questionId: Long): Question {
         val areas = QuestionAreas.select { QuestionAreas.questionId eq questionId }.map { it[QuestionAreas.area] }.toSet()
-        return Questions.select { Questions.id eq questionId }.map{
+        return Questions.select { Questions.id eq questionId }.map {
             Question(
                 authorId = it[Questions.authorId].value,
                 intent = it[Questions.intent],

@@ -5,10 +5,10 @@ import org.koin.core.annotation.Single
 import qna.domain.repository.ResponsesRepository
 
 @Single
-class AddResponseUseCase (
+class AddResponseUseCase(
     private val responsesRepository: ResponsesRepository,
     private val transaction: Transaction
-){
+) {
     operator fun invoke(questionId: Long, respondentId: Long) = transaction {
         responsesRepository.add(questionId, respondentId)
     }
