@@ -14,7 +14,6 @@ sealed interface User {
         val city: String,
         val job: String,
         val organization: String,
-        val professionalAreas: String,
         val activityDescription: String,
         val areas: Set<QuestionArea>
     )

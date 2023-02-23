@@ -9,7 +9,8 @@ class AddQuestionUseCase(
     private val questionRepository: QuestionRepository,
     private val transaction: common.domain.Transaction
 ) {
-    operator fun invoke(questionDetails: Question): Long = transaction {
-        return@transaction questionRepository.add(questionDetails)
+    operator fun invoke(questionDetails: Question): Question = transaction {
+        val id = questionRepository.add(questionDetails)
+        questionDetails.copy(id = id)
     }
 }

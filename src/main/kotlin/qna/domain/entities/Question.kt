@@ -6,5 +6,6 @@ data class Question(
     val subject: String,
     val text: String,
     val isClosed: Boolean,
-    val areas: Set<QuestionArea>
+    val areas: Set<QuestionArea>,
+    val id: Long? = null
 )

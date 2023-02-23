@@ -41,6 +41,7 @@ object Strings {
     const val FinishChoosing = "Закончить выбор"
 
     object Question {
+
         const val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
                 "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
