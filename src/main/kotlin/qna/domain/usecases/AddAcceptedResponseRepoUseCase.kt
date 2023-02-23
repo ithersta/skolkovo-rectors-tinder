@@ -10,7 +10,7 @@ class AddAcceptedResponseRepoUseCase(
     private val acceptedResponsesRepository: AcceptedResponsesRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(id: Long, time: Instant) = transaction{
+    operator fun invoke(id: Long, time: Instant) = transaction {
         return@transaction acceptedResponsesRepository.add(id, time)
     }
 }

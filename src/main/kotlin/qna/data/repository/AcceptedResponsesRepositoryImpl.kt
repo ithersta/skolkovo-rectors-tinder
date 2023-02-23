@@ -6,11 +6,10 @@ import org.koin.core.annotation.Single
 import qna.data.tables.AcceptedResponses
 import qna.domain.repository.AcceptedResponsesRepository
 
-
 @Single
-class AcceptedResponsesRepositoryImpl: AcceptedResponsesRepository {
+class AcceptedResponsesRepositoryImpl : AcceptedResponsesRepository {
     override fun add(id: Long, time: Instant) {
-        AcceptedResponses.insert{
+        AcceptedResponses.insert {
             it[responseId] = id
             it[at] = time
         }
