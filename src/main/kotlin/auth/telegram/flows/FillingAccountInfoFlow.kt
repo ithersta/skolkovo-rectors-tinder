@@ -144,7 +144,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseQuestionAreasState> {
         chooseQuestionAreas(
             text = ChooseProfessionalAreas,
-            getAreas = { it.questionAreas},
+            getAreas = { it.questionAreas },
             getMessageId = { it.messageId },
             onSelectionChanged = { state, areas -> state.copy(questionAreas = areas) },
             onMessageIdSet = { state, messageId -> state.copy(messageId = messageId) },
@@ -157,7 +157,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val details = User.Details(
                 it.chatId,
                 state.snapshot.phoneNumber,
-                state.snapshot.name, state.snapshot.city,
+                state.snapshot.name,
+                state.snapshot.city,
                 state.snapshot.profession,
                 state.snapshot.organization,
                 state.snapshot.professionalDescription,
