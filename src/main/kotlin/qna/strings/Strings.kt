@@ -13,13 +13,13 @@ object Strings {
                 boldln("Готовы ответить?")
             }
         fun editMessage(subject: String, question: String) =
-            buildEntities{
+            buildEntities {
                 regular("Вы согласились ответить на вопрос:\n\n")
                 boldln(subject)
                 regularln(question)
             }
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
-        const val WaitingForCompanion = "Владелец вопроса свяжется с Вами." //TODO тут потом передавать тему и сам вопрос
+        const val WaitingForCompanion = "Владелец вопроса свяжется с Вами." // TODO тут потом передавать тему и сам вопрос
         const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
