@@ -12,7 +12,7 @@ object Strings {
                 boldln("Готовы ответить?")
             }
         fun editMessage(subject: String, question: String) =
-            buildEntities{
+            buildEntities {
                 regular("Вы согласились ответить на вопрос:\n\n")
                 boldln(subject)
                 regularln(question)

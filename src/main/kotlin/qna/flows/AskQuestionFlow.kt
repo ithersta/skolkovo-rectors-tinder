@@ -100,7 +100,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val intent = ButtonStrings.Question.stringToQuestionIntent[message.content.text]
             if (intent != null) {
                 if (intent == QuestionIntent.QuestionToColleagues) {
-                    //TODO тут нужен новый state новый для отправки вопроса в сообщество(в тг канал)
+                    // TODO тут нужен новый state новый для отправки вопроса в сообщество(в тг канал)
                     state.override { SendQuestionToCommunity(subject, question, areas, intent) }
                 } else {
                     state.override { SendQuestionToCommunity(subject, question, areas, intent) }
@@ -222,7 +222,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val respondent = getUserDetailsUseCase(data.respondentId)
             checkNotNull(respondent)
             val question = getQuestionByIdUseCase(data.questionId)
-            ///TODO acceptedResponses
+            // /TODO acceptedResponses
             sendContact(
                 query.user,
                 phoneNumber = respondent.phoneNumber.value,
