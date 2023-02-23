@@ -35,23 +35,23 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
 //         todo:    ВЫБОР СФЕР В НАЧАЛЕ!
-            val numbersPager = statefulPager(
-                id = "numbers",
+            val subjectsPager = statefulPager(
+                id = "numbers", // уникальный id пагинации
                 onPagerStateChanged = { state.snapshot.copy(pagerState = it) }
             ) {
-                val numbers = subjectsByChatId.invoke(567538391).toList()
-                val paginatedNumbers = numbers.drop(offset).take(limit)
+                val subjects = subjectsByChatId.invoke(567538391).toList() // todo: digit to chatId
+                val paginatedNumbers = subjects.drop(offset).take(limit)
                 inlineKeyboard {
                     paginatedNumbers.forEach { item ->
                         row {
                             dataButton(item.second, SelectSubject(item.first))
                         }
                     }
-                    navigationRow(itemCount = numbers.size)
+                    navigationRow(itemCount = subjects.size)
                 }
             }
             onEnter { chatId ->
-                with(numbersPager) { sendOrEditMessage(chatId, "Numbers", state.snapshot.pagerState) }
+                with(subjectsPager) { sendOrEditMessage(chatId, "Темы вопросов", state.snapshot.pagerState) }
             }
             onDataCallbackQuery(SelectSubject::class) { (data, query) ->
                 sendTextMessage(
