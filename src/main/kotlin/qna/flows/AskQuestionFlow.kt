@@ -12,6 +12,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
+import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -19,10 +20,12 @@ import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
+import dev.inmo.tgbotapi.extensions.utils.withContentOrNull
 import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.MessageId
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
@@ -32,7 +35,6 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
-import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
 import qna.states.*
 import qna.strings.ButtonStrings
@@ -47,8 +49,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getUserIdUseCase: GetUserIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
-    val getQuestionTextByIdUseCase: GetQuestionTextByIdUseCase by inject()
-    val getPhoneNumberUseCase: GetPhoneNumberUseCase by inject()
+    val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
+    val addResponseUseCase: AddResponseUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -58,20 +60,15 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText { message ->
-            val subject = message.content.text
-            state.override { AskFullQuestion(subject) }
+            state.override { AskFullQuestion(message.content.text) }
         }
     }
     state<AskFullQuestion> {
         onEnter {
-            sendTextMessage(
-                it,
-                Strings.Question.WordingQuestion
-            )
+            sendTextMessage(it, Strings.Question.WordingQuestion)
         }
         onText { message ->
-            val question = message.content.text
-            state.override { ChooseQuestionAreas(subject, question, emptySet()) }
+            state.override { ChooseQuestionAreas(subject, message.content.text, emptySet()) }
         }
     }
     state<ChooseQuestionAreas> {
@@ -90,14 +87,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 it,
                 Strings.Question.AskingQuestionIntent,
                 replyMarkup = replyKeyboard {
-                    row {
-                        simpleButton(Strings.Question.Intent.TestHypothesis)
-                    }
-                    row {
-                        simpleButton(Strings.Question.Intent.Consultation)
-                    }
-                    row {
-                        simpleButton(Strings.Question.Intent.FreeForm)
+                    Strings.Question.questionIntentToString.forEach {
+                        row {
+                            simpleButton(it.value)
+                        }
                     }
                 }
             )
@@ -162,28 +155,38 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             answer(query)
         }
         onDataCallbackQuery(AcceptQuestionQuery::class) { (data, query) ->
+            val question = getQuestionByIdUseCase(data.questionId)
+            val message = query.messageCallbackQueryOrNull()?.message?.withContentOrNull<TextContent>()
+            message?.let {
+                edit(
+                    it,
+                    entities = Strings.ToAnswerUser.editMessage(question.subject, question.text),
+                    replyMarkup = null
+                )
+            }
+            val responseId = addResponseUseCase(data.questionId, query.user.id.chatId)
             sendTextMessage(
                 query.user.id,
                 Strings.ToAnswerUser.SentAgreement
             )
             coroutineScope.launch {
-                val userId = getUserIdUseCase(data.questionId)
-                val user = getUserDetailsUseCase(userId)
-                if (user != null) {
+                val authorId = getUserIdUseCase(data.questionId)
+                val respondent = getUserDetailsUseCase(query.user.id.chatId)
+                if (respondent != null) {
                     sendTextMessage(
-                        userId.toChatId(),
+                        authorId.toChatId(),
                         Strings.ToAskUser.message(
-                            user.name,
-                            user.city,
-                            user.job,
-                            user.organization,
-                            user.activityDescription
+                            respondent.name,
+                            respondent.city,
+                            respondent.job,
+                            respondent.organization,
+                            respondent.activityDescription
                         ),
                         replyMarkup = inlineKeyboard {
                             row {
                                 dataButton(
                                     ButtonStrings.Option.Yes,
-                                    AcceptUserQuery(query.user.id.chatId, data.questionId)
+                                    AcceptUserQuery(respondent.id, data.questionId, responseId)
                                 )
                             }
                             row {
@@ -194,16 +197,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                             }
                         }
                     )
-                    sendContact(
-                        userId.toChatId(),
-                        phoneNumber = getPhoneNumberUseCase(userId),
-                        firstName = user.name,
-                    )
                 }
             }
             answer(query)
         }
         onDataCallbackQuery(DeclineUserQuery::class) { (data, query) ->
+            val message = query.messageCallbackQueryOrNull()?.message
+            message?.let { delete(it) }
             sendTextMessage(
                 data.userId.toChatId(),
                 Strings.ToAnswerUser.QuestionResolved
@@ -211,8 +211,17 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             answer(query)
         }
         onDataCallbackQuery(AcceptUserQuery::class) { (data, query) ->
+            val message = query.messageCallbackQueryOrNull()?.message
+            message?.let { editMessageReplyMarkup(it, null) }
+            val respondent = getUserDetailsUseCase(data.respondentId)
+            checkNotNull(respondent)
+            sendContact(
+                query.user,
+                phoneNumber = respondent.phoneNumber.value,
+                firstName = respondent.name,
+            )
             sendTextMessage(
-                data.userId.toChatId(),
+                data.respondentId.toChatId(),
                 Strings.ToAnswerUser.WaitingForCompanion
             )
             sendTextMessage(
@@ -221,7 +230,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
             sendTextMessage(
                 query.user.id,
-                getQuestionTextByIdUseCase(data.questionId)
+                getQuestionByIdUseCase(data.questionId).text
             )
             sendTextMessage(
                 query.user.id,
@@ -266,9 +275,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
                 text,
                 replyMarkup = keyboard
             )
-            state.overrideQuietly {
-                onMessageIdSet(state.snapshot, message.messageId)
-            }
+            state.overrideQuietly { onMessageIdSet(state.snapshot, message.messageId) }
         }
     }
     onDataCallbackQuery(SelectQuestionQuery::class) { (data, query) ->
@@ -290,9 +297,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
                 auth.telegram.Strings.AccountInfo.NoQuestionArea
             )
         } else {
-            state.override {
-                onFinish(state.snapshot)
-            }
+            state.override { onFinish(state.snapshot) }
         }
         answer(query)
     }

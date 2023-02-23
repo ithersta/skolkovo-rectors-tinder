@@ -14,7 +14,7 @@ object DeclineQuestionQuery : Query
 
 @Serializable
 @SerialName("ac")
-class AcceptUserQuery(val userId: Long, val questionId: Long) : Query
+class AcceptUserQuery(val respondentId: Long, val questionId: Long, val responseId: Long) : Query
 
 @Serializable
 @SerialName("de")

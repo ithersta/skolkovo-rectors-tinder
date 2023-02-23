@@ -12,20 +12,18 @@ object Strings {
                 regularln(question + "\n")
                 boldln("Готовы ответить?")
             }
+        fun editMessage(subject: String, question: String) =
+            buildEntities{
+                regular("Вы согласились ответить на вопрос:\n\n")
+                boldln(subject)
+                regularln(question)
+            }
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
-        const val WaitingForCompanion = "Владелец вопроса свяжется с Вами."
+        const val WaitingForCompanion = "Владелец вопроса свяжется с Вами." //TODO тут потом передавать тему и сам вопрос
         const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
     object ToAskUser {
-        // TODO: можно что-то добавить(emoji например)?
-        // Профиль состоит из:
-        // Имя
-        // Город
-        // Должность
-        // Организация
-        // Профессиональные зоны компетенции
-        // Деятельность
         fun message(name: String, city: String, job: String, organisation: String, activityDescr: String) =
             buildEntities {
                 regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
@@ -43,7 +41,7 @@ object Strings {
                 boldln("Вы согласны пообщаться?")
             }
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
-            "и формате встречи - онлайн или оффлайн. А через неделю мы напишем Вам как все прошло."
+            "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
         val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседнику") }
     }
 
@@ -59,6 +57,7 @@ object Strings {
             QuestionIntent.Consultation to Intent.Consultation,
             QuestionIntent.FreeForm to Intent.FreeForm
         )
+
         val stringToQuestionIntent = questionIntentToString.entries.associate { it.value to it.key }
         const val SubjectQuestion = "Напишите тему вопроса (краткая формулировка)"
         const val WordingQuestion = "Сформулируйте свой вопрос"
