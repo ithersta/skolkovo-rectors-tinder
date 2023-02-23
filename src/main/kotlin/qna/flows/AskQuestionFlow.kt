@@ -35,6 +35,7 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
+import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
 import qna.states.*
 import qna.strings.ButtonStrings
@@ -87,7 +88,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 it,
                 Strings.Question.AskingQuestionIntent,
                 replyMarkup = replyKeyboard {
-                    Strings.Question.questionIntentToString.forEach {
+                    ButtonStrings.Question.questionIntentToString.forEach {
                         row {
                             simpleButton(it.value)
                         }
@@ -96,9 +97,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText { message ->
-            val intent = Strings.Question.stringToQuestionIntent[message.content.text]
+            val intent = ButtonStrings.Question.stringToQuestionIntent[message.content.text]
             if (intent != null) {
-                state.override { SendQuestionToCommunity(subject, question, areas, intent) }
+                if (intent == QuestionIntent.QuestionToColleagues) {
+                    //TODO тут нужен новый state новый для отправки вопроса в сообщество(в тг канал)
+                    state.override { SendQuestionToCommunity(subject, question, areas, intent) }
+                } else {
+                    state.override { SendQuestionToCommunity(subject, question, areas, intent) }
+                }
             } else {
                 sendTextMessage(message.chat, Strings.Question.InvalidQuestionIntent)
                 state.override { ChooseQuestionIntent(subject, question, areas) }
@@ -215,6 +221,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             message?.let { editMessageReplyMarkup(it, null) }
             val respondent = getUserDetailsUseCase(data.respondentId)
             checkNotNull(respondent)
+            val question = getQuestionByIdUseCase(data.questionId)
+            ///TODO acceptedResponses
             sendContact(
                 query.user,
                 phoneNumber = respondent.phoneNumber.value,
@@ -222,7 +230,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
             sendTextMessage(
                 data.respondentId.toChatId(),
-                Strings.ToAnswerUser.WaitingForCompanion
+                Strings.ToAnswerUser.waitingForCompanion(question.subject)
             )
             sendTextMessage(
                 query.user.id,
@@ -230,7 +238,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
             sendTextMessage(
                 query.user.id,
-                getQuestionByIdUseCase(data.questionId).text
+                question.text
             )
             sendTextMessage(
                 query.user.id,

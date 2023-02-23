@@ -1,7 +1,6 @@
 package qna.strings
 
 import dev.inmo.tgbotapi.utils.*
-import qna.domain.entities.QuestionIntent
 
 object Strings {
     object ToAnswerUser {
@@ -18,8 +17,14 @@ object Strings {
                 boldln(subject)
                 regularln(question)
             }
+        fun waitingForCompanion(subject: String) =
+            buildEntities {
+                regular("Владелец вопроса")
+                bold("\"$subject\"")
+                regular("свяжется с Вами.")
+            }
+
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
-        const val WaitingForCompanion = "Владелец вопроса свяжется с Вами." //TODO тут потом передавать тему и сам вопрос
         const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
@@ -46,19 +51,6 @@ object Strings {
     }
 
     object Question {
-        object Intent {
-            const val TestHypothesis = "Хочу проверить гипотезу (посоветоваться)"
-            const val Consultation = "У меня есть запрос на консультацию по теме"
-            const val FreeForm = "Хочу задать вопрос участникам сообщества (в свободной форме)"
-        }
-
-        val questionIntentToString = mapOf<QuestionIntent, String>(
-            QuestionIntent.TestHypothesis to Intent.TestHypothesis,
-            QuestionIntent.Consultation to Intent.Consultation,
-            QuestionIntent.FreeForm to Intent.FreeForm
-        )
-
-        val stringToQuestionIntent = questionIntentToString.entries.associate { it.value to it.key }
         const val SubjectQuestion = "Напишите тему вопроса (краткая формулировка)"
         const val WordingQuestion = "Сформулируйте свой вопрос"
         const val AskingQuestionIntent = "Выберите цель вопроса"
