@@ -2,25 +2,26 @@ package notifications.telegram.flows
 
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.StatefulContext
-import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
 import common.telegram.CommonStrings
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrThrow
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContentOrThrow
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.queries.callback.DataCallbackQuery
+import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.RoleFilterBuilder
 import generated.dataButton
 import generated.onDataCallbackQuery
-import kotlinx.datetime.Clock
+import kotlinx.coroutines.launch
 import notifications.domain.entities.NewQuestionsNotification
-import notifications.domain.entities.NotificationPreference
+import notifications.domain.usecases.GetNewQuestionsNotificationFlowUseCase
 import notifications.domain.usecases.GetQuestionsDigestUseCase
 import notifications.telegram.Strings
 import notifications.telegram.queries.NewQuestionsNotificationQuery
@@ -28,14 +29,16 @@ import org.koin.core.component.inject
 import qna.domain.usecases.AddResponseUseCase
 import qna.domain.usecases.GetQuestionByIdUseCase
 import qna.domain.usecases.HasResponseUseCase
-import kotlin.time.Duration.Companion.days
 
-fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow(): InlineKeyboardPager<NewQuestionsNotification> {
+lateinit var newQuestionsPager: InlineKeyboardPager<NewQuestionsNotification>
+
+fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow() {
     val getQuestionsDigest: GetQuestionsDigestUseCase by inject()
     val getQuestionById: GetQuestionByIdUseCase by inject()
     val addResponse: AddResponseUseCase by inject()
     val hasResponse: HasResponseUseCase by inject()
-    val newQuestionsPager = pager(id = "new_questions", dataKClass = NewQuestionsNotification::class) {
+    val getNewQuestionsNotificationFlow: GetNewQuestionsNotificationFlowUseCase by inject()
+    newQuestionsPager = pager(id = "new_questions", dataKClass = NewQuestionsNotification::class) {
         val questions = getQuestionsDigest(
             from = data.from,
             until = data.until,
@@ -71,27 +74,7 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow(): InlineKeyboar
                 replyMarkup = newQuestionsPager.page(data.newQuestionsNotification, data.page)
             )
         }
-        // TODO: Remove
-        onCommand("TODO", description = null) { message ->
-            val replyMarkup = newQuestionsPager.replyMarkup(
-                NewQuestionsNotification(
-                    userId = message.chat.id.chatId,
-                    from = Clock.System.now() - 1.days,
-                    until = Clock.System.now(),
-                    notificationPreference = NotificationPreference.Daily
-                )
-            )
-            if (replyMarkup.keyboard.isNotEmpty()) {
-                sendTextMessage(
-                    message.chat.id,
-                    text = Strings.newQuestionsMessage(NotificationPreference.Daily),
-                    replyMarkup = replyMarkup
-                )
-            }
-        }
     }
-
-    return newQuestionsPager
 }
 
 private suspend fun StatefulContext<DialogState, User, DialogState, User.Normal>.showQuestion(
