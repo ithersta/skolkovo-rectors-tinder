@@ -31,7 +31,6 @@ import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.entities.Question
@@ -223,7 +222,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val respondent = getUserDetailsUseCase(data.respondentId)
             checkNotNull(respondent)
             val question = getQuestionByIdUseCase(data.questionId)
-            addAcceptedResponseRepoUseCase(data.responseId, Clock.System.now())
+            addAcceptedResponseRepoUseCase(data.responseId)
             sendContact(
                 query.user,
                 phoneNumber = respondent.phoneNumber.value,
