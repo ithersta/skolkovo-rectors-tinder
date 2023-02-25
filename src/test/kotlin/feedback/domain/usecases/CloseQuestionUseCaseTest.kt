@@ -6,6 +6,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import qna.domain.entities.Question
+import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 import qna.domain.repository.QuestionRepository
 import kotlin.test.assertEquals
@@ -19,13 +20,14 @@ internal class CloseQuestionUseCaseTest {
         intent = QuestionIntent.TestHypothesis,
         subject = "Тема",
         text = "Текст",
-        isClosed = false
+        isClosed = false,
+        areas = setOf(QuestionArea.Education, QuestionArea.Finance)
     )
 
     @Test
     fun ok() {
         val questionRepository = mockk<QuestionRepository>(relaxUnitFun = true)
-        every { questionRepository.get(sampleQuestionId) } returns sampleQuestion
+        every { questionRepository.getById(sampleQuestionId) } returns sampleQuestion
         val closeQuestion = CloseQuestionUseCase(questionRepository, NoOpTransaction)
         assertEquals(CloseQuestionUseCase.Result.OK, closeQuestion(sampleFromUserId, sampleQuestionId))
         verify(exactly = 1) { questionRepository.close(sampleQuestionId) }
@@ -34,7 +36,7 @@ internal class CloseQuestionUseCaseTest {
     @Test
     fun unauthorized() {
         val questionRepository = mockk<QuestionRepository>(relaxUnitFun = true)
-        every { questionRepository.get(sampleQuestionId) } returns sampleQuestion
+        every { questionRepository.getById(sampleQuestionId) } returns sampleQuestion
         val closeQuestion = CloseQuestionUseCase(questionRepository, NoOpTransaction)
         assertEquals(CloseQuestionUseCase.Result.Unauthorized, closeQuestion(1234L, sampleQuestionId))
         verify(exactly = 0) { questionRepository.close(any()) }
@@ -43,7 +45,7 @@ internal class CloseQuestionUseCaseTest {
     @Test
     fun `No such question`() {
         val questionRepository = mockk<QuestionRepository>(relaxUnitFun = true)
-        every { questionRepository.get(sampleQuestionId) } returns null
+        every { questionRepository.getById(sampleQuestionId) } returns null
         val closeQuestion = CloseQuestionUseCase(questionRepository, NoOpTransaction)
         assertEquals(CloseQuestionUseCase.Result.NoSuchQuestion, closeQuestion(sampleFromUserId, sampleQuestionId))
         verify(exactly = 0) { questionRepository.close(any()) }

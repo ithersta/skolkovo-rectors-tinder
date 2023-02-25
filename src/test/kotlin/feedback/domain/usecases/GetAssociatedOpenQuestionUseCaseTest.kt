@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import qna.domain.entities.Question
+import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 import qna.domain.entities.Response
 import qna.domain.repository.QuestionRepository
@@ -21,7 +22,8 @@ internal class GetAssociatedOpenQuestionUseCaseTest {
         intent = QuestionIntent.TestHypothesis,
         subject = "Тема",
         text = "Текст",
-        isClosed = false
+        isClosed = false,
+        areas = setOf(QuestionArea.Education, QuestionArea.Finance)
     )
     private val sampleResponse = Response(
         id = sampleResponseId,
@@ -32,7 +34,7 @@ internal class GetAssociatedOpenQuestionUseCaseTest {
     @Test
     fun ok() {
         val questionRepository = mockk<QuestionRepository>()
-        every { questionRepository.get(sampleQuestionId) } returns sampleQuestion
+        every { questionRepository.getById(sampleQuestionId) } returns sampleQuestion
         val responseRepository = mockk<ResponseRepository>()
         every { responseRepository.get(sampleResponseId) } returns sampleResponse
         val getAssociatedOpenQuestion =
@@ -43,7 +45,7 @@ internal class GetAssociatedOpenQuestionUseCaseTest {
     @Test
     fun unauthorized() {
         val questionRepository = mockk<QuestionRepository>()
-        every { questionRepository.get(sampleQuestionId) } returns sampleQuestion
+        every { questionRepository.getById(sampleQuestionId) } returns sampleQuestion
         val responseRepository = mockk<ResponseRepository>()
         every { responseRepository.get(sampleResponseId) } returns sampleResponse
         val getAssociatedOpenQuestion =
@@ -54,7 +56,7 @@ internal class GetAssociatedOpenQuestionUseCaseTest {
     @Test
     fun `Question closed`() {
         val questionRepository = mockk<QuestionRepository>()
-        every { questionRepository.get(sampleQuestionId) } returns sampleQuestion.copy(isClosed = true)
+        every { questionRepository.getById(sampleQuestionId) } returns sampleQuestion.copy(isClosed = true)
         val responseRepository = mockk<ResponseRepository>()
         every { responseRepository.get(sampleResponseId) } returns sampleResponse
         val getAssociatedOpenQuestion =
