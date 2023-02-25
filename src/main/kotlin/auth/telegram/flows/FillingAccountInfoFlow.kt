@@ -60,7 +60,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<ChooseCity> {
-        selectCity()
+        selectCity(
+           /// onSelection = { state, city -> state.copy(city = city) },
+            onFinish = { state, city-> state.next(city) })
     }
 
     state<WriteProfessionState> {
@@ -121,7 +123,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 }
 
-private fun <UserType: User> StateFilterBuilder<DialogState, User, ChooseCity, UserType, UserId>.selectCity() {
+fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
+    onFinish: (State, String)  -> DialogState) {
     onEnter {
         sendTextMessage(
             it,
@@ -150,7 +153,10 @@ private fun <UserType: User> StateFilterBuilder<DialogState, User, ChooseCity, U
         answer(query)
     }
     onDataCallbackQuery(SelectCityInCIS::class) { (data, query) ->
-        state.override {next( data.city) }
+        val city: String = data.city
+        if (jsonParser.cityRegex.matches(city)) {
+            state.override { onFinish(state.snapshot, city)}
+        }
         answer(query)
     }
 
@@ -175,7 +181,7 @@ private fun <UserType: User> StateFilterBuilder<DialogState, User, ChooseCity, U
     onDataCallbackQuery(SelectCity::class) { (data, query) ->
         val city: String = data.city
         if (jsonParser.cityRegex.matches(city)) {
-            state.override { next(city) }
+            state.override { onFinish(state.snapshot, city)}
         }
         answer(query)
     }

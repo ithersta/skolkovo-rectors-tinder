@@ -79,7 +79,7 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun changeAreas(id: Long, newArea: Set<QuestionArea>) {
-        UserAreas.deleteWhere { Users.id eq id  }
+        UserAreas.deleteWhere { userId eq id  }
         UserAreas.batchInsert(newArea) {
             this[UserAreas.userId] = id
             this[UserAreas.area] = it

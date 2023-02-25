@@ -3,7 +3,7 @@ package menus
 import auth.domain.entities.User
 import auth.telegram.Strings
 import changeAccountInfo.Strings.namesToQueries
-import changeAccountInfo.domain.interactors.usecases.GetUserDetailsByIdUseCase
+import changeAccountInfo.domain.usecases.GetUserDetailsByIdUseCase
 import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import common.telegram.DialogState

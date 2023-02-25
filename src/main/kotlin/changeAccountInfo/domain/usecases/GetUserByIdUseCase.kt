@@ -1,4 +1,4 @@
-package changeAccountInfo.domain.interactors.usecases
+package changeAccountInfo.domain.usecases
 
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository

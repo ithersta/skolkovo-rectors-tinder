@@ -2,6 +2,7 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
 import auth.telegram.states.WaitingForContact
+import changeAccountInfo.telegram.flows.changeAccountInfoFlow
 import com.ithersta.tgbotapi.boot.annotations.StateMachine
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
@@ -43,6 +44,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         with(normalMenu) { invoke() }
         feedbackFlow()
         askQuestionFlow()
+        changeAccountInfoFlow()
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }
