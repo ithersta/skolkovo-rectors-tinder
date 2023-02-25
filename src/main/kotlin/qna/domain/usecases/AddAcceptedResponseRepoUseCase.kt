@@ -2,7 +2,6 @@ package qna.domain.usecases
 
 import common.domain.Transaction
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import org.koin.core.annotation.Single
 import qna.domain.repository.AcceptedResponsesRepository
 
