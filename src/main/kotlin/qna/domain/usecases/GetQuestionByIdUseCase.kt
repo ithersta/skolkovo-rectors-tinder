@@ -10,7 +10,7 @@ class GetQuestionByIdUseCase(
     private val questionRepository: QuestionRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(questionId: Long): Question = transaction {
+    operator fun invoke(questionId: Long): Question? = transaction {
         return@transaction questionRepository.getById(questionId)
     }
 }

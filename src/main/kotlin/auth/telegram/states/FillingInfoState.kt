@@ -12,14 +12,14 @@ object WaitingForContact : DialogState {
 }
 
 @Serializable
-class WriteNameState(
+data class WriteNameState(
     val phoneNumber: PhoneNumber
 ) : DialogState {
     fun next(name: String) = ChooseCountry(phoneNumber, name)
 }
 
 @Serializable
-class ChooseCountry(
+data class ChooseCountry(
     val phoneNumber: PhoneNumber,
     val name: String
 ) : DialogState {
@@ -28,7 +28,7 @@ class ChooseCountry(
 }
 
 @Serializable
-class ChooseCityInCis(
+data class ChooseCityInCis(
     val phoneNumber: PhoneNumber,
     val name: String,
     val country: String
@@ -37,27 +37,27 @@ class ChooseCityInCis(
 }
 
 @Serializable
-class ChooseDistrict(
+data class ChooseDistrict(
     val phoneNumber: PhoneNumber,
     val name: String
 ) : DialogState
 
 @Serializable
-class ChooseRegion(
+data class ChooseRegion(
     val phoneNumber: PhoneNumber,
     val name: String,
     val district: String
 ) : DialogState
 
 @Serializable
-class ChooseCity(
+data class ChooseCity(
     val phoneNumber: PhoneNumber,
     val name: String,
     val region: String
 ) : DialogState
 
 @Serializable
-class WriteProfessionState(
+data class WriteProfessionState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String
@@ -66,24 +66,26 @@ class WriteProfessionState(
 }
 
 @Serializable
-class WriteOrganizationState(
+data class WriteOrganizationState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
     val profession: String
 ) : DialogState {
-    fun next(organization: String) = WriteProfessionalDescriptionState(phoneNumber, name, city, profession, organization)
+    fun next(organization: String) =
+        WriteProfessionalDescriptionState(phoneNumber, name, city, profession, organization)
 }
 
 @Serializable
-class WriteProfessionalDescriptionState(
+data class WriteProfessionalDescriptionState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
     val profession: String,
     val organization: String
 ) : DialogState {
-    fun next(professionalDescription: String) = ChooseQuestionAreasState(phoneNumber, name, city, profession, organization, professionalDescription)
+    fun next(professionalDescription: String) =
+        ChooseQuestionAreasState(phoneNumber, name, city, profession, organization, professionalDescription)
 }
 
 @Serializable
@@ -109,7 +111,7 @@ data class ChooseQuestionAreasState(
 }
 
 @Serializable
-class AddAccountInfoToDataBaseState(
+data class AddAccountInfoToDataBaseState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,

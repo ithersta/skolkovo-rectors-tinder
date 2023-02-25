@@ -1,4 +1,4 @@
-package mute.data.entities
+package mute.data.tables
 
 import auth.data.tables.Users
 import kotlinx.datetime.Instant

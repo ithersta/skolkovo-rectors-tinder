@@ -2,7 +2,6 @@ package auth.telegram.flows
 
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
-import auth.domain.usecases.PhoneNumberIsAllowedUseCase
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
@@ -28,13 +27,12 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
-import qna.telegram.flows.chooseQuestionAreas
+import qna.flows.chooseQuestionAreas
 
 val jsonParser: JsonParser = JsonParser()
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
-    val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
 
     state<WaitingForContact> {
         onEnter {
@@ -50,25 +48,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val contact = message.content.contact
             require(contact.userId == message.chat.id)
             val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
-            when(phoneNumberIsAllowedUseCase(phoneNumber)) {
-                PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber -> {
-                    sendTextMessage(
-                        message.chat,
-                        Strings.AuthenticationResults.DuplicatePhoneNumber
-                    )
-                    state.override {DialogState.Empty }
-                }
-
-                PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> {
-                    sendTextMessage(
-                        message.chat,
-                        Strings.AuthenticationResults.PhoneNumberNotAllowed
-                    )
-                    state.override {DialogState.Empty }
-                }
-
-                PhoneNumberIsAllowedUseCase.Result.OK ->state.override { next(phoneNumber) }
-            }
+            state.override { next(phoneNumber) }
         }
         onText { sendTextMessage(it.chat, InvalidShare) }
     }

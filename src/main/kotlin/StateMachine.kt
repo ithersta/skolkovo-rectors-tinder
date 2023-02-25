@@ -13,10 +13,11 @@ import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
+import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.muteFlow
-import qna.telegram.flows.askQuestionFlow
+import qna.flows.askQuestionFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -29,21 +30,18 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
-                // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WaitingForContact } // /ну пока так
+                state.override { WaitingForContact }
             }
         }
         state<DialogState.Empty> {
             onEnter {
-                sendTextMessage(
-                    it,
-                    Strings.RoleMenu.Unauthenticated
-                )
+                sendTextMessage(it, Strings.RoleMenu.Unauthenticated)
             }
         }
     }
     role<User.Normal> {
         with(normalMenu) { invoke() }
+        feedbackFlow()
         askQuestionFlow()
     }
     role<User.Admin> {
