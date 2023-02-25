@@ -25,7 +25,7 @@ private val containsByIdMuteSettingsUseCase: ContainsByIdMuteSettingsUseCase by 
 fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     submenu(
         Strings.MenuButtons.Questions.Question,
-        Strings.MenuButtons.Questions.QuestionDesciption,
+        Strings.MenuButtons.Questions.QuestionDescription,
         MenuState.Questions.Main
     ) {
         submenu(
@@ -50,29 +50,31 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             button(
                 Strings.MenuButtons.Questions.InterestingQuestions,
                 MenuState.CurrentIssues
-//                { state.override { MenuState.CurrentIssues(it.chatId, PagerState()) } }
             )
         }
         button(
             Strings.MenuButtons.Questions.Ask,
             MenuState.Questions.AskQuestion
-        ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+        )
     }
     button(
         Strings.MenuButtons.Notifications.Main
     ) {
         sendMuteRequest(it)
     }
-    // /TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
-    // /если оповещения включены, и "возобновить", если оповещения выключены
-    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo)
+    button(
+        Strings.MenuButtons.ChangeAccountInfo,
+        MenuState.ChangeAccountInfo
+    ) // TODO: это я потом реализую
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
     )
 }
 
-private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendMuteRequest(message: CommonMessage<TextContent>) {
+private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendMuteRequest(
+    message: CommonMessage<TextContent>
+) {
     sendTextMessage(
         message.chat,
         Strings.MenuButtons.Notifications.Description,

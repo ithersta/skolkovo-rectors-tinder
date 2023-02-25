@@ -13,6 +13,7 @@ import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
+import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.muteFlow
@@ -30,8 +31,14 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         anyState { onCommand("start", null) { state.override { WaitingForContact } } }
         state<DialogState.Empty> { onEnter { sendTextMessage(it, Strings.RoleMenu.Unauthenticated) } }
     }
-    role<User.Normal> { with(normalMenu) { invoke() } }
-    role<User.Admin> { with(adminMenu) { invoke() } }
+    role<User.Normal> {
+        with(normalMenu) { invoke() }
+        feedbackFlow()
+        askQuestionFlow()
+    }
+    role<User.Admin> {
+        with(adminMenu) { invoke() }
+    }
     muteFlow()
     eventFlow()
     feedbackFlow()

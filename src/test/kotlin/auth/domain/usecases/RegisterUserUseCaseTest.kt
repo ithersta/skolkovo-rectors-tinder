@@ -21,7 +21,6 @@ internal class RegisterUserUseCaseTest {
         city = "Санкт-Петербург",
         job = "Главный специалист",
         organization = "Организация",
-        professionalAreas = "Области",
         activityDescription = "Описание деятельности",
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
     )
@@ -59,7 +58,8 @@ internal class RegisterUserUseCaseTest {
         every { userRepository.isRegistered(sampleUserId) } returns false
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns true
         val phoneNumberIsAllowedUseCase = mockk<PhoneNumberIsAllowedUseCase>()
-        every { phoneNumberIsAllowedUseCase.invoke(details.phoneNumber) } returns PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber
+        every { phoneNumberIsAllowedUseCase.invoke(details.phoneNumber) } returns
+            PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber
         val registerUser = RegisterUserUseCase(phoneNumberIsAllowedUseCase, userRepository, NoOpTransaction)
         assertEquals(RegisterUserUseCase.Result.DuplicatePhoneNumber, registerUser(details))
         verify(exactly = 0) { userRepository.add(any()) }
@@ -72,7 +72,8 @@ internal class RegisterUserUseCaseTest {
         every { userRepository.isRegistered(sampleUserId) } returns false
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
         val phoneNumberIsAllowedUseCase = mockk<PhoneNumberIsAllowedUseCase>()
-        every { phoneNumberIsAllowedUseCase.invoke(details.phoneNumber) } returns PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed
+        every { phoneNumberIsAllowedUseCase.invoke(details.phoneNumber) } returns
+            PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed
         val registerUser = RegisterUserUseCase(phoneNumberIsAllowedUseCase, userRepository, NoOpTransaction)
         assertEquals(RegisterUserUseCase.Result.PhoneNumberNotAllowed, registerUser(details))
         verify(exactly = 0) { userRepository.add(any()) }
@@ -86,7 +87,8 @@ internal class RegisterUserUseCaseTest {
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
         every { userRepository.add(details) } returns Unit
         val phoneNumberIsAllowedUseCase = mockk<PhoneNumberIsAllowedUseCase>()
-        every { phoneNumberIsAllowedUseCase.invoke(details.phoneNumber) } returns PhoneNumberIsAllowedUseCase.Result.OK
+        every { phoneNumberIsAllowedUseCase.invoke(details.phoneNumber) } returns
+            PhoneNumberIsAllowedUseCase.Result.OK
         val registerUser = RegisterUserUseCase(phoneNumberIsAllowedUseCase, userRepository, NoOpTransaction)
         assertEquals(RegisterUserUseCase.Result.OK, registerUser(details))
         verify(exactly = 1) { userRepository.add(any()) }

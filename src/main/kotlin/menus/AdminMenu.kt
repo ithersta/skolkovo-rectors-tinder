@@ -12,9 +12,4 @@ val adminMenu = menu<User.Admin>(Strings.RoleMenu.Normal, DialogState.Empty) {
         Strings.MenuButtons.AddUser,
         MenuState.AddUser
     ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
-    button(
-        Strings.MenuButtons.Notifications.Main,
-        MenuState.Notifications
-    )
-    // /если оповещения включены, и "возобновить", если оповещения выключены
 }

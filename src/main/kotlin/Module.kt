@@ -6,7 +6,7 @@ import com.ithersta.tgbotapi.fsm.engines.regularEngine
 import config.readBotConfig
 import generated.sqliteStateRepository
 import kotlinx.datetime.Clock
-import mute.data.entities.MuteSettings
+import mute.data.tables.MuteSettings
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -40,7 +40,7 @@ val module = module(createdAtStart = true) {
     includes(defaultModule, dataModule)
     single { readBotConfig() }
     single<Clock> { Clock.System }
-    single {
+    single { _ ->
         stateMachine.regularEngine(
             getUser = { get<GetUserUseCase>()(it.chatId) },
             stateRepository = sqliteStateRepository(historyDepth = 1),
