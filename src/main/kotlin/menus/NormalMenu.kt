@@ -39,7 +39,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             ) {
                 button( // TODO
                     Strings.MenuButtons.Questions.MyQuestions.ActualQuestions,
-                    DialogState.Empty
+                    MenuState.GetListOfRespondents
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
                 button(
                     Strings.MenuButtons.Questions.MyQuestions.OldQuestions,
@@ -64,7 +64,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     button(
         Strings.MenuButtons.ChangeAccountInfo,
         MenuState.ChangeAccountInfo
-    ) // TODO: это я потом реализую
+    )
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
