@@ -50,6 +50,10 @@ class SelectRegion(val region: String) : Query
 class SelectCity(val city: String) : Query
 
 @Serializable
+@SerialName("sa")
+class SelectArea(val areaId: QuestionArea) : Query
+
+@Serializable
 @SerialName("su")
 class SelectSubject(val questionId: Long) : Query
 

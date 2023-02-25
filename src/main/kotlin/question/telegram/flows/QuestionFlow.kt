@@ -3,6 +3,7 @@ package question.telegram.flows
 import auth.domain.entities.User
 import auth.telegram.Strings.TargetArea.AnswerToPersonWhoAskedQuestion
 import auth.telegram.Strings.TargetArea.Good
+import auth.telegram.Strings.TargetArea.ListQuestion
 import auth.telegram.Strings.TargetArea.No
 import auth.telegram.Strings.TargetArea.ReplyToRespondent
 import auth.telegram.Strings.TargetArea.Yes
@@ -31,12 +32,28 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     val userIdByQuestionId: UserIdUseCase by inject()
     val getPhoneNumberUseCase: GetPhoneNumberUseCase by inject()
     val getFirstNameUseCase: GetFirstNameUseCase by inject()
+    val getAreasUseCase: GetAreasUseCase by inject()
     val answerForUser: List<String> = listOf(Yes, No)
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
-//         todo:    ВЫБОР СФЕР В НАЧАЛЕ!
+            /* //todo:    ВЫБОР СФЕР В НАЧАЛЕ!
+             onEnter {
+                 sendTextMessage(
+                     it.chatId.toChatId(),
+                     listSpheres,
+                     replyMarkup = inlineKeyboard {
+                         getAreasUseCase.invoke(it.chatId).forEach { area ->
+                             val areaToString = Strings.questionAreaToString[area]
+                             row {
+                                 dataButton(areaToString!!, SelectArea(area))
+                             }
+                         }
+                     }
+
+                 )
+             }*/
             val subjectsPager = statefulPager(
-                id = "numbers", // уникальный id пагинации
+                id = "subjects",
                 onPagerStateChanged = { state.snapshot.copy(pagerState = it) }
             ) {
                 val subjects = subjectsByChatId.invoke(567538391).toList() // todo: digit to chatId
@@ -51,12 +68,11 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                 }
             }
             onEnter { chatId ->
-                with(subjectsPager) { sendOrEditMessage(chatId, "Темы вопросов", state.snapshot.pagerState) }
+                with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState) }
             }
             onDataCallbackQuery(SelectSubject::class) { (data, query) ->
                 sendTextMessage(
-                    query.user.id,
-                    textByQuestionId.invoke(data.questionId),
+                    query.user.id, textByQuestionId.invoke(data.questionId),
                     replyMarkup = inlineKeyboard {
                         answerForUser.forEach {
                             row {
@@ -69,26 +85,16 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
             }
             onDataCallbackQuery(AnswerUser::class) { (data, query) ->
                 if (data.answer == No) {
-                    sendTextMessage(
-                        query.user.id,
-                        Good
-                    )
+                    sendTextMessage(query.user.id, Good)
                 } else {
                     val userId = userIdByQuestionId.invoke(data.questionId)
                     val chatId = userId.toChatId()
-                    sendTextMessage(
-                        chatId,
-                        AnswerToPersonWhoAskedQuestion
-                    )
+                    sendTextMessage(chatId, AnswerToPersonWhoAskedQuestion)
                     sendContact(
-                        chatId,
-                        phoneNumber = getPhoneNumberUseCase.invoke(userId),
+                        chatId, phoneNumber = getPhoneNumberUseCase.invoke(userId),
                         firstName = getFirstNameUseCase.invoke(userId)
                     )
-                    sendTextMessage(
-                        query.user.id,
-                        ReplyToRespondent
-                    )
+                    sendTextMessage(query.user.id, ReplyToRespondent)
                 }
                 state.override { DialogState.Empty }
                 answer(query)

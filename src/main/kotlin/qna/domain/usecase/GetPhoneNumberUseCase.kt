@@ -10,6 +10,6 @@ class GetPhoneNumberUseCase(
     private val transaction: Transaction
 ) {
     operator fun invoke(id: Long): String = transaction {
-        return@transaction userRepository.getPhoneNumber(id)
+        return@transaction userRepository.get(id)!!.phoneNumber.value
     }
 }

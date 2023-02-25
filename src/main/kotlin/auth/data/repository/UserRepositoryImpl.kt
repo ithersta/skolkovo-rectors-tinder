@@ -54,12 +54,4 @@ class UserRepositoryImpl : UserRepository {
     override fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean {
         return Users.select { Users.phoneNumber eq phoneNumber.value }.empty().not()
     }
-
-    override fun getPhoneNumber(id: Long): String {
-        return Users.select { Users.id eq id }.map { it[Users.phoneNumber] }.first()
-    }
-
-    override fun getFirstName(id: Long): String {
-        return Users.select { Users.id eq id }.map { it[Users.name] }.first()
-    }
 }
