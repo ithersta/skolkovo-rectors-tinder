@@ -24,7 +24,7 @@ private val containsByIdMuteSettingsUseCase: ContainsByIdMuteSettingsUseCase by 
 fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     submenu(
         Strings.MenuButtons.Questions.Question,
-        Strings.MenuButtons.Questions.QuestionDesciption,
+        Strings.MenuButtons.Questions.QuestionDescription,
         MenuState.Questions.Main
     ) {
         submenu(
@@ -37,7 +37,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 Strings.MenuButtons.Questions.MyQuestions.Description,
                 MenuState.Questions.GetMyQuestion
             ) {
-                button(
+                button( // TODO
                     Strings.MenuButtons.Questions.MyQuestions.ActualQuestions,
                     DialogState.Empty
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
@@ -54,16 +54,17 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         button(
             Strings.MenuButtons.Questions.Ask,
             MenuState.Questions.AskQuestion
-        ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+        )
     }
     button(
         Strings.MenuButtons.Notifications.Main
     ) {
         sendMuteRequest(it)
     }
-    // /TODO: в этом стейте Ивану реализовать логику вывода одной кнопки: "приостановить"
-    // /если оповещения включены, и "возобновить", если оповещения выключены
-    button(Strings.MenuButtons.ChangeAccountInfo, MenuState.ChangeAccountInfo) // //TODO: это я потом реализую
+    button(
+        Strings.MenuButtons.ChangeAccountInfo,
+        MenuState.ChangeAccountInfo
+    ) // TODO: это я потом реализую
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
