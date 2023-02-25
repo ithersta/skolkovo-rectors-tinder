@@ -95,7 +95,7 @@ private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendMute
 }
 
 private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendFieldsToChange(message: CommonMessage<TextContent>) {
-    val user= getUserDetailsByIdUseCase(message.chat.id.chatId)
+    val user= getUserDetailsByIdUseCase(message.chat.id.chatId)!!
     sendTextMessage(
         message.chat,
         accountInfo(user.name,user.city, user.job, user.organization, user.activityDescription),

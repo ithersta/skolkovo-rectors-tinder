@@ -19,6 +19,7 @@ import qna.telegram.flows.chooseQuestionAreas
 
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoFlow() {
+    val getUserDetailsByIdUseCase: GetUserDetailsByIdUseCase by inject()
     val changeAccountInfoInteractor: ChangeAccountInfoInteractor by inject()
     anyState {
         onDataCallbackQuery(WaitingForCity::class) {
@@ -37,7 +38,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
             state.override { WaitingForProfessionalDescriptionState }
         }
         onDataCallbackQuery(WaitingForQuestionAreas::class) {
-            state.override { WaitingForQuestionAreasState() }
+                (_, query)->
+            state.override { WaitingForQuestionAreasState(getUserDetailsByIdUseCase(query.from.id.chatId)!!.areas) }
         }
     }
     state<WaitingForCityState> {
