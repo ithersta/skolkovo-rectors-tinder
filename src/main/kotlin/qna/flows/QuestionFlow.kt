@@ -23,11 +23,7 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
-import qna.domain.usecases.GetAreasUseCase
-import qna.domain.usecases.GetFirstNameUseCase
-import qna.domain.usecases.GetPhoneNumberUseCase
-import qna.domain.usecases.SubjectsUseCase
-import qna.domain.usecases.GetQuestionByIdUseCase
+import qna.domain.usecases.*
 import qna.strings.Strings.TargetArea.AnswerToPersonWhoAskedQuestion
 import qna.strings.Strings.TargetArea.Good
 import qna.strings.Strings.TargetArea.ListQuestion
@@ -72,7 +68,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
                 }
             }
         onEnter { chatId ->
-            with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState!!) }
+            with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState) }
         }
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
             sendTextMessage(query.user.id,
@@ -105,28 +101,3 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
         }
     }
 }
-/*
-suspend fun StatefulContext<DialogState, User, MenuState.AnswerUser, User.Normal>.sendQMesssage(
-    chatId: ChatId,
-    question: Question
-) = sendTextMessage(
-    chatId,
-    qna.strings.Strings.ToAnswerUser.message(question.subject, question.text),
-    replyMarkup = inlineKeyboard {
-        row {
-            checkNotNull(question.id)
-            dataButton(
-                CommonStrings.Button.Yes,
-                AcceptQuestionQuery(question.id)
-            )
-        }
-        row {
-            dataButton(
-                CommonStrings.Button.No,
-                DeclineQuestionQuery
-            )
-        }
-    }
-)
-
-*/

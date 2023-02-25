@@ -38,7 +38,10 @@ import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
-import qna.states.*
+import qna.states.AskFullQuestion
+import qna.states.ChooseQuestionAreas
+import qna.states.ChooseQuestionIntent
+import qna.states.SendQuestionToCommunity
 import qna.strings.ButtonStrings
 import qna.strings.Strings
 import qna.telegram.queries.AcceptQuestionQuery
@@ -314,6 +317,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     }
 }
 
+//todo: мб шаблонную функцию?
 suspend fun StatefulContext<DialogState, User, SendQuestionToCommunity, User.Normal>.sendQuestionMessage(
     chatId: ChatId,
     question: Question
