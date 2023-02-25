@@ -30,6 +30,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.3.3")
     testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("app.cash.turbine:turbine:0.12.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
     implementation("org.jsoup:jsoup:1.15.3")
     implementation("com.jayway.jsonpath:json-path:2.7.0")
 }

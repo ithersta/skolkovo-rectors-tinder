@@ -9,6 +9,7 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
+import common.telegram.CommonStrings
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
@@ -162,6 +163,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         }
         onDataCallbackQuery(AcceptQuestionQuery::class) { (data, query) ->
             val question = getQuestionByIdUseCase(data.questionId)
+            checkNotNull(question)
             val message = query.messageCallbackQueryOrNull()?.message?.withContentOrNull<TextContent>()
             message?.let {
                 edit(
@@ -176,7 +178,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.ToAnswerUser.SentAgreement
             )
             coroutineScope.launch {
-                val authorId = getQuestionByIdUseCase(data.questionId).authorId
+                val authorId = question.authorId
                 val respondent = getUserDetailsUseCase(query.user.id.chatId)
                 if (respondent != null) {
                     sendTextMessage(
@@ -191,13 +193,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                         replyMarkup = inlineKeyboard {
                             row {
                                 dataButton(
-                                    ButtonStrings.Option.Yes,
+                                    CommonStrings.Button.Yes,
                                     AcceptUserQuery(respondent.id, data.questionId, responseId)
                                 )
                             }
                             row {
                                 dataButton(
-                                    ButtonStrings.Option.No,
+                                    CommonStrings.Button.No,
                                     DeclineUserQuery(query.user.id.chatId)
                                 )
                             }
@@ -222,6 +224,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val respondent = getUserDetailsUseCase(data.respondentId)
             checkNotNull(respondent)
             val question = getQuestionByIdUseCase(data.questionId)
+            checkNotNull(question)
             addAcceptedResponseRepoUseCase(data.responseId)
             sendContact(
                 query.user,
@@ -321,13 +324,13 @@ suspend fun StatefulContext<DialogState, User, SendQuestionToCommunity, User.Nor
         row {
             checkNotNull(question.id)
             dataButton(
-                ButtonStrings.Option.Yes,
+                CommonStrings.Button.Yes,
                 AcceptQuestionQuery(question.id)
             )
         }
         row {
             dataButton(
-                ButtonStrings.Option.No,
+                CommonStrings.Button.No,
                 DeclineQuestionQuery
             )
         }
