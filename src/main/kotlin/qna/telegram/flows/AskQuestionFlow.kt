@@ -39,10 +39,10 @@ import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
-import qna.telegram.AcceptQuestionQuery
-import qna.telegram.AcceptUserQuery
-import qna.telegram.DeclineQuestionQuery
-import qna.telegram.DeclineUserQuery
+import qna.telegram.queries.AcceptQuestionQuery
+import qna.telegram.queries.AcceptUserQuery
+import qna.telegram.queries.DeclineQuestionQuery
+import qna.telegram.queries.DeclineUserQuery
 import qna.telegram.states.AskFullQuestion
 import qna.telegram.states.ChooseQuestionAreas
 import qna.telegram.states.ChooseQuestionIntent
@@ -169,7 +169,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             message?.let {
                 edit(
                     it,
-                    entities = Strings.ToAnswerUser.editMessage(question.subject, question.text),
+                    entities = Strings.ToAnswerUser.editMessage(question!!.subject, question.text),
                     replyMarkup = null
                 )
             }
@@ -179,7 +179,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.ToAnswerUser.SentAgreement
             )
             coroutineScope.launch {
-                val authorId = getQuestionByIdUseCase(data.questionId).authorId
+                val authorId = getQuestionByIdUseCase(data.questionId)!!.authorId
                 val respondent = getUserDetailsUseCase(query.user.id.chatId)
                 if (respondent != null) {
                     sendTextMessage(
@@ -233,7 +233,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
             sendTextMessage(
                 data.respondentId.toChatId(),
-                Strings.ToAnswerUser.waitingForCompanion(question.subject)
+                Strings.ToAnswerUser.waitingForCompanion(question!!.subject)
             )
             sendTextMessage(
                 query.user.id,

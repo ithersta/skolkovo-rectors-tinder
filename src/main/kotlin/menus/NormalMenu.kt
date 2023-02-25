@@ -71,7 +71,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         Strings.MenuButtons.ChangeAccountInfo
     ){
        sendFieldsToChange(it)
-   } // TODO: это я потом реализую
+   }
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
