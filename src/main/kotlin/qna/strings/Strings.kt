@@ -61,12 +61,12 @@ object Strings {
         const val Success = "Вопрос успешно отправлен в сообщество"
     }
     object TargetArea {
-        val listSpheres = "Список сфер по вашему профилю, нажмите на сферу что бы посмотреть какие есть темы вопросов."
-        val ListQuestion = "Список вопросов по вашим сферам.Нажмите на тему, чтобы посмотреть подробнее."
-        val Good = "Хорошо"
-        val AnswerToPersonWhoAskedQuestion =
+        const val listSpheres = "Список сфер по вашему профилю, нажмите на сферу что бы посмотреть какие есть темы вопросов."
+        const val ListQuestion = "Список вопросов по вашим сферам.Нажмите на тему, чтобы посмотреть подробнее."
+        const val Good = "Хорошо"
+        const val AnswerToPersonWhoAskedQuestion =
             "Один из пользователей площадки решил ответить на ваш вопрос свяжитесь с ним."
-        val ReplyToRespondent = "Владелец вопроса свяжется с вами если сочтет это нужным"
+        const val ReplyToRespondent = "Владелец вопроса свяжется с вами если сочтет это нужным"
         fun buildQuestionByQuestionText(text: String): String {
             return "Текст вопроса $text.\nМогли бы вы ответить на этот вопрос?"
         }
