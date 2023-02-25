@@ -7,6 +7,7 @@ import config.readBotConfig
 import generated.sqliteStateRepository
 import kotlinx.datetime.Clock
 import mute.data.tables.MuteSettings
+import notifications.data.tables.NotificationPreferences
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,6 +17,7 @@ import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
+import java.time.ZoneId
 
 val dataModule = module(createdAtStart = true) {
     single {
@@ -29,7 +31,8 @@ val dataModule = module(createdAtStart = true) {
                     QuestionAreas,
                     Responses,
                     AcceptedResponses,
-                    MuteSettings
+                    MuteSettings,
+                    NotificationPreferences
                 )
             }
         }
@@ -40,6 +43,7 @@ val module = module(createdAtStart = true) {
     includes(defaultModule, dataModule)
     single { readBotConfig() }
     single<Clock> { Clock.System }
+    single { ZoneId.of("Europe/Moscow") }
     single { _ ->
         stateMachine.regularEngine(
             getUser = { get<GetUserUseCase>()(it.chatId) },

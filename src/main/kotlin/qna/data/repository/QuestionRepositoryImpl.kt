@@ -1,9 +1,8 @@
 package qna.data.repository
 
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
+import common.domain.Paginated
+import kotlinx.datetime.Instant
+import org.jetbrains.exposed.sql.*
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
@@ -19,6 +18,7 @@ class QuestionRepositoryImpl : QuestionRepository {
             it[subject] = question.subject
             it[text] = question.text
             it[isClosed] = question.isClosed
+            it[at] = question.at
         }
         QuestionAreas.batchInsert(question.areas) {
             this[QuestionAreas.questionId] = id
@@ -28,25 +28,45 @@ class QuestionRepositoryImpl : QuestionRepository {
     }
 
     override fun getById(questionId: Long): Question {
-        val areas = QuestionAreas
-            .select { QuestionAreas.questionId eq questionId }
-            .map { it[QuestionAreas.area] }.toSet()
-        return Questions.select { Questions.id eq questionId }.map {
-            Question(
-                authorId = it[Questions.authorId].value,
-                intent = it[Questions.intent],
-                subject = it[Questions.subject],
-                text = it[Questions.text],
-                isClosed = it[Questions.isClosed],
-                areas = areas,
-                id = it[Questions.id].value
-            )
-        }.first()
+        return Questions.select { Questions.id eq questionId }.map(::mapper).first()
+    }
+
+    override fun getBetweenPaginated(
+        from: Instant,
+        until: Instant,
+        excludeUserId: Long,
+        limit: Int,
+        offset: Int
+    ): Paginated<Question> {
+        val query = Questions
+            .select { Questions.at.between(from, until) and (Questions.authorId neq excludeUserId) }
+            .orderBy(Questions.at)
+        return Paginated(
+            slice = query.limit(limit, offset.toLong()).map(::mapper),
+            count = query.count().toInt()
+        )
     }
 
     override fun close(questionId: Long) {
         Questions.update(where = { Questions.id eq questionId }) {
             it[Questions.isClosed] = true
         }
+    }
+
+    private fun mapper(row: ResultRow): Question {
+        val questionId = row[Questions.id].value
+        val areas = QuestionAreas
+            .select { QuestionAreas.questionId eq questionId }
+            .map { it[QuestionAreas.area] }.toSet()
+        return Question(
+            authorId = row[Questions.authorId].value,
+            intent = row[Questions.intent],
+            subject = row[Questions.subject],
+            text = row[Questions.text],
+            isClosed = row[Questions.isClosed],
+            areas = areas,
+            at = row[Questions.at],
+            id = row[Questions.id].value
+        )
     }
 }
