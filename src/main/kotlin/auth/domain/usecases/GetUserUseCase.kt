@@ -14,9 +14,9 @@ class GetUserUseCase(
 ) {
     operator fun invoke(id: Long): User = transaction {
         when {
+            userRepository.isRegistered(id).not() -> User.Unauthenticated
             botConfig.adminId == id -> User.Admin
-            userRepository.isRegistered(id) -> User.Normal
-            else -> User.Unauthenticated
+            else -> User.Normal()
         }
     }
 }

@@ -16,7 +16,7 @@ class CloseQuestionUseCase(
     }
 
     operator fun invoke(fromUserId: Long, questionId: Long) = transaction {
-        val question = questionRepository.get(questionId) ?: return@transaction Result.NoSuchQuestion
+        val question = questionRepository.getById(questionId) ?: return@transaction Result.NoSuchQuestion
         if (question.authorId != fromUserId) return@transaction Result.Unauthorized
         questionRepository.close(questionId)
         Result.OK

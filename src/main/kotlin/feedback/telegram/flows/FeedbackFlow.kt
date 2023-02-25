@@ -1,7 +1,7 @@
 package feedback.telegram.flows
 
 import auth.domain.entities.User
-import common.telegram.ButtonStrings
+import common.telegram.CommonStrings
 import common.telegram.deleteAfterDelay
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
@@ -31,9 +31,10 @@ fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
                 ?.withContentOrNull<TextContent>() ?: return@onDataCallbackQuery
             val question = getAssociatedOpenQuestion(query.from.id.chatId, data.responseId)
             if (data.isSuccessful && question != null) {
+                checkNotNull(question.id)
                 val keyboard = flatInlineKeyboard {
-                    dataButton(ButtonStrings.No, FeedbackQueries.DoNotCloseQuestion)
-                    dataButton(ButtonStrings.Yes, FeedbackQueries.CloseQuestion(question.id))
+                    dataButton(CommonStrings.Button.No, FeedbackQueries.DoNotCloseQuestion)
+                    dataButton(CommonStrings.Button.Yes, FeedbackQueries.CloseQuestion(question.id))
                 }
                 edit(message, text = Strings.shouldCloseQuestion(question.subject), replyMarkup = keyboard)
             } else {

@@ -14,7 +14,7 @@ class GetAssociatedOpenQuestionUseCase(
 ) {
     operator fun invoke(fromUserId: Long, responseId: Long): Question? = transaction {
         val response = responseRepository.get(responseId) ?: return@transaction null
-        val question = questionRepository.get(response.questionId)
+        val question = questionRepository.getById(response.questionId)
         question?.takeIf { it.isClosed.not() && it.authorId == fromUserId }
     }
 }

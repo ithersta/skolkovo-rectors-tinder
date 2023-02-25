@@ -1,6 +1,6 @@
 package feedback.telegram
 
-import common.telegram.ButtonStrings
+import common.telegram.CommonStrings
 import common.telegram.MassSendLimiter
 import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
@@ -23,8 +23,8 @@ class FeedbackRequester(
                 chatId = feedbackRequest.questionAuthorUserId.toChatId(),
                 entities = Strings.feedbackRequest(feedbackRequest),
                 replyMarkup = flatInlineKeyboard {
-                    dataButton(ButtonStrings.No, FeedbackQueries.SendFeedback(feedbackRequest.responseId, false))
-                    dataButton(ButtonStrings.Yes, FeedbackQueries.SendFeedback(feedbackRequest.responseId, true))
+                    dataButton(CommonStrings.Button.No, FeedbackQueries.SendFeedback(feedbackRequest.responseId, false))
+                    dataButton(CommonStrings.Button.Yes, FeedbackQueries.SendFeedback(feedbackRequest.responseId, true))
                 }
             )
             massSendLimiter.wait()

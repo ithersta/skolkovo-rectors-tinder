@@ -1,6 +1,8 @@
 package common.telegram
 
-object ButtonStrings {
-    const val Yes = "Да"
-    const val No = "Нет"
+object CommonStrings {
+    object Button {
+        const val Yes = "Да"
+        const val No = "Нет"
+    }
 }
