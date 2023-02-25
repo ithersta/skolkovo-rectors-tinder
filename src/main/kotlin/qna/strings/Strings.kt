@@ -1,3 +1,5 @@
+@file:Suppress("MaxLineLength")
+
 package qna.strings
 
 import dev.inmo.tgbotapi.utils.*
