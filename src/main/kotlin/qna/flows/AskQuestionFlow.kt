@@ -317,7 +317,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     }
 }
 
-//todo: мб шаблонную функцию?
+// todo: мб шаблонную функцию?
 suspend fun StatefulContext<DialogState, User, SendQuestionToCommunity, User.Normal>.sendQuestionMessage(
     chatId: ChatId,
     question: Question
