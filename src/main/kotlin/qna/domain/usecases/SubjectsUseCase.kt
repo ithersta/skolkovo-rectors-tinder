@@ -1,4 +1,4 @@
-package qna.domain.usecase
+package qna.domain.usecases
 
 import auth.domain.repository.UserAreasRepository
 import common.domain.Transaction

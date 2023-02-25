@@ -117,17 +117,4 @@ object Strings {
         const val ChangeAccountInfo = "Изменить данные аккаунта"
         const val Events = "Получить календарь мероприятий"
     }
-    object TargetArea {
-        val Yes = "Да"
-        val No = "Нет"
-        val listSpheres = "Список сфер по вашему профилю, нажмите на сферу что бы посмотреть какие есть темы вопросов."
-        val ListQuestion = "Список вопросов по вашим сферам.Нажмите на тему, чтобы посмотреть подробнее."
-        val Good = "Хорошо"
-        val AnswerToPersonWhoAskedQuestion =
-            "Один из пользователей площадки решил ответить на ваш вопрос свяжитесь с ним."
-        val ReplyToRespondent = "Владелец вопроса свяжется с вами если сочтет это нужным"
-        fun buildQuestionByQuestionText(text: String): String {
-            return "Текст вопроса $text.\nМогли бы вы ответить на этот вопрос?"
-        }
-    }
 }
