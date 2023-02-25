@@ -23,7 +23,11 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
-import qna.domain.usecases.*
+import qna.domain.usecases.GetAreasUseCase
+import qna.domain.usecases.GetFirstNameUseCase
+import qna.domain.usecases.GetPhoneNumberUseCase
+import qna.domain.usecases.GetQuestionByIdUseCase
+import qna.domain.usecases.SubjectsUseCase
 import qna.strings.Strings.TargetArea.AnswerToPersonWhoAskedQuestion
 import qna.strings.Strings.TargetArea.Good
 import qna.strings.Strings.TargetArea.ListQuestion
@@ -40,14 +44,18 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     val answerForUser: List<String> = listOf(Yes, No)
     state<MenuState.CurrentIssues> {
         onEnter {
-            sendTextMessage(it.chatId.toChatId(), listSpheres, replyMarkup = inlineKeyboard {
-                getAreasUseCase.invoke(it.chatId).forEach { area ->
-                    val areaToString = Strings.questionAreaToString[area]
-                    row {
-                        dataButton(areaToString!!, SelectArea(area))
+            sendTextMessage(
+                it.chatId.toChatId(),
+                listSpheres,
+                replyMarkup = inlineKeyboard {
+                    getAreasUseCase.invoke(it.chatId).forEach { area ->
+                        val areaToString = Strings.questionAreaToString[area]
+                        row {
+                            dataButton(areaToString!!, SelectArea(area))
+                        }
                     }
                 }
-            })
+            )
         }
         onDataCallbackQuery(SelectArea::class) { (data, query) ->
             state.override { MenuState.NextStep(data.area, PagerState()) }
@@ -68,10 +76,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
                 }
             }
         onEnter { chatId ->
-            with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState) }
+            with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState!!) }
         }
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
-            sendTextMessage(query.user.id,
+            sendTextMessage(
+                query.user.id,
                 buildQuestionByQuestionText(getQuestionByIdUseCase.invoke(data.questionId)!!.text),
                 replyMarkup = inlineKeyboard {
                     answerForUser.forEach {
@@ -79,7 +88,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
                             dataButton(it, AnswerUser(data.questionId, it))
                         }
                     }
-                })
+                }
+            )
             answer(query)
         }
         onDataCallbackQuery(AnswerUser::class) { (data, query) ->
@@ -101,3 +111,28 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
         }
     }
 }
+/*
+suspend fun StatefulContext<DialogState, User, MenuState.AnswerUser, User.Normal>.sendQMesssage(
+    chatId: ChatId,
+    question: Question
+) = sendTextMessage(
+    chatId,
+    qna.strings.Strings.ToAnswerUser.message(question.subject, question.text),
+    replyMarkup = inlineKeyboard {
+        row {
+            checkNotNull(question.id)
+            dataButton(
+                CommonStrings.Button.Yes,
+                AcceptQuestionQuery(question.id)
+            )
+        }
+        row {
+            dataButton(
+                CommonStrings.Button.No,
+                DeclineQuestionQuery
+            )
+        }
+    }
+)
+
+*/
