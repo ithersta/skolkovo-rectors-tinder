@@ -9,30 +9,6 @@ import qna.domain.entities.QuestionArea
 object WaitingForNewName : DialogState
 
 @Serializable
-object WaitingForCountry: DialogState  {
-    fun chooseDistrict() = WaitingForDistrict
-    fun chooseCityInCis(country: String) = WaitingForCityInCis(country)
-}
-
-@Serializable
-class WaitingForCityInCis(
-    val country: String
-) : DialogState
-
-@Serializable
-object WaitingForDistrict : DialogState
-
-@Serializable
-class WaitingForRegion(
-    val district: String
-) : DialogState
-
-@Serializable
-class WaitingForCity(
-    val region: String
-) : DialogState
-
-@Serializable
 object WaitingForProfessionState: DialogState
 
 @Serializable
