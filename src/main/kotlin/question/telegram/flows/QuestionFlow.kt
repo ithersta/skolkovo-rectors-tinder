@@ -7,6 +7,7 @@ import auth.telegram.Strings.TargetArea.ListQuestion
 import auth.telegram.Strings.TargetArea.No
 import auth.telegram.Strings.TargetArea.ReplyToRespondent
 import auth.telegram.Strings.TargetArea.Yes
+import auth.telegram.Strings.TargetArea.buildQuestionByQuestionText
 import auth.telegram.queries.AnswerUser
 import auth.telegram.queries.SelectSubject
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
@@ -71,8 +72,8 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                 with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState) }
             }
             onDataCallbackQuery(SelectSubject::class) { (data, query) ->
-                sendTextMessage(
-                    query.user.id, textByQuestionId.invoke(data.questionId),
+                sendTextMessage(query.user.id,
+                    buildQuestionByQuestionText(textByQuestionId.invoke(data.questionId)),
                     replyMarkup = inlineKeyboard {
                         answerForUser.forEach {
                             row {
