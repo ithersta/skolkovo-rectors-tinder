@@ -27,7 +27,7 @@ dependencies {
     implementation("com.jayway.jsonpath:json-path:2.7.0")
     compileOnly("io.insert-koin:koin-annotations:1.1.1")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
-    ksp("com.ithersta.tgbotapi:boot-ksp:0.1.10")
+    ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.3.3")
     testImplementation("io.mockk:mockk:1.13.4")
