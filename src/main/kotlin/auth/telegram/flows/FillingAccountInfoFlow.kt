@@ -2,6 +2,7 @@ package auth.telegram.flows
 
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
+import auth.domain.usecases.PhoneNumberIsAllowedUseCase
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
@@ -33,6 +34,7 @@ val jsonParser: JsonParser = JsonParser()
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
+    val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
 
     state<WaitingForContact> {
         onEnter {
@@ -48,7 +50,19 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val contact = message.content.contact
             require(contact.userId == message.chat.id)
             val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
-            state.override { next(phoneNumber) }
+            when(phoneNumberIsAllowedUseCase(phoneNumber)) {
+                PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber -> sendTextMessage(
+                    message.chat,
+                    Strings.AuthenticationResults.DuplicatePhoneNumber
+                )
+
+                PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> sendTextMessage(
+                    message.chat,
+                    Strings.AuthenticationResults.PhoneNumberNotAllowed
+                )
+
+                PhoneNumberIsAllowedUseCase.Result.OK ->state.override { next(phoneNumber) }
+            }
         }
         onText { sendTextMessage(it.chat, InvalidShare) }
     }

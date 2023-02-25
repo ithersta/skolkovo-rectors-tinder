@@ -12,15 +12,15 @@ object Strings {
     const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
     object AccountInfo {
-        const val WriteName = "Введите своё имя"
+        const val WriteName = "Введите своё имя и фамилию"
         const val ChooseCountry = "Укажите из какой Вы страны"
         const val ChooseDistrict = "Укажите из какого Вы округа"
         const val ChooseRegion = "Укажите из какого Вы региона"
         const val ChooseCity =
-            "Укажите из какого Вы города " // /мб надо будет поменять, с указанием, что надо выбрать из выпадающего списка
+            "Укажите из какого Вы города "
         const val WriteProfession = "Напишите Вашу должность"
         const val WriteOrganization = "Напишите название Вашей организации"
-        const val ChooseProfessionalAreas = "Уточните ваши профессиональные зоны компетенций" // /возможность выбрать
+        const val ChooseProfessionalAreas = "Уточните ваши профессиональные зоны компетенций"
 
         const val NoQuestionArea =
             "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
