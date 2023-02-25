@@ -13,10 +13,10 @@ object Strings {
     const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
     object AccountInfo {
+        const val WriteName = "Введите своё имя"
         const val ChooseCountry = "Укажите из какой Вы страны"
         const val ChooseDistrict = "Укажите из какого Вы округа"
         const val ChooseRegion = "Укажите из какого Вы региона"
-        const val WriteName = "Введите своё имя"
         const val ChooseCity =
             "Укажите из какого Вы города " // /мб надо будет поменять, с указанием, что надо выбрать из выпадающего списка
         const val WriteProfession = "Напишите Вашу должность"
@@ -92,7 +92,7 @@ object Strings {
 
         object Questions {
             const val Question = "Вопрос"
-            const val QuestionDesciption = "Выберите, что вы хотите сделать"
+            const val QuestionDescription = "Выберите, что вы хотите сделать"
             const val Ask = "Задать вопрос сообществу"
             const val Get = "Получить список вопросов"
             const val Description = "Выберите категорию вопроса"

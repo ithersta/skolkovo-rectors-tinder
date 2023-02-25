@@ -21,7 +21,6 @@ internal class RegisterUserUseCaseTest {
         city = "Санкт-Петербург",
         job = "Главный специалист",
         organization = "Организация",
-        professionalAreas = "Области",
         activityDescription = "Описание деятельности",
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
     )

@@ -20,7 +20,6 @@ class UserRepositoryImpl : UserRepository {
             it[city] = user.city
             it[job] = user.job
             it[organization] = user.organization
-            it[professionalAreas] = user.professionalAreas
             it[activityDescription] = user.activityDescription
         }
         UserAreas.batchInsert(user.areas) {
@@ -39,7 +38,6 @@ class UserRepositoryImpl : UserRepository {
                 phoneNumber = phoneNumber,
                 name = it[Users.name],
                 city = it[Users.city],
-                professionalAreas = it[Users.professionalAreas],
                 job = it[Users.job],
                 organization = it[Users.organization],
                 activityDescription = it[Users.activityDescription],
