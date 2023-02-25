@@ -1,5 +1,6 @@
-package qna.strings
+package qna.telegram.strings
 
+import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.*
 
 object Strings {
@@ -28,21 +29,27 @@ object Strings {
         const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
+    fun accountInfo (name: String, city: String, job: String, organisation: String, activityDescr: String):TextSourcesList{
+        return buildEntities {
+            bold("Имя: ")
+            regularln(name)
+            bold("Город: ")
+            regularln(city)
+            bold("Должность: ")
+            regularln(job)
+            bold("Организация: ")
+            regularln(organisation)
+            bold("Деятельность: ")
+            regularln(activityDescr)
+            regularln("")
+        }
+    }
+
     object ToAskUser {
         fun message(name: String, city: String, job: String, organisation: String, activityDescr: String) =
             buildEntities {
                 regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
-                bold("Имя: ")
-                regularln(name)
-                bold("Город: ")
-                regularln(city)
-                bold("Должность: ")
-                regularln(job)
-                bold("Организация: ")
-                regularln(organisation)
-                bold("Деятельность: ")
-                regularln(activityDescr)
-                regularln("")
+                accountInfo(name,city,job,organisation,activityDescr)
                 boldln("Вы согласны пообщаться?")
             }
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +

@@ -7,7 +7,7 @@ import config.BotConfig
 import org.koin.core.annotation.Single
 
 @Single
-class GetUserUseCase(
+class GetUserRoleUseCase(
     private val userRepository: UserRepository,
     private val botConfig: BotConfig,
     private val transaction: Transaction

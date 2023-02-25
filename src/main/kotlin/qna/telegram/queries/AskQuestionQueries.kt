@@ -1,4 +1,4 @@
-package qna.telegram.queries
+package qna.telegram
 
 import common.telegram.Query
 import kotlinx.serialization.SerialName

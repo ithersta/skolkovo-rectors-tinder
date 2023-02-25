@@ -1,4 +1,4 @@
-package qna.states
+package qna.telegram.states
 
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.types.MessageId
