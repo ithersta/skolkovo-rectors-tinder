@@ -27,10 +27,6 @@ class QuestionRepositoryImpl : QuestionRepository {
         return id.value
     }
 
-    override fun getUserId(questionId: Long): Long {
-        return Questions.select { Questions.id eq questionId }.map { it[Questions.authorId] }.first().value
-    }
-
     override fun getById(questionId: Long): Question {
         val areas = QuestionAreas.select { QuestionAreas.questionId eq questionId }.map { it[QuestionAreas.area] }.toSet()
         return Questions.select { Questions.id eq questionId }.map {

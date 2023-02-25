@@ -49,7 +49,6 @@ import qna.telegram.queries.DeclineUserQuery
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
     val addQuestionUseCase: AddQuestionUseCase by inject()
-    val getUserIdUseCase: GetUserIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
@@ -178,7 +177,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.ToAnswerUser.SentAgreement
             )
             coroutineScope.launch {
-                val authorId = getUserIdUseCase(data.questionId)
+                val authorId = getQuestionByIdUseCase(data.questionId).authorId
                 val respondent = getUserDetailsUseCase(query.user.id.chatId)
                 if (respondent != null) {
                     sendTextMessage(
