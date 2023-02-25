@@ -51,15 +51,21 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             require(contact.userId == message.chat.id)
             val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
             when(phoneNumberIsAllowedUseCase(phoneNumber)) {
-                PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber -> sendTextMessage(
-                    message.chat,
-                    Strings.AuthenticationResults.DuplicatePhoneNumber
-                )
+                PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber -> {
+                    sendTextMessage(
+                        message.chat,
+                        Strings.AuthenticationResults.DuplicatePhoneNumber
+                    )
+                    state.override {DialogState.Empty }
+                }
 
-                PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> sendTextMessage(
-                    message.chat,
-                    Strings.AuthenticationResults.PhoneNumberNotAllowed
-                )
+                PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> {
+                    sendTextMessage(
+                        message.chat,
+                        Strings.AuthenticationResults.PhoneNumberNotAllowed
+                    )
+                    state.override {DialogState.Empty }
+                }
 
                 PhoneNumberIsAllowedUseCase.Result.OK ->state.override { next(phoneNumber) }
             }
