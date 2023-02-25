@@ -27,27 +27,11 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
 
     role<User.Unauthenticated> {
         fillingAccountInfoFlow()
-        anyState {
-            onCommand("start", null) {
-                // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WaitingForContact } // /ну пока так
-            }
-        }
-        state<DialogState.Empty> {
-            onEnter {
-                sendTextMessage(
-                    it,
-                    Strings.RoleMenu.Unauthenticated
-                )
-            }
-        }
+        anyState { onCommand("start", null) { state.override { WaitingForContact } } }
+        state<DialogState.Empty> { onEnter { sendTextMessage(it, Strings.RoleMenu.Unauthenticated) } }
     }
-    role<User.Normal> {
-        with(normalMenu) { invoke() }
-    }
-    role<User.Admin> {
-        with(adminMenu) { invoke() }
-    }
+    role<User.Normal> { with(normalMenu) { invoke() } }
+    role<User.Admin> { with(adminMenu) { invoke() } }
     muteFlow()
     eventFlow()
     feedbackFlow()

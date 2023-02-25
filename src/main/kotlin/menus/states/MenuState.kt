@@ -3,6 +3,7 @@ package menus.states
 import com.ithersta.tgbotapi.pagination.PagerState
 import common.telegram.DialogState
 import kotlinx.serialization.Serializable
+import qna.domain.entities.QuestionArea
 
 object MenuState {
     @Serializable
@@ -32,8 +33,11 @@ object MenuState {
     object Events : DialogState
 
     @Serializable
-    data class CurrentIssues(
-        val userId: Long,
+    object CurrentIssues : DialogState
+
+    @Serializable
+    data class NextStep(
+        val area: QuestionArea,
         val pagerState: PagerState
     ) : DialogState
 }

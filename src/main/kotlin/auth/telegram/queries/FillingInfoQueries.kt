@@ -51,7 +51,7 @@ class SelectCity(val city: String) : Query
 
 @Serializable
 @SerialName("sa")
-class SelectArea(val areaId: QuestionArea) : Query
+class SelectArea(val area: QuestionArea) : Query
 
 @Serializable
 @SerialName("su")

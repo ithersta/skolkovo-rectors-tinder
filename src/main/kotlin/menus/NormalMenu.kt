@@ -49,7 +49,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             }
             button(
                 Strings.MenuButtons.Questions.InterestingQuestions,
-                MenuState.CurrentIssues(567538391, PagerState())
+                MenuState.CurrentIssues
 //                { state.override { MenuState.CurrentIssues(it.chatId, PagerState()) } }
             )
         }

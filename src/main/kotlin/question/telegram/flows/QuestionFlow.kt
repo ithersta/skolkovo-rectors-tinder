@@ -1,6 +1,7 @@
 package question.telegram.flows
 
 import auth.domain.entities.User
+import auth.telegram.Strings
 import auth.telegram.Strings.TargetArea.AnswerToPersonWhoAskedQuestion
 import auth.telegram.Strings.TargetArea.Good
 import auth.telegram.Strings.TargetArea.ListQuestion
@@ -8,10 +9,13 @@ import auth.telegram.Strings.TargetArea.No
 import auth.telegram.Strings.TargetArea.ReplyToRespondent
 import auth.telegram.Strings.TargetArea.Yes
 import auth.telegram.Strings.TargetArea.buildQuestionByQuestionText
+import auth.telegram.Strings.TargetArea.listSpheres
 import auth.telegram.queries.AnswerUser
+import auth.telegram.queries.SelectArea
 import auth.telegram.queries.SelectSubject
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import com.ithersta.tgbotapi.pagination.PagerState
 import com.ithersta.tgbotapi.pagination.statefulPager
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
@@ -37,7 +41,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
     val answerForUser: List<String> = listOf(Yes, No)
     role<User.Normal> {
         state<MenuState.CurrentIssues> {
-            /* //todo:    ВЫБОР СФЕР В НАЧАЛЕ!
              onEnter {
                  sendTextMessage(
                      it.chatId.toChatId(),
@@ -50,9 +53,13 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                              }
                          }
                      }
-
                  )
-             }*/
+             }
+            onDataCallbackQuery(SelectArea::class) { (data, query) ->
+                state.override { MenuState.NextStep(data.area, PagerState()) }
+            }
+        }
+        state<MenuState.NextStep> {
             val subjectsPager = statefulPager(
                 id = "subjects",
                 onPagerStateChanged = { state.snapshot.copy(pagerState = it) }
@@ -69,7 +76,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.feedbackFlow() {
                 }
             }
             onEnter { chatId ->
-                with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState) }
+                with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState!!) }
             }
             onDataCallbackQuery(SelectSubject::class) { (data, query) ->
                 sendTextMessage(query.user.id,
