@@ -22,7 +22,6 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow(): InlineKeyboar
         }
     }
     anyState {
-
     }
     return newQuestionsPager
 }
