@@ -1,3 +1,5 @@
+@file:Suppress("MaxLineLength")
+
 package auth.telegram
 
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
@@ -6,7 +8,7 @@ import qna.domain.entities.QuestionArea
 object Strings {
     const val Welcome =
         "Дорогой участник, приветствуем тебя в боте сообщества выпускников." +
-            " Для того, чтобы попасть в пространство единомышленников поделитесь контактом, нажав соответсвующую кнопку"
+            " Для того, чтобы попасть в пространство единомышленников поделитесь контактом, нажав соответствующую кнопку"
     const val ShareContact = "Поделиться номером телефона"
     const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
@@ -41,7 +43,6 @@ object Strings {
     const val FinishChoosing = "Закончить выбор"
 
     object Question {
-
         const val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
                 "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""

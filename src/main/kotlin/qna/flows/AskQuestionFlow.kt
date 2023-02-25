@@ -264,11 +264,11 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         val keyboard = inlineKeyboard {
             QuestionArea.values().forEach { area ->
                 row {
-                    val areaToString = auth.telegram.Strings.questionAreaToString[area]
+                    val areaToString = auth.telegram.Strings.questionAreaToString.getValue(area)
                     if (area in getAreas(state.snapshot)) {
                         dataButton("✅$areaToString", UnselectQuestionQuery(area))
                     } else {
-                        dataButton(areaToString!!, SelectQuestionQuery(area))
+                        dataButton(areaToString, SelectQuestionQuery(area))
                     }
                 }
             }

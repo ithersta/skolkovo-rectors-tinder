@@ -72,7 +72,8 @@ data class WriteOrganizationState(
     val city: String,
     val profession: String
 ) : DialogState {
-    fun next(organization: String) = WriteProfessionalDescriptionState(phoneNumber, name, city, profession, organization)
+    fun next(organization: String) =
+        WriteProfessionalDescriptionState(phoneNumber, name, city, profession, organization)
 }
 
 @Serializable
@@ -83,7 +84,8 @@ data class WriteProfessionalDescriptionState(
     val profession: String,
     val organization: String
 ) : DialogState {
-    fun next(professionalDescription: String) = ChooseQuestionAreasState(phoneNumber, name, city, profession, organization, professionalDescription)
+    fun next(professionalDescription: String) =
+        ChooseQuestionAreasState(phoneNumber, name, city, profession, organization, professionalDescription)
 }
 
 @Serializable

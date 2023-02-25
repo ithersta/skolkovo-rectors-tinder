@@ -71,7 +71,9 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     )
 }
 
-private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendMuteRequest(message: CommonMessage<TextContent>) {
+private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendMuteRequest(
+    message: CommonMessage<TextContent>
+) {
     sendTextMessage(
         message.chat,
         Strings.MenuButtons.Notifications.Description,
