@@ -8,13 +8,13 @@ import qna.domain.entities.Question
 
 object Strings {
     fun question(question: Question) = buildEntities {
+        if (question.isClosed) regularln("❌ Вопрос закрыт")
         boldln(question.subject)
         regularln(question.text)
     }
 
     fun respondedQuestion(question: Question) = buildEntities {
-        regularln("✅Вы согласились ответить на вопрос:")
-        regularln("")
+        regularln("✅ Владелец вопроса свяжется с Вами.")
         addAll(question(question))
     }
 

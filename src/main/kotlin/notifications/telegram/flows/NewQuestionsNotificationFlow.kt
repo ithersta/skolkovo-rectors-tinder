@@ -97,12 +97,12 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow(): InlineKeyboar
 private suspend fun StatefulContext<DialogState, User, DialogState, User.Normal>.showQuestion(
     query: DataCallbackQuery,
     getQuestionById: GetQuestionByIdUseCase,
-    hasResponse: HasResponseUseCase,
+    hasResponseUseCase: HasResponseUseCase,
     data: NewQuestionsNotificationQuery.ShowQuestionQuery
 ) {
     val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
     val question = getQuestionById(data.questionId)!!
-    val hasResponse = hasResponse(query.from.id.chatId, data.questionId)
+    val hasResponse = hasResponseUseCase(query.from.id.chatId, data.questionId)
     edit(
         message = message,
         entities = if (hasResponse) Strings.respondedQuestion(question) else Strings.question(question),
@@ -112,7 +112,7 @@ private suspend fun StatefulContext<DialogState, User, DialogState, User.Normal>
                     text = CommonStrings.Button.Back,
                     data = NewQuestionsNotificationQuery.Back(data.returnToPage, data.newQuestionsNotification)
                 )
-                if (hasResponse.not()) {
+                if (hasResponse.not() && question.isClosed.not()) {
                     dataButton(
                         text = Strings.Buttons.Respond,
                         data = NewQuestionsNotificationQuery.Respond(
