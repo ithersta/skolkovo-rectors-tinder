@@ -1,38 +1,128 @@
 package notifications.telegram.flows
 
 import auth.domain.entities.User
+import com.ithersta.tgbotapi.fsm.StatefulContext
+import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
+import common.telegram.CommonStrings
+import common.telegram.DialogState
+import dev.inmo.tgbotapi.extensions.api.edit.edit
+import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrThrow
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
+import dev.inmo.tgbotapi.extensions.utils.withContentOrThrow
+import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.queries.callback.DataCallbackQuery
 import dev.inmo.tgbotapi.utils.row
 import generated.RoleFilterBuilder
 import generated.dataButton
+import generated.onDataCallbackQuery
+import kotlinx.datetime.Clock
 import notifications.domain.entities.NewQuestionsNotification
-import notifications.domain.usecases.GetQuestionsBetweenUseCase
+import notifications.domain.entities.NotificationPreference
+import notifications.domain.usecases.GetQuestionsDigestUseCase
+import notifications.telegram.Strings
 import notifications.telegram.queries.NewQuestionsNotificationQuery
 import org.koin.core.component.inject
+import qna.domain.usecases.AddResponseUseCase
+import qna.domain.usecases.GetQuestionByIdUseCase
+import qna.domain.usecases.HasResponseUseCase
+import kotlin.time.Duration.Companion.days
 
 fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow(): InlineKeyboardPager<NewQuestionsNotification> {
-    val getQuestionsBetween: GetQuestionsBetweenUseCase by inject()
+    val getQuestionsDigest: GetQuestionsDigestUseCase by inject()
+    val getQuestionById: GetQuestionByIdUseCase by inject()
+    val addResponse: AddResponseUseCase by inject()
+    val hasResponse: HasResponseUseCase by inject()
     val newQuestionsPager = pager(id = "new_questions", dataKClass = NewQuestionsNotification::class) {
-        val questions = getQuestionsBetween(
+        val questions = getQuestionsDigest(
             from = data.from,
             until = data.until,
-            excludeUserId = data.userId,
+            userId = data.userId,
             limit = limit,
             offset = offset
         )
         inlineKeyboard {
             questions.slice.forEach { question ->
                 row {
-                    dataButton(question.subject, NewQuestionsNotificationQuery.SelectQuestion(question.id!!, data))
+                    dataButton(
+                        text = question.subject,
+                        data = NewQuestionsNotificationQuery.SelectQuestion(question.id!!, page, data)
+                    )
                 }
             }
             navigationRow(questions.count)
         }
     }
     anyState {
+        onDataCallbackQuery(NewQuestionsNotificationQuery.SelectQuestion::class) { (data, query) ->
+            showQuestion(query, getQuestionById, hasResponse, data)
+        }
+        onDataCallbackQuery(NewQuestionsNotificationQuery.Respond::class) { (data, query) ->
+            addResponse(data.questionId, query.from.id.chatId)
+            showQuestion(query, getQuestionById, hasResponse, data)
+        }
+        onDataCallbackQuery(NewQuestionsNotificationQuery.Back::class) { (data, query) ->
+            val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
+            edit(
+                message,
+                Strings.newQuestionsMessage(data.newQuestionsNotification.notificationPreference),
+                replyMarkup = newQuestionsPager.page(data.newQuestionsNotification, data.page)
+            )
+        }
+        // TODO: Remove
+        onCommand("TODO", description = null) { message ->
+            val replyMarkup = newQuestionsPager.replyMarkup(
+                NewQuestionsNotification(
+                    userId = message.chat.id.chatId,
+                    from = Clock.System.now() - 1.days,
+                    until = Clock.System.now(),
+                    notificationPreference = NotificationPreference.Daily
+                )
+            )
+            if (replyMarkup.keyboard.isNotEmpty()) {
+                sendTextMessage(
+                    message.chat.id,
+                    text = Strings.newQuestionsMessage(NotificationPreference.Daily),
+                    replyMarkup = replyMarkup
+                )
+            }
+        }
     }
 
     return newQuestionsPager
+}
+
+private suspend fun StatefulContext<DialogState, User, DialogState, User.Normal>.showQuestion(
+    query: DataCallbackQuery,
+    getQuestionById: GetQuestionByIdUseCase,
+    hasResponse: HasResponseUseCase,
+    data: NewQuestionsNotificationQuery.ShowQuestionQuery
+) {
+    val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
+    val question = getQuestionById(data.questionId)!!
+    val hasResponse = hasResponse(query.from.id.chatId, data.questionId)
+    edit(
+        message = message,
+        entities = if (hasResponse) Strings.respondedQuestion(question) else Strings.question(question),
+        replyMarkup = inlineKeyboard {
+            row {
+                dataButton(
+                    text = CommonStrings.Button.Back,
+                    data = NewQuestionsNotificationQuery.Back(data.returnToPage, data.newQuestionsNotification)
+                )
+                if (hasResponse.not()) {
+                    dataButton(
+                        text = Strings.Buttons.Respond,
+                        data = NewQuestionsNotificationQuery.Respond(
+                            data.questionId,
+                            data.returnToPage,
+                            data.newQuestionsNotification
+                        )
+                    )
+                }
+            }
+        }
+    )
 }

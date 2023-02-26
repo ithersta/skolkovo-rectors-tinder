@@ -8,5 +8,30 @@ import notifications.domain.entities.NewQuestionsNotification
 object NewQuestionsNotificationQuery {
     @Serializable
     @SerialName("nsq")
-    data class SelectQuestion(val questionId: Long, val newQuestionsNotification: NewQuestionsNotification) : Query
+    data class SelectQuestion(
+        override val questionId: Long,
+        override val returnToPage: Int,
+        override val newQuestionsNotification: NewQuestionsNotification
+    ) : Query, ShowQuestionQuery
+
+    @Serializable
+    @SerialName("nqb")
+    data class Back(
+        val page: Int,
+        val newQuestionsNotification: NewQuestionsNotification
+    ) : Query
+
+    @Serializable
+    @SerialName("nqa")
+    data class Respond(
+        override val questionId: Long,
+        override val returnToPage: Int,
+        override val newQuestionsNotification: NewQuestionsNotification
+    ) : Query, ShowQuestionQuery
+
+    interface ShowQuestionQuery {
+        val questionId: Long
+        val returnToPage: Int
+        val newQuestionsNotification : NewQuestionsNotification
+    }
 }

@@ -39,7 +39,7 @@ class GetNewQuestionsNotificationFlowUseCase(
             val yesterday = now - 1.days
             runBlocking {
                 userIds.forEach { userId ->
-                    emit(NewQuestionsNotification(userId, from = yesterday, until = now))
+                    emit(NewQuestionsNotification(userId, yesterday, now, NotificationPreference.Daily))
                 }
             }
         }
@@ -55,7 +55,7 @@ class GetNewQuestionsNotificationFlowUseCase(
             val previousWeek = now - 7.days
             runBlocking {
                 userIds.forEach { userId ->
-                    emit(NewQuestionsNotification(userId, from = previousWeek, until = now))
+                    emit(NewQuestionsNotification(userId, previousWeek, now, NotificationPreference.Weekly))
                 }
             }
         }

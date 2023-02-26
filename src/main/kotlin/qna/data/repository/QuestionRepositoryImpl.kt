@@ -1,5 +1,6 @@
 package qna.data.repository
 
+import auth.data.tables.UserAreas
 import common.domain.Paginated
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
@@ -31,19 +32,26 @@ class QuestionRepositoryImpl : QuestionRepository {
         return Questions.select { Questions.id eq questionId }.map(::mapper).first()
     }
 
-    override fun getBetweenPaginated(
+    override fun getQuestionsDigestPaginated(
         from: Instant,
         until: Instant,
-        excludeUserId: Long,
+        userId: Long,
         limit: Int,
         offset: Int
     ): Paginated<Question> {
+        val areas = UserAreas
+            .slice(UserAreas.area)
+            .select { UserAreas.userId eq userId }
         val query = Questions
+            .innerJoin(QuestionAreas)
+            .slice(Questions.columns)
             .select {
                 Questions.at.between(from, until) and
-                    (Questions.authorId neq excludeUserId) and
+                    (Questions.authorId neq userId) and
                     (Questions.isClosed eq false)
             }
+            .groupBy(*Questions.columns.toTypedArray())
+            .having { QuestionAreas.area inSubQuery areas }
             .orderBy(Questions.at)
         return Paginated(
             slice = query.limit(limit, offset.toLong()).map(::mapper),

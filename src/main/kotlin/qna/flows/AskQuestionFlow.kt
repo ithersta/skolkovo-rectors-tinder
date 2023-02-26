@@ -170,41 +170,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                     replyMarkup = null
                 )
             }
-            val responseId = addResponseUseCase(data.questionId, query.user.id.chatId)
+            addResponseUseCase(data.questionId, query.user.id.chatId)
             sendTextMessage(
                 query.user.id,
                 Strings.ToAnswerUser.SentAgreement
             )
-            coroutineScope.launch {
-                val authorId = question.authorId
-                val respondent = getUserDetailsUseCase(query.user.id.chatId)
-                if (respondent != null) {
-                    sendTextMessage(
-                        authorId.toChatId(),
-                        Strings.ToAskUser.message(
-                            respondent.name,
-                            respondent.city,
-                            respondent.job,
-                            respondent.organization,
-                            respondent.activityDescription
-                        ),
-                        replyMarkup = inlineKeyboard {
-                            row {
-                                dataButton(
-                                    CommonStrings.Button.Yes,
-                                    AcceptUserQuery(respondent.id, data.questionId, responseId)
-                                )
-                            }
-                            row {
-                                dataButton(
-                                    CommonStrings.Button.No,
-                                    DeclineUserQuery(query.user.id.chatId)
-                                )
-                            }
-                        }
-                    )
-                }
-            }
             answer(query)
         }
         onDataCallbackQuery(DeclineUserQuery::class) { (data, query) ->
