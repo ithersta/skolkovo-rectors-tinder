@@ -36,7 +36,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     val getPhoneNumberUseCase: GetPhoneNumberUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getFirstNameUseCase: GetFirstNameUseCase by inject()
-    val getAreasUseCase: GetAreasUseCase by inject()
+    val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val answerForUser: List<String> = listOf(Yes, No)
     state<MenuState.CurrentIssues> {
         onEnter {
@@ -44,7 +44,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
                 it.chatId.toChatId(),
                 listSpheres,
                 replyMarkup = inlineKeyboard {
-                    getAreasUseCase.invoke(it.chatId).forEach { area ->
+                    getUserDetailsUseCase.invoke(it.chatId)!!.areas.forEach { area ->
                         val areaToString = Strings.questionAreaToString[area]
                         row {
                             dataButton(areaToString!!, SelectArea(area))
