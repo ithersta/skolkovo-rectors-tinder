@@ -44,16 +44,16 @@ class QuestionRepositoryImpl : QuestionRepository {
             .select { UserAreas.userId eq userId }
         val query = {
             Questions
-            .innerJoin(QuestionAreas)
-            .slice(Questions.columns)
-            .select {
-                Questions.at.between(from, until) and
-                    (Questions.authorId neq userId) and
-                    (Questions.isClosed eq false)
-            }
-            .groupBy(*Questions.columns.toTypedArray())
-            .having { QuestionAreas.area inSubQuery areas }
-            .orderBy(Questions.at)
+                .innerJoin(QuestionAreas)
+                .slice(Questions.columns)
+                .select {
+                    Questions.at.between(from, until) and
+                        (Questions.authorId neq userId) and
+                        (Questions.isClosed eq false)
+                }
+                .groupBy(*Questions.columns.toTypedArray())
+                .having { QuestionAreas.area inSubQuery areas }
+                .orderBy(Questions.at)
         }
         return Paginated(
             slice = query().limit(limit, offset.toLong()).map(::mapper),
