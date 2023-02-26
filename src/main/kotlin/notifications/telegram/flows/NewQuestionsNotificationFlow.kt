@@ -18,7 +18,6 @@ import generated.RoleFilterBuilder
 import generated.dataButton
 import generated.onDataCallbackQuery
 import notifications.domain.entities.NewQuestionsNotification
-import notifications.domain.usecases.GetNewQuestionsNotificationFlowUseCase
 import notifications.domain.usecases.GetQuestionsDigestUseCase
 import notifications.telegram.Strings
 import notifications.telegram.queries.NewQuestionsNotificationQuery
