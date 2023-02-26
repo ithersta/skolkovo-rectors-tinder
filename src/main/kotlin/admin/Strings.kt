@@ -1,19 +1,18 @@
 package admin
 
 import auth.domain.entities.PhoneNumber
-import dev.inmo.tgbotapi.types.queryField
 
 object Strings {
-    const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
-    const val TemplateFileName = "Шаблон"
-    const val InvalidFile = "Файл поврежден или не является .xlsx таблицей"
-    const val addingUsers = "Все пользователеи были добавлены"
-    fun blockedUsers(blocked: List<PhoneNumber>) = "вы пытались добавить заблокированных пользователей: " +
-            blocked.joinToString(separator = ", ") { it.value }
+    const val WaitDocument = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
+    const val TemplateFileName = "пїЅпїЅпїЅпїЅпїЅпїЅ"
+    const val InvalidFile = "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ .xlsx пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
+    const val addingUsers = "пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
+    fun blockedUsers(blocked: List<PhoneNumber>) = "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " +
+        blocked.joinToString(separator = ", ") { it.value }
 
     fun badFormat(errors: List<Int>) =
-        "неправильный формат в ${errors.size} ${pluralize(errors.size, "строчке", "строчках", "строчках")} таблицы:" +
-                errors.joinToString(separator = ", ") { it.toString() }
+        "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ ${errors.size} ${pluralize(errors.size, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")} пїЅпїЅпїЅпїЅпїЅпїЅпїЅ:" +
+            errors.joinToString(separator = ", ") { it.toString() }
 
     fun pluralize(count: Int, one: String, few: String, many: String) = when {
         count % 10 == 1 && count % 100 != 11 -> one
