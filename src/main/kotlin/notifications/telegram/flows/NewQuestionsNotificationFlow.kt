@@ -6,6 +6,7 @@ import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
 import common.telegram.CommonStrings
 import common.telegram.DialogState
+import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
@@ -37,7 +38,6 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow() {
     val getQuestionById: GetQuestionByIdUseCase by inject()
     val addResponse: AddResponseUseCase by inject()
     val hasResponse: HasResponseUseCase by inject()
-    val getNewQuestionsNotificationFlow: GetNewQuestionsNotificationFlowUseCase by inject()
     newQuestionsPager = pager(id = "new_questions", dataKClass = NewQuestionsNotification::class) {
         val questions = getQuestionsDigest(
             from = data.from,
@@ -61,10 +61,12 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow() {
     anyState {
         onDataCallbackQuery(NewQuestionsNotificationQuery.SelectQuestion::class) { (data, query) ->
             showQuestion(query, getQuestionById, hasResponse, data)
+            answer(query)
         }
         onDataCallbackQuery(NewQuestionsNotificationQuery.Respond::class) { (data, query) ->
             addResponse(data.questionId, query.from.id.chatId)
             showQuestion(query, getQuestionById, hasResponse, data)
+            answer(query)
         }
         onDataCallbackQuery(NewQuestionsNotificationQuery.Back::class) { (data, query) ->
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
@@ -73,6 +75,7 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow() {
                 Strings.newQuestionsMessage(data.newQuestionsNotification.notificationPreference),
                 replyMarkup = newQuestionsPager.page(data.newQuestionsNotification, data.page)
             )
+            answer(query)
         }
     }
 }
