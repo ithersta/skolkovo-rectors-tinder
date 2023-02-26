@@ -18,7 +18,6 @@ import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
-import java.time.ZoneId
 
 val dataModule = module(createdAtStart = true) {
     single {
