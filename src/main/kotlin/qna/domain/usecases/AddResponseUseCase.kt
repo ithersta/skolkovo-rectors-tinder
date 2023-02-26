@@ -11,13 +11,26 @@ import qna.domain.repository.ResponseRepository
 @Single
 class AddResponseUseCase(
     private val responseRepository: ResponseRepository,
+    private val getQuestionById: GetQuestionByIdUseCase,
     private val transaction: Transaction
 ) {
+    sealed interface Result {
+        object NoSuchQuestion : Result
+        object QuestionClosed : Result
+        data class OK(val response: Response) : Result
+    }
+
     private val _newResponses = Channel<Response>(BUFFERED)
     val newResponses = _newResponses.receiveAsFlow()
 
-    suspend operator fun invoke(questionId: Long, respondentId: Long) {
-        val id = transaction { responseRepository.add(questionId, respondentId) }
-        _newResponses.send(Response(id, questionId, respondentId))
+    suspend operator fun invoke(questionId: Long, respondentId: Long): Result {
+        val result = transaction {
+            val question = getQuestionById(questionId) ?: return@transaction Result.NoSuchQuestion
+            if (question.isClosed) return@transaction Result.QuestionClosed
+            val id = responseRepository.add(questionId, respondentId)
+            Result.OK(Response(id, questionId, respondentId))
+        }
+        (result as? Result.OK)?.let { _newResponses.send(it.response) }
+        return result
     }
 }
