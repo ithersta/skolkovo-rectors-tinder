@@ -15,6 +15,7 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
+import qna.domain.usecases.GetQuestionByIdUseCase
 import qna.domain.usecases.GetSubjectsByAreaUseCase
 import qna.domain.usecases.GetUserDetailsUseCase
 import qna.telegram.states.GetListOfSubjects
@@ -30,6 +31,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     //При нажатии на имя пользователя выводить ?? (сообщение с его инфой из профиля и кнопки да/нет ???)
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val getSubjectsByAreaUseCase: GetSubjectsByAreaUseCase by inject()
+    val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     state<MenuState.GetListOfRespondents> {
         //удалять клаву тут
         onEnter {
@@ -75,7 +77,16 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             }
         }
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
-            //тут переходить на список всех, кто хочет ответить на вопрос(при нажатии на тему вопроса)
+            val question = getQuestionByIdUseCase(data.questionId)
+            if (question != null) {
+                sendTextMessage(
+                    query.user.id,
+                    Strings.RespondentsNoAnswer.listOfUsers(question.subject),
+                    replyMarkup = inlineKeyboard {
+                        //тут пагинация
+                    })
+            }
+            //тут переходить на список всех, кто хочет ответить на вопрос(при нажатии на тему вопроса)(пагинация)
             answer(query)
         }
     }

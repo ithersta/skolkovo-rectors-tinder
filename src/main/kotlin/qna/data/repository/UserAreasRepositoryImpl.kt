@@ -28,7 +28,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             additionalConstraint = { QuestionAreas.questionId eq Questions.id })
             .join(Users, JoinType.INNER,
                 additionalConstraint = { Questions.authorId eq Users.id })
-            .select(where = Users.id eq userId)
+            .select(where = Users.id eq userId and Questions.isClosed.eq(false))
             .filter { questionArea == it[QuestionAreas.area].ordinal }
             .associate { it[Questions.id].value to it[Questions.subject] }
     }
