@@ -4,6 +4,7 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
+import com.ithersta.tgbotapi.pagination.PagerState
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
@@ -43,7 +44,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
                 button(
                     Strings.MenuButtons.Questions.MyQuestions.OldQuestions,
-                    MenuState.OldQuestion
+                    MenuState.OldQuestion(PagerState())
                 ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
             }
             button(
