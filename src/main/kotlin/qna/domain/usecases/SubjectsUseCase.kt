@@ -9,7 +9,7 @@ class SubjectsUseCase(
     private val userAreasRepository: UserAreasRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(userId: Long): Map<Long, String> = transaction {
-        return@transaction userAreasRepository.getSubjectsByChatId(userId)
+    operator fun invoke(userId: Long, questionArea: Int): Map<Long, String> = transaction {
+        return@transaction userAreasRepository.getSubjectsByChatId(userId, questionArea)
     }
 }

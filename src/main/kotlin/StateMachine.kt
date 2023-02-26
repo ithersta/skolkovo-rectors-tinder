@@ -36,11 +36,8 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         feedbackFlow()
         askQuestionFlow()
     }
-    role<User.Admin> {
-        with(adminMenu) { invoke() }
-    }
+    role<User.Admin> { with(adminMenu) { invoke() } }
     muteFlow()
     eventFlow()
-
     fallback()
 }

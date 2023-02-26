@@ -38,7 +38,8 @@ object MenuState {
 
     @Serializable
     data class NextStep(
-        val area: QuestionArea,
+        val userId: Long,
+        val areaIndex: Int,
         val pagerState: PagerState
     ) : DialogState
 

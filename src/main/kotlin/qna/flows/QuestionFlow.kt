@@ -23,11 +23,7 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
-import qna.domain.usecases.GetAreasUseCase
-import qna.domain.usecases.GetFirstNameUseCase
-import qna.domain.usecases.GetPhoneNumberUseCase
-import qna.domain.usecases.GetQuestionByIdUseCase
-import qna.domain.usecases.SubjectsUseCase
+import qna.domain.usecases.*
 import qna.strings.Strings.TargetArea.AnswerToPersonWhoAskedQuestion
 import qna.strings.Strings.TargetArea.Good
 import qna.strings.Strings.TargetArea.ListQuestion
@@ -58,13 +54,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
             )
         }
         onDataCallbackQuery(SelectArea::class) { (data, query) ->
-            state.override { MenuState.NextStep(data.area, PagerState()) }
+            state.override { MenuState.NextStep(query.user.id.chatId, data.area.ordinal, PagerState()) }
+            answer(query)
         }
     }
     state<MenuState.NextStep> {
         val subjectsPager =
             statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-                val subjects = subjectsByChatId.invoke(567538391).toList() // todo: digit to chatId
+                val subjects = subjectsByChatId.invoke(state.snapshot.userId, state.snapshot.areaIndex).toList()
                 val paginatedNumbers = subjects.drop(offset).take(limit)
                 inlineKeyboard {
                     paginatedNumbers.forEach { item ->
@@ -76,7 +73,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
                 }
             }
         onEnter { chatId ->
-            with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState!!) }
+            with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState) }
         }
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
             sendTextMessage(
@@ -111,6 +108,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
         }
     }
 }
+// todo: тут я и Вика не знаем как использовать данную функцию.
 /*
 suspend fun StatefulContext<DialogState, User, MenuState.AnswerUser, User.Normal>.sendQMesssage(
     chatId: ChatId,

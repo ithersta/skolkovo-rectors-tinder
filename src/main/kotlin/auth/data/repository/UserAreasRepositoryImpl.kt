@@ -12,13 +12,13 @@ import qna.data.tables.Questions
 
 @Single
 class UserAreasRepositoryImpl : UserAreasRepository {
-    override fun getSubjectsByChatId(userId: Long): Map<Long, String> {
+    override fun getSubjectsByChatId(userId: Long, questionArea: Int): Map<Long, String> {
         return UserAreas
             .join(QuestionAreas, JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area })
             .join(Questions, JoinType.INNER, additionalConstraint = { Questions.id eq QuestionAreas.questionId })
             .select(where = UserAreas.userId eq userId and Questions.isClosed.eq(false))
-//            .limit(limit, offset)
             .filterNot { userId == it[Questions.authorId].value }
+            .filter { questionArea == it[QuestionAreas.area].ordinal }
             .map { it[Questions.id].value to it[Questions.subject] }
             .distinct()
             .toMap()
