@@ -7,10 +7,8 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.utils.row
 import generated.RoleFilterBuilder
 import generated.dataButton
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import notifications.domain.usecases.GetNewQuestionsNotificationFlowUseCase
 import notifications.domain.usecases.GetQuestionsBetweenUseCase
 import notifications.telegram.queries.NewQuestionsNotificationQuery
 import org.koin.core.component.inject

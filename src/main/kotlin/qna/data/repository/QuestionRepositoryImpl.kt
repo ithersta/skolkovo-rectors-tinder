@@ -41,8 +41,8 @@ class QuestionRepositoryImpl : QuestionRepository {
         val query = Questions
             .select {
                 Questions.at.between(from, until) and
-                        (Questions.authorId neq excludeUserId) and
-                        (Questions.isClosed eq false)
+                    (Questions.authorId neq excludeUserId) and
+                    (Questions.isClosed eq false)
             }
             .orderBy(Questions.at)
         return Paginated(
