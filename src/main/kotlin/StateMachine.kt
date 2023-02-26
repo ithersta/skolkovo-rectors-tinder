@@ -17,7 +17,8 @@ import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.muteFlow
-import qna.flows.askQuestionFlow
+import qna.telegram.flows.askQuestionFlow
+import qna.telegram.flows.getListOfRespondentNoAnswerFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -43,6 +44,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         with(normalMenu) { invoke() }
         feedbackFlow()
         askQuestionFlow()
+        getListOfRespondentNoAnswerFlow()
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }

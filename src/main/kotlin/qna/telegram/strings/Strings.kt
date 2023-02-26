@@ -1,6 +1,6 @@
 @file:Suppress("MaxLineLength")
 
-package qna.strings
+package qna.telegram.strings
 
 import dev.inmo.tgbotapi.utils.*
 
@@ -59,5 +59,13 @@ object Strings {
         const val InvalidQuestionIntent = "Пожалуйста, выберите цель вопроса из кнопочного меню"
         const val CompletedQuestion = "Отлично, вопрос сформирован!"
         const val Success = "Вопрос успешно отправлен в сообщество"
+    }
+
+    object RespondentsNoAnswer{
+        const val ListOfAreas = "Список Ваших профессиональных зон компетенций.\n" +
+                "Нажмите на одну из них для просмотра списка вопросов."
+        const val ListOfSubjects = "Список Ваших тем вопросов.\n" +
+                "Нажмите на одну из них для просмотра списка участников, которые согласились ответить Вам на вопрос."
+        const val ListOfUsers = ""
     }
 }

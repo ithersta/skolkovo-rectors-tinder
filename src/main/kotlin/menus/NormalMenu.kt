@@ -37,19 +37,19 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 Strings.MenuButtons.Questions.MyQuestions.Description,
                 MenuState.Questions.GetMyQuestion
             ) {
-                button( // TODO
+                button(
                     Strings.MenuButtons.Questions.MyQuestions.ActualQuestions,
                     MenuState.GetListOfRespondents
-                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+                )
                 button(
                     Strings.MenuButtons.Questions.MyQuestions.OldQuestions,
                     DialogState.Empty
-                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+                )
             }
             button(
                 Strings.MenuButtons.Questions.InterestingQuestions,
                 DialogState.Empty
-            ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+            )
         }
         button(
             Strings.MenuButtons.Questions.Ask,
