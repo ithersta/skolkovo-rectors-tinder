@@ -8,5 +8,7 @@ interface QuestionRepository {
     fun close(questionId: Long)
     fun add(question: Question): Long
     fun getById(questionId: Long): Question?
-    fun getBetweenPaginated(from: Instant, until: Instant, excludeUserId: Long, limit: Int, offset: Int): Paginated<Question>
+    fun getBetweenPaginated(
+        from: Instant, until: Instant, excludeUserId: Long, limit: Int, offset: Int
+    ): Paginated<Question>
 }
