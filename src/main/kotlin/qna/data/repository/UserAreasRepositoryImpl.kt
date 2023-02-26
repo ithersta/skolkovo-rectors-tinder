@@ -1,6 +1,7 @@
 package qna.data.repository
 
 import auth.data.tables.UserAreas
+import auth.data.tables.Users
 import mute.data.tables.MuteSettings
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -22,16 +23,13 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .map { it[UserAreas.userId].value }
     }
 
-    //добавить respondent
     override fun getSubjectsByArea(userId: Long, questionArea: Int): Map<Long, String> {
-        return UserAreas.join(QuestionAreas, JoinType.INNER,
-            additionalConstraint = { UserAreas.area eq QuestionAreas.area })
-            .join(Questions, JoinType.INNER, additionalConstraint = { Questions.id eq QuestionAreas.questionId })
-            .select(where = UserAreas.userId eq userId and Questions.isClosed.eq(false))
-            .filterNot { userId == it[Questions.authorId].value }
+        return QuestionAreas.join(Questions, JoinType.INNER,
+            additionalConstraint = { QuestionAreas.questionId eq Questions.id })
+            .join(Users, JoinType.INNER,
+                additionalConstraint = { Questions.authorId eq Users.id })
+            .select(where = Users.id eq userId)
             .filter { questionArea == it[QuestionAreas.area].ordinal }
-            .map { it[Questions.id].value to it[Questions.subject] }
-            .distinct()
-            .toMap()
+            .associate { it[Questions.id].value to it[Questions.subject] }
     }
 }

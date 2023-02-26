@@ -11,7 +11,3 @@ data class GetListOfSubjects(
     val area: Int,
     val pagerState: PagerState = PagerState()
 ) : DialogState
-
-
-
-
