@@ -4,6 +4,7 @@ import common.domain.Transaction
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
+import notifications.domain.entities.NewQuestionsNotification
 import notifications.domain.entities.NotificationPreference
 import notifications.domain.repository.NotificationPreferenceRepository
 import org.jobrunr.scheduling.BackgroundJob
@@ -24,7 +25,6 @@ class GetNewQuestionsNotificationFlowUseCase(
     private val dailyHour: Int? = null,
     private val dayOfWeek: DayOfWeek? = null
 ) {
-    class Notification(val userId: Long, val from: Instant, val until: Instant)
 
     operator fun invoke() = flow {
         BackgroundJob.scheduleRecurrently(
@@ -39,7 +39,7 @@ class GetNewQuestionsNotificationFlowUseCase(
             val yesterday = now - 1.days
             runBlocking {
                 userIds.forEach { userId ->
-                    emit(Notification(userId, from = yesterday, until = now))
+                    emit(NewQuestionsNotification(userId, from = yesterday, until = now))
                 }
             }
         }
@@ -55,7 +55,7 @@ class GetNewQuestionsNotificationFlowUseCase(
             val previousWeek = now - 7.days
             runBlocking {
                 userIds.forEach { userId ->
-                    emit(Notification(userId, from = previousWeek, until = now))
+                    emit(NewQuestionsNotification(userId, from = previousWeek, until = now))
                 }
             }
         }

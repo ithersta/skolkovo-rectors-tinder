@@ -125,15 +125,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText(ButtonStrings.SendQuestion) { message ->
-            val details = Question(
-                message.chat.id.chatId,
+            val question = addQuestionUseCase(
+                authorId = message.chat.id.chatId,
                 state.snapshot.intent,
                 state.snapshot.subject,
                 state.snapshot.question,
-                false,
                 state.snapshot.areas
             )
-            val question = addQuestionUseCase(details)
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
