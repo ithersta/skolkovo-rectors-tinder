@@ -23,6 +23,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
     implementation("com.h2database:h2:2.1.214")
+    implementation("org.apache.poi:poi:5.2.3")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
     implementation("org.slf4j:slf4j-simple:2.0.6")
     compileOnly("io.insert-koin:koin-annotations:1.1.1")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.1")

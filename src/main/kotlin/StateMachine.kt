@@ -1,3 +1,4 @@
+import admin.telegram.addUsersFlow
 import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
@@ -50,4 +51,5 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     muteFlow()
     eventFlow()
     fallback()
+    addUsersFlow()
 }
