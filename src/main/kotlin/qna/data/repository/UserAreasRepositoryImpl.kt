@@ -24,7 +24,8 @@ class UserAreasRepositoryImpl : UserAreasRepository {
 
     //добавить respondent
     override fun getSubjectsByArea(userId: Long, questionArea: Int): Map<Long, String> {
-        return UserAreas.join(QuestionAreas, JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area })
+        return UserAreas.join(QuestionAreas, JoinType.INNER,
+            additionalConstraint = { UserAreas.area eq QuestionAreas.area })
             .join(Questions, JoinType.INNER, additionalConstraint = { Questions.id eq QuestionAreas.questionId })
             .select(where = UserAreas.userId eq userId and Questions.isClosed.eq(false))
             .filterNot { userId == it[Questions.authorId].value }

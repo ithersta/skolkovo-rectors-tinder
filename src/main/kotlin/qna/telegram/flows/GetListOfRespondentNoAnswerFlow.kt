@@ -56,7 +56,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         val subjectsPager = statefulInlineKeyboardPager(getSubjectsByAreaUseCase)
         onEnter {
             with(subjectsPager) {
-                sendOrEditMessage(it.chatId.toChatId(), Strings.RespondentsNoAnswer.ListOfSubjects, state.snapshot.pagerState)
+                sendOrEditMessage(
+                    it.chatId.toChatId(),
+                    Strings.RespondentsNoAnswer.ListOfSubjects, state.snapshot.pagerState
+                )
             }
         }
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
