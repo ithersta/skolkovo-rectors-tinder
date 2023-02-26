@@ -16,7 +16,11 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow(): InlineKeyboar
     val getQuestionsBetween: GetQuestionsBetweenUseCase by inject()
     val newQuestionsPager = pager(id = "new_questions", dataKClass = NewQuestionsNotification::class) {
         val questions = getQuestionsBetween(
-            from = data.from, until = data.until, excludeUserId = data.userId, limit = limit, offset = offset
+            from = data.from,
+            until = data.until,
+            excludeUserId = data.userId,
+            limit = limit,
+            offset = offset
         )
         inlineKeyboard {
             questions.slice.forEach { question ->
