@@ -42,7 +42,8 @@ class QuestionRepositoryImpl : QuestionRepository {
         val areas = UserAreas
             .slice(UserAreas.area)
             .select { UserAreas.userId eq userId }
-        val query = Questions
+        val query = {
+            Questions
             .innerJoin(QuestionAreas)
             .slice(Questions.columns)
             .select {
@@ -53,9 +54,10 @@ class QuestionRepositoryImpl : QuestionRepository {
             .groupBy(*Questions.columns.toTypedArray())
             .having { QuestionAreas.area inSubQuery areas }
             .orderBy(Questions.at)
+        }
         return Paginated(
-            slice = query.limit(limit, offset.toLong()).map(::mapper),
-            count = query.count().toInt()
+            slice = query().limit(limit, offset.toLong()).map(::mapper),
+            count = query().count().toInt()
         )
     }
 
