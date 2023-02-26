@@ -86,5 +86,4 @@ object Strings {
         const val Unauthenticated = "Неудачная попытка авторизации."
         const val Normal = "Меню пользователя"
     }
-
 }
