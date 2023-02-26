@@ -32,6 +32,6 @@ object NewQuestionsNotificationQuery {
     interface ShowQuestionQuery {
         val questionId: Long
         val returnToPage: Int
-        val newQuestionsNotification : NewQuestionsNotification
+        val newQuestionsNotification: NewQuestionsNotification
     }
 }

@@ -9,6 +9,10 @@ interface QuestionRepository {
     fun add(question: Question): Long
     fun getById(questionId: Long): Question?
     fun getQuestionsDigestPaginated(
-        from: Instant, until: Instant, userId: Long, limit: Int, offset: Int
+        from: Instant,
+        until: Instant,
+        userId: Long,
+        limit: Int,
+        offset: Int
     ): Paginated<Question>
 }
