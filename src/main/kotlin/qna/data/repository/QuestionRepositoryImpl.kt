@@ -39,7 +39,11 @@ class QuestionRepositoryImpl : QuestionRepository {
         offset: Int
     ): Paginated<Question> {
         val query = Questions
-            .select { Questions.at.between(from, until) and (Questions.authorId neq excludeUserId) }
+            .select {
+                Questions.at.between(from, until) and
+                        (Questions.authorId neq excludeUserId) and
+                        (Questions.isClosed eq false)
+            }
             .orderBy(Questions.at)
         return Paginated(
             slice = query.limit(limit, offset.toLong()).map(::mapper),
