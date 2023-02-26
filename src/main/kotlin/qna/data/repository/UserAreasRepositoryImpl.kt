@@ -5,7 +5,6 @@ import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
 import notifications.domain.entities.NotificationPreference
 import org.jetbrains.exposed.sql.except
-import org.jetbrains.exposed.sql.intersect
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.koin.core.annotation.Single
@@ -18,14 +17,14 @@ class UserAreasRepositoryImpl : UserAreasRepository {
         val muteUsers = MuteSettings
             .slice(MuteSettings.userId)
             .selectAll()
-        val rightAwayUsers = NotificationPreferences
+        val nonRightAwayUsers = NotificationPreferences
             .slice(NotificationPreferences.userId)
-            .select { NotificationPreferences.preference eq NotificationPreference.RightAway }
+            .select { NotificationPreferences.preference neq NotificationPreference.RightAway }
         return UserAreas
             .slice(UserAreas.userId)
             .select { UserAreas.area eq questionArea }
             .except(muteUsers)
-            .intersect(rightAwayUsers)
+            .except(nonRightAwayUsers)
             .map { it[UserAreas.userId].value }
     }
 }
