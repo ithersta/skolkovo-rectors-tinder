@@ -45,7 +45,10 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow() {
             questions.slice.forEach { question ->
                 row {
                     dataButton(
-                        text = question.subject,
+                        text = buildString {
+                            if (hasResponse(data.userId, question.id!!)) append('✅')
+                            append(question.subject)
+                        },
                         data = NewQuestionsNotificationQuery.SelectQuestion(question.id!!, page, data)
                     )
                 }
