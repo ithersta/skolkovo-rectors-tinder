@@ -17,25 +17,25 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.usecases.*
 import qna.telegram.queries.SelectRespondent
-import qna.telegram.states.GetListOfSubjects
 import qna.telegram.queries.SelectSubject
 import qna.telegram.queries.SelectUserArea
 import qna.telegram.states.GetListOfRespondent
+import qna.telegram.states.GetListOfSubjects
 import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
-    //Список всех сфер, по которым задавались вопросы пользователя по его id
-    //Далее список всех тем вопросов по сферам (пагинация)
-    //Потом при нажатии на тему вопроса список всех пользователей(пока что имён),
-    //которые хотят ответить на вопрос(при этом они не приняты/отклонены)(пагинация)
-    //При нажатии на имя пользователя выводить ?? (сообщение с его инфой из профиля и кнопки да/нет ???)
+    // Список всех сфер, по которым задавались вопросы пользователя по его id
+    // Далее список всех тем вопросов по сферам (пагинация)
+    // Потом при нажатии на тему вопроса список всех пользователей(пока что имён),
+    // которые хотят ответить на вопрос(при этом они не приняты/отклонены)(пагинация)
+    // При нажатии на имя пользователя выводить ?? (сообщение с его инфой из профиля и кнопки да/нет ???)
     val getSubjectsByAreaUseCase: GetSubjectsByAreaUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getQuestionAreasByUserId: GetQuestionAreasByUserId by inject()
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.GetListOfRespondents> {
-        //TODO удалять replyKeyboard тут(если возможно)
+        // TODO удалять replyKeyboard тут(если возможно)
         onEnter {
             sendTextMessage(
                 it.chatId.toChatId(),
@@ -46,7 +46,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                             dataButton(auth.telegram.Strings.questionAreaToString.getValue(area), SelectUserArea(area))
                         }
                     }
-                })
+                }
+            )
         }
         onDataCallbackQuery(SelectUserArea::class) { (data, query) ->
             state.override { GetListOfSubjects(query.user.id.chatId, data.area.ordinal) }
@@ -70,7 +71,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         onEnter {
             with(subjectsPager) {
                 sendOrEditMessage(
-                    it.chatId.toChatId(), Strings.RespondentsNoAnswer.ListOfSubjects, state.snapshot.pagerState
+                    it.chatId.toChatId(),
+                    Strings.RespondentsNoAnswer.ListOfSubjects,
+                    state.snapshot.pagerState
                 )
             }
         }
@@ -93,13 +96,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                     navigationRow(itemCount = respondent.size)
                 }
             }
-        onEnter{
+        onEnter {
             with(respondentPager) {
                 val question = getQuestionByIdUseCase(state.snapshot.questionId)
                 if (question != null) {
                     sendOrEditMessage(
                         it.chatId.toChatId(),
-                        //TODO тут возникает проблема с TextSourcesList
+                        // TODO тут возникает проблема с TextSourcesList
                         Strings.RespondentsNoAnswer.listOfUsers(question.subject).toString(),
                         state.snapshot.pagerState
                     )
@@ -107,7 +110,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             }
         }
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            //тут должно быть использование функции?
+            // тут должно быть использование функции?
             answer(query)
         }
     }
