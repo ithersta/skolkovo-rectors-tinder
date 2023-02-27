@@ -21,7 +21,7 @@ object Xlsx {
                     when (it.getCell(0).cellType) {
                         CellType.NUMERIC -> it.getCell(0).numericCellValue.toString()
                         CellType.STRING -> it.getCell(0).stringCellValue
-                        else -> throw RuntimeException()
+                        else -> error("wrong cell type")
                     }
                 }
                 .dropLastWhile { it == null }
