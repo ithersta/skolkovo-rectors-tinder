@@ -12,3 +12,7 @@ class SelectUserArea(val area: QuestionArea) : Query
 @Serializable
 @SerialName("ss")
 class SelectSubject(val questionId: Long) : Query
+
+@Serializable
+@SerialName("sr")
+class SelectRespondent(val respondentId: Long) : Query

@@ -11,3 +11,10 @@ data class GetListOfSubjects(
     val area: Int,
     val pagerState: PagerState = PagerState()
 ) : DialogState
+
+@Serializable
+data class GetListOfRespondent(
+    val userId: Long,
+    val questionId: Long,
+    val pagerState: PagerState = PagerState()
+) : DialogState

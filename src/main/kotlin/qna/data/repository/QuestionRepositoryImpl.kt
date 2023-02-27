@@ -1,13 +1,13 @@
 package qna.data.repository
 
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
+import auth.data.tables.Users
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.domain.entities.Question
+import qna.domain.entities.QuestionArea
 import qna.domain.repository.QuestionRepository
 
 @Single
@@ -42,6 +42,16 @@ class QuestionRepositoryImpl : QuestionRepository {
                 id = it[Questions.id].value
             )
         }.first()
+    }
+
+    override fun getQuestionAreasByUserId(userId: Long): List<QuestionArea> {
+        return QuestionAreas.join(
+            Questions,
+            JoinType.INNER,
+            additionalConstraint = {QuestionAreas.questionId eq Questions.id})
+            .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id})
+                .select(where =  Users.id eq userId and Questions.isClosed.eq(false))
+            .map{it[QuestionAreas.area]}
     }
 
     override fun close(questionId: Long) {
