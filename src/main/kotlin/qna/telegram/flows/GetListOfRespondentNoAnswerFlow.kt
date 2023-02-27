@@ -57,9 +57,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         val subjectsPager =
             statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
                 val subjects = getSubjectsByAreaUseCase(state.snapshot.userId, state.snapshot.area).toList()
-                val paginatedNumbers = subjects.drop(offset).take(limit)
+                val paginatedSubjects = subjects.drop(offset).take(limit)
                 inlineKeyboard {
-                    paginatedNumbers.forEach { item ->
+                    paginatedSubjects.forEach { item ->
                         row {
                             dataButton(item.second, SelectSubject(item.first))
                         }
@@ -83,9 +83,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         val respondentPager =
             statefulPager(id = "respondent", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
                 val respondent = getRespondentsByQuestionIdUseCase(state.snapshot.questionId)
-                val paginatedNumbers = respondent.drop(offset).take(limit)
+                val paginatedRespondent = respondent.drop(offset).take(limit)
                 inlineKeyboard {
-                    paginatedNumbers.forEach { item ->
+                    paginatedRespondent.forEach { item ->
                         row {
                             getUserDetailsUseCase(item)?.let { dataButton(it.name, SelectRespondent(item)) }
                         }
