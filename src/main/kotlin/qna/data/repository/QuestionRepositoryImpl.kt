@@ -48,10 +48,11 @@ class QuestionRepositoryImpl : QuestionRepository {
         return QuestionAreas.join(
             Questions,
             JoinType.INNER,
-            additionalConstraint = {QuestionAreas.questionId eq Questions.id})
-            .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id})
-                .select(where =  Users.id eq userId and Questions.isClosed.eq(false))
-            .map{it[QuestionAreas.area]}
+            additionalConstraint = { QuestionAreas.questionId eq Questions.id }
+        )
+            .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
+            .select(where = Users.id eq userId and Questions.isClosed.eq(false))
+            .map { it[QuestionAreas.area] }
     }
 
     override fun close(questionId: Long) {

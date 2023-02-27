@@ -38,8 +38,6 @@ import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
-import qna.telegram.strings.ButtonStrings
-import qna.telegram.strings.Strings
 import qna.telegram.queries.AcceptQuestionQuery
 import qna.telegram.queries.AcceptUserQuery
 import qna.telegram.queries.DeclineQuestionQuery
@@ -48,6 +46,8 @@ import qna.telegram.states.AskFullQuestion
 import qna.telegram.states.ChooseQuestionAreas
 import qna.telegram.states.ChooseQuestionIntent
 import qna.telegram.states.SendQuestionToCommunity
+import qna.telegram.strings.ButtonStrings
+import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
