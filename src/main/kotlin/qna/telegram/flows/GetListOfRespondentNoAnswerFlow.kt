@@ -31,16 +31,25 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.GetListOfRespondents> {
         onEnter {
-            sendTextMessage(
-                it, Strings.RespondentsNoAnswer.ListOfAreas,
-                replyMarkup = inlineKeyboard {
-                    getQuestionAreasByUserId(it.chatId).forEach { area ->
-                        row {
-                            dataButton(auth.telegram.Strings.questionAreaToString.getValue(area), SelectUserArea(area))
+            if(getQuestionAreasByUserId(it.chatId).isEmpty()){
+                sendTextMessage(it, Strings.RespondentsNoAnswer.NoQuestions)
+                state.override { DialogState.Empty }
+            } else {
+                sendTextMessage(
+                    it,
+                    Strings.RespondentsNoAnswer.ListOfAreas,
+                    replyMarkup = inlineKeyboard {
+                        getQuestionAreasByUserId(it.chatId).forEach { area ->
+                            row {
+                                dataButton(
+                                    auth.telegram.Strings.questionAreaToString.getValue(area),
+                                    SelectUserArea(area)
+                                )
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
         onDataCallbackQuery(SelectUserArea::class) { (data, query) ->
             state.override { GetListOfSubjects(query.user.id.chatId, data.area.ordinal) }
@@ -90,20 +99,24 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                 }
             }
         onEnter {
-            with(respondentPager) {
-                val question = getQuestionByIdUseCase(state.snapshot.questionId)
-                if (question != null) {
-                    sendOrEditMessage(
-                        it.chatId.toChatId(),
-                        // TODO тут возникает проблема с TextSourcesList
-                        Strings.RespondentsNoAnswer.listOfUsers(question.subject).toString(),
-                        state.snapshot.pagerState
-                    )
+            if(getRespondentsByQuestionIdUseCase(state.snapshot.questionId).isEmpty()){
+                sendTextMessage(it, Strings.RespondentsNoAnswer.NoRespondent)
+                state.override { DialogState.Empty }
+            } else {
+                with(respondentPager) {
+                    val question = getQuestionByIdUseCase(state.snapshot.questionId)
+                    if (question != null) {
+                        sendOrEditMessage(
+                            it.chatId.toChatId(),
+                            Strings.RespondentsNoAnswer.ListOfRespondents,
+                            state.snapshot.pagerState
+                        )
+                    }
                 }
             }
         }
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            // тут должно быть использование функции?
+            // использовать функцию
             answer(query)
         }
     }

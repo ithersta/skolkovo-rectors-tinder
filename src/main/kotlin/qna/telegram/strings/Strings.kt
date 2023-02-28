@@ -61,7 +61,7 @@ object Strings {
         const val AskingQuestionIntent = "Выберите цель вопроса"
         const val InvalidQuestionIntent = "Пожалуйста, выберите цель вопроса из кнопочного меню"
         const val CompletedQuestion = "Отлично, вопрос сформирован!"
-        const val Success = "Вопрос успешно отправлен в сообщество"
+        const val Success = "Вопрос успешно отправлен в сообщество!"
     }
 
     object RespondentsNoAnswer {
@@ -70,11 +70,11 @@ object Strings {
         const val ListOfSubjects = "Список Ваших тем вопросов.\n" +
             "Нажмите на одну из них для просмотра списка участников, которые согласились ответить Вам на вопрос."
 
-        fun listOfUsers(subject: String) =
-            buildEntities {
-                regular("Список участников, которые согласились ответить на вопрос на тему ")
-                boldln(subject)
-                regular("Нажмите на одного из них для просмотра информации о профиле.") // тут надо что-то придумать
-            }
+        const val ListOfRespondents = "Список участников, которые согласились ответить на Ваш вопрос.\n" +
+                "Нажмите на одного из них для просмотра информации о профиле."
+
+        //тут мб что-то получше придумать
+        const val NoQuestions = "На данный момент у вас нет актуальных вопросов"
+        const val NoRespondent = "На данный момент нет людей, которые ответили бы на Ваш вопрос"
     }
 }
