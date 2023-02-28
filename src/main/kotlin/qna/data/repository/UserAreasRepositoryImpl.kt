@@ -15,7 +15,7 @@ import java.util.stream.Collectors
 @Single
 class UserAreasRepositoryImpl : UserAreasRepository {
 
-    //тут не знаю, как лучше сделать....
+    // тут не знаю, как лучше сделать....
     private fun getById(questionId: Long): Question {
         val areas = QuestionAreas
             .select { QuestionAreas.questionId eq questionId }
@@ -46,7 +46,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
         val questionsId = (Questions innerJoin QuestionAreas)
             .select(Questions.authorId eq userId and Questions.isClosed.eq(false))
             .filter { questionArea == it[QuestionAreas.area] }
-            .map {it[QuestionAreas.questionId].value}
+            .map { it[QuestionAreas.questionId].value }
         return questionsId.stream()
             .map { getById(it) }
             .collect(Collectors.toList())
