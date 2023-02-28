@@ -44,8 +44,9 @@ class UserAreasRepositoryImpl : UserAreasRepository {
 
     override fun getByArea(userId: Long, questionArea: QuestionArea): List<Question> {
         val questionsId = (Questions innerJoin QuestionAreas)
-            .select(Questions.authorId eq userId and Questions.isClosed.eq(false))
-            .filter { questionArea == it[QuestionAreas.area] }
+            .select((Questions.authorId eq userId)
+                    and (Questions.isClosed.eq(false))
+                    and (QuestionAreas.area eq questionArea))
             .map { it[QuestionAreas.questionId].value }
         return questionsId.stream()
             .map { getById(it) }
