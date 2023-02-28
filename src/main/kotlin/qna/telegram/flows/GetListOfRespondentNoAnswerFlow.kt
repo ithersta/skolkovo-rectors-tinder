@@ -52,19 +52,19 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             }
         }
         onDataCallbackQuery(SelectUserArea::class) { (data, query) ->
-            state.override { GetListOfSubjects(query.user.id.chatId, data.area.ordinal) }
+            state.override { GetListOfSubjects(query.user.id.chatId, data.area) }
             answer(query)
         }
     }
     state<GetListOfSubjects> {
         val subjectsPager =
             statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-                val subjects = getSubjectsByAreaUseCase(state.snapshot.userId, state.snapshot.area).toList()
+                val subjects = getSubjectsByAreaUseCase(state.snapshot.userId, state.snapshot.area)
                 val paginatedSubjects = subjects.drop(offset).take(limit)
                 inlineKeyboard {
                     paginatedSubjects.forEach { item ->
                         row {
-                            dataButton(item.second, SelectSubject(item.first))
+                            dataButton(item.subject, SelectSubject(item.id!!))
                         }
                     }
                     navigationRow(itemCount = subjects.size)

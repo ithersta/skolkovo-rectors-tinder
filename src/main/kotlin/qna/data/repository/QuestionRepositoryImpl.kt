@@ -1,6 +1,5 @@
 package qna.data.repository
 
-import auth.data.tables.Users
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
@@ -50,8 +49,7 @@ class QuestionRepositoryImpl : QuestionRepository {
             JoinType.INNER,
             additionalConstraint = { QuestionAreas.questionId eq Questions.id }
         )
-            .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
-            .select(where = Users.id eq userId and Questions.isClosed.eq(false))
+            .select(Questions.authorId eq userId and Questions.isClosed.eq(false))
             .map { it[QuestionAreas.area] }
     }
 
