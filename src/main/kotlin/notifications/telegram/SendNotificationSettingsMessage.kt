@@ -1,11 +1,9 @@
 package notifications.telegram
 
-import auth.domain.entities.User
-import com.ithersta.tgbotapi.fsm.StatefulContext
-import common.telegram.DialogState
+import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
-import dev.inmo.tgbotapi.types.message.content.TextMessage
+import dev.inmo.tgbotapi.types.IdChatIdentifier
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import mute.domain.usecases.ContainsByIdMuteSettingsUseCase
@@ -19,12 +17,12 @@ import org.koin.core.context.GlobalContext
 private val containsByIdMuteSettings: ContainsByIdMuteSettingsUseCase by GlobalContext.get().inject()
 private val getNotificationPreference: GetNotificationPreferenceUseCase by GlobalContext.get().inject()
 
-suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendNotificationPreferencesMessage(
-    message: TextMessage
+suspend fun TelegramBot.sendNotificationPreferencesMessage(
+    idChatIdentifier: IdChatIdentifier
 ) = sendTextMessage(
-    message.chat,
+    idChatIdentifier,
     Strings.Main.Message,
-    replyMarkup = notificationPreferencesInlineKeyboard(message.chat.id.chatId)
+    replyMarkup = notificationPreferencesInlineKeyboard(idChatIdentifier.chatId)
 )
 
 fun notificationPreferencesInlineKeyboard(userId: Long) = inlineKeyboard {

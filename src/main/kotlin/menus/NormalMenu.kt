@@ -47,7 +47,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             MenuState.Questions.AskQuestion
         )
     }
-    button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it) }
+    button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it.chat.id) }
     button(
         MenuStrings.ChangeAccountInfo,
         MenuState.ChangeAccountInfo
