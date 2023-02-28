@@ -48,15 +48,17 @@ class QuestionRepositoryImpl : QuestionRepository {
     }
     override fun getByArea(userId: Long, questionArea: QuestionArea): List<Question> {
         val questionsId = (Questions innerJoin QuestionAreas)
-            .select((Questions.authorId eq userId)
+            .select(
+                (Questions.authorId eq userId)
                     and (Questions.isClosed.eq(false))
-                    and (QuestionAreas.area eq questionArea))
+                    and (QuestionAreas.area eq questionArea)
+            )
             .map { it[QuestionAreas.questionId].value }
         return questionsId.stream()
             .map { Questions.select { Questions.id eq it }.map(::mapper).first() }
             .collect(Collectors.toList())
     }
-   private fun mapper(row: ResultRow): Question {
+    private fun mapper(row: ResultRow): Question {
         val questionId = row[Questions.id].value
         val areas = QuestionAreas
             .select { QuestionAreas.questionId eq questionId }
