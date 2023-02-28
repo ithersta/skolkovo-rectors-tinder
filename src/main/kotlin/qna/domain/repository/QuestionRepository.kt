@@ -8,4 +8,5 @@ interface QuestionRepository {
     fun add(question: Question): Long
     fun getById(questionId: Long): Question?
     fun getQuestionAreasByUserId(userId: Long): List<QuestionArea>
+    fun getByArea(userId: Long, questionArea: QuestionArea): List<Question>
 }

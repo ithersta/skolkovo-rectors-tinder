@@ -8,6 +8,7 @@ import qna.data.tables.Questions
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.repository.QuestionRepository
+import java.util.stream.Collectors
 
 @Single
 class QuestionRepositoryImpl : QuestionRepository {
@@ -27,20 +28,7 @@ class QuestionRepositoryImpl : QuestionRepository {
     }
 
     override fun getById(questionId: Long): Question {
-        val areas = QuestionAreas
-            .select { QuestionAreas.questionId eq questionId }
-            .map { it[QuestionAreas.area] }.toSet()
-        return Questions.select { Questions.id eq questionId }.map {
-            Question(
-                authorId = it[Questions.authorId].value,
-                intent = it[Questions.intent],
-                subject = it[Questions.subject],
-                text = it[Questions.text],
-                isClosed = it[Questions.isClosed],
-                areas = areas,
-                id = it[Questions.id].value
-            )
-        }.first()
+        return Questions.select { Questions.id eq questionId }.map(::mapper).first()
     }
 
     override fun getQuestionAreasByUserId(userId: Long): List<QuestionArea> {
@@ -57,5 +45,30 @@ class QuestionRepositoryImpl : QuestionRepository {
         Questions.update(where = { Questions.id eq questionId }) {
             it[Questions.isClosed] = true
         }
+    }
+    override fun getByArea(userId: Long, questionArea: QuestionArea): List<Question> {
+        val questionsId = (Questions innerJoin QuestionAreas)
+            .select((Questions.authorId eq userId)
+                    and (Questions.isClosed.eq(false))
+                    and (QuestionAreas.area eq questionArea))
+            .map { it[QuestionAreas.questionId].value }
+        return questionsId.stream()
+            .map { Questions.select { Questions.id eq it }.map(::mapper).first() }
+            .collect(Collectors.toList())
+    }
+   private fun mapper(row: ResultRow): Question {
+        val questionId = row[Questions.id].value
+        val areas = QuestionAreas
+            .select { QuestionAreas.questionId eq questionId }
+            .map { it[QuestionAreas.area] }.toSet()
+        return Question(
+            authorId = row[Questions.authorId].value,
+            intent = row[Questions.intent],
+            subject = row[Questions.subject],
+            text = row[Questions.text],
+            isClosed = row[Questions.isClosed],
+            areas = areas,
+            id = row[Questions.id].value
+        )
     }
 }
