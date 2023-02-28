@@ -31,7 +31,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.GetListOfRespondents> {
         onEnter {
-            if(getQuestionAreasByUserId(it.chatId).isEmpty()){
+            if (getQuestionAreasByUserId(it.chatId).isEmpty()) {
                 sendTextMessage(it, Strings.RespondentsNoAnswer.NoQuestions)
                 state.override { DialogState.Empty }
             } else {
@@ -99,7 +99,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                 }
             }
         onEnter {
-            if(getRespondentsByQuestionIdUseCase(state.snapshot.questionId).isEmpty()){
+            if (getRespondentsByQuestionIdUseCase(state.snapshot.questionId).isEmpty()) {
                 sendTextMessage(it, Strings.RespondentsNoAnswer.NoRespondent)
                 state.override { DialogState.Empty }
             } else {
