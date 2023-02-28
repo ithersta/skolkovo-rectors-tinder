@@ -9,13 +9,15 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.PagerState
 import com.ithersta.tgbotapi.pagination.statefulPager
+import common.telegram.CommonStrings
 import common.telegram.CommonStrings.Button.No
 import common.telegram.CommonStrings.Button.Yes
 import common.telegram.DialogState
+import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.answers.answer
-import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
+import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
@@ -23,13 +25,14 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
+import qna.domain.entities.Question
 import qna.domain.usecases.*
-import qna.strings.Strings.TargetArea.AnswerToPersonWhoAskedQuestion
 import qna.strings.Strings.TargetArea.Good
 import qna.strings.Strings.TargetArea.ListQuestion
-import qna.strings.Strings.TargetArea.ReplyToRespondent
 import qna.strings.Strings.TargetArea.buildQuestionByQuestionText
 import qna.strings.Strings.TargetArea.listSpheres
+import qna.telegram.queries.AcceptQuestionQuery
+import qna.telegram.queries.DeclineQuestionQuery
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     val subjectsByChatId: SubjectsUseCase by inject()
@@ -93,27 +96,16 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
             if (data.answer == No) {
                 sendTextMessage(query.user.id, Good)
             } else {
-                val userId = getQuestionByIdUseCase.invoke(data.questionId)!!.id
-                val chatId = userId!!.toChatId()
-                sendTextMessage(chatId, AnswerToPersonWhoAskedQuestion)
-                sendContact(
-                    chatId,
-                    phoneNumber = getPhoneNumberUseCase.invoke(userId),
-                    firstName = getFirstNameUseCase.invoke(userId)
-                )
-                sendTextMessage(query.user.id, ReplyToRespondent)
+                val question: Question = getQuestionByIdUseCase(data.questionId)!!
+                sendQMessage(question.authorId.toChatId(), question)
             }
             state.override { DialogState.Empty }
             answer(query)
         }
     }
 }
-// todo: тут я и Вика не знаем как использовать данную функцию.
-/*
-suspend fun StatefulContext<DialogState, User, MenuState.AnswerUser, User.Normal>.sendQMesssage(
-    chatId: ChatId,
-    question: Question
-) = sendTextMessage(
+
+suspend fun TelegramBot.sendQMessage(chatId: ChatId, question: Question) = sendTextMessage(
     chatId,
     qna.strings.Strings.ToAnswerUser.message(question.subject, question.text),
     replyMarkup = inlineKeyboard {
@@ -132,4 +124,3 @@ suspend fun StatefulContext<DialogState, User, MenuState.AnswerUser, User.Normal
         }
     }
 )
-*/
