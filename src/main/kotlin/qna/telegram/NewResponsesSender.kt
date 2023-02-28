@@ -1,13 +1,9 @@
 package qna.telegram
 
-import common.telegram.CommonStrings
 import common.telegram.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.toChatId
-import dev.inmo.tgbotapi.utils.row
-import generated.dataButton
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 import qna.domain.usecases.AddResponseUseCase

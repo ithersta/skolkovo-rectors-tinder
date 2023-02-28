@@ -1,13 +1,11 @@
 package feedback.telegram.flows
 
 import auth.domain.entities.User
-import common.telegram.CommonStrings
 import common.telegram.confirmationInlineKeyboard
 import common.telegram.deleteAfterDelay
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContentOrNull
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import feedback.domain.usecases.CloseQuestionUseCase
@@ -16,7 +14,6 @@ import feedback.domain.usecases.SetFeedbackUseCase
 import feedback.telegram.Strings
 import feedback.telegram.queries.FeedbackQueries
 import generated.RoleFilterBuilder
-import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 

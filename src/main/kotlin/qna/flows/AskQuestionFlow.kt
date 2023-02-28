@@ -9,7 +9,6 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
-import common.telegram.CommonStrings
 import common.telegram.DialogState
 import common.telegram.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
