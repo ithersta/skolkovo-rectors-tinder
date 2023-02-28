@@ -32,5 +32,4 @@ object LongRangeSerializer : KSerializer<LongRange> {
             encodeLongElement(descriptor, 0, value.first)
             encodeLongElement(descriptor, 1, value.last)
         }
-
 }
