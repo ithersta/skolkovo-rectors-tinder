@@ -12,4 +12,8 @@ object AcceptedResponses : Table() {
     val isSuccessful: Column<Boolean?> = bool("is_successful").nullable().default(null)
     val didAskFeedback: Column<Boolean> = bool("did_ask_feedback").default(false)
     override val primaryKey = PrimaryKey(responseId)
+
+    init {
+        index(isUnique = false, didAskFeedback, isSuccessful, at)
+    }
 }
