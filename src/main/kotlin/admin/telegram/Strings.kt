@@ -1,4 +1,4 @@
-package admin
+package admin.telegram
 
 import auth.domain.entities.PhoneNumber
 
@@ -6,7 +6,7 @@ object Strings {
     const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
     const val TemplateFileName = "Шаблон"
     const val InvalidFile = "Файл повреждён или не является .xlsx таблицей"
-    const val addingUsers = "все пользователи добавлены"
+    const val AddingUsers = "все пользователи добавлены"
     fun blockedUsers(blocked: List<PhoneNumber>) = "Вы пытались добавить заблокированных пользователей: " +
         blocked.joinToString(separator = ", ") { it.value }
 

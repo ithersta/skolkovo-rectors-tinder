@@ -50,6 +50,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     }
     muteFlow()
     eventFlow()
-    fallback()
     addUsersFlow()
+    fallback()
 }

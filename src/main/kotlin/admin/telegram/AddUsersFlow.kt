@@ -1,6 +1,5 @@
 package admin.telegram
 
-import admin.Strings
 import admin.domain.usecases.PhoneNumbersAddAllUseCase
 import admin.parsers.Xlsx
 import auth.domain.entities.User
@@ -41,7 +40,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addUsersFlow() {
                                 is PhoneNumbersAddAllUseCase.Result.OK -> {
                                     sendTextMessage(
                                         message.chat,
-                                        Strings.addingUsers
+                                        Strings.AddingUsers
                                     )
                                     state.override { DialogState.Empty }
                                 }

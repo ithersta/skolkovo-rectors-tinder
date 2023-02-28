@@ -39,7 +39,6 @@ object Xlsx {
                 Result.BadFormat(ans.second)
             }
         }.getOrElse {
-            println(it)
             Result.InvalidFile()
         }
 }
