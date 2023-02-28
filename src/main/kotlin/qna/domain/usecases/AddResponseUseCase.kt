@@ -21,7 +21,7 @@ class AddResponseUseCase(
         data class OK(val response: Response) : Result
     }
 
-    class NewResponseMessage(val response: Response, val responseCount: Int)
+    data class NewResponseMessage(val response: Response, val responseCount: Int)
 
     private val _newResponses = Channel<NewResponseMessage>(BUFFERED)
     val newResponses = _newResponses.receiveAsFlow()
