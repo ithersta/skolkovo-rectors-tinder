@@ -35,7 +35,10 @@ class UserAreasRepositoryImpl : UserAreasRepository {
 
     override fun getUsersByArea(questionArea: QuestionArea): List<Long> {
         val muteUsers = MuteSettings.slice(MuteSettings.userId).selectAll()
-        return UserAreas.slice(UserAreas.userId).select { UserAreas.area eq questionArea }.except(muteUsers)
+        return UserAreas
+            .slice(UserAreas.userId)
+            .select { UserAreas.area eq questionArea }
+            .except(muteUsers)
             .map { it[UserAreas.userId].value }
     }
 
