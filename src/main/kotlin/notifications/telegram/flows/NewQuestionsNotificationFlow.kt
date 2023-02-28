@@ -26,7 +26,7 @@ import qna.domain.usecases.AddResponseUseCase
 import qna.domain.usecases.GetQuestionByIdUseCase
 import qna.domain.usecases.HasResponseUseCase
 
-lateinit var newQuestionsPager: InlineKeyboardPager<NewQuestionsNotification>
+lateinit var newQuestionsPager: InlineKeyboardPager<NewQuestionsNotification, DialogState, User, User.Normal>
 
 fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow() {
     val getQuestionsDigest: GetQuestionsDigestUseCase by inject()

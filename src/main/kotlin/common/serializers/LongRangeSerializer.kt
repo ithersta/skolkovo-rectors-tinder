@@ -17,7 +17,7 @@ object LongRangeSerializer : KSerializer<LongRange> {
             var first = -1L
             var last = -1L
             while (true) {
-                when (val index = decodeElementIndex(descriptor)) {
+                when (decodeElementIndex(descriptor)) {
                     0 -> first = decodeLongElement(descriptor, 0)
                     1 -> last = decodeLongElement(descriptor, 1)
                     CompositeDecoder.DECODE_DONE -> break
