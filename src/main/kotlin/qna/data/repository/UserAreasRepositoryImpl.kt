@@ -19,13 +19,8 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .map { it[UserAreas.userId].value }
     }
 
-    override fun getSubjectsByArea(userId: Long, questionArea: Int): Map<Long, String> {
-        return QuestionAreas.join(
-            Questions,
-            JoinType.INNER,
-            additionalConstraint = { QuestionAreas.questionId eq Questions.id }
-        )
-            .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
+    override fun getByArea(userId: Long, questionArea: Int): Map<Long, String> {
+        return (Questions innerJoin QuestionAreas)
             .select(where = Users.id eq userId and Questions.isClosed.eq(false))
             .filter { questionArea == it[QuestionAreas.area].ordinal }
             .associate { it[Questions.id].value to it[Questions.subject] }

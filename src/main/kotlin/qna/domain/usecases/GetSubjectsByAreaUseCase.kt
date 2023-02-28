@@ -10,6 +10,6 @@ class GetSubjectsByAreaUseCase(
     private val transaction: Transaction
 ) {
     operator fun invoke(userId: Long, questionArea: Int): Map<Long, String> = transaction {
-        return@transaction userAreasRepository.getSubjectsByArea(userId, questionArea)
+        return@transaction userAreasRepository.getByArea(userId, questionArea)
     }
 }
