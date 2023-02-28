@@ -11,6 +11,6 @@ class GetQuestionAreasByUserId(
     private val transaction: Transaction
 ) {
     operator fun invoke(userId: Long): List<QuestionArea> = transaction {
-        return@transaction questionRepository.getQuestionAreasByUserId(userId)
+        return@transaction questionRepository.getQuestionAreasByUserId(userId).toSet().toList()
     }
 }

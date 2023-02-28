@@ -24,22 +24,15 @@ import qna.telegram.states.GetListOfSubjects
 import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
-    // Список всех сфер, по которым задавались вопросы пользователя по его id
-    // Далее список всех тем вопросов по сферам (пагинация)
-    // Потом при нажатии на тему вопроса список всех пользователей(пока что имён),
-    // которые хотят ответить на вопрос(при этом они не приняты/отклонены)(пагинация)
-    // При нажатии на имя пользователя выводить ?? (сообщение с его инфой из профиля и кнопки да/нет ???)
     val getSubjectsByAreaUseCase: GetSubjectsByAreaUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getQuestionAreasByUserId: GetQuestionAreasByUserId by inject()
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.GetListOfRespondents> {
-        // TODO удалять replyKeyboard тут(если возможно)
         onEnter {
             sendTextMessage(
-                it.chatId.toChatId(),
-                Strings.RespondentsNoAnswer.ListOfAreas,
+                it, Strings.RespondentsNoAnswer.ListOfAreas,
                 replyMarkup = inlineKeyboard {
                     getQuestionAreasByUserId(it.chatId).forEach { area ->
                         row {
