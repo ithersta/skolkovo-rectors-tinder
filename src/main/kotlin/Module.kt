@@ -9,6 +9,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
+import notifications.domain.usecases.GetNewQuestionsNotificationFlowUseCase
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -44,6 +45,7 @@ val module = module(createdAtStart = true) {
     single { readBotConfig() }
     single<Clock> { Clock.System }
     single { TimeZone.of("Europe/Moscow") }
+    single { GetNewQuestionsNotificationFlowUseCase.Config() }
     single { _ ->
         stateMachine.regularEngine(
             getUser = { get<GetUserUseCase>()(it.chatId) },
