@@ -32,11 +32,7 @@ class QuestionRepositoryImpl : QuestionRepository {
     }
 
     override fun getQuestionAreasByUserId(userId: Long): List<QuestionArea> {
-        return QuestionAreas.join(
-            Questions,
-            JoinType.INNER,
-            additionalConstraint = { QuestionAreas.questionId eq Questions.id }
-        )
+        return (QuestionAreas innerJoin Questions)
             .select(Questions.authorId eq userId and Questions.isClosed.eq(false))
             .map { it[QuestionAreas.area] }
     }
