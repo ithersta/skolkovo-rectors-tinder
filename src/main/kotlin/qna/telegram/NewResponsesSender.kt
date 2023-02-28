@@ -1,6 +1,7 @@
 package qna.telegram
 
 import common.telegram.CommonStrings
+import common.telegram.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
@@ -38,20 +39,10 @@ class NewResponsesSender(
                             respondent.organization,
                             respondent.activityDescription
                         ),
-                        replyMarkup = inlineKeyboard {
-                            row {
-                                dataButton(
-                                    CommonStrings.Button.Yes,
-                                    AcceptUserQuery(respondent.id, response.questionId, response.id)
-                                )
-                            }
-                            row {
-                                dataButton(
-                                    CommonStrings.Button.No,
-                                    DeclineUserQuery(respondent.id)
-                                )
-                            }
-                        }
+                        replyMarkup = confirmationInlineKeyboard(
+                            positiveData = AcceptUserQuery(respondent.id, response.questionId, response.id),
+                            negativeData = DeclineUserQuery(respondent.id)
+                        )
                     )
                 }
             }

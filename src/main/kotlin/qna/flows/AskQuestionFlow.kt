@@ -11,6 +11,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.CommonStrings
 import common.telegram.DialogState
+import common.telegram.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
@@ -288,19 +289,8 @@ suspend fun StatefulContext<DialogState, User, SendQuestionToCommunity, User.Nor
 ) = sendTextMessage(
     chatId,
     Strings.ToAnswerUser.message(question.subject, question.text),
-    replyMarkup = inlineKeyboard {
-        row {
-            checkNotNull(question.id)
-            dataButton(
-                CommonStrings.Button.Yes,
-                AcceptQuestionQuery(question.id)
-            )
-        }
-        row {
-            dataButton(
-                CommonStrings.Button.No,
-                DeclineQuestionQuery
-            )
-        }
-    }
+    replyMarkup = confirmationInlineKeyboard(
+        positiveData = AcceptQuestionQuery(question.id!!),
+        negativeData = DeclineQuestionQuery
+    )
 )
