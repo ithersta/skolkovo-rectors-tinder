@@ -1,4 +1,4 @@
-package qna.flows
+package qna.telegram.flows
 
 import auth.domain.entities.User
 import auth.telegram.Strings
