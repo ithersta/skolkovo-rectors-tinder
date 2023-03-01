@@ -1,7 +1,7 @@
 package feedback.telegram
 
 import common.telegram.MassSendLimiter
-import common.telegram.confirmationInlineKeyboard
+import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.toChatId

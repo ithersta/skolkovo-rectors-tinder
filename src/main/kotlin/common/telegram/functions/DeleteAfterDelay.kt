@@ -1,4 +1,4 @@
-package common.telegram
+package common.telegram.functions
 
 import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import dev.inmo.micro_utils.coroutines.launchSafelyWithoutExceptions

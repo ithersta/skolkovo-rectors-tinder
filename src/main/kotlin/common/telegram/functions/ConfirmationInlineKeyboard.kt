@@ -1,5 +1,7 @@
-package common.telegram
+package common.telegram.functions
 
+import common.telegram.Query
+import common.telegram.strings.CommonStrings
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import generated.dataButton
 

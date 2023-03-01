@@ -2,6 +2,7 @@ package menus
 
 import auth.domain.entities.User
 import auth.telegram.Strings
+import changeinfo.telegram.sendFieldsToChange
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import common.telegram.DialogState
 import generated.menu
@@ -48,10 +49,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         )
     }
     button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it.chat.id) }
-    button(
-        MenuStrings.ChangeAccountInfo,
-        MenuState.ChangeAccountInfo
-    ) // TODO: это я потом реализую
+    button(MenuStrings.ChangeAccountInfo) { sendFieldsToChange(it) }
     button(
         MenuStrings.Events,
         MenuState.Events

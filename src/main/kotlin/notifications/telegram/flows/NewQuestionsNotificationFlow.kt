@@ -4,8 +4,8 @@ import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
-import common.telegram.CommonStrings
 import common.telegram.DialogState
+import common.telegram.strings.CommonStrings
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrThrow

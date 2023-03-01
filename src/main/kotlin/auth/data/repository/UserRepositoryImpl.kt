@@ -5,10 +5,10 @@ import auth.data.tables.Users
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
+import qna.domain.entities.QuestionArea
 
 @Single
 class UserRepositoryImpl : UserRepository {
@@ -52,5 +52,43 @@ class UserRepositoryImpl : UserRepository {
 
     override fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean {
         return Users.select { Users.phoneNumber eq phoneNumber.value }.empty().not()
+    }
+
+    override fun changeName(id: Long, newName: String) {
+        Users.update({ Users.id eq id }) {
+            it[name] = newName
+        }
+    }
+
+    override fun changeCity(id: Long, newCity: String) {
+        Users.update({ Users.id eq id }) {
+            it[city] = newCity
+        }
+    }
+
+    override fun changeJob(id: Long, newJob: String) {
+        Users.update({ Users.id eq id }) {
+            it[job] = newJob
+        }
+    }
+
+    override fun changeOrganization(id: Long, newOrganization: String) {
+        Users.update({ Users.id eq id }) {
+            it[organization] = newOrganization
+        }
+    }
+
+    override fun changeAreas(id: Long, newArea: Set<QuestionArea>) {
+        UserAreas.deleteWhere { userId eq id }
+        UserAreas.batchInsert(newArea) {
+            this[UserAreas.userId] = id
+            this[UserAreas.area] = it
+        }
+    }
+
+    override fun changeActivityDescription(id: Long, newActivityDescription: String) {
+        Users.update({ Users.id eq id }) {
+            it[activityDescription] = newActivityDescription
+        }
     }
 }

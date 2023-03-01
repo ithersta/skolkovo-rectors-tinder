@@ -1,7 +1,7 @@
 import auth.data.tables.PhoneNumbers
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
-import auth.domain.usecases.GetUserUseCase
+import auth.domain.usecases.GetUserRoleUseCase
 import com.ithersta.tgbotapi.fsm.engines.regularEngine
 import config.readBotConfig
 import generated.sqliteStateRepository
@@ -48,7 +48,7 @@ val module = module(createdAtStart = true) {
     single { GetNewQuestionsNotificationFlowUseCase.Config() }
     single { _ ->
         stateMachine.regularEngine(
-            getUser = { get<GetUserUseCase>()(it.chatId) },
+            getUser = { get<GetUserRoleUseCase>()(it.chatId) },
             stateRepository = sqliteStateRepository(historyDepth = 1),
             exceptionHandler = { _, throwable -> throwable.printStackTrace() }
         )

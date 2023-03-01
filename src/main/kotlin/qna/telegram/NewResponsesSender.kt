@@ -1,6 +1,6 @@
 package qna.telegram
 
-import common.telegram.confirmationInlineKeyboard
+import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.toChatId
@@ -9,9 +9,9 @@ import org.koin.core.annotation.Single
 import qna.domain.usecases.AddResponseUseCase
 import qna.domain.usecases.GetQuestionByIdUseCase
 import qna.domain.usecases.GetUserDetailsUseCase
-import qna.strings.Strings
 import qna.telegram.queries.AcceptUserQuery
 import qna.telegram.queries.DeclineUserQuery
+import qna.telegram.strings.Strings
 
 @Single
 class NewResponsesSender(
