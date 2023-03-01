@@ -1,14 +1,16 @@
-@file:Suppress("MaxLineLength")
-
 package qna.telegram.strings
 
+import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.*
 
 object Strings {
     object ToAnswerUser {
         fun message(subject: String, question: String) =
             buildEntities {
-                regular("Добрый день, один из участников сообщества хотел бы выйти в коммуникацию по следующему вопросу:\n\n")
+                regular(
+                    "Добрый день, один из участников сообщества хотел бы " +
+                        "выйти на коммуникацию по следующему вопросу:\n\n"
+                )
                 boldln(subject)
                 regularln(question + "\n")
                 boldln("Готовы ответить?")
@@ -32,21 +34,33 @@ object Strings {
         const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
+    fun accountInfo(
+        name: String,
+        city: String,
+        job: String,
+        organization: String,
+        activityDescription: String
+    ): TextSourcesList {
+        return buildEntities {
+            bold("Имя: ")
+            regularln(name)
+            bold("Город: ")
+            regularln(city)
+            bold("Должность: ")
+            regularln(job)
+            bold("Организация: ")
+            regularln(organization)
+            bold("Деятельность: ")
+            regularln(activityDescription)
+            regularln("")
+        }
+    }
+
     object ToAskUser {
-        fun message(name: String, city: String, job: String, organisation: String, activityDescr: String) =
+        fun message(name: String, city: String, job: String, organization: String, activityDescription: String) =
             buildEntities {
                 regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
-                bold("Имя: ")
-                regularln(name)
-                bold("Город: ")
-                regularln(city)
-                bold("Должность: ")
-                regularln(job)
-                bold("Организация: ")
-                regularln(organisation)
-                bold("Деятельность: ")
-                regularln(activityDescr)
-                regularln("")
+                addAll(accountInfo(name, city, job, organization, activityDescription))
                 boldln("Вы согласны пообщаться?")
             }
 

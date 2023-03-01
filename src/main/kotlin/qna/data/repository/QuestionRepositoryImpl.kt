@@ -1,5 +1,8 @@
 package qna.data.repository
 
+import auth.data.tables.UserAreas
+import common.domain.Paginated
+import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
@@ -19,6 +22,7 @@ class QuestionRepositoryImpl : QuestionRepository {
             it[subject] = question.subject
             it[text] = question.text
             it[isClosed] = question.isClosed
+            it[at] = question.at
         }
         QuestionAreas.batchInsert(question.areas) {
             this[QuestionAreas.questionId] = id
@@ -29,6 +33,35 @@ class QuestionRepositoryImpl : QuestionRepository {
 
     override fun getById(questionId: Long): Question {
         return Questions.select { Questions.id eq questionId }.map(::mapper).first()
+    }
+
+    override fun getQuestionsDigestPaginated(
+        from: Instant,
+        until: Instant,
+        userId: Long,
+        limit: Int,
+        offset: Int
+    ): Paginated<Question> {
+        val areas = UserAreas
+            .slice(UserAreas.area)
+            .select { UserAreas.userId eq userId }
+        val query = {
+            Questions
+                .innerJoin(QuestionAreas)
+                .slice(Questions.columns)
+                .select {
+                    Questions.at.between(from, until) and
+                            (Questions.authorId neq userId) and
+                            (Questions.isClosed eq false)
+                }
+                .groupBy(*Questions.columns.toTypedArray())
+                .having { QuestionAreas.area inSubQuery areas }
+                .orderBy(Questions.at)
+        }
+        return Paginated(
+            slice = query().limit(limit, offset.toLong()).map(::mapper),
+            count = query().count().toInt()
+        )
     }
 
     override fun getQuestionAreasByUserId(userId: Long): List<QuestionArea> {
@@ -42,18 +75,20 @@ class QuestionRepositoryImpl : QuestionRepository {
             it[Questions.isClosed] = true
         }
     }
+
     override fun getByArea(userId: Long, questionArea: QuestionArea): List<Question> {
         val questionsId = (Questions innerJoin QuestionAreas)
             .select(
                 (Questions.authorId eq userId)
-                    and (Questions.isClosed.eq(false))
-                    and (QuestionAreas.area eq questionArea)
+                        and (Questions.isClosed.eq(false))
+                        and (QuestionAreas.area eq questionArea)
             )
             .map { it[QuestionAreas.questionId].value }
         return questionsId.stream()
             .map { Questions.select { Questions.id eq it }.map(::mapper).first() }
             .collect(Collectors.toList())
     }
+
     private fun mapper(row: ResultRow): Question {
         val questionId = row[Questions.id].value
         val areas = QuestionAreas
@@ -66,6 +101,7 @@ class QuestionRepositoryImpl : QuestionRepository {
             text = row[Questions.text],
             isClosed = row[Questions.isClosed],
             areas = areas,
+            at = row[Questions.at],
             id = row[Questions.id].value
         )
     }

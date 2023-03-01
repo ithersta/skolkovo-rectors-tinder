@@ -7,8 +7,9 @@ import qna.domain.entities.QuestionArea
 
 object Strings {
     const val Welcome =
-        "Дорогой участник, приветствуем тебя в боте сообщества выпускников." +
-            " Для того, чтобы попасть в пространство единомышленников поделитесь контактом, нажав соответствующую кнопку"
+        "Дорогой участник, приветствуем тебя в боте сообщества выпускников программ Центра трансформации образования. " +
+            "Здесь собрались выпускники разных лет таких программ, как Школа ректоров, Лидеры научно-технологического прорыва, Школа управления исследовательскими программами и других программ. " +
+            "Для того, чтобы попасть в пространство единомышленников, поделитесь контактом, нажав соответствующую кнопку и заполните свой краткий профайл"
     const val ShareContact = "Поделиться номером телефона"
     const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
@@ -23,16 +24,6 @@ object Strings {
         const val WriteOrganization = "Напишите название Вашей организации"
         const val ChooseProfessionalAreas = "Уточните ваши профессиональные зоны компетенций" // /возможность выбрать
 
-        var professionalAreas = listOf(
-            "какая-то одна сфера",
-            "какая-то другая сфера",
-            "какая-то третья сфера",
-            "Другое"
-        )
-
-        const val WriteProfessionalArea = "Введите свою зону профессиональных компетенций"
-        const val NoProfessionalArea =
-            "Вы не выбрали ни одной сферы профессиональных компетенций. Для регистрации необходимо выбрать хотя бы одну сферу."
         const val NoQuestionArea =
             "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
 
@@ -85,36 +76,5 @@ object Strings {
         const val Admin = "Меню администратора"
         const val Unauthenticated = "Неудачная попытка авторизации."
         const val Normal = "Меню пользователя"
-    }
-
-    object MenuButtons {
-        const val AddUser = "Добавить пользователей"
-
-        object Questions {
-            const val Question = "Вопрос"
-            const val QuestionDescription = "Выберите, что вы хотите сделать"
-            const val Ask = "Задать вопрос сообществу"
-            const val Get = "Получить список вопросов"
-            const val Description = "Выберите категорию вопроса"
-
-            object MyQuestions {
-                const val Main = "Мои вопросы"
-                const val Description = "Выберите тип вопроса"
-                const val ActualQuestions = "Актуальные"
-                const val OldQuestions = "Старые(закрытые)"
-            }
-
-            const val InterestingQuestions = "По сферам"
-        }
-
-        object Notifications {
-            const val Main = "Оповещения"
-            const val Description = "Выберите, что вы хотите сделать"
-            const val On = "Включить"
-            const val Off = "Выключить"
-        }
-
-        const val ChangeAccountInfo = "Изменить данные аккаунта"
-        const val Events = "Получить календарь мероприятий"
     }
 }

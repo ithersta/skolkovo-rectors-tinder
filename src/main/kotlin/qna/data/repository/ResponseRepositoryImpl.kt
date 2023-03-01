@@ -2,6 +2,7 @@ package qna.data.repository
 
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.koin.core.annotation.Single
 import qna.data.tables.Responses
@@ -19,7 +20,6 @@ class ResponseRepositoryImpl : ResponseRepository {
             )
         }
     }
-
     override fun getRespondentsByQuestionId(questionId: Long): List<Long> {
         return Responses
             .select(where = Responses.questionId eq questionId)
@@ -31,5 +31,10 @@ class ResponseRepositoryImpl : ResponseRepository {
             it[Responses.questionId] = questionId
             it[Responses.respondentId] = respondentId
         }.value
+    }
+    override fun has(respondentId: Long, questionId: Long): Boolean {
+        return Responses
+            .select { (Responses.questionId eq questionId) and (Responses.respondentId eq respondentId) }
+            .empty().not()
     }
 }

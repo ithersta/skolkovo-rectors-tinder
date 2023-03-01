@@ -1,16 +1,13 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
-import auth.telegram.queries.FinishQuestionQuery
-import auth.telegram.queries.SelectQuestionQuery
-import auth.telegram.queries.UnselectQuestionQuery
 import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
-import common.telegram.CommonStrings
 import common.telegram.DialogState
+import common.telegram.functions.chooseQuestionAreas
+import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
@@ -18,24 +15,20 @@ import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.extensions.utils.withContentOrNull
 import dev.inmo.tgbotapi.types.ChatId
-import dev.inmo.tgbotapi.types.MessageId
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
-import generated.dataButton
 import generated.onDataCallbackQuery
 import kotlinx.coroutines.launch
 import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.entities.Question
-import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
 import qna.telegram.queries.AcceptQuestionQuery
@@ -128,15 +121,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText(ButtonStrings.SendQuestion) { message ->
-            val details = Question(
-                message.chat.id.chatId,
+            val question = addQuestionUseCase(
+                authorId = message.chat.id.chatId,
                 state.snapshot.intent,
                 state.snapshot.subject,
                 state.snapshot.question,
-                false,
                 state.snapshot.areas
             )
-            val question = addQuestionUseCase(details)
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
@@ -166,50 +157,19 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
         }
         onDataCallbackQuery(AcceptQuestionQuery::class) { (data, query) ->
             val question = getQuestionByIdUseCase(data.questionId)
-            checkNotNull(question)
             val message = query.messageCallbackQueryOrNull()?.message?.withContentOrNull<TextContent>()
             message?.let {
                 edit(
                     it,
-                    entities = Strings.ToAnswerUser.editMessage(question.subject, question.text),
+                    entities = Strings.ToAnswerUser.editMessage(question!!.subject, question.text),
                     replyMarkup = null
                 )
             }
-            val responseId = addResponseUseCase(data.questionId, query.user.id.chatId)
+            addResponseUseCase(data.questionId, query.user.id.chatId)
             sendTextMessage(
                 query.user.id,
                 Strings.ToAnswerUser.SentAgreement
             )
-            coroutineScope.launch {
-                val authorId = question.authorId
-                val respondent = getUserDetailsUseCase(query.user.id.chatId)
-                if (respondent != null) {
-                    sendTextMessage(
-                        authorId.toChatId(),
-                        Strings.ToAskUser.message(
-                            respondent.name,
-                            respondent.city,
-                            respondent.job,
-                            respondent.organization,
-                            respondent.activityDescription
-                        ),
-                        replyMarkup = inlineKeyboard {
-                            row {
-                                dataButton(
-                                    CommonStrings.Button.Yes,
-                                    AcceptUserQuery(respondent.id, data.questionId, responseId)
-                                )
-                            }
-                            row {
-                                dataButton(
-                                    CommonStrings.Button.No,
-                                    DeclineUserQuery(query.user.id.chatId)
-                                )
-                            }
-                        }
-                    )
-                }
-            }
             answer(query)
         }
         onDataCallbackQuery(DeclineUserQuery::class) { (data, query) ->
@@ -227,7 +187,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val respondent = getUserDetailsUseCase(data.respondentId)
             checkNotNull(respondent)
             val question = getQuestionByIdUseCase(data.questionId)
-            checkNotNull(question)
             addAcceptedResponseRepoUseCase(data.responseId)
             sendContact(
                 query.user,
@@ -236,7 +195,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
             sendTextMessage(
                 data.respondentId.toChatId(),
-                Strings.ToAnswerUser.waitingForCompanion(question.subject)
+                Strings.ToAnswerUser.waitingForCompanion(question!!.subject)
             )
             sendTextMessage(
                 query.user.id,
@@ -255,87 +214,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
 }
 
-fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.chooseQuestionAreas(
-    text: String,
-    getAreas: (State) -> Set<QuestionArea>,
-    getMessageId: (State) -> MessageId?,
-    onSelectionChanged: (State, Set<QuestionArea>) -> State,
-    onMessageIdSet: (State, MessageId) -> State,
-    onFinish: (State) -> DialogState
-) {
-    onEnter {
-        val keyboard = inlineKeyboard {
-            QuestionArea.values().forEach { area ->
-                row {
-                    val areaToString = auth.telegram.Strings.questionAreaToString.getValue(area)
-                    if (area in getAreas(state.snapshot)) {
-                        dataButton("✅$areaToString", UnselectQuestionQuery(area))
-                    } else {
-                        dataButton(areaToString, SelectQuestionQuery(area))
-                    }
-                }
-            }
-            row {
-                dataButton(auth.telegram.Strings.FinishChoosing, FinishQuestionQuery)
-            }
-        }
-        getMessageId(state.snapshot)?.let { id ->
-            runCatching {
-                editMessageReplyMarkup(it, id, keyboard)
-            }
-        } ?: run {
-            val message = sendTextMessage(
-                it,
-                text,
-                replyMarkup = keyboard
-            )
-            state.overrideQuietly { onMessageIdSet(state.snapshot, message.messageId) }
-        }
-    }
-    onDataCallbackQuery(SelectQuestionQuery::class) { (data, query) ->
-        state.override {
-            onSelectionChanged(state.snapshot, getAreas(state.snapshot) + data.area)
-        }
-        answer(query)
-    }
-    onDataCallbackQuery(UnselectQuestionQuery::class) { (data, query) ->
-        state.override {
-            onSelectionChanged(state.snapshot, getAreas(state.snapshot) - data.area)
-        }
-        answer(query)
-    }
-    onDataCallbackQuery(FinishQuestionQuery::class) { (_, query) ->
-        if (getAreas(state.snapshot).isEmpty()) {
-            sendTextMessage(
-                query.user.id,
-                auth.telegram.Strings.AccountInfo.NoQuestionArea
-            )
-        } else {
-            state.override { onFinish(state.snapshot) }
-        }
-        answer(query)
-    }
-}
-
 suspend fun StatefulContext<DialogState, User, SendQuestionToCommunity, User.Normal>.sendQuestionMessage(
     chatId: ChatId,
     question: Question
 ) = sendTextMessage(
     chatId,
     Strings.ToAnswerUser.message(question.subject, question.text),
-    replyMarkup = inlineKeyboard {
-        row {
-            checkNotNull(question.id)
-            dataButton(
-                CommonStrings.Button.Yes,
-                AcceptQuestionQuery(question.id)
-            )
-        }
-        row {
-            dataButton(
-                CommonStrings.Button.No,
-                DeclineQuestionQuery
-            )
-        }
-    }
+    replyMarkup = confirmationInlineKeyboard(
+        positiveData = AcceptQuestionQuery(question.id!!),
+        negativeData = DeclineQuestionQuery
+    )
 )

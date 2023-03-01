@@ -1,4 +1,4 @@
-package mute
+package mute.telegram
 
 object Strings {
     const val MuteOff = "Уведомления включены"
