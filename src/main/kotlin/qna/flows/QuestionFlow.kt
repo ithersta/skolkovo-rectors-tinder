@@ -56,7 +56,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
             )
         }
         onDataCallbackQuery(SelectArea::class) { (data, query) ->
-            state.override { MenuState.NextStep(query.user.id.chatId, data.area.ordinal, PagerState()) }
+            state.override { MenuState.NextStep(query.user.id.chatId, data.area, PagerState()) }
             answer(query)
         }
     }
@@ -64,7 +64,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
         lateinit var subjects: List<Pair<Long, String>>
         val subjectsPager =
             statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-                subjects = subjectsByChatId.invoke(state.snapshot.userId, state.snapshot.areaIndex).toList()
+                subjects = subjectsByChatId.invoke(state.snapshot.userId, state.snapshot.area).toList()
                 val paginatedNumbers = subjects.drop(offset).take(limit)
                 inlineKeyboard {
                     paginatedNumbers.forEach { item ->

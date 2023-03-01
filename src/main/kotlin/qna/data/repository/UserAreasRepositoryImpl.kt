@@ -15,19 +15,20 @@ import qna.domain.repository.UserAreasRepository
 class UserAreasRepositoryImpl : UserAreasRepository {
     override fun getUsersByArea(questionArea: QuestionArea): List<Long> {
         val muteUsers = MuteSettings.slice(MuteSettings.userId).selectAll()
-        return UserAreas
-            .slice(UserAreas.userId)
-            .select { UserAreas.area eq questionArea }
-            .except(muteUsers)
+        return UserAreas.slice(UserAreas.userId).select { UserAreas.area eq questionArea }.except(muteUsers)
             .map { it[UserAreas.userId].value }
     }
 
-    override fun getSubjectsByChatId(userId: Long, questionArea: Int): Map<Long, String> {
-        return UserAreas
-            .join(QuestionAreas, JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area })
-            .join(Questions, JoinType.INNER, additionalConstraint = { Questions.id eq QuestionAreas.questionId })
-            .select((UserAreas.userId eq userId) and (Questions.isClosed.eq(false)) and (Questions.authorId neq userId))
-            .filter { questionArea == it[QuestionAreas.area].ordinal }
-            .associate { it[Questions.id].value to it[Questions.subject] }
+    override fun getSubjectsByUserId(userId: Long, userArea: QuestionArea): Map<Long, String> {
+        return (UserAreas.join(
+            QuestionAreas,
+            JoinType.INNER,
+            additionalConstraint = { UserAreas.area eq QuestionAreas.area }) innerJoin Questions)
+            .select(
+                (UserAreas.userId eq userId)
+                        and (Questions.isClosed.eq(false))
+                        and (Questions.authorId neq userId)
+                        and (QuestionAreas.area eq userArea)
+            ).associate { it[Questions.id].value to it[Questions.subject] }
     }
 }

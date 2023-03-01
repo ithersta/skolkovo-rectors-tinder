@@ -4,5 +4,5 @@ import qna.domain.entities.QuestionArea
 
 interface UserAreasRepository {
     fun getUsersByArea(questionArea: QuestionArea): List<Long>
-    fun getSubjectsByChatId(userId: Long, questionArea: Int): Map<Long, String>
+    fun getSubjectsByUserId(userId: Long, userArea: QuestionArea): Map<Long, String>
 }
