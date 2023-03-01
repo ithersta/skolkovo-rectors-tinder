@@ -134,7 +134,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.Question.Success
             )
             coroutineScope.launch {
-                //TODO избавиться от отправки сообщения неск раз
+                // TODO избавиться от отправки сообщения неск раз
                 state.snapshot.areas.forEach {
                     listOfValidUsers =
                         getUsersByAreaUseCase(
