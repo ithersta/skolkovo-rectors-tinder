@@ -51,8 +51,8 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                            (Questions.authorId neq userId) and
-                            (Questions.isClosed eq false)
+                        (Questions.authorId neq userId) and
+                        (Questions.isClosed eq false)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
@@ -80,8 +80,8 @@ class QuestionRepositoryImpl : QuestionRepository {
         val questionsId = (Questions innerJoin QuestionAreas)
             .select(
                 (Questions.authorId eq userId)
-                        and (Questions.isClosed.eq(false))
-                        and (QuestionAreas.area eq questionArea)
+                    and (Questions.isClosed.eq(false))
+                    and (QuestionAreas.area eq questionArea)
             )
             .map { it[QuestionAreas.questionId].value }
         return questionsId.stream()
