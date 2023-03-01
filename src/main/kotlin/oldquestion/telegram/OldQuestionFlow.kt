@@ -50,13 +50,14 @@ fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
                 }
             }
             onDataCallbackQuery(SelectSubject::class) { (data, query) ->
-                sendTextMessage(query.user.id, text = listOfDefendants, replyMarkup = inlineKeyboard {
-                    nameAndPhoneUseCase.invoke(data.questionId).forEach { item ->
-                        row {
-                            dataButton(item.key, SelectRespondent(name = item.key, phoneNumber = item.value))
+                sendTextMessage(query.user.id, listOfDefendants,
+                    replyMarkup = inlineKeyboard {
+                        nameAndPhoneUseCase.invoke(data.questionId).forEach { item ->
+                            row {
+                                dataButton(item.key, SelectRespondent(name = item.key, phoneNumber = item.value))
+                            }
                         }
-                    }
-                })
+                    })
                 answer(query)
             }
             onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
