@@ -2,7 +2,7 @@ package menus
 
 import auth.domain.entities.User
 import auth.telegram.Strings
-import change_account_info.telegram.sendFieldsToChange
+import changeinfo.telegram.sendFieldsToChange
 import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import common.telegram.DialogState

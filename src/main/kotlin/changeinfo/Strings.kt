@@ -1,6 +1,6 @@
-package change_account_info
+package changeinfo
 
-import change_account_info.telegram.queries.*
+import changeinfo.telegram.queries.*
 import common.telegram.Query
 
 object Strings {

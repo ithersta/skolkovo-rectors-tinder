@@ -8,7 +8,7 @@ private suspend fun <S : User> StatefulContext<DialogState,
     )
     sendTextMessage(
         message.chat,
-        change_account_info.Strings.ChooseFieldToChange,
+        changeinfo.Strings.ChooseFieldToChange,
         replyMarkup = inlineKeyboard {
             val names= namesToQueries.keys
             names.chunked(2){
