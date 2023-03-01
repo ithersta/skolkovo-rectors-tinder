@@ -24,6 +24,6 @@ object MenuStrings {
         const val Main = "Уведомления"
     }
 
-    const val ChangeAccountInfo = "Изменить данные аккаунта"
+    const val ChangeAccountInfo = "Данные аккаунта"
     const val Events = "Получить календарь мероприятий"
 }

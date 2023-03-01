@@ -1,4 +1,4 @@
-package qna.strings
+package qna.telegram.strings
 
 import qna.domain.entities.QuestionIntent
 

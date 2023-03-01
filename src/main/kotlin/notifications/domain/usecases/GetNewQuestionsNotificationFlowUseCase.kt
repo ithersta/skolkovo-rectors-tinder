@@ -13,28 +13,26 @@ import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
-private const val DEFAULT_DAILY_HOUR = 19
-private val defaultDayOfWeek = DayOfWeek.FRIDAY
-
 @Single
 class GetNewQuestionsNotificationFlowUseCase(
     private val notificationPreferenceRepository: NotificationPreferenceRepository,
     private val transaction: Transaction,
     private val timeZone: TimeZone,
     private val clock: Clock,
-    private val dailyHour: Int? = null,
-    private val dayOfWeek: DayOfWeek? = null
+    private val config: Config
 ) {
+    class Config(val dailyHour: Int = 15, val dayOfWeek: DayOfWeek = DayOfWeek.TUESDAY)
+
     operator fun invoke() = flow {
         val offset = timeZone.offsetAt(clock.now()).totalSeconds.seconds.inWholeMinutes.toInt()
         buildSchedule(offset) {
-            hours { at(dailyHour ?: DEFAULT_DAILY_HOUR) }
+            hours { at(config.dailyHour) }
             minutes { at(0) }
             seconds { at(0) }
         }.doInfinity {
             val now = adjustedNow()
             emitFor(NotificationPreference.Daily, from = now - 1.days, until = now)
-            if (now.toLocalDateTime(timeZone).dayOfWeek == (dayOfWeek ?: defaultDayOfWeek)) {
+            if (now.toLocalDateTime(timeZone).dayOfWeek == (config.dayOfWeek)) {
                 emitFor(NotificationPreference.Weekly, from = now - 7.days, until = now)
             }
         }
@@ -52,6 +50,6 @@ class GetNewQuestionsNotificationFlowUseCase(
 
     private fun adjustedNow() = clock.now()
         .toLocalDateTime(timeZone).date
-        .atTime(dailyHour ?: DEFAULT_DAILY_HOUR, 0)
+        .atTime(config.dailyHour, 0)
         .toInstant(timeZone)
 }
