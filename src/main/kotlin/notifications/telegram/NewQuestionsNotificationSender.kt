@@ -1,5 +1,6 @@
 package notifications.telegram
 
+import common.telegram.MassSendLimiter
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.toChatId
@@ -10,10 +11,12 @@ import org.koin.core.annotation.Single
 
 @Single
 class NewQuestionsNotificationSender(
-    private val getNewQuestionsNotificationFlow: GetNewQuestionsNotificationFlowUseCase
+    private val getNewQuestionsNotificationFlow: GetNewQuestionsNotificationFlowUseCase,
+    private val massSendLimiter: MassSendLimiter
 ) {
     fun BehaviourContext.setup() = launch {
         getNewQuestionsNotificationFlow().collect { notification ->
+            massSendLimiter.wait()
             runCatching {
                 val replyMarkup = newQuestionsPager.replyMarkup(notification, context = null)
                 if (replyMarkup.keyboard.isNotEmpty()) {
