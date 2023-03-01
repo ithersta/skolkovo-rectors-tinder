@@ -9,7 +9,7 @@ import menus.states.MenuState
 val adminMenu = menu<User.Admin>(Strings.RoleMenu.Normal, DialogState.Empty) {
     extracted()
     button(
-        Strings.MenuButtons.AddUser,
+        MenuStrings.AddUser,
         MenuState.AddUser
     ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
 }

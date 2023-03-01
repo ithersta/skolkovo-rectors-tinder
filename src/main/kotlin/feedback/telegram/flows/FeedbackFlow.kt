@@ -1,12 +1,11 @@
 package feedback.telegram.flows
 
 import auth.domain.entities.User
-import common.telegram.CommonStrings
+import common.telegram.confirmationInlineKeyboard
 import common.telegram.deleteAfterDelay
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContentOrNull
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import feedback.domain.usecases.CloseQuestionUseCase
@@ -15,7 +14,6 @@ import feedback.domain.usecases.SetFeedbackUseCase
 import feedback.telegram.Strings
 import feedback.telegram.queries.FeedbackQueries
 import generated.RoleFilterBuilder
-import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 
@@ -32,10 +30,10 @@ fun RoleFilterBuilder<User.Normal>.feedbackFlow() {
             val question = getAssociatedOpenQuestion(query.from.id.chatId, data.responseId)
             if (data.isSuccessful && question != null) {
                 checkNotNull(question.id)
-                val keyboard = flatInlineKeyboard {
-                    dataButton(CommonStrings.Button.No, FeedbackQueries.DoNotCloseQuestion)
-                    dataButton(CommonStrings.Button.Yes, FeedbackQueries.CloseQuestion(question.id))
-                }
+                val keyboard = confirmationInlineKeyboard(
+                    positiveData = FeedbackQueries.CloseQuestion(question.id),
+                    negativeData = FeedbackQueries.DoNotCloseQuestion
+                )
                 edit(message, text = Strings.shouldCloseQuestion(question.subject), replyMarkup = keyboard)
             } else {
                 val text = if (data.isSuccessful) Strings.IfSuccessful else Strings.IfUnsuccessful

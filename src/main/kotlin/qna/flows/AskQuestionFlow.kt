@@ -9,8 +9,8 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
-import common.telegram.CommonStrings
 import common.telegram.DialogState
+import common.telegram.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
@@ -125,15 +125,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText(ButtonStrings.SendQuestion) { message ->
-            val details = Question(
-                message.chat.id.chatId,
+            val question = addQuestionUseCase(
+                authorId = message.chat.id.chatId,
                 state.snapshot.intent,
                 state.snapshot.subject,
                 state.snapshot.question,
-                false,
                 state.snapshot.areas
             )
-            val question = addQuestionUseCase(details)
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
@@ -172,41 +170,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                     replyMarkup = null
                 )
             }
-            val responseId = addResponseUseCase(data.questionId, query.user.id.chatId)
+            addResponseUseCase(data.questionId, query.user.id.chatId)
             sendTextMessage(
                 query.user.id,
                 Strings.ToAnswerUser.SentAgreement
             )
-            coroutineScope.launch {
-                val authorId = question.authorId
-                val respondent = getUserDetailsUseCase(query.user.id.chatId)
-                if (respondent != null) {
-                    sendTextMessage(
-                        authorId.toChatId(),
-                        Strings.ToAskUser.message(
-                            respondent.name,
-                            respondent.city,
-                            respondent.job,
-                            respondent.organization,
-                            respondent.activityDescription
-                        ),
-                        replyMarkup = inlineKeyboard {
-                            row {
-                                dataButton(
-                                    CommonStrings.Button.Yes,
-                                    AcceptUserQuery(respondent.id, data.questionId, responseId)
-                                )
-                            }
-                            row {
-                                dataButton(
-                                    CommonStrings.Button.No,
-                                    DeclineUserQuery(query.user.id.chatId)
-                                )
-                            }
-                        }
-                    )
-                }
-            }
             answer(query)
         }
         onDataCallbackQuery(DeclineUserQuery::class) { (data, query) ->
@@ -320,19 +288,8 @@ suspend fun StatefulContext<DialogState, User, SendQuestionToCommunity, User.Nor
 ) = sendTextMessage(
     chatId,
     Strings.ToAnswerUser.message(question.subject, question.text),
-    replyMarkup = inlineKeyboard {
-        row {
-            checkNotNull(question.id)
-            dataButton(
-                CommonStrings.Button.Yes,
-                AcceptQuestionQuery(question.id)
-            )
-        }
-        row {
-            dataButton(
-                CommonStrings.Button.No,
-                DeclineQuestionQuery
-            )
-        }
-    }
+    replyMarkup = confirmationInlineKeyboard(
+        positiveData = AcceptQuestionQuery(question.id!!),
+        negativeData = DeclineQuestionQuery
+    )
 )

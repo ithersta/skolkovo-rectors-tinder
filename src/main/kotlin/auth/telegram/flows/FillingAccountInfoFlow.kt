@@ -26,6 +26,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
 import generated.onDataCallbackQuery
+import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 import qna.flows.chooseQuestionAreas
 
@@ -182,6 +183,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     Strings.AuthenticationResults.NoAreaSet
             }
             sendTextMessage(it, resultResponse)
+            sendNotificationPreferencesMessage(it)
             state.override { DialogState.Empty }
         }
     }

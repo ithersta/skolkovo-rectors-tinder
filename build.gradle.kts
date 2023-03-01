@@ -16,8 +16,8 @@ repositories {
 
 val exposedVersion = "0.41.1"
 dependencies {
-    implementation("com.ithersta.tgbotapi:boot:0.1.4")
-    implementation("com.ithersta.tgbotapi:commands:0.2.0")
+    implementation("com.ithersta.tgbotapi:boot:0.1.6")
+    implementation("com.ithersta.tgbotapi:commands:0.3.0")
     implementation("io.ktor:ktor-client-okhttp:2.2.4")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
@@ -25,9 +25,10 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     implementation("org.slf4j:slf4j-simple:2.0.6")
     implementation("com.jayway.jsonpath:json-path:2.7.0")
+    implementation("dev.inmo:krontab:0.8.5")
     compileOnly("io.insert-koin:koin-annotations:1.1.1")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
-    ksp("com.ithersta.tgbotapi:boot-ksp:0.1.10")
+    ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.3.3")
     testImplementation("io.mockk:mockk:1.13.4")
