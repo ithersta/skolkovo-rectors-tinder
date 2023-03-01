@@ -18,7 +18,7 @@ data class WaitingForCityState(
 @Serializable
 class ChangeCityState(
     val city: String
-): DialogState
+) : DialogState
 
 @Serializable
 object WaitingForProfessionState : DialogState
@@ -37,5 +37,5 @@ data class WaitingForQuestionAreasState(
 
 @Serializable
 class ChangeQuestionAreaState(
-   val questionAreas: Set<QuestionArea>
-): DialogState
+    val questionAreas: Set<QuestionArea>
+) : DialogState

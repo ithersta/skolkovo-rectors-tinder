@@ -62,11 +62,11 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
     ) {
         sendMuteRequest(it)
     }
-   button(
+    button(
         Strings.MenuButtons.ChangeAccountInfo
-    ){
-       sendFieldsToChange(it)
-   }
+    ) {
+        sendFieldsToChange(it)
+    }
     button(
         Strings.MenuButtons.Events,
         MenuState.Events
@@ -74,7 +74,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
 }
 
 private suspend fun <S : User> StatefulContext<DialogState,
-        User, *, S>.sendMuteRequest(message: CommonMessage<TextContent>) {
+    User, *, S>.sendMuteRequest(message: CommonMessage<TextContent>) {
     sendTextMessage(
         message.chat,
         Strings.MenuButtons.Notifications.Description,
@@ -89,4 +89,3 @@ private suspend fun <S : User> StatefulContext<DialogState,
         }
     )
 }
-

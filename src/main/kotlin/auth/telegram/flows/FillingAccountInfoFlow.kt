@@ -58,7 +58,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<ChooseCity> {
         selectCity(
-            onFinish = { state, city-> state.next(city) })
+            onFinish = { state, city -> state.next(city) }
+        )
     }
 
     state<WriteProfessionState> {

@@ -10,20 +10,20 @@ object WaitingForNewName : Query
 
 @Serializable
 @SerialName("co")
-object WaitingForCity: Query
+object WaitingForCity : Query
 
 @Serializable
 @SerialName("prof")
-object WaitingForProfession: Query
+object WaitingForProfession : Query
 
 @Serializable
 @SerialName("org")
-object WaitingForOrganization: Query
+object WaitingForOrganization : Query
 
 @Serializable
 @SerialName("desc")
-object WaitingForProfessionalDescription: Query
+object WaitingForProfessionalDescription : Query
 
 @Serializable
 @SerialName("ar")
-object WaitingForQuestionAreas:Query
+object WaitingForQuestionAreas : Query

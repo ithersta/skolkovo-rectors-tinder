@@ -13,7 +13,7 @@ import dev.inmo.tgbotapi.types.UserId
 import generated.onDataCallbackQuery
 
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
-    onFinish: (State, String)  -> DialogState
+    onFinish: (State, String) -> DialogState
 ) {
     onEnter {
         sendTextMessage(
@@ -45,7 +45,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     onDataCallbackQuery(SelectCityInCIS::class) { (data, query) ->
         val city: String = data.city
         if (jsonParser.cityRegex.matches(city)) {
-            state.override { onFinish(state.snapshot, city)}
+            state.override { onFinish(state.snapshot, city) }
         }
         answer(query)
     }
@@ -71,7 +71,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     onDataCallbackQuery(SelectCity::class) { (data, query) ->
         val city: String = data.city
         if (jsonParser.cityRegex.matches(city)) {
-            state.override { onFinish(state.snapshot, city)}
+            state.override { onFinish(state.snapshot, city) }
         }
         answer(query)
     }

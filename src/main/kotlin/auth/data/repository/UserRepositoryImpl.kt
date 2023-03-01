@@ -55,31 +55,31 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun changeName(id: Long, newName: String) {
-        Users.update ({ Users.id eq id }){
-            it[name]=newName
+        Users.update({ Users.id eq id }) {
+            it[name] = newName
         }
     }
 
     override fun changeCity(id: Long, newCity: String) {
-        Users.update ({ Users.id eq id }){
-            it[city]=newCity
+        Users.update({ Users.id eq id }) {
+            it[city] = newCity
         }
     }
 
     override fun changeJob(id: Long, newJob: String) {
-        Users.update ({ Users.id eq id }){
-            it[job]=newJob
+        Users.update({ Users.id eq id }) {
+            it[job] = newJob
         }
     }
 
     override fun changeOrganization(id: Long, newOrganization: String) {
-        Users.update ({ Users.id eq id }){
-            it[organization]=newOrganization
+        Users.update({ Users.id eq id }) {
+            it[organization] = newOrganization
         }
     }
 
     override fun changeAreas(id: Long, newArea: Set<QuestionArea>) {
-        UserAreas.deleteWhere { userId eq id  }
+        UserAreas.deleteWhere { userId eq id }
         UserAreas.batchInsert(newArea) {
             this[UserAreas.userId] = id
             this[UserAreas.area] = it
@@ -87,8 +87,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun changeActivityDescription(id: Long, newActivityDescription: String) {
-        Users.update ({ Users.id eq id }){
-            it[activityDescription]=newActivityDescription
+        Users.update({ Users.id eq id }) {
+            it[activityDescription] = newActivityDescription
         }
     }
 }

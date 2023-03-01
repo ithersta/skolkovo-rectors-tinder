@@ -17,13 +17,14 @@ data class WriteNameState(
 ) : DialogState {
     fun next(name: String) = ChooseCity(phoneNumber, name)
 }
+
 @Serializable
 data class ChooseCity(
     val phoneNumber: PhoneNumber,
     val name: String
-   //// val city: String ? = null
-) : DialogState{
-    fun next (city: String)= WriteProfessionState(phoneNumber, name, city)
+    // // val city: String ? = null
+) : DialogState {
+    fun next(city: String) = WriteProfessionState(phoneNumber, name, city)
 }
 
 @Serializable

@@ -1,7 +1,7 @@
 package feedback.telegram
 
-import common.telegram.strings.CommonStrings
 import common.telegram.MassSendLimiter
+import common.telegram.strings.CommonStrings
 import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard

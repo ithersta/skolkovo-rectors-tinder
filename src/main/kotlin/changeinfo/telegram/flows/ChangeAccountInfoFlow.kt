@@ -16,7 +16,6 @@ import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.usecases.GetUserDetailsUseCase
 
-
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoFlow() {
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val changeAccountInfoInteractor: ChangeAccountInfoInteractor by inject()
@@ -36,7 +35,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onDataCallbackQuery(WaitingForProfessionalDescription::class) {
             state.override { WaitingForProfessionalDescriptionState }
         }
-        onDataCallbackQuery(WaitingForQuestionAreas::class) { (_, query)->
+        onDataCallbackQuery(WaitingForQuestionAreas::class) { (_, query) ->
             state.override { WaitingForQuestionAreasState(getUserDetailsUseCase(query.from.id.chatId)!!.areas) }
         }
     }
