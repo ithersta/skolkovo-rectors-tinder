@@ -25,6 +25,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 
@@ -53,7 +54,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteNameState> {
-        onEnter { sendTextMessage(it, WriteName) }
+        onEnter { sendTextMessage(it, WriteName, replyMarkup = ReplyKeyboardRemove()) }
         onText { state.override { next(it.content.text) } }
     }
 

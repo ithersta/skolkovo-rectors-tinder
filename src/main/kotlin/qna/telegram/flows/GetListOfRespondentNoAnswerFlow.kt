@@ -29,6 +29,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getQuestionAreasByUserId: GetQuestionAreasByUserId by inject()
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
+    val addResponseUseCase: AddResponseUseCase by inject()
     state<MenuState.GetListOfRespondents> {
         onEnter {
             if (getQuestionAreasByUserId(it.chatId).isEmpty()) {
@@ -116,7 +117,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             }
         }
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            // использовать функцию
+            addResponseUseCase(state.snapshot.questionId, data.respondentId)
             answer(query)
         }
     }

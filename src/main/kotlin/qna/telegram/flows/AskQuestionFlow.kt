@@ -49,6 +49,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
     val addAcceptedResponseRepoUseCase: AddAcceptedResponseRepoUseCase by inject()
+    var listOfValidUsers: List<Long> = mutableListOf()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -133,16 +134,17 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.Question.Success
             )
             coroutineScope.launch {
+                //TODO избавиться от отправки сообщения неск раз
                 state.snapshot.areas.forEach {
-                    val listOfValidUsers: List<Long> =
+                    listOfValidUsers =
                         getUsersByAreaUseCase(
                             it,
                             userId = message.chat.id.chatId
                         )
-                    listOfValidUsers.forEach {
-                        runCatching {
-                            sendQuestionMessage(it.toChatId(), question)
-                        }
+                }
+                listOfValidUsers.forEach {
+                    runCatching {
+                        sendQuestionMessage(it.toChatId(), question)
                     }
                 }
             }
