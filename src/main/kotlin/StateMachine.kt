@@ -17,8 +17,10 @@ import event.telegram.eventFlow
 import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
-import mute.telegram.muteFlow
 import qna.telegram.flows.askQuestionFlow
+import mute.telegram.flows.muteFlow
+import notifications.telegram.flows.changeNotificationPreferenceFlow
+import notifications.telegram.flows.newQuestionsNotificationFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -45,6 +47,8 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         feedbackFlow()
         askQuestionFlow()
         changeAccountInfoFlow()
+        changeNotificationPreferenceFlow()
+        newQuestionsNotificationFlow()
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }

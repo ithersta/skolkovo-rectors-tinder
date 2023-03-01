@@ -22,7 +22,6 @@ data class WriteNameState(
 data class ChooseCity(
     val phoneNumber: PhoneNumber,
     val name: String
-    // // val city: String ? = null
 ) : DialogState {
     fun next(city: String) = WriteProfessionState(phoneNumber, name, city)
 }

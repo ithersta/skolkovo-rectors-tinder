@@ -25,6 +25,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
+import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 
 val jsonParser: JsonParser = JsonParser()
@@ -115,6 +116,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     Strings.AuthenticationResults.NoAreaSet
             }
             sendTextMessage(it, resultResponse)
+            sendNotificationPreferencesMessage(it)
             state.override { DialogState.Empty }
         }
     }

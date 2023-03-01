@@ -1,4 +1,4 @@
-package mute.telegram
+package mute.telegram.flows
 
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
@@ -13,10 +13,10 @@ import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
-import mute.Strings
 import mute.domain.usecases.ContainsByIdMuteSettingsUseCase
 import mute.domain.usecases.DeleteMuteSettingsUseCase
 import mute.domain.usecases.InsertMuteSettingsUseCase
+import mute.telegram.Strings
 import mute.telegram.queries.DurationMuteQuery
 import mute.telegram.queries.OnOffMuteQuery
 import mute.telegram.queries.YesNoMuteQuery
@@ -80,10 +80,10 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                         replyMarkup = inlineKeyboard {
                             row {
                                 if (containsByIdMuteSettingsUseCase(message.user.id.chatId)) {
-                                    dataButton(auth.telegram.Strings.MenuButtons.Notifications.On, OnOffMuteQuery(true))
+                                    dataButton(notifications.telegram.Strings.Main.TurnOn, OnOffMuteQuery(true))
                                 } else {
                                     dataButton(
-                                        auth.telegram.Strings.MenuButtons.Notifications.Off,
+                                        notifications.telegram.Strings.Main.TurnOff,
                                         OnOffMuteQuery(false)
                                     )
                                 }
