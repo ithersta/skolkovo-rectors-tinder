@@ -27,7 +27,6 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
 import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
-import qna.telegram.flows.chooseQuestionAreas
 
 val jsonParser: JsonParser = JsonParser()
 
