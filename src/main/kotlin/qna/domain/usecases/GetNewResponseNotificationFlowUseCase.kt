@@ -10,7 +10,6 @@ import kotlinx.datetime.offsetAt
 import org.koin.core.annotation.Single
 import qna.domain.entities.NewResponseNotification
 import qna.domain.repository.QuestionRepository
-import qna.domain.repository.ResponseRepository
 import kotlin.time.Duration.Companion.seconds
 
 @Single
