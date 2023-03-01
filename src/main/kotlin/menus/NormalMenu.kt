@@ -19,6 +19,10 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         MenuStrings.Questions.QuestionDescription,
         MenuState.Questions.Main
     ) {
+        button(
+            MenuStrings.Questions.Ask,
+            MenuState.Questions.AskQuestion
+        )
         submenu(
             MenuStrings.Questions.Get,
             MenuStrings.Questions.Description,
@@ -29,7 +33,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 MenuStrings.Questions.MyQuestions.Description,
                 MenuState.Questions.GetMyQuestion
             ) {
-                button( // TODO
+                button(
                     MenuStrings.Questions.MyQuestions.ActualQuestions,
                     MenuState.GetListOfRespondents
                 )
@@ -43,10 +47,6 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 DialogState.Empty
             )
         }
-        button(
-            MenuStrings.Questions.Ask,
-            MenuState.Questions.AskQuestion
-        )
     }
     button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it.chat.id) }
     button(MenuStrings.ChangeAccountInfo) { sendFieldsToChange(it) }
