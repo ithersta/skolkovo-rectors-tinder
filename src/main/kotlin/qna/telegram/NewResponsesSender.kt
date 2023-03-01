@@ -1,6 +1,6 @@
 package qna.telegram
 
-import common.telegram.confirmationInlineKeyboard
+import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.toChatId

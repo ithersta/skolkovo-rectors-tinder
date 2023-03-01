@@ -2,8 +2,7 @@ package feedback.telegram.flows
 
 import auth.domain.entities.User
 import common.telegram.functions.deleteAfterDelay
-import common.telegram.strings.CommonStrings
-import common.telegram.confirmationInlineKeyboard
+import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
