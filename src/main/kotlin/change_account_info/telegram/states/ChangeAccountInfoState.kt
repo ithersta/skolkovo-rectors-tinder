@@ -1,4 +1,4 @@
-package changeAccountInfo.telegram.states
+package change_account_info.telegram.states
 
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.types.MessageId

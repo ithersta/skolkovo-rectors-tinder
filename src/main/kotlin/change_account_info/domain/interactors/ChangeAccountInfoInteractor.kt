@@ -1,4 +1,4 @@
-package changeAccountInfo.domain.interactors
+package change_account_info.domain.interactors
 
 import auth.domain.repository.UserRepository
 import common.domain.Transaction

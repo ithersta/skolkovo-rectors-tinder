@@ -1,4 +1,4 @@
-package changeAccountInfo.telegram.queries
+package change_account_info.telegram.queries
 
 import common.telegram.Query
 import kotlinx.serialization.SerialName

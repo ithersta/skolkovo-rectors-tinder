@@ -3,11 +3,6 @@ package qna.telegram.strings
 import qna.domain.entities.QuestionIntent
 
 object ButtonStrings {
-    object Option {
-        const val Yes = "Да"
-        const val No = "Нет"
-    }
-
     object Question {
         object Intent {
             const val TestHypothesis = "Хочу проверить гипотезу (посоветоваться)"

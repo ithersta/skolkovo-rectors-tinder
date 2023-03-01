@@ -13,22 +13,19 @@ import auth.telegram.Strings.InvalidShare
 import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.parsers.JsonParser
-import auth.telegram.queries.*
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
-import dev.inmo.tgbotapi.extensions.api.answers.answer
+import common.telegram.functions.chooseQuestionAreas
+import common.telegram.functions.selectCity
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
-import generated.onDataCallbackQuery
 import org.koin.core.component.inject
-import qna.telegram.flows.chooseQuestionAreas
 
 val jsonParser: JsonParser = JsonParser()
 
@@ -61,7 +58,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<ChooseCity> {
         selectCity(
-           /// onSelection = { state, city -> state.copy(city = city) },
             onFinish = { state, city-> state.next(city) })
     }
 
@@ -120,69 +116,5 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             sendTextMessage(it, resultResponse)
             state.override { DialogState.Empty }
         }
-    }
-}
-
-fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
-    onFinish: (State, String)  -> DialogState) {
-    onEnter {
-        sendTextMessage(
-            it,
-            Strings.AccountInfo.ChooseCountry,
-            replyMarkup = jsonParser.getCountries()
-        )
-    }
-    onDataCallbackQuery(SelectCountryQuery::class) { (data, query) ->
-        when (data.country) {
-            "\uD83C\uDDF7\uD83C\uDDFA" -> {
-                sendTextMessage(
-                    query.from.id,
-                    Strings.AccountInfo.ChooseDistrict,
-                    replyMarkup = jsonParser.getDistricts()
-                )
-            }
-
-            else -> {
-                sendTextMessage(
-                    query.from.id,
-                    Strings.AccountInfo.ChooseCity,
-                    replyMarkup = jsonParser.getCitiesFromCIS(data.country)
-                )
-            }
-        }
-        answer(query)
-    }
-    onDataCallbackQuery(SelectCityInCIS::class) { (data, query) ->
-        val city: String = data.city
-        if (jsonParser.cityRegex.matches(city)) {
-            state.override { onFinish(state.snapshot, city)}
-        }
-        answer(query)
-    }
-
-    onDataCallbackQuery(SelectDistrict::class) { (data, query) ->
-        sendTextMessage(
-            query.from.id,
-            Strings.AccountInfo.ChooseRegion,
-            replyMarkup = jsonParser.getRegionsByDistrict(data.district)
-        )
-        answer(query)
-    }
-
-    onDataCallbackQuery(SelectRegion::class) { (data, query) ->
-        sendTextMessage(
-            query.from.id,
-            Strings.AccountInfo.ChooseCity,
-            replyMarkup = jsonParser.getCitiesByRegion(data.region)
-        )
-        answer(query)
-    }
-
-    onDataCallbackQuery(SelectCity::class) { (data, query) ->
-        val city: String = data.city
-        if (jsonParser.cityRegex.matches(city)) {
-            state.override { onFinish(state.snapshot, city)}
-        }
-        answer(query)
     }
 }

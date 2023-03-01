@@ -1,8 +1,8 @@
 package feedback.telegram.flows
 
 import auth.domain.entities.User
-import common.telegram.CommonStrings
-import common.telegram.deleteAfterDelay
+import common.telegram.functions.deleteAfterDelay
+import common.telegram.strings.CommonStrings
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull

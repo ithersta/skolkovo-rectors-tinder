@@ -1,25 +1,24 @@
-package changeAccountInfo.telegram.flows
+package change_account_info.telegram.flows
 
 import auth.domain.entities.User
-import auth.telegram.flows.selectCity
-import changeAccountInfo.domain.interactors.ChangeAccountInfoInteractor
-import changeAccountInfo.domain.usecases.GetUserDetailsByIdUseCase
-import changeAccountInfo.telegram.queries.*
-import changeAccountInfo.telegram.states.*
+import change_account_info.domain.interactors.ChangeAccountInfoInteractor
+import change_account_info.telegram.queries.*
+import change_account_info.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.functions.chooseQuestionAreas
+import common.telegram.functions.selectCity
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.extensions.raw.from
 import dev.inmo.tgbotapi.types.UserId
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
-import qna.telegram.flows.chooseQuestionAreas
+import qna.domain.usecases.GetUserDetailsUseCase
 
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoFlow() {
-    val getUserDetailsByIdUseCase: GetUserDetailsByIdUseCase by inject()
+    val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val changeAccountInfoInteractor: ChangeAccountInfoInteractor by inject()
     anyState {
         onDataCallbackQuery(WaitingForCity::class) {
@@ -37,9 +36,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onDataCallbackQuery(WaitingForProfessionalDescription::class) {
             state.override { WaitingForProfessionalDescriptionState }
         }
-        onDataCallbackQuery(WaitingForQuestionAreas::class) {
-                (_, query)->
-            state.override { WaitingForQuestionAreasState(getUserDetailsByIdUseCase(query.from.id.chatId)!!.areas) }
+        onDataCallbackQuery(WaitingForQuestionAreas::class) { (_, query)->
+            state.override { WaitingForQuestionAreasState(getUserDetailsUseCase(query.from.id.chatId)!!.areas) }
         }
     }
     state<WaitingForCityState> {
@@ -57,11 +55,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             sendTextMessage(
                 it,
-                changeAccountInfo.Strings.Fields.Name.Message
+                change_account_info.Strings.Fields.Name.Message
             )
         }
         onText {
-            changeAccountInfoInteractor.changeName(it.from!!.id.chatId, it.content.text)
+            changeAccountInfoInteractor.changeName(it.chat.id.chatId, it.content.text)
             state.override { DialogState.Empty }
         }
     }
@@ -69,11 +67,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             sendTextMessage(
                 it,
-                changeAccountInfo.Strings.Fields.Job.Message
+                change_account_info.Strings.Fields.Job.Message
             )
         }
         onText {
-            changeAccountInfoInteractor.changeJob(it.from!!.id.chatId, it.content.text)
+            changeAccountInfoInteractor.changeJob(it.chat.id.chatId, it.content.text)
             state.override { DialogState.Empty }
         }
     }
@@ -82,11 +80,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             sendTextMessage(
                 it,
-                changeAccountInfo.Strings.Fields.Organization.Message
+                change_account_info.Strings.Fields.Organization.Message
             )
         }
         onText {
-            changeAccountInfoInteractor.changeOrganization(it.from!!.id.chatId, it.content.text)
+            changeAccountInfoInteractor.changeOrganization(it.chat.id.chatId, it.content.text)
             state.override { DialogState.Empty }
         }
     }
@@ -95,17 +93,17 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             sendTextMessage(
                 it,
-                changeAccountInfo.Strings.Fields.Organization.Message
+                change_account_info.Strings.Fields.ActivityDescription.Message
             )
         }
         onText {
-            changeAccountInfoInteractor.changeActivityDescription(it.from!!.id.chatId, it.content.text)
+            changeAccountInfoInteractor.changeActivityDescription(it.chat.id.chatId, it.content.text)
             state.override { DialogState.Empty }
         }
     }
     state<WaitingForQuestionAreasState> {
         chooseQuestionAreas(
-            text = changeAccountInfo.Strings.Fields.Areas,
+            text = change_account_info.Strings.Fields.Areas,
             getAreas = { it.questionAreas },
             getMessageId = { it.messageId },
             onSelectionChanged = { state, questionAreas -> state.copy(questionAreas = questionAreas) },

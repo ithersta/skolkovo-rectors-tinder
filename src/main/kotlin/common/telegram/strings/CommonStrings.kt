@@ -1,4 +1,4 @@
-package common.telegram
+package common.telegram.strings
 
 object CommonStrings {
     object Button {

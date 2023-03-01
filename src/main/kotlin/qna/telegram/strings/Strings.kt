@@ -7,7 +7,8 @@ object Strings {
     object ToAnswerUser {
         fun message(subject: String, question: String) =
             buildEntities {
-                regular("Добрый день, один из участников сообщества хотел бы выйти в коммуникацию по следующему вопросу:\n\n")
+                regular("Добрый день, один из участников сообщества хотел бы " +
+                        "выйти на коммуникацию по следующему вопросу:\n\n")
                 boldln(subject)
                 regularln(question + "\n")
                 boldln("Готовы ответить?")
@@ -29,7 +30,8 @@ object Strings {
         const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
-    fun accountInfo (name: String, city: String, job: String, organisation: String, activityDescr: String):TextSourcesList{
+    fun accountInfo (name: String, city: String, job: String, organization: String,
+                     activityDescription: String):TextSourcesList{
         return buildEntities {
             bold("Имя: ")
             regularln(name)
@@ -38,18 +40,18 @@ object Strings {
             bold("Должность: ")
             regularln(job)
             bold("Организация: ")
-            regularln(organisation)
+            regularln(organization)
             bold("Деятельность: ")
-            regularln(activityDescr)
+            regularln(activityDescription)
             regularln("")
         }
     }
 
     object ToAskUser {
-        fun message(name: String, city: String, job: String, organisation: String, activityDescr: String) =
+        fun message(name: String, city: String, job: String, organization: String, activityDescription: String) =
             buildEntities {
                 regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
-                accountInfo(name,city,job,organisation,activityDescr)
+                addAll(accountInfo(name,city,job,organization,activityDescription))
                 boldln("Вы согласны пообщаться?")
             }
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +

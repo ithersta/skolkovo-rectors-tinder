@@ -1,6 +1,6 @@
 package feedback.telegram
 
-import common.telegram.CommonStrings
+import common.telegram.strings.CommonStrings
 import common.telegram.MassSendLimiter
 import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
