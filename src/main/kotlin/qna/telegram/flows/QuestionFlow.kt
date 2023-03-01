@@ -9,9 +9,9 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.PagerState
 import com.ithersta.tgbotapi.pagination.statefulPager
-import common.telegram.CommonStrings.Button.No
-import common.telegram.CommonStrings.Button.Yes
 import common.telegram.DialogState
+import common.telegram.strings.CommonStrings.Button.No
+import common.telegram.strings.CommonStrings.Button.Yes
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -28,12 +28,12 @@ import qna.domain.entities.Question
 import qna.domain.usecases.GetQuestionByIdUseCase
 import qna.domain.usecases.GetUserDetailsUseCase
 import qna.domain.usecases.SubjectsUseCase
-import qna.strings.Strings.TargetArea.ListQuestion
-import qna.strings.Strings.TargetArea.buildQuestionByQuestionText
-import qna.strings.Strings.TargetArea.haveNotQuestionInThisArea
-import qna.strings.Strings.TargetArea.listSpheres
 import qna.telegram.queries.AcceptQuestionQuery
 import qna.telegram.queries.DeclineQuestionQuery
+import qna.telegram.strings.Strings.TargetArea.ListQuestion
+import qna.telegram.strings.Strings.TargetArea.buildQuestionByQuestionText
+import qna.telegram.strings.Strings.TargetArea.haveNotQuestionInThisArea
+import qna.telegram.strings.Strings.TargetArea.listSpheres
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     val subjectsByChatId: SubjectsUseCase by inject()
@@ -109,7 +109,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
 
 suspend fun TelegramBot.sendQMessage(chatId: ChatId, question: Question) = sendTextMessage(
     chatId,
-    qna.strings.Strings.ToAnswerUser.message(question.subject, question.text),
+    qna.telegram.strings.Strings.ToAnswerUser.message(question.subject, question.text),
     replyMarkup = inlineKeyboard {
         row {
             checkNotNull(question.id)

@@ -2,9 +2,11 @@ package qna.data.repository
 
 import auth.data.tables.UserAreas
 import mute.data.tables.MuteSettings
-import org.jetbrains.exposed.sql.except
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import notifications.data.tables.NotificationPreferences
+import notifications.domain.entities.NotificationPreference
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
