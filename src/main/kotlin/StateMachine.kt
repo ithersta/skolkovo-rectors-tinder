@@ -16,7 +16,7 @@ import event.telegram.eventFlow
 import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.muteFlow
-import oldQuestion.telegram.oldQuestionFlow
+import oldquestion.telegram.oldQuestionFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(

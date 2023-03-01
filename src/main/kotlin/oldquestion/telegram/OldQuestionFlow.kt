@@ -1,6 +1,7 @@
-package oldQuestion.telegram
+package oldquestion.telegram
 
 import auth.domain.entities.User
+import auth.telegram.Strings.OldQuestion.haveNotOldQuestion
 import auth.telegram.Strings.OldQuestion.listClosedQuestions
 import auth.telegram.Strings.OldQuestion.listOfDefendants
 import auth.telegram.queries.SelectRespondent
@@ -18,8 +19,8 @@ import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
-import oldQuestion.domain.usecase.NameAndPhoneUseCase
-import oldQuestion.domain.usecase.SubjectsUseCase
+import oldquestion.domain.usecase.NameAndPhoneUseCase
+import oldquestion.domain.usecase.SubjectsUseCase
 import org.koin.core.component.inject
 
 fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
@@ -27,10 +28,9 @@ fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
     val nameAndPhoneUseCase: NameAndPhoneUseCase by inject()
     role<User.Normal> {
         state<MenuState.OldQuestion> {
-            //  todo: пагинация.
+            val subjects = subjectsUseCase.invoke(567538391).toList() // replace  digit to chatId.
             val subjectsPager =
                 statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-                    val subjects = subjectsUseCase.invoke(567538391).toList()
                     val paginatedNumbers = subjects.drop(offset).take(limit)
                     inlineKeyboard {
                         paginatedNumbers.forEach { item ->
@@ -42,7 +42,12 @@ fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
                     }
                 }
             onEnter { chatId ->
-                with(subjectsPager) { sendOrEditMessage(chatId, listClosedQuestions, state.snapshot.pagerState) }
+                if (subjects.isNotEmpty()) {
+                    with(subjectsPager) { sendOrEditMessage(chatId, listClosedQuestions, state.snapshot.pagerState) }
+                } else {
+                    sendTextMessage(chatId, haveNotOldQuestion)
+                    state.override { DialogState.Empty }
+                }
             }
             onDataCallbackQuery(SelectSubject::class) { (data, query) ->
                 sendTextMessage(query.user.id, text = listOfDefendants, replyMarkup = inlineKeyboard {
@@ -66,3 +71,4 @@ fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
         }
     }
 }
+

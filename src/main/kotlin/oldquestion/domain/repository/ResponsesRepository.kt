@@ -1,4 +1,4 @@
-package oldQuestion.domain.repository
+package oldquestion.domain.repository
 
 interface ResponsesRepository {
     // name, phone

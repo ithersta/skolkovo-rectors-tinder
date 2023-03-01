@@ -1,7 +1,7 @@
-package oldQuestion.domain.usecase
+package oldquestion.domain.usecase
 
 import common.domain.Transaction
-import oldQuestion.domain.repository.ResponsesRepository
+import oldquestion.domain.repository.ResponsesRepository
 import org.koin.core.annotation.Single
 
 @Single
@@ -13,3 +13,4 @@ class NameAndPhoneUseCase(
         return@transaction responsesRepository.getRespondentIdByQuestion(questionId)
     }
 }
+

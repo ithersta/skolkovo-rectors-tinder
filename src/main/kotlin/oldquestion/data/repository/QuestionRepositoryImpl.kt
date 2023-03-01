@@ -1,6 +1,6 @@
-package oldQuestion.data.repository
+package oldquestion.data.repository
 
-import oldQuestion.domain.repository.QuestionRepository
+import oldquestion.domain.repository.QuestionRepository
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
@@ -15,3 +15,4 @@ class QuestionRepositoryImpl : QuestionRepository {
             .associate { it[Questions.id].value to it[Questions.subject] }
     }
 }
+

@@ -117,7 +117,9 @@ object Strings {
     }
 
     object OldQuestion {
-        val listClosedQuestions = "Список всех ваших закрытых вопросов"
-        val listOfDefendants = "Список всех кто отвечал на данный вопрос"
+        const val listClosedQuestions = "Нажмите на один из них, чтобы посмотреть всех, кто отвечал на данный вопрос."
+        const val haveNotOldQuestion = "У вас нет вопросов на которые вы бы получили ответ."
+        const val listOfDefendants = "Список всех кто отвечал на данный вопрос. Нажмите на одного из них, что бы " +
+                "посмотреть контакт."
     }
 }
