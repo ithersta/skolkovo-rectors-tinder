@@ -4,6 +4,7 @@ import NoOpTransaction
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.datetime.Clock
 import org.junit.jupiter.api.Test
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
@@ -21,7 +22,8 @@ internal class CloseQuestionUseCaseTest {
         subject = "Тема",
         text = "Текст",
         isClosed = false,
-        areas = setOf(QuestionArea.Education, QuestionArea.Finance)
+        areas = setOf(QuestionArea.Education, QuestionArea.Finance),
+        at = Clock.System.now()
     )
 
     @Test

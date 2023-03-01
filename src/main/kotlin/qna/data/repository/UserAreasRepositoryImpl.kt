@@ -2,9 +2,9 @@ package qna.data.repository
 
 import auth.data.tables.UserAreas
 import mute.data.tables.MuteSettings
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
+import org.jetbrains.exposed.sql.except
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
@@ -14,8 +14,17 @@ import qna.domain.repository.UserAreasRepository
 @Single
 class UserAreasRepositoryImpl : UserAreasRepository {
     override fun getUsersByArea(questionArea: QuestionArea): List<Long> {
-        val muteUsers = MuteSettings.slice(MuteSettings.userId).selectAll()
-        return UserAreas.slice(UserAreas.userId).select { UserAreas.area eq questionArea }.except(muteUsers)
+        val muteUsers = MuteSettings
+            .slice(MuteSettings.userId)
+            .selectAll()
+        val nonRightAwayUsers = NotificationPreferences
+            .slice(NotificationPreferences.userId)
+            .select { NotificationPreferences.preference neq NotificationPreference.RightAway }
+        return UserAreas
+            .slice(UserAreas.userId)
+            .select { UserAreas.area eq questionArea }
+            .except(muteUsers)
+            .except(nonRightAwayUsers)
             .map { it[UserAreas.userId].value }
     }
 

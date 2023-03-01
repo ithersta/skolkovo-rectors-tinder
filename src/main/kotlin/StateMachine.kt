@@ -2,6 +2,7 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
 import auth.telegram.states.WaitingForContact
+import changeinfo.telegram.flows.changeAccountInfoFlow
 import com.ithersta.tgbotapi.boot.annotations.StateMachine
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
@@ -15,6 +16,10 @@ import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
 import menus.adminMenu
 import menus.normalMenu
+import mute.telegram.flows.muteFlow
+import notifications.telegram.flows.changeNotificationPreferenceFlow
+import notifications.telegram.flows.newQuestionsNotificationFlow
+import qna.telegram.flows.askQuestionFlow
 import mute.telegram.muteFlow
 import qna.flows.askQuestionFlow
 import qna.flows.feedbackFlow
@@ -35,6 +40,9 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         with(normalMenu) { invoke() }
         feedbackFlow()
         askQuestionFlow()
+        changeAccountInfoFlow()
+        changeNotificationPreferenceFlow()
+        newQuestionsNotificationFlow()
     }
     role<User.Admin> { with(adminMenu) { invoke() } }
     muteFlow()
