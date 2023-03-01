@@ -25,7 +25,7 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     implementation("org.slf4j:slf4j-simple:2.0.6")
     implementation("com.jayway.jsonpath:json-path:2.7.0")
-    implementation("dev.inmo:krontab:0.8.5")
+    implementation("dev.inmo:krontab:0.9.0")
     compileOnly("io.insert-koin:koin-annotations:1.1.1")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
