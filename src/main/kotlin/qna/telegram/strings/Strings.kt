@@ -2,6 +2,7 @@ package qna.telegram.strings
 
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.*
+import qna.domain.entities.Question
 
 object Strings {
     object ToAnswerUser {
@@ -73,5 +74,10 @@ object Strings {
         const val InvalidQuestionIntent = "Пожалуйста, выберите цель вопроса из кнопочного меню"
         const val CompletedQuestion = "Отлично, вопрос сформирован!"
         const val Success = "Вопрос успешно отправлен в сообщество"
+    }
+
+    object NewResponses {
+        fun forQuestion(question: qna.domain.entities.Question) =
+            "Участники, согласившиеся ответить вам на вопрос «${question.subject}»"
     }
 }

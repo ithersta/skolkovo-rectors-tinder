@@ -16,7 +16,6 @@ import kotlin.time.Duration.Companion.seconds
 @Single
 class GetNewResponseNotificationFlowUseCase(
     private val addResponseUseCase: AddResponseUseCase,
-    private val responseRepository: ResponseRepository,
     private val questionRepository: QuestionRepository,
     private val transaction: Transaction,
     private val timeZone: TimeZone,
@@ -34,30 +33,20 @@ class GetNewResponseNotificationFlowUseCase(
                 transaction {
                     val question = questionRepository.getById(it.response.questionId)!!
                     NewResponseNotification(
-                        questionAuthorId = question.authorId,
-                        responseRange = responseRepository.getUnsentRange(it.response.questionId)!!
+                        questionAuthorId = question.authorId
                     )
                 }
             }
             .catch { }
-        val periodicResponsesFlow = flow {
+        val periodicResponsesFlow = flow<NewResponseNotification> {
             buildSchedule(offset) {
                 hours { at(config.dailyHour) }
                 minutes { at(0) }
                 seconds { at(0) }
             }.doInfinity {
-                transaction {
-                    responseRepository.getUnsentRanges().map { it to questionRepository.getById(it.questionId) }
-                }.forEach { (responseRange, question) ->
-                    emit(NewResponseNotification(question?.authorId ?: return@forEach, responseRange))
-                }
+                TODO()
             }
         }
-        return flow {
-            merge(firstResponsesFlow, periodicResponsesFlow).collect {
-                emit(it)
-                transaction { responseRepository.markAsSent(it.responseRange) }
-            }
-        }
+        return merge(firstResponsesFlow, periodicResponsesFlow)
     }
 }
