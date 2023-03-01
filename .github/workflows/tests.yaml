@@ -22,6 +22,6 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@9c75b4d3d1e1ab9cf779938de55702cde22cd29f
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@530c579a03650670b91bbdc16d4e6a785c7443c5
+        uses: gradle/gradle-build-action@c0e9e4809f4d83d87cbb73a25bd4b47adca33c9f
         with:
           arguments: test
