@@ -31,10 +31,11 @@ fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
         val subjectsPager = pager(id = "subjects") {
             val subjects = subjectsUseCase.invoke(context!!.user.id).toList()
             val paginatedNumbers = subjects.drop(offset).take(limit)
+            print(paginatedNumbers)
             inlineKeyboard {
                 paginatedNumbers.forEach { item ->
                     row {
-                        dataButton(item.second, SelectSubject(item.first))
+                        dataButton(item.subject, SelectSubject(item.id!!))
                     }
                 }
                 navigationRow(itemCount = subjects.size)

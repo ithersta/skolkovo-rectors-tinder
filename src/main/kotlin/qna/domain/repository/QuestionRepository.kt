@@ -16,6 +16,5 @@ interface QuestionRepository {
         offset: Int
     ): Paginated<Question>
 
-    fun getSubjectsByUserIdAndIsClosed(userId: Long): Map<Long, String>
-
+    fun getSubjectsByUserIdAndIsClosed(userId: Long): List<Question>
 }
