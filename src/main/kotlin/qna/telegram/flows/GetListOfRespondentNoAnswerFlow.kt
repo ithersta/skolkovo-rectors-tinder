@@ -3,9 +3,12 @@ package qna.telegram.flows
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
+import com.ithersta.tgbotapi.pagination.pager
 import com.ithersta.tgbotapi.pagination.statefulPager
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
+import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
@@ -23,6 +26,7 @@ import qna.telegram.states.GetListOfRespondent
 import qna.telegram.states.GetListOfSubjects
 import qna.telegram.strings.Strings
 
+lateinit var subPager: InlineKeyboardPager<SelectUserArea>
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
     val getSubjectsByAreaUseCase: GetSubjectsByAreaUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
@@ -44,7 +48,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                             row {
                                 dataButton(
                                     auth.telegram.Strings.questionAreaToString.getValue(area),
-                                    SelectUserArea(area)
+                                    SelectUserArea(it.chatId, area)
                                 )
                             }
                         }
@@ -57,28 +61,45 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             answer(query)
         }
     }
-    state<GetListOfSubjects> {
-        val subjectsPager =
-            statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-                val subjects = getSubjectsByAreaUseCase(state.snapshot.userId, state.snapshot.area)
-                val paginatedSubjects = subjects.drop(offset).take(limit)
-                inlineKeyboard {
-                    paginatedSubjects.forEach { item ->
-                        row {
-                            dataButton(item.subject, SelectSubject(item.id!!))
-                        }
-                    }
-                    navigationRow(itemCount = subjects.size)
+    subPager = pager(id = "sub", dataKClass = SelectUserArea::class) {
+        val sub = getSubjectsByAreaUseCase(data.userId, data.area)
+        val pagSub = sub.drop(offset).take(limit)
+        inlineKeyboard {
+            pagSub.forEach { item ->
+                row {
+                    dataButton(item.toString(), SelectSubject(item.id!!))
                 }
             }
+            navigationRow(itemCount = sub.size)
+        }
+    }
+    state<GetListOfSubjects> {
+//        val subjectsPager =
+//            statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
+//                val subjects = getSubjectsByAreaUseCase(state.snapshot.userId, state.snapshot.area)
+//                val paginatedSubjects = subjects.drop(offset).take(limit)
+//                inlineKeyboard {
+//                    paginatedSubjects.forEach { item ->
+//                        row {
+//                            dataButton(item.subject, SelectSubject(item.id!!))
+//                        }
+//                    }
+//                    navigationRow(itemCount = subjects.size)
+//                }
+//            }
         onEnter {
-            with(subjectsPager) {
-                sendOrEditMessage(
-                    it.chatId.toChatId(),
-                    Strings.RespondentsNoAnswer.ListOfSubjects,
-                    state.snapshot.pagerState
-                )
-            }
+//            with(subjectsPager) {
+//                sendOrEditMessage(
+//                    it.chatId.toChatId(),
+//                    Strings.RespondentsNoAnswer.ListOfSubjects,
+//                    state.snapshot.pagerState
+//                )
+//            }
+            send(
+                it.chatId.toChatId(),
+                Strings.RespondentsNoAnswer.ListOfSubjects,
+                replyMarkup = subPager.page()
+            )
         }
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
             state.override { GetListOfRespondent(query.user.id.chatId, data.questionId) }

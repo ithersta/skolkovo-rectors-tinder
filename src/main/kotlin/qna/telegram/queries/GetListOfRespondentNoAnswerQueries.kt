@@ -7,7 +7,7 @@ import qna.domain.entities.QuestionArea
 
 @Serializable
 @SerialName("su")
-class SelectUserArea(val area: QuestionArea) : Query
+class SelectUserArea(val userId: Long, val area: QuestionArea) : Query
 
 @Serializable
 @SerialName("ss")
