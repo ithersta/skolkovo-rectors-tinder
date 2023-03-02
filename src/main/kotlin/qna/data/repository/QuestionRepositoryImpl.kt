@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.*
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
+import qna.data.tables.Responses
 import qna.domain.entities.Question
 import qna.domain.repository.QuestionRepository
 
@@ -32,6 +33,15 @@ class QuestionRepositoryImpl : QuestionRepository {
         return Questions.select { Questions.id eq questionId }.map(::mapper).first()
     }
 
+    override fun getWithUnsentResponses(): List<Question> {
+        return Questions
+            .innerJoin(Responses)
+            .slice(Questions.columns)
+            .select { Responses.hasBeenSent eq false }
+            .withDistinct()
+            .map(::mapper)
+    }
+
     override fun getQuestionsDigestPaginated(
         from: Instant,
         until: Instant,
@@ -48,8 +58,8 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                        (Questions.authorId neq userId) and
-                        (Questions.isClosed eq false)
+                            (Questions.authorId neq userId) and
+                            (Questions.isClosed eq false)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
