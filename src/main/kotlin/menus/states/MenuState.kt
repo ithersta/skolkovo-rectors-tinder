@@ -30,7 +30,6 @@ object MenuState {
     @Serializable
     object CurrentIssues : DialogState
 
-
     @Serializable
     data class AnswerUser(
         val subject: String,
