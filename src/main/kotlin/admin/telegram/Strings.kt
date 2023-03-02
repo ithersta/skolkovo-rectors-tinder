@@ -6,12 +6,12 @@ object Strings {
     const val WaitDocument = "Заполните шаблон и прикрепите ответным сообщением"
     const val TemplateFileName = "Шаблон"
     const val InvalidFile = "Файл повреждён или не является .xlsx таблицей"
-    const val AddingUsers = "все пользователи добавлены"
+    const val AddingUsers = "Все пользователи успешно добавлены"
     fun blockedUsers(blocked: List<PhoneNumber>) = "Вы пытались добавить заблокированных пользователей: " +
         blocked.joinToString(separator = ", ") { it.value }
 
     fun badFormat(errors: List<Int>) =
-        "неправильный формат в ${errors.size} ${pluralize(errors.size, "строчке", "строчках", "строчках")}: " +
+        "Неправильный формат в ${errors.size} ${pluralize(errors.size, "строчке", "строчках", "строчках")}: " +
             errors.joinToString(separator = ", ") { it.toString() }
 
     @Suppress("MagicNumber")
