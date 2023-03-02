@@ -44,7 +44,7 @@ class GetNewResponseNotificationFlowUseCase(
             hours { at(config.dailyHour) }
             minutes { at(0) }
             seconds { at(0) }
-        }.doInfinity {
+        }.doInfinity { _ ->
             val questions = transaction { questionRepository.getWithUnsentResponses() }
             questions.forEach { emit(NewResponseNotification.Daily(it)) }
         }
