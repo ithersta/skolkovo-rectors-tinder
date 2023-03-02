@@ -7,4 +7,6 @@ interface ResponseRepository {
     fun get(responseId: Long): Response?
     fun has(respondentId: Long, questionId: Long): Boolean
     fun count(questionId: Long): Int
+    fun getAnyUnsent(questionId: Long): Response?
+    fun markAsSent(responseId: Long)
 }

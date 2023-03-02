@@ -37,7 +37,7 @@ class QuestionRepositoryImpl : QuestionRepository {
         return Questions
             .innerJoin(Responses)
             .slice(Questions.columns)
-            .select { Responses.hasBeenSent eq false }
+            .select { (Responses.hasBeenSent eq false) and (Questions.isClosed eq false) }
             .withDistinct()
             .map(::mapper)
     }
@@ -58,8 +58,8 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                        (Questions.authorId neq userId) and
-                        (Questions.isClosed eq false)
+                            (Questions.authorId neq userId) and
+                            (Questions.isClosed eq false)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
@@ -73,6 +73,12 @@ class QuestionRepositoryImpl : QuestionRepository {
 
     override fun close(questionId: Long) {
         Questions.update(where = { Questions.id eq questionId }) {
+            it[Questions.isClosed] = true
+        }
+    }
+
+    override fun closeOlderThan(instant: Instant) {
+        Questions.update(where = { (Questions.isClosed eq false) and (Questions.at less instant) }) {
             it[Questions.isClosed] = true
         }
     }

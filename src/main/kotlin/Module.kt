@@ -19,6 +19,7 @@ import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
+import qna.domain.usecases.AutoCloseOldQuestionsUseCase
 import qna.domain.usecases.GetNewResponseNotificationFlowUseCase
 
 val dataModule = module(createdAtStart = true) {
@@ -48,6 +49,7 @@ val module = module(createdAtStart = true) {
     single { TimeZone.of("Europe/Moscow") }
     single { GetNewQuestionsNotificationFlowUseCase.Config() }
     single { GetNewResponseNotificationFlowUseCase.Config() }
+    single { AutoCloseOldQuestionsUseCase.Config() }
     single { _ ->
         stateMachine.regularEngine(
             getUser = { get<GetUserRoleUseCase>()(it.chatId) },

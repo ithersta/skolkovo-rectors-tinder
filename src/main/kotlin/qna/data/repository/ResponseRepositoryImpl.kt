@@ -1,9 +1,6 @@
 package qna.data.repository
 
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.koin.core.annotation.Single
 import qna.data.tables.Responses
 import qna.domain.entities.Response
@@ -25,6 +22,21 @@ class ResponseRepositoryImpl : ResponseRepository {
         return Responses
             .select { Responses.questionId eq questionId }
             .count().toInt()
+    }
+
+    override fun getAnyUnsent(questionId: Long): Response? {
+        return Responses
+            .select { (Responses.hasBeenSent eq false) and (Responses.questionId eq questionId) }
+            .orderBy(Responses.id)
+            .limit(1)
+            .firstOrNull()
+            ?.let(::mapper)
+    }
+
+    override fun markAsSent(responseId: Long) {
+        Responses.update(where = { Responses.id eq responseId }) {
+            it[Responses.hasBeenSent] = true
+        }
     }
 
     override fun add(questionId: Long, respondentId: Long): Long {
