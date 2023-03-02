@@ -15,4 +15,3 @@ class QuestionRepositoryImpl : QuestionRepository {
             .associate { it[Questions.id].value to it[Questions.subject] }
     }
 }
-

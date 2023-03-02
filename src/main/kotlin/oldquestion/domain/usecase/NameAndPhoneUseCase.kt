@@ -13,4 +13,3 @@ class NameAndPhoneUseCase(
         return@transaction responsesRepository.getRespondentIdByQuestion(questionId)
     }
 }
-
