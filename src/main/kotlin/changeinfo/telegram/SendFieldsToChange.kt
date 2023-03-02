@@ -21,7 +21,7 @@ suspend fun <S : User> StatefulContext<DialogState,
     val user = getUserDetailsByIdUseCase(message.chat.id.chatId)!!
     sendTextMessage(
         message.chat,
-        accountInfo(user.name, user.city, user.job, user.organization, user.activityDescription),
+        accountInfo(user),
         replyMarkup = ReplyKeyboardRemove()
     )
     sendTextMessage(

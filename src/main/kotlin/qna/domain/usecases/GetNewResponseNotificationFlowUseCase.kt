@@ -25,7 +25,7 @@ class GetNewResponseNotificationFlowUseCase(
     private val clock: Clock,
     private val config: Config
 ) {
-    class Config(val firstResponsesThreshold: Int = 3, val dailyHour: Int = 19)
+    class Config(val firstResponsesThreshold: Int = 3, val dailyHour: Int = 15)
 
     operator fun invoke() = merge(createOnThresholdFlow(), createDailyFlow())
 
