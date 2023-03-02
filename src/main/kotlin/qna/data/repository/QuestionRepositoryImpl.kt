@@ -84,3 +84,12 @@ class QuestionRepositoryImpl : QuestionRepository {
         )
     }
 }
+
+@Single
+class QuestionRepositoryImpl : oldquestion.domain.repository.QuestionRepository {
+    override fun getSubjectsByUserIdAndIsClosed(userId: Long): Map<Long, String> {
+        return Questions
+            .select(Questions.isClosed eq true and (Questions.authorId eq userId))
+            .associate { it[Questions.id].value to it[Questions.subject] }
+    }
+}

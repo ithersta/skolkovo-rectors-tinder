@@ -1,4 +1,4 @@
-package oldquestion.domain.repository
+package qna.domain.repository
 
 interface ResponsesRepository {
     // name, phone

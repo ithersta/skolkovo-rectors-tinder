@@ -1,7 +1,7 @@
-package oldquestion.data.repository
+package qna.data.repository
 
 import auth.data.tables.Users
-import oldquestion.domain.repository.ResponsesRepository
+import qna.domain.repository.ResponsesRepository
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.select
 import org.koin.core.annotation.Single

@@ -5,6 +5,7 @@ import kotlinx.datetime.Instant
 import qna.domain.entities.Question
 
 interface QuestionRepository {
+    fun getSubjectsByUserIdAndIsClosed(userId: Long): Map<Long, String>
     fun close(questionId: Long)
     fun add(question: Question): Long
     fun getById(questionId: Long): Question?

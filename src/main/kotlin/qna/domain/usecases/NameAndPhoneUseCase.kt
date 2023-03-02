@@ -1,7 +1,7 @@
-package oldquestion.domain.usecase
+package qna.domain.usecases
 
 import common.domain.Transaction
-import oldquestion.domain.repository.ResponsesRepository
+import qna.domain.repository.ResponsesRepository
 import org.koin.core.annotation.Single
 
 @Single

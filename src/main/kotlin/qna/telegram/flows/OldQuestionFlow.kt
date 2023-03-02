@@ -1,4 +1,4 @@
-package oldquestion.telegram
+package qna.telegram.flows
 
 import auth.domain.entities.User
 import auth.telegram.Strings.OldQuestion.haveNotOldQuestion
@@ -20,8 +20,8 @@ import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
-import oldquestion.domain.usecase.NameAndPhoneUseCase
-import oldquestion.domain.usecase.SubjectsUseCase
+import qna.domain.usecases.NameAndPhoneUseCase
+import qna.domain.usecases.SubjectsUseCase
 import org.koin.core.component.inject
 
 fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
