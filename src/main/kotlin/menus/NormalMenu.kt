@@ -56,19 +56,3 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         MenuState.Events
     )
 }
-
-private suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendMuteRequest(message: CommonMessage<TextContent>) {
-    sendTextMessage(
-        message.chat,
-        Strings.MenuButtons.Notifications.Description,
-        replyMarkup = inlineKeyboard {
-            row {
-                if (containsByIdMuteSettingsUseCase(message.chat.id.chatId)) {
-                    dataButton(Strings.MenuButtons.Notifications.On, OnOffMuteQuery(true))
-                } else {
-                    dataButton(Strings.MenuButtons.Notifications.Off, OnOffMuteQuery(false))
-                }
-            }
-        }
-    )
-}

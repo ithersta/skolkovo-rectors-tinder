@@ -8,7 +8,8 @@ import auth.telegram.queries.SelectRespondent
 import auth.telegram.queries.SelectSubject
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
-import com.ithersta.tgbotapi.pagination.statefulPager
+import com.ithersta.tgbotapi.pagination.pager
+import com.ithersta.tgbotapi.pagination.replyMarkup
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
@@ -27,23 +28,23 @@ fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
     val subjectsUseCase: SubjectsUseCase by inject()
     val nameAndPhoneUseCase: NameAndPhoneUseCase by inject()
     role<User.Normal> {
-        state<MenuState.OldQuestion> {
-            val subjects = subjectsUseCase.invoke(567538391).toList() // replace  digit to chatId.
-            val subjectsPager =
-                statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-                    val paginatedNumbers = subjects.drop(offset).take(limit)
-                    inlineKeyboard {
-                        paginatedNumbers.forEach { item ->
-                            row {
-                                dataButton(item.second, SelectSubject(item.first))
-                            }
-                        }
-                        navigationRow(itemCount = subjects.size)
+        val subjectsPager = pager(id = "subjects") {
+            val subjects = subjectsUseCase.invoke(context!!.user.id).toList()
+            val paginatedNumbers = subjects.drop(offset).take(limit)
+            inlineKeyboard {
+                paginatedNumbers.forEach { item ->
+                    row {
+                        dataButton(item.second, SelectSubject(item.first))
                     }
                 }
+                navigationRow(itemCount = subjects.size)
+            }
+        }
+        state<MenuState.OldQuestion> {
             onEnter { chatId ->
-                if (subjects.isNotEmpty()) {
-                    with(subjectsPager) { sendOrEditMessage(chatId, listClosedQuestions, state.snapshot.pagerState) }
+                val replyMarkup = subjectsPager.replyMarkup(Unit, context = null)
+                if (replyMarkup.keyboard.isNotEmpty()) {
+                    sendTextMessage(chatId, listClosedQuestions, replyMarkup = replyMarkup)
                 } else {
                     sendTextMessage(chatId, haveNotOldQuestion)
                     state.override { DialogState.Empty }
