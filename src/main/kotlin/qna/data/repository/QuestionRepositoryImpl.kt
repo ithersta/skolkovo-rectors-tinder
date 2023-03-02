@@ -4,6 +4,7 @@ import auth.data.tables.UserAreas
 import common.domain.Paginated
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
@@ -83,10 +84,6 @@ class QuestionRepositoryImpl : QuestionRepository {
             id = row[Questions.id].value
         )
     }
-}
-
-@Single
-class QuestionRepositoryImpl : oldquestion.domain.repository.QuestionRepository {
     override fun getSubjectsByUserIdAndIsClosed(userId: Long): Map<Long, String> {
         return Questions
             .select(Questions.isClosed eq true and (Questions.authorId eq userId))

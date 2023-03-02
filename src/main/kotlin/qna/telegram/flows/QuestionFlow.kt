@@ -27,7 +27,7 @@ import org.koin.core.component.inject
 import qna.domain.entities.Question
 import qna.domain.usecases.GetQuestionByIdUseCase
 import qna.domain.usecases.GetUserDetailsUseCase
-import qna.domain.usecases.SubjectsUseCase
+import qna.domain.usecases.SubjectsByUserIdAndUserAreaUseCase
 import qna.telegram.queries.AcceptQuestionQuery
 import qna.telegram.queries.DeclineQuestionQuery
 import qna.telegram.strings.Strings.TargetArea.ListQuestion
@@ -36,7 +36,7 @@ import qna.telegram.strings.Strings.TargetArea.haveNotQuestionInThisArea
 import qna.telegram.strings.Strings.TargetArea.listSpheres
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
-    val subjectsByChatId: SubjectsUseCase by inject()
+    val subjectsByChatId: SubjectsByUserIdAndUserAreaUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val answerForUser: List<String> = listOf(Yes, No)
