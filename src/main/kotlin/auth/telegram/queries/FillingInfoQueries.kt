@@ -38,6 +38,14 @@ class SelectRegion(val region: String) : Query
 class SelectCity(val city: String) : Query
 
 @Serializable
+@SerialName("subject")
+class SelectSubject(val questionId: Long) : Query
+
+@Serializable
+@SerialName("pN")
+class SelectRespondent(val name: String, val phoneNumber: String) : Query
+
+@Serializable
 @SerialName("sa")
 class SelectArea(val area: QuestionArea) : Query
 

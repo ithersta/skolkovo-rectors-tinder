@@ -15,7 +15,7 @@ class NewQuestionsNotificationSender(
     fun BehaviourContext.setup() = launch {
         getNewQuestionsNotificationFlow().collect { notification ->
             runCatching {
-                val replyMarkup = newQuestionsPager.replyMarkup(notification)
+                val replyMarkup = newQuestionsPager.replyMarkup(notification, context = null)
                 if (replyMarkup.keyboard.isNotEmpty()) {
                     sendTextMessage(
                         notification.userId.toChatId(),

@@ -37,4 +37,7 @@ object MenuState {
         val areas: Set<QuestionArea>,
         val intent: QuestionIntent
     ) : DialogState
+
+    @Serializable
+    data class OldQuestion(val pagerState: PagerState) : DialogState
 }

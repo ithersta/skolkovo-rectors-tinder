@@ -19,8 +19,8 @@ import menus.normalMenu
 import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
 import notifications.telegram.flows.newQuestionsNotificationFlow
+import oldquestion.telegram.oldQuestionFlow
 import qna.telegram.flows.askQuestionFlow
-import qna.telegram.flows.feedbackFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -31,8 +31,16 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
 
     role<User.Unauthenticated> {
         fillingAccountInfoFlow()
-        anyState { onCommand("start", null) { state.override { WaitingForContact } } }
-        state<DialogState.Empty> { onEnter { sendTextMessage(it, Strings.RoleMenu.Unauthenticated) } }
+        anyState {
+            onCommand("start", null) {
+                state.override { WaitingForContact }
+            }
+        }
+        state<DialogState.Empty> {
+            onEnter {
+                sendTextMessage(it, Strings.RoleMenu.Unauthenticated)
+            }
+        }
     }
     role<User.Normal> {
         with(normalMenu) { invoke() }
