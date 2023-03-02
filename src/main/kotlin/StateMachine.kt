@@ -20,8 +20,8 @@ import menus.normalMenu
 import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
 import notifications.telegram.flows.newQuestionsNotificationFlow
-import oldquestion.telegram.oldQuestionFlow
 import qna.telegram.flows.askQuestionFlow
+import qna.telegram.flows.oldQuestionFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(

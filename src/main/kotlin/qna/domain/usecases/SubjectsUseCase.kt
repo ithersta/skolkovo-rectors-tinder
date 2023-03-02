@@ -1,8 +1,8 @@
-package oldquestion.domain.usecase
+package qna.domain.usecases
 
 import common.domain.Transaction
-import oldquestion.domain.repository.QuestionRepository
 import org.koin.core.annotation.Single
+import qna.domain.repository.QuestionRepository
 
 @Single
 class SubjectsUseCase(

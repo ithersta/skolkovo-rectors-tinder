@@ -1,4 +1,4 @@
-package oldquestion.telegram
+package qna.telegram.flows
 
 import auth.domain.entities.User
 import auth.telegram.Strings.OldQuestion.haveNotOldQuestion
@@ -10,7 +10,6 @@ import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
-import com.ithersta.tgbotapi.pagination.replyMarkup
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
@@ -21,9 +20,9 @@ import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
-import oldquestion.domain.usecase.NameAndPhoneUseCase
-import oldquestion.domain.usecase.SubjectsUseCase
 import org.koin.core.component.inject
+import qna.domain.usecases.NameAndPhoneUseCase
+import qna.domain.usecases.SubjectsUseCase
 
 fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
     val subjectsUseCase: SubjectsUseCase by inject()
