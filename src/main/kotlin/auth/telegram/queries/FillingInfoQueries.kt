@@ -44,4 +44,3 @@ class SelectSubject(val questionId: Long) : Query
 @Serializable
 @SerialName("pN")
 class SelectRespondent(val name: String, val phoneNumber: String) : Query
-
