@@ -5,10 +5,10 @@ import auth.telegram.Strings
 import auth.telegram.queries.AnswerUser
 import auth.telegram.queries.SelectArea
 import auth.telegram.queries.SelectSubject
+import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
-import com.ithersta.tgbotapi.pagination.PagerState
-import com.ithersta.tgbotapi.pagination.statefulPager
+import com.ithersta.tgbotapi.pagination.pager
 import common.telegram.DialogState
 import common.telegram.strings.CommonStrings.Button.No
 import common.telegram.strings.CommonStrings.Button.Yes
@@ -40,6 +40,19 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val answerForUser: List<String> = listOf(Yes, No)
+    val subjectsPager =
+        pager(id = "subjects", dataKClass = SelectArea::class) {
+            val subjects = subjectsByChatId.invoke(context!!.user.id, data.area).toList()
+            val paginatedNumbers = subjects.drop(offset).take(limit)
+            inlineKeyboard {
+                paginatedNumbers.forEach { item ->
+                    row {
+                        dataButton(item.second, SelectSubject(item.first))
+                    }
+                }
+                navigationRow(itemCount = subjects.size)
+            }
+        }
     state<MenuState.CurrentIssues> {
         onEnter {
             sendTextMessage(
@@ -55,33 +68,22 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
                 }
             )
         }
+
         onDataCallbackQuery(SelectArea::class) { (data, query) ->
-            state.override { MenuState.NextStep(query.user.id.chatId, data.area, PagerState()) }
+            val replyMarkup = subjectsPager.replyMarkup(
+                data,
+                this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>
+            )
+            if (replyMarkup.keyboard.isEmpty()) {
+                sendTextMessage(query.user.id, haveNotQuestionInThisArea)
+                state.override { DialogState.Empty }
+            } else {
+                sendTextMessage(query.user.id, ListQuestion, replyMarkup = replyMarkup)
+            }
             answer(query)
         }
     }
-    state<MenuState.NextStep> {
-        lateinit var subjects: List<Pair<Long, String>>
-        val subjectsPager =
-            statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-                subjects = subjectsByChatId.invoke(state.snapshot.userId, state.snapshot.area).toList()
-                val paginatedNumbers = subjects.drop(offset).take(limit)
-                inlineKeyboard {
-                    paginatedNumbers.forEach { item ->
-                        row {
-                            dataButton(item.second, SelectSubject(item.first))
-                        }
-                    }
-                    navigationRow(itemCount = subjects.size)
-                }
-            }
-        onEnter { chatId ->
-            with(subjectsPager) { sendOrEditMessage(chatId, ListQuestion, state.snapshot.pagerState) }
-            if (subjects.isEmpty()) {
-                sendTextMessage(chatId, haveNotQuestionInThisArea)
-                state.override { DialogState.Empty }
-            }
-        }
+    anyState {
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
             sendTextMessage(
                 query.user.id,

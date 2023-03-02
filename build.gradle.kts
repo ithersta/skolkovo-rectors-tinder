@@ -16,7 +16,7 @@ repositories {
 
 val exposedVersion = "0.41.1"
 dependencies {
-    implementation("com.ithersta.tgbotapi:boot:0.1.6")
+    implementation("com.ithersta.tgbotapi:boot:0.1.8")
     implementation("com.ithersta.tgbotapi:commands:0.3.0")
     implementation("io.ktor:ktor-client-okhttp:2.2.4")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
