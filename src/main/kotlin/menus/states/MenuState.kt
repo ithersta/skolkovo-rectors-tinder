@@ -1,5 +1,6 @@
 package menus.states
 
+import com.ithersta.tgbotapi.pagination.PagerState
 import common.telegram.DialogState
 import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea

@@ -10,7 +10,6 @@ import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
-import com.ithersta.tgbotapi.pagination.replyMarkup
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
@@ -43,7 +42,10 @@ fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
         }
         state<MenuState.OldQuestion> {
             onEnter { chatId ->
-                val replyMarkup = subjectsPager.replyMarkup(Unit, this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>)
+                val replyMarkup = subjectsPager.replyMarkup(
+                    Unit,
+                    this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>
+                )
                 if (replyMarkup.keyboard.isNotEmpty()) {
                     sendTextMessage(chatId, listClosedQuestions, replyMarkup = replyMarkup)
                 } else {

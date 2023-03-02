@@ -9,18 +9,20 @@ object Strings {
             buildEntities {
                 regular(
                     "Добрый день, один из участников сообщества хотел бы " +
-                        "выйти на коммуникацию по следующему вопросу:\n\n"
+                            "выйти на коммуникацию по следующему вопросу:\n\n"
                 )
                 boldln(subject)
                 regularln(question + "\n")
                 boldln("Готовы ответить?")
             }
+
         fun editMessage(subject: String, question: String) =
             buildEntities {
                 regular("Вы согласились ответить на вопрос:\n\n")
                 boldln(subject)
                 regularln(question)
             }
+
         fun waitingForCompanion(subject: String) =
             buildEntities {
                 regular("Владелец вопроса")
@@ -61,8 +63,9 @@ object Strings {
                 addAll(accountInfo(name, city, job, organization, activityDescription))
                 boldln("Вы согласны пообщаться?")
             }
+
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
-            "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
+                "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
         val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседнику") }
     }
 
@@ -74,6 +77,7 @@ object Strings {
         const val CompletedQuestion = "Отлично, вопрос сформирован!"
         const val Success = "Вопрос успешно отправлен в сообщество"
     }
+
     object TargetArea {
         const val listSpheres =
             "Список сфер по вашему профилю, нажмите на сферу что бы посмотреть какие есть темы вопросов."

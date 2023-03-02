@@ -33,17 +33,17 @@ class UserAreasRepositoryImpl : UserAreasRepository {
     // todo: переписать на  list<Question>
     override fun getSubjectsByUserId(userId: Long, userArea: QuestionArea): Map<Long, String> {
         return (
-            UserAreas.join(
-                QuestionAreas,
-                JoinType.INNER,
-                additionalConstraint = { UserAreas.area eq QuestionAreas.area }
-            ) innerJoin Questions
-            )
+                UserAreas.join(
+                    QuestionAreas,
+                    JoinType.INNER,
+                    additionalConstraint = { UserAreas.area eq QuestionAreas.area }
+                ) innerJoin Questions
+                )
             .select(
                 (UserAreas.userId eq userId)
-                    and (Questions.isClosed.eq(false))
-                    and (Questions.authorId neq userId)
-                    and (QuestionAreas.area eq userArea)
+                        and (Questions.isClosed.eq(false))
+                        and (Questions.authorId neq userId)
+                        and (QuestionAreas.area eq userArea)
             ).associate { it[Questions.id].value to it[Questions.subject] }
     }
 }
