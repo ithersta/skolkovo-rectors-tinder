@@ -28,10 +28,10 @@ fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
     val subjectsUseCase: SubjectsUseCase by inject()
     val nameAndPhoneUseCase: NameAndPhoneUseCase by inject()
     role<User.Normal> {
+        // todo: проблема с переходом на другую страницу.
         val subjectsPager = pager(id = "subjects") {
-            val subjects = subjectsUseCase.invoke(context!!.user.id).toList()
+            val subjects = subjectsUseCase.invoke(context!!.user.id)
             val paginatedNumbers = subjects.drop(offset).take(limit)
-            print(paginatedNumbers)
             inlineKeyboard {
                 paginatedNumbers.forEach { item ->
                     row {
