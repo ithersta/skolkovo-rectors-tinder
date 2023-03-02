@@ -1,11 +1,11 @@
 package qna.data.repository
 
 import auth.data.tables.Users
-import qna.domain.repository.ResponsesRepository
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.select
 import org.koin.core.annotation.Single
 import qna.data.tables.Responses
+import qna.domain.repository.ResponsesRepository
 
 @Single
 class ResponsesRepositoryImpl : ResponsesRepository {

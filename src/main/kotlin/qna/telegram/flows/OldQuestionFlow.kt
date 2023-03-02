@@ -20,9 +20,9 @@ import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
+import org.koin.core.component.inject
 import qna.domain.usecases.NameAndPhoneUseCase
 import qna.domain.usecases.SubjectsUseCase
-import org.koin.core.component.inject
 
 fun StateMachineBuilder<DialogState, User, UserId>.oldQuestionFlow() {
     val subjectsUseCase: SubjectsUseCase by inject()
