@@ -50,14 +50,19 @@ class UserAreasRepositoryImpl : UserAreasRepository {
     }
 
     override fun getSubjectsByUserId(userId: Long, userArea: QuestionArea): List<Question> {
-        return (UserAreas.join(
-            QuestionAreas, JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area })
-                innerJoin Questions)
+        return (
+            UserAreas.join(
+                QuestionAreas,
+                JoinType.INNER,
+                additionalConstraint = { UserAreas.area eq QuestionAreas.area }
+            )
+                innerJoin Questions
+            )
             .select(
                 (UserAreas.userId eq userId)
-                        and (Questions.isClosed.eq(false))
-                        and (Questions.authorId neq userId)
-                        and (QuestionAreas.area eq userArea)
+                    and (Questions.isClosed.eq(false))
+                    and (Questions.authorId neq userId)
+                    and (QuestionAreas.area eq userArea)
             ).map { it[QuestionAreas.questionId].value }
             .stream()
             .map { Questions.select { Questions.id eq it }.map(::mapper).first() }
