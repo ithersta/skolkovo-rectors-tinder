@@ -6,18 +6,6 @@ import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea
 
 @Serializable
-@SerialName("s")
-class SelectQuery(val area: String) : Query
-
-@Serializable
-@SerialName("u")
-class UnselectQuery(val area: String) : Query
-
-@Serializable
-@SerialName("f")
-object FinishQuery : Query
-
-@Serializable
 @SerialName("sq")
 class SelectQuestionQuery(val area: QuestionArea) : Query
 

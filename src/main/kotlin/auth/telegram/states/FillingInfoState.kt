@@ -7,114 +7,86 @@ import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea
 
 @Serializable
-object WaitingForContact : DialogState
+object WaitingForContact : DialogState {
+    fun next(phoneNumber: PhoneNumber) = WriteNameState(phoneNumber)
+}
 
 @Serializable
-class WriteNameState(
+data class WriteNameState(
     val phoneNumber: PhoneNumber
-) : DialogState
+) : DialogState {
+    fun next(name: String) = ChooseCity(phoneNumber, name)
+}
 
 @Serializable
-class ChooseCountry(
+data class ChooseCity(
     val phoneNumber: PhoneNumber,
     val name: String
-) : DialogState
+) : DialogState {
+    fun next(city: String) = WriteProfessionState(phoneNumber, name, city)
+}
 
 @Serializable
-class ChooseCityInCIS(
+data class WriteProfessionState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String
-) : DialogState
+) : DialogState {
+    fun next(profession: String) = WriteOrganizationState(phoneNumber, name, city, profession)
+}
 
 @Serializable
-class ChooseDistrict(
-    val phoneNumber: PhoneNumber,
-    val name: String
-) : DialogState
-
-@Serializable
-class ChooseRegion(
-    val phoneNumber: PhoneNumber,
-    val name: String,
-    val district: String
-) : DialogState
-
-@Serializable
-class ChooseCity(
-    val phoneNumber: PhoneNumber,
-    val name: String,
-    val region: String
-) : DialogState
-
-@Serializable
-class WriteProfessionState(
-    val phoneNumber: PhoneNumber,
-    val name: String,
-    val city: String
-) : DialogState
-
-@Serializable
-class WriteOrganizationState(
+data class WriteOrganizationState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
     val profession: String
-) : DialogState
+) : DialogState {
+    fun next(organization: String) =
+        WriteProfessionalDescriptionState(phoneNumber, name, city, profession, organization)
+}
 
 @Serializable
-class ChooseProfessionalAreasState(
+data class WriteProfessionalDescriptionState(
+    val phoneNumber: PhoneNumber,
+    val name: String,
+    val city: String,
+    val profession: String,
+    val organization: String
+) : DialogState {
+    fun next(professionalDescription: String) =
+        ChooseQuestionAreasState(phoneNumber, name, city, profession, organization, professionalDescription)
+}
+
+@Serializable
+data class ChooseQuestionAreasState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
     val profession: String,
     val organization: String,
-    val professionalAreas: List<String>,
-    val messageId: MessageId? = null
-) : DialogState
-
-@Serializable
-class AddProfessionalAreasState(
-    val phoneNumber: PhoneNumber,
-    val name: String,
-    val city: String,
-    val profession: String,
-    val organization: String,
-    val professionalAreas: List<String>,
-    val messageId: MessageId? = null
-) : DialogState
-
-@Serializable
-class WriteProfessionalDescriptionState(
-    val phoneNumber: PhoneNumber,
-    val name: String,
-    val city: String,
-    val profession: String,
-    val organization: String,
-    val professionalAreas: List<String>
-) : DialogState
-
-@Serializable
-class ChooseQuestionAreasState(
-    val phoneNumber: PhoneNumber,
-    val name: String,
-    val city: String,
-    val profession: String,
-    val organization: String,
-    val professionalAreas: List<String>,
     val professionalDescription: String,
-    val questionAreas: Set<QuestionArea>,
+    val questionAreas: Set<QuestionArea> = emptySet(),
     val messageId: MessageId? = null
-) : DialogState
+) : DialogState {
+    fun next() = AddAccountInfoToDataBaseState(
+        phoneNumber,
+        name,
+        city,
+        profession,
+        organization,
+        professionalDescription,
+        questionAreas
+    )
+}
 
 @Serializable
-class AddAccountInfoToDataBaseState(
+data class AddAccountInfoToDataBaseState(
     val phoneNumber: PhoneNumber,
     val name: String,
     val city: String,
     val profession: String,
     val organization: String,
-    val professionalAreas: List<String>,
     val professionalDescription: String,
     val questionAreas: Set<QuestionArea>
 ) : DialogState

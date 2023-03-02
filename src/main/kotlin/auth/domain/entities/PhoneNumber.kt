@@ -17,4 +17,8 @@ value class PhoneNumber private constructor(
                 .removePrefix("+")
         ).takeIf { "7\\d{10}".toRegex().matches(it.value) }
     }
+
+    override fun toString(): String {
+        return "+$value"
+    }
 }

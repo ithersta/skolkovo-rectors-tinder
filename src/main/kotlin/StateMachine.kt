@@ -2,6 +2,7 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
 import auth.telegram.states.WaitingForContact
+import changeinfo.telegram.flows.changeAccountInfoFlow
 import com.ithersta.tgbotapi.boot.annotations.StateMachine
 import com.ithersta.tgbotapi.commands.cancelCommand
 import com.ithersta.tgbotapi.commands.fallback
@@ -13,10 +14,15 @@ import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
+import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.muteFlow
 import oldquestion.telegram.oldQuestionFlow
+import mute.telegram.flows.muteFlow
+import notifications.telegram.flows.changeNotificationPreferenceFlow
+import notifications.telegram.flows.newQuestionsNotificationFlow
+import qna.telegram.flows.askQuestionFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -29,21 +35,22 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         fillingAccountInfoFlow()
         anyState {
             onCommand("start", null) {
-                // //сначала проверить номер на наличие в базе данных и отсутствие данных об аккаунте
-                state.override { WaitingForContact } // /ну пока так
+                state.override { WaitingForContact }
             }
         }
         state<DialogState.Empty> {
             onEnter {
-                sendTextMessage(
-                    it,
-                    Strings.RoleMenu.Unauthenticated
-                )
+                sendTextMessage(it, Strings.RoleMenu.Unauthenticated)
             }
         }
     }
     role<User.Normal> {
         with(normalMenu) { invoke() }
+        feedbackFlow()
+        askQuestionFlow()
+        changeAccountInfoFlow()
+        changeNotificationPreferenceFlow()
+        newQuestionsNotificationFlow()
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }

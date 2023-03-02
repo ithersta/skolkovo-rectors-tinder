@@ -23,12 +23,6 @@ object MenuState {
     }
 
     @Serializable
-    object Notifications : DialogState
-
-    @Serializable
-    object ChangeAccountInfo : DialogState
-
-    @Serializable
     object Events : DialogState
 
     @Serializable

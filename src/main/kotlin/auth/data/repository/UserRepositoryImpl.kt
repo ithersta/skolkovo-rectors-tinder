@@ -5,10 +5,10 @@ import auth.data.tables.Users
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
+import qna.domain.entities.QuestionArea
 
 @Single
 class UserRepositoryImpl : UserRepository {
@@ -20,7 +20,6 @@ class UserRepositoryImpl : UserRepository {
             it[city] = user.city
             it[job] = user.job
             it[organization] = user.organization
-            it[professionalAreas] = user.professionalAreas
             it[activityDescription] = user.activityDescription
         }
         UserAreas.batchInsert(user.areas) {
@@ -32,12 +31,13 @@ class UserRepositoryImpl : UserRepository {
     override fun get(id: Long): User.Details? {
         val areas = UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
         return Users.select { Users.id eq id }.firstOrNull()?.let {
+            val phoneNumber = PhoneNumber.of(it[Users.phoneNumber])
+            checkNotNull(phoneNumber)
             User.Details(
                 id = it[Users.id].value,
-                phoneNumber = PhoneNumber.of(it[Users.phoneNumber])!!,
+                phoneNumber = phoneNumber,
                 name = it[Users.name],
                 city = it[Users.city],
-                professionalAreas = it[Users.professionalAreas],
                 job = it[Users.job],
                 organization = it[Users.organization],
                 activityDescription = it[Users.activityDescription],
@@ -52,5 +52,43 @@ class UserRepositoryImpl : UserRepository {
 
     override fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean {
         return Users.select { Users.phoneNumber eq phoneNumber.value }.empty().not()
+    }
+
+    override fun changeName(id: Long, newName: String) {
+        Users.update({ Users.id eq id }) {
+            it[name] = newName
+        }
+    }
+
+    override fun changeCity(id: Long, newCity: String) {
+        Users.update({ Users.id eq id }) {
+            it[city] = newCity
+        }
+    }
+
+    override fun changeJob(id: Long, newJob: String) {
+        Users.update({ Users.id eq id }) {
+            it[job] = newJob
+        }
+    }
+
+    override fun changeOrganization(id: Long, newOrganization: String) {
+        Users.update({ Users.id eq id }) {
+            it[organization] = newOrganization
+        }
+    }
+
+    override fun changeAreas(id: Long, newArea: Set<QuestionArea>) {
+        UserAreas.deleteWhere { userId eq id }
+        UserAreas.batchInsert(newArea) {
+            this[UserAreas.userId] = id
+            this[UserAreas.area] = it
+        }
+    }
+
+    override fun changeActivityDescription(id: Long, newActivityDescription: String) {
+        Users.update({ Users.id eq id }) {
+            it[activityDescription] = newActivityDescription
+        }
     }
 }

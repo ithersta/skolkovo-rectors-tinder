@@ -7,16 +7,16 @@ import config.BotConfig
 import org.koin.core.annotation.Single
 
 @Single
-class GetUserUseCase(
+class GetUserRoleUseCase(
     private val userRepository: UserRepository,
     private val botConfig: BotConfig,
     private val transaction: Transaction
 ) {
     operator fun invoke(id: Long): User = transaction {
         when {
+            userRepository.isRegistered(id).not() -> User.Unauthenticated
             botConfig.adminId == id -> User.Admin
-            userRepository.isRegistered(id) -> User.Normal
-            else -> User.Unauthenticated
+            else -> User.Normal()
         }
     }
 }

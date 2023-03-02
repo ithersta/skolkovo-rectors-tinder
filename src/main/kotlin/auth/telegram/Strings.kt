@@ -1,60 +1,53 @@
+@file:Suppress("MaxLineLength")
+
 package auth.telegram
 
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import qna.domain.entities.QuestionArea
 
 object Strings {
-    val Welcome =
-        "Дорогой участник, приветствуем тебя в боте сообщества выпускников." +
-            " Для того, чтобы попасть в пространство единомышленников поделитесь контактом, нажав соответсвующую кнопку"
-    val ShareContact = "Поделиться номером телефона"
-    val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
+    const val Welcome =
+        "Дорогой участник, приветствуем тебя в боте сообщества выпускников программ Центра трансформации образования. " +
+            "Здесь собрались выпускники разных лет таких программ, как Школа ректоров, Лидеры научно-технологического прорыва, Школа управления исследовательскими программами и других программ. " +
+            "Для того, чтобы попасть в пространство единомышленников, поделитесь контактом, нажав соответствующую кнопку и заполните свой краткий профайл"
+    const val ShareContact = "Поделиться номером телефона"
+    const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
     object AccountInfo {
-        val ChooseCountry = "Укажите из какой Вы страны"
-        val ChooseDistrict = "Укажите из какого Вы округа"
-        val ChooseRegion = "Укажите из какого Вы региона"
-        val WriteName = "Введите своё имя"
-        val ChooseCity =
+        const val WriteName = "Введите своё имя"
+        const val ChooseCountry = "Укажите из какой Вы страны"
+        const val ChooseDistrict = "Укажите из какого Вы округа"
+        const val ChooseRegion = "Укажите из какого Вы региона"
+        const val ChooseCity =
             "Укажите из какого Вы города " // /мб надо будет поменять, с указанием, что надо выбрать из выпадающего списка
-        val WriteProfession = "Напишите Вашу должность"
-        val WriteOrganization = "Напишите название Вашей организации"
-        val ChooseProfessionalAreas = "Уточните ваши профессиональные зоны компетенций" // /возможность выбрать
+        const val WriteProfession = "Напишите Вашу должность"
+        const val WriteOrganization = "Напишите название Вашей организации"
+        const val ChooseProfessionalAreas = "Уточните ваши профессиональные зоны компетенций" // /возможность выбрать
 
-        var professionalAreas = listOf(
-            "какая-то одна сфера",
-            "какая-то другая сфера",
-            "какая-то третья сфера",
-            "Другое"
-        )
-
-        val WriteProfessionalArea = "Введите свою зону профессиональных компетенций"
-        val NoProfessionalArea =
-            "Вы не выбрали ни одной сферы профессионаьных компетенций. Для регистрации необходимо выбрать хотя бы одну сферу."
-        val NoQuestionArea =
+        const val NoQuestionArea =
             "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
 
-        val WriteProfessionalActivity =
+        const val WriteProfessionalActivity =
             "Напишите о своей деятельности - что именно Вы делаете на работе, с какими задачами сталкиваетесь"
     }
 
-    val FinishChoosing = "Закончить выбор"
+    const val FinishChoosing = "Закончить выбор"
 
     object Question {
-        val ChooseQuestionArea =
+        const val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
                 "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
-        val Science = "наука"
-        val Education = "образование"
-        val Innovations = "инновации"
-        val Entrepreneurship = "предпринимательство"
-        val Finances = "финансы"
-        val Youngsters = "молодежь"
-        val Staff = "кадры"
-        val Campus = "кампус"
-        val Society = "общество"
-        val Strategy = "стратегия"
-        val Others = "иное"
+        const val Science = "наука"
+        const val Education = "образование"
+        const val Innovations = "инновации"
+        const val Entrepreneurship = "предпринимательство"
+        const val Finances = "финансы"
+        const val Youngsters = "молодежь"
+        const val Staff = "кадры"
+        const val Campus = "кампус"
+        const val Society = "общество"
+        const val Strategy = "стратегия"
+        const val Others = "иное"
     }
 
     var questionAreaToString = mapOf<QuestionArea, String>(
@@ -72,48 +65,17 @@ object Strings {
     )
 
     object AuthenticationResults {
-        val OK = "Вы успешно зарегистрированы."
-        val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
-        val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
-        val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
-        val NoAreaSet = NoQuestionArea
+        const val OK = "Вы успешно зарегистрированы."
+        const val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
+        const val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
+        const val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
+        const val NoAreaSet = NoQuestionArea
     }
 
     object RoleMenu {
-        val Admin = "Меню администратора"
-        val Unauthenticated = "Неудачная попытка авторизации."
-        val Normal = "Меню пользователя"
-    }
-
-    object MenuButtons {
-        val AddUser = "Добавить пользователей"
-
-        object Questions {
-            val Question = "Вопрос"
-            val QuestionDesciption = "Выберите, что вы хотите сделать"
-            val Ask = "Задать вопрос сообществу"
-            val Get = "Получить список вопросов"
-            val Description = "Выберите категорию вопроса"
-
-            object MyQuestions {
-                val Main = "Мои вопросы"
-                val Description = "Выберите тип вопроса"
-                val ActualQuestions = "Актуальные"
-                val OldQuestions = "Старые(закрытые)"
-            }
-
-            val InterestingQuestions = "По сферам"
-        }
-
-        object Notifications {
-            val Main = "Оповещения"
-            val Description = "Выберите, что вы хотите сделать"
-            val On = "Включить"
-            val Off = "Выключить"
-        }
-
-        val ChangeAccountInfo = "Изменить данные аккаунта"
-        val Events = "Получить календарь мероприятий"
+        const val Admin = "Меню администратора"
+        const val Unauthenticated = "Неудачная попытка авторизации."
+        const val Normal = "Меню пользователя"
     }
 
     object OldQuestion {
