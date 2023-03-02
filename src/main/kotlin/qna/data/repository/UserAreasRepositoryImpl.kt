@@ -30,6 +30,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .map { it[UserAreas.userId].value }
     }
 
+    // todo: переписать на  list<Question>
     override fun getSubjectsByUserId(userId: Long, userArea: QuestionArea): Map<Long, String> {
         return (UserAreas.join(
             QuestionAreas,
