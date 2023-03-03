@@ -3,7 +3,6 @@ package qna.telegram.flows
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
-import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
 import com.ithersta.tgbotapi.pagination.statefulPager
 import common.telegram.DialogState
@@ -26,7 +25,6 @@ import qna.telegram.states.GetListOfRespondent
 import qna.telegram.states.GetListOfSubjects
 import qna.telegram.strings.Strings
 
-lateinit var subPager: InlineKeyboardPager<SelectUserArea>
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
     val getSubjectsByAreaUseCase: GetSubjectsByAreaUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
@@ -34,6 +32,23 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
+    //выводится список тем актуальных вопросов пользователя
+    //потом выводится 2 кнопки - закрыть вопрос и посмотреть список ответивших
+    //выводится список имен ответчиков
+    //по порядку все люди, которые согласились ответить
+    val subPager = pager(id = "sub", dataKClass = SelectUserArea::class) {
+        val sub = getSubjectsByAreaUseCase(data.userId, data.area)
+        val pagSub = sub.drop(offset).take(limit)
+        inlineKeyboard {
+            pagSub.forEach { item ->
+                row {
+                    dataButton(item.toString(), SelectSubject(item.id!!))
+                }
+            }
+            navigationRow(itemCount = sub.size)
+        }
+    }
+    //убрать деление на темы
     state<MenuState.GetListOfRespondents> {
         onEnter {
             if (getQuestionAreasByUserId(it.chatId).isEmpty()) {
@@ -59,18 +74,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         onDataCallbackQuery(SelectUserArea::class) { (data, query) ->
             state.override { GetListOfSubjects(query.user.id.chatId, data.area) }
             answer(query)
-        }
-    }
-    subPager = pager(id = "sub", dataKClass = SelectUserArea::class) {
-        val sub = getSubjectsByAreaUseCase(data.userId, data.area)
-        val pagSub = sub.drop(offset).take(limit)
-        inlineKeyboard {
-            pagSub.forEach { item ->
-                row {
-                    dataButton(item.toString(), SelectSubject(item.id!!))
-                }
-            }
-            navigationRow(itemCount = sub.size)
         }
     }
     state<GetListOfSubjects> {
