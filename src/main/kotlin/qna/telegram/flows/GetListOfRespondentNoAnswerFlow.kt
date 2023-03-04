@@ -5,24 +5,19 @@ import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
-import com.ithersta.tgbotapi.pagination.statefulPager
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
-import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
-import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.usecases.*
-import qna.telegram.queries.SelectRespondent
 import qna.telegram.queries.SelectSubject
 import qna.telegram.queries.SelectUserArea
-import qna.telegram.states.GetListOfRespondent
 import qna.telegram.states.GetListOfSubjects
 import qna.telegram.strings.Strings
 
@@ -32,10 +27,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
-    //выводится список тем актуальных вопросов пользователя
-    //потом выводится 2 кнопки - закрыть вопрос и посмотреть список ответивших
-    //выводится список имен ответчиков
-    //по порядку все люди, которые согласились ответить
+    // выводится список тем актуальных вопросов пользователя
+    // потом выводится 2 кнопки - закрыть вопрос и посмотреть список ответивших
+    // выводится список имен ответчиков
+    // по порядку все люди, которые согласились ответить
     val subPager = pager(id = "subjects") {
         val sub = getQuestionsByUserIdUseCase(context!!.user.id)
         val pagSub = sub.drop(offset).take(limit)
@@ -55,7 +50,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                 sendTextMessage(it, Strings.RespondentsNoAnswer.NoQuestions)
                 state.override { DialogState.Empty }
             } else {
-                sendTextMessage(it,"текст",  replyMarkup = replyMarkup)
+                sendTextMessage(it, "текст", replyMarkup = replyMarkup)
             }
         }
         onDataCallbackQuery(SelectUserArea::class) { (data, query) ->

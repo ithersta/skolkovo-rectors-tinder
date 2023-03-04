@@ -9,7 +9,6 @@ import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.domain.entities.Question
-import qna.domain.entities.QuestionArea
 import qna.domain.repository.QuestionRepository
 import java.util.stream.Collectors
 
@@ -51,8 +50,8 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                            (Questions.authorId neq userId) and
-                            (Questions.isClosed eq false)
+                        (Questions.authorId neq userId) and
+                        (Questions.isClosed eq false)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
