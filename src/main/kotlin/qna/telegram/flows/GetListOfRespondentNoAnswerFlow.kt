@@ -5,30 +5,29 @@ import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
-import com.ithersta.tgbotapi.pagination.statefulPager
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
-import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
-import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
+import feedback.domain.usecases.CloseQuestionUseCase
 import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.usecases.*
+import qna.telegram.queries.CloseQuestion
+import qna.telegram.queries.SeeList
 import qna.telegram.queries.SelectRespondent
 import qna.telegram.queries.SelectSubject
-import qna.telegram.queries.SelectUserArea
-import qna.telegram.states.GetListOfRespondent
-import qna.telegram.states.GetListOfSubjects
+import qna.telegram.states.ChooseAction
+import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
     val getQuestionsByUserIdUseCase: GetQuestionsByUserIdUseCase by inject()
-    val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
+    val closeQuestionUseCase: CloseQuestionUseCase by inject()
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
@@ -36,67 +35,93 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     //потом выводится 2 кнопки - закрыть вопрос и посмотреть список ответивших
     //выводится список имен ответчиков
     //по порядку все люди, которые согласились ответить
-    val subPager = pager(id = "subjects") {
-        val sub = getQuestionsByUserIdUseCase(context!!.user.id)
-        val pagSub = sub.drop(offset).take(limit)
+    val subjectPager = pager(id = "subjectsNoAnswer") {
+        val subject = getQuestionsByUserIdUseCase(context!!.user.id)
+        val pagSubject = subject.drop(offset).take(limit)
         inlineKeyboard {
-            pagSub.forEach { item ->
+            pagSubject.forEach { item ->
                 row {
-                    dataButton(item.toString(), SelectSubject(item.id!!))
+                    dataButton(item.subject, SelectSubject(item.authorId, item.id!!))
                 }
             }
-            navigationRow(itemCount = sub.size)
+            navigationRow(itemCount = subject.size)
+        }
+    }
+    val respondentPager = pager(id = "respondentNoAnswer", dataKClass = SeeList::class) {
+        val respondent = getRespondentsByQuestionIdUseCase(data.questionId)
+        val pagRespondent = respondent.drop(offset).take(limit)
+        inlineKeyboard {
+            pagRespondent.forEach { item ->
+                val user = getUserDetailsUseCase(item)
+                row {
+                    dataButton(user!!.name, SelectRespondent(user.id, data.questionId))
+                }
+            }
+            navigationRow(itemCount = respondent.size)
         }
     }
     state<MenuState.GetListOfSubjects> {
         onEnter {
-            val replyMarkup = subPager.replyMarkup(Unit, this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>)
+            val replyMarkup =
+                subjectPager.replyMarkup(Unit, this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>)
             if (getQuestionsByUserIdUseCase(it.chatId).isEmpty()) {
                 sendTextMessage(it, Strings.RespondentsNoAnswer.NoQuestions)
                 state.override { DialogState.Empty }
             } else {
-                sendTextMessage(it,"текст",  replyMarkup = replyMarkup)
+                sendTextMessage(it, Strings.RespondentsNoAnswer.ListOfSubjects, replyMarkup = replyMarkup)
             }
         }
-        onDataCallbackQuery(SelectUserArea::class) { (data, query) ->
-            state.override { GetListOfSubjects(query.user.id.chatId, data.area) }
+        onDataCallbackQuery(SelectSubject::class) { (data, query) ->
+            state.override { ChooseAction(data.userId, data.questionId) }
             answer(query)
         }
     }
-//    state<GetListOfRespondent> {
-//        val respondentPager =
-//            statefulPager(id = "respondent", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-//                val respondent = getRespondentsByQuestionIdUseCase(state.snapshot.questionId)
-//                val paginatedRespondent = respondent.drop(offset).take(limit)
-//                inlineKeyboard {
-//                    paginatedRespondent.forEach { item ->
-//                        row {
-//                            getUserDetailsUseCase(item)?.let { dataButton(it.name, SelectRespondent(item)) }
-//                        }
-//                    }
-//                    navigationRow(itemCount = respondent.size)
-//                }
-//            }
-//        onEnter {
-//            if (getRespondentsByQuestionIdUseCase(state.snapshot.questionId).isEmpty()) {
-//                sendTextMessage(it, Strings.RespondentsNoAnswer.NoRespondent)
-//                state.override { DialogState.Empty }
-//            } else {
-//                with(respondentPager) {
-//                    val question = getQuestionByIdUseCase(state.snapshot.questionId)
-//                    if (question != null) {
-//                        sendOrEditMessage(
-//                            it.chatId.toChatId(),
-//                            Strings.RespondentsNoAnswer.ListOfRespondents,
-//                            state.snapshot.pagerState
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//        onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-//            addResponseUseCase(state.snapshot.questionId, data.respondentId)
-//            answer(query)
-//        }
-//    }
+    state<ChooseAction> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.RespondentsNoAnswer.ChooseAction,
+                replyMarkup = inlineKeyboard {
+                    row {
+                        dataButton(
+                            ButtonStrings.RespondentNoAnswer.CloseQuestion,
+                            CloseQuestion(state.snapshot.userId, state.snapshot.questionId)
+                        )
+                    }
+                    row {
+                        dataButton(
+                            ButtonStrings.RespondentNoAnswer.SeeList,
+                            SeeList(state.snapshot.userId, state.snapshot.questionId)
+                        )
+                    }
+                }
+            )
+        }
+        onDataCallbackQuery(CloseQuestion::class) { (data, query) ->
+            closeQuestionUseCase(data.userId, data.questionId)
+            sendTextMessage(query.user.id, Strings.RespondentsNoAnswer.CloseQuestionSuccessful)
+            state.override { DialogState.Empty }
+            answer(query)
+        }
+        onDataCallbackQuery(SeeList::class) { (data, query) ->
+            val replyMarkup =
+                respondentPager.replyMarkup(
+                    data,
+                    this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>
+                )
+            if (getRespondentsByQuestionIdUseCase(state.snapshot.questionId).isEmpty()) {
+                sendTextMessage(query.user.id, Strings.RespondentsNoAnswer.NoRespondent)
+                state.override { DialogState.Empty }
+            } else {
+                sendTextMessage(query.user.id, Strings.RespondentsNoAnswer.ListOfRespondents, replyMarkup = replyMarkup)
+            }
+            answer(query)
+        }
+    }
+    anyState{
+        onDataCallbackQuery(SelectRespondent::class){(data, query) ->
+            addResponseUseCase(data.respondentId, data.questionId)
+            answer(query)
+        }
+    }
 }

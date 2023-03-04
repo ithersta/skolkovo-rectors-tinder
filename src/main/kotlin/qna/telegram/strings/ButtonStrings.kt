@@ -22,5 +22,10 @@ object ButtonStrings {
         val stringToQuestionIntent = questionIntentToString.entries.associate { it.value to it.key }
     }
 
+    object RespondentNoAnswer{
+        const val CloseQuestion = "Закрыть вопрос"
+        const val SeeList = "Посмотреть список ответивших"
+    }
+
     const val SendQuestion = "Отправить запрос в сообщество"
 }
