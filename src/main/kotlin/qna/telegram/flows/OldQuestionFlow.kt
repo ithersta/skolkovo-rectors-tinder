@@ -27,8 +27,7 @@ import qna.domain.usecases.SubjectsUseCase
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() {
     val subjectsUseCase: SubjectsUseCase by inject()
     val nameAndPhoneUseCase: NameAndPhoneUseCase by inject()
-    // todo: проблема с переходом на другую страницу.
-    val subjectsPager = pager(id = "subjects") {
+    val subjectsPager = pager(id = "sub1") {
         val subjects = subjectsUseCase.invoke(context!!.user.id)
         val paginatedNumbers = subjects.drop(offset).take(limit)
         inlineKeyboard {

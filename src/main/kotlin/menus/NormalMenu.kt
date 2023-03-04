@@ -33,11 +33,11 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 button(
                     MenuStrings.Questions.MyQuestions.ActualQuestions,
                     DialogState.Empty
-                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+                )
                 button(
                     MenuStrings.Questions.MyQuestions.OldQuestions,
                     MenuState.OldQuestion(PagerState())
-                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+                )
             }
             button(
                 MenuStrings.Questions.InterestingQuestions,

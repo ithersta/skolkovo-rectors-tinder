@@ -41,7 +41,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val answerForUser: List<String> = listOf(Yes, No)
     val subjectsPager =
-        pager(id = "subjects", dataKClass = SelectArea::class) {
+        pager(id = "sub2", dataKClass = SelectArea::class) {
             val subjects = subjectsByChatId.invoke(context!!.user.id, data.area)
             val paginatedNumbers = subjects.drop(offset).take(limit)
             inlineKeyboard {
