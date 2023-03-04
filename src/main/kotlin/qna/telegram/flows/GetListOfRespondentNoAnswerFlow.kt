@@ -31,10 +31,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
-    //выводится список тем актуальных вопросов пользователя
-    //потом выводится 2 кнопки - закрыть вопрос и посмотреть список ответивших
-    //выводится список имен ответчиков
-    //по порядку все люди, которые согласились ответить
+    // выводится список тем актуальных вопросов пользователя
+    // потом выводится 2 кнопки - закрыть вопрос и посмотреть список ответивших
+    // выводится список имен ответчиков
+    // по порядку все люди, которые согласились ответить
     val subjectPager = pager(id = "subjectsNoAnswer") {
         val subject = getQuestionsByUserIdUseCase(context!!.user.id)
         val pagSubject = subject.drop(offset).take(limit)
