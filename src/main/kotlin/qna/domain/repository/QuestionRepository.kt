@@ -5,10 +5,10 @@ import kotlinx.datetime.Instant
 import qna.domain.entities.Question
 
 interface QuestionRepository {
-    fun getSubjectsByUserIdAndIsClosed(userId: Long): Map<Long, String>
     fun close(questionId: Long)
     fun add(question: Question): Long
     fun getById(questionId: Long): Question?
+    fun getSubjectsByUserIdAndIsClosed(userId: Long): List<Question>
     fun getQuestionsDigestPaginated(
         from: Instant,
         until: Instant,
@@ -16,6 +16,4 @@ interface QuestionRepository {
         limit: Int,
         offset: Int
     ): Paginated<Question>
-
-    fun getSubjectsByUserIdAndIsClosed(userId: Long): List<Question>
 }

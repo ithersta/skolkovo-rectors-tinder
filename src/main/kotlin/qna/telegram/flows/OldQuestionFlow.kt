@@ -7,6 +7,7 @@ import auth.telegram.Strings.OldQuestion.listOfDefendants
 import auth.telegram.queries.SelectRespondent
 import auth.telegram.queries.SelectSubject
 import com.ithersta.tgbotapi.fsm.BaseStatefulContext
+import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
 import common.telegram.DialogState
