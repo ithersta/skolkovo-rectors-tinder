@@ -40,5 +40,4 @@ class ResponseRepositoryImpl : ResponseRepository {
             it[Responses.respondentId] = respondentId
         }.value
     }
-
 }
