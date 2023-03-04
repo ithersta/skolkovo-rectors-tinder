@@ -1,5 +1,6 @@
 package qna.data.repository
 
+import auth.domain.entities.User
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
@@ -24,6 +25,10 @@ class ResponseRepositoryImpl : ResponseRepository {
         return Responses
             .select { (Responses.questionId eq questionId) and (Responses.respondentId eq respondentId) }
             .empty().not()
+    }
+
+    override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {
+        TODO("Not yet implemented")
     }
 
     override fun add(questionId: Long, respondentId: Long): Long {
