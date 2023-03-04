@@ -50,11 +50,12 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         changeAccountInfoFlow()
         changeNotificationPreferenceFlow()
         newQuestionsNotificationFlow()
+        oldQuestionFlow()
     }
     role<User.Admin> {
         with(adminMenu) { invoke() }
     }
-    oldQuestionFlow()
+
     muteFlow()
     eventFlow()
     fallback()
