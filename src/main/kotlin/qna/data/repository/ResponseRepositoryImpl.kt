@@ -40,4 +40,10 @@ class ResponseRepositoryImpl : ResponseRepository {
             it[Responses.respondentId] = respondentId
         }.value
     }
+
+    override fun getRespondentIdByQuestion(questionId: Long): Map<String, String> {
+        return (Users innerJoin Responses)
+            .select(Responses.questionId eq questionId)
+            .associate { it[Users.name] to it[Users.phoneNumber] }
+    }
 }

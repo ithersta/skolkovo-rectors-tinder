@@ -16,4 +16,6 @@ interface QuestionRepository {
         limit: Int,
         offset: Int
     ): Paginated<Question>
+
+    fun getSubjectsByUserIdAndIsClosed(userId: Long): List<Question>
 }
