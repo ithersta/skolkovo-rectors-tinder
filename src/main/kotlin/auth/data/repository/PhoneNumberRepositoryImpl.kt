@@ -20,4 +20,8 @@ class PhoneNumberRepositoryImpl : PhoneNumberRepository {
         return PhoneNumbers.select { PhoneNumbers.phoneNumber eq phoneNumber.value }
             .firstOrNull()?.get(PhoneNumbers.isActive) ?: false
     }
+
+    override fun contains(phoneNumber: PhoneNumber): Boolean {
+        return PhoneNumbers.select { PhoneNumbers.phoneNumber eq phoneNumber.value }.empty().not()
+    }
 }
