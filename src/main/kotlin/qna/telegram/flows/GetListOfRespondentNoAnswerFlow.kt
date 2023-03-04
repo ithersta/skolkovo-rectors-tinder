@@ -1,6 +1,7 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
+import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
@@ -26,9 +27,8 @@ import qna.telegram.states.GetListOfSubjects
 import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
-    val getSubjectsByAreaUseCase: GetSubjectsByAreaUseCase by inject()
+    val getQuestionsByUserIdUseCase: GetQuestionsByUserIdUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
-    val getQuestionAreasByUserId: GetQuestionAreasByUserId by inject()
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
@@ -36,8 +36,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     //потом выводится 2 кнопки - закрыть вопрос и посмотреть список ответивших
     //выводится список имен ответчиков
     //по порядку все люди, которые согласились ответить
-    val subPager = pager(id = "sub", dataKClass = SelectUserArea::class) {
-        val sub = getSubjectsByAreaUseCase(data.userId, data.area)
+    val subPager = pager(id = "subjects") {
+        val sub = getQuestionsByUserIdUseCase(context!!.user.id)
         val pagSub = sub.drop(offset).take(limit)
         inlineKeyboard {
             pagSub.forEach { item ->
@@ -48,27 +48,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             navigationRow(itemCount = sub.size)
         }
     }
-    //убрать деление на темы
-    state<MenuState.GetListOfRespondents> {
+    state<MenuState.GetListOfSubjects> {
         onEnter {
-            if (getQuestionAreasByUserId(it.chatId).isEmpty()) {
+            val replyMarkup = subPager.replyMarkup(Unit, this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>)
+            if (getQuestionsByUserIdUseCase(it.chatId).isEmpty()) {
                 sendTextMessage(it, Strings.RespondentsNoAnswer.NoQuestions)
                 state.override { DialogState.Empty }
             } else {
-                sendTextMessage(
-                    it,
-                    Strings.RespondentsNoAnswer.ListOfAreas,
-                    replyMarkup = inlineKeyboard {
-                        getQuestionAreasByUserId(it.chatId).forEach { area ->
-                            row {
-                                dataButton(
-                                    auth.telegram.Strings.questionAreaToString.getValue(area),
-                                    SelectUserArea(it.chatId, area)
-                                )
-                            }
-                        }
-                    }
-                )
+                sendTextMessage(it,"текст",  replyMarkup = replyMarkup)
             }
         }
         onDataCallbackQuery(SelectUserArea::class) { (data, query) ->
@@ -76,73 +63,40 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             answer(query)
         }
     }
-    state<GetListOfSubjects> {
-//        val subjectsPager =
-//            statefulPager(id = "subjects", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-//                val subjects = getSubjectsByAreaUseCase(state.snapshot.userId, state.snapshot.area)
-//                val paginatedSubjects = subjects.drop(offset).take(limit)
+//    state<GetListOfRespondent> {
+//        val respondentPager =
+//            statefulPager(id = "respondent", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
+//                val respondent = getRespondentsByQuestionIdUseCase(state.snapshot.questionId)
+//                val paginatedRespondent = respondent.drop(offset).take(limit)
 //                inlineKeyboard {
-//                    paginatedSubjects.forEach { item ->
+//                    paginatedRespondent.forEach { item ->
 //                        row {
-//                            dataButton(item.subject, SelectSubject(item.id!!))
+//                            getUserDetailsUseCase(item)?.let { dataButton(it.name, SelectRespondent(item)) }
 //                        }
 //                    }
-//                    navigationRow(itemCount = subjects.size)
+//                    navigationRow(itemCount = respondent.size)
 //                }
 //            }
-        onEnter {
-//            with(subjectsPager) {
-//                sendOrEditMessage(
-//                    it.chatId.toChatId(),
-//                    Strings.RespondentsNoAnswer.ListOfSubjects,
-//                    state.snapshot.pagerState
-//                )
+//        onEnter {
+//            if (getRespondentsByQuestionIdUseCase(state.snapshot.questionId).isEmpty()) {
+//                sendTextMessage(it, Strings.RespondentsNoAnswer.NoRespondent)
+//                state.override { DialogState.Empty }
+//            } else {
+//                with(respondentPager) {
+//                    val question = getQuestionByIdUseCase(state.snapshot.questionId)
+//                    if (question != null) {
+//                        sendOrEditMessage(
+//                            it.chatId.toChatId(),
+//                            Strings.RespondentsNoAnswer.ListOfRespondents,
+//                            state.snapshot.pagerState
+//                        )
+//                    }
+//                }
 //            }
-            send(
-                it.chatId.toChatId(),
-                Strings.RespondentsNoAnswer.ListOfSubjects,
-                replyMarkup = subPager.page()
-            )
-        }
-        onDataCallbackQuery(SelectSubject::class) { (data, query) ->
-            state.override { GetListOfRespondent(query.user.id.chatId, data.questionId) }
-            answer(query)
-        }
-    }
-    state<GetListOfRespondent> {
-        val respondentPager =
-            statefulPager(id = "respondent", onPagerStateChanged = { state.snapshot.copy(pagerState = it) }) {
-                val respondent = getRespondentsByQuestionIdUseCase(state.snapshot.questionId)
-                val paginatedRespondent = respondent.drop(offset).take(limit)
-                inlineKeyboard {
-                    paginatedRespondent.forEach { item ->
-                        row {
-                            getUserDetailsUseCase(item)?.let { dataButton(it.name, SelectRespondent(item)) }
-                        }
-                    }
-                    navigationRow(itemCount = respondent.size)
-                }
-            }
-        onEnter {
-            if (getRespondentsByQuestionIdUseCase(state.snapshot.questionId).isEmpty()) {
-                sendTextMessage(it, Strings.RespondentsNoAnswer.NoRespondent)
-                state.override { DialogState.Empty }
-            } else {
-                with(respondentPager) {
-                    val question = getQuestionByIdUseCase(state.snapshot.questionId)
-                    if (question != null) {
-                        sendOrEditMessage(
-                            it.chatId.toChatId(),
-                            Strings.RespondentsNoAnswer.ListOfRespondents,
-                            state.snapshot.pagerState
-                        )
-                    }
-                }
-            }
-        }
-        onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            addResponseUseCase(state.snapshot.questionId, data.respondentId)
-            answer(query)
-        }
-    }
+//        }
+//        onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
+//            addResponseUseCase(state.snapshot.questionId, data.respondentId)
+//            answer(query)
+//        }
+//    }
 }

@@ -16,6 +16,5 @@ interface QuestionRepository {
         limit: Int,
         offset: Int
     ): Paginated<Question>
-    fun getQuestionAreasByUserId(userId: Long): List<QuestionArea>
-    fun getByArea(userId: Long, questionArea: QuestionArea): List<Question>
+    fun getByUserId(userId: Long): List<Question>
 }

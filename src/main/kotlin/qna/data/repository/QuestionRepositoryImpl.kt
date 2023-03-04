@@ -51,8 +51,8 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                        (Questions.authorId neq userId) and
-                        (Questions.isClosed eq false)
+                            (Questions.authorId neq userId) and
+                            (Questions.isClosed eq false)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
@@ -64,27 +64,17 @@ class QuestionRepositoryImpl : QuestionRepository {
         )
     }
 
-    override fun getQuestionAreasByUserId(userId: Long): List<QuestionArea> {
-        return (QuestionAreas innerJoin Questions)
-            .select(Questions.authorId eq userId and Questions.isClosed.eq(false))
-            .map { it[QuestionAreas.area] }
-    }
-
     override fun close(questionId: Long) {
         Questions.update(where = { Questions.id eq questionId }) {
             it[Questions.isClosed] = true
         }
     }
 
-    override fun getByArea(userId: Long, questionArea: QuestionArea): List<Question> {
-        val questionsId = (Questions innerJoin QuestionAreas)
-            .select(
-                (Questions.authorId eq userId)
-                    and (Questions.isClosed.eq(false))
-                    and (QuestionAreas.area eq questionArea)
-            )
+    override fun getByUserId(userId: Long): List<Question> {
+        return Questions
+            .select((Questions.authorId eq userId) and (Questions.isClosed.eq(false)))
             .map { it[QuestionAreas.questionId].value }
-        return questionsId.stream()
+            .stream()
             .map { Questions.select { Questions.id eq it }.map(::mapper).first() }
             .collect(Collectors.toList())
     }

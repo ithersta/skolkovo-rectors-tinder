@@ -35,7 +35,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             ) {
                 button(
                     MenuStrings.Questions.MyQuestions.ActualQuestions,
-                    MenuState.GetListOfRespondents
+                    MenuState.GetListOfSubjects
                 )
                 button(
                     MenuStrings.Questions.MyQuestions.OldQuestions,
