@@ -5,7 +5,7 @@ import auth.telegram.Strings.OldQuestion.haveNotOldQuestion
 import auth.telegram.Strings.OldQuestion.listClosedQuestions
 import auth.telegram.Strings.OldQuestion.listOfDefendants
 import auth.telegram.queries.SelectRespondent
-import auth.telegram.queries.SelectSubject
+import auth.telegram.queries.SelectTopic
 import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
@@ -33,7 +33,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
         inlineKeyboard {
             paginatedNumbers.forEach { item ->
                 row {
-                    dataButton(item.subject, SelectSubject(item.id!!))
+                    dataButton(item.subject, SelectTopic(item.id!!))
                 }
             }
             navigationRow(itemCount = subjects.size)
@@ -52,7 +52,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                 state.override { DialogState.Empty }
             }
         }
-        onDataCallbackQuery(SelectSubject::class) { (data, query) ->
+        onDataCallbackQuery(SelectTopic::class) { (data, query) ->
             sendTextMessage(
                 query.user.id,
                 listOfDefendants,
