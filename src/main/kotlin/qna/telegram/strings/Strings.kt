@@ -83,6 +83,12 @@ object Strings {
                 boldln("Вы согласны пообщаться?")
             }
 
+        fun acceptedProfile(userDetails: User.Details) =
+            buildEntities {
+                regularln("✅Вы согласились пообщаться с:\n")
+                addAll(accountInfo(userDetails))
+            }
+
         const val SeeButton = "Посмотреть"
         const val NextButton = "Следующий"
         const val AcceptButton = "Принять"

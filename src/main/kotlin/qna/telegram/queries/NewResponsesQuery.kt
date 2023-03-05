@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 object NewResponsesQuery {
     @Serializable
     @SerialName("nrs")
-    data class SeeNew(val questionId: Long) : Query
+    data class SeeNew(val questionId: Long, val doEdit: Boolean = true) : Query
 
     @Serializable
     @SerialName("nra")
-    data class Accept(val responseId: Long) : Query
+    data class Accept(val responseId: Long, val questionId: Long) : Query
 }
