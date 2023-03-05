@@ -11,6 +11,7 @@ import mute.telegram.UnmuteRunner
 import notifications.telegram.NewQuestionsNotificationSender
 import org.koin.core.context.startKoin
 import qna.domain.usecases.AutoCloseOldQuestionsUseCase
+import qna.telegram.AcceptedResponsesSender
 import qna.telegram.NewResponsesSender
 
 suspend fun main() {
@@ -22,6 +23,7 @@ suspend fun main() {
     val newResponsesSender: NewResponsesSender = application.koin.get()
     val newQuestionsNotificationSender: NewQuestionsNotificationSender = application.koin.get()
     val autoCloseOldQuestions: AutoCloseOldQuestionsUseCase = application.koin.get()
+    val acceptedResponsesSender: AcceptedResponsesSender = application.koin.get()
     telegramBot(readToken()) {
         requestsLimiter = CommonLimiter(lockCount = 30, regenTime = 1000)
         client = HttpClient(OkHttp)
@@ -32,6 +34,7 @@ suspend fun main() {
         with(newResponsesSender) { setup() }
         with(newQuestionsNotificationSender) { setup() }
         with(unmuteRunner) { unmute() }
+        acceptedResponsesSender.setup()
         autoCloseOldQuestions()
     }.join()
 }
