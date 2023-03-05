@@ -22,7 +22,7 @@ class ResponseRepositoryImpl : ResponseRepository {
     }
     override fun getRespondentsByQuestionId(questionId: Long): List<Long> {
         return Responses
-            .select(where = Responses.questionId eq questionId)
+            .select(Responses.questionId eq questionId)
             .map { it[Responses.respondentId].value }
     }
 
