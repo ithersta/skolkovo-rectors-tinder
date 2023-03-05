@@ -18,7 +18,7 @@ class AutoCloseOldQuestionsUseCase(
     private val clock: Clock,
     private val config: Config
 ) {
-    class Config(val after: Duration = 14.days)
+    class Config(val after: Duration = 28.days)
 
     context(CoroutineScope)
     operator fun invoke() = launch {

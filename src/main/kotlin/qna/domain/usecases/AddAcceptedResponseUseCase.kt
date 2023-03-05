@@ -37,9 +37,11 @@ class AddAcceptedResponseUseCase(
         val question = questionRepository.getById(response.questionId) ?: error("Associated question doesn't exist")
         if (question.authorId != fromUserId) return@transaction Result.Unauthorized
         val respondent = getUserDetails(response.respondentId) ?: error("Associated respondent doesn't exist")
-        acceptedResponsesRepository.add(id, clock.now())
-        runBlocking {
-            _newAcceptedResponses.send(AcceptedResponseMessage(question, respondent.id))
+        val wasInserted = acceptedResponsesRepository.add(id, clock.now())
+        if (wasInserted) {
+            runBlocking {
+                _newAcceptedResponses.send(AcceptedResponseMessage(question, respondent.id))
+            }
         }
         Result.OK(respondent)
     }

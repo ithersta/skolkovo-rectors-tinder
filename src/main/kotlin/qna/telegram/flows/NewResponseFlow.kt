@@ -15,6 +15,7 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.usecases.AddAcceptedResponseUseCase
+import qna.domain.usecases.GetQuestionByIdUseCase
 import qna.domain.usecases.GetUnsentResponseUseCase
 import qna.telegram.queries.NewResponsesQuery.Accept
 import qna.telegram.queries.NewResponsesQuery.SeeNew
@@ -23,6 +24,7 @@ import qna.telegram.strings.Strings
 fun RoleFilterBuilder<User.Normal>.newResponseFlow() {
     val getUnsentResponse: GetUnsentResponseUseCase by inject()
     val addAcceptedResponse: AddAcceptedResponseUseCase by inject()
+    val getQuestionById: GetQuestionByIdUseCase by inject()
     anyState {
         onDataCallbackQuery(SeeNew::class) { (data, query) ->
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
@@ -49,6 +51,11 @@ fun RoleFilterBuilder<User.Normal>.newResponseFlow() {
                         send(message.chat, text = Strings.NewResponses.NoMoreResponses)
                     }
                     deleteAfterDelay(ephemeralMessage)
+                    send(message.chat, Strings.NewResponses.WriteToCompanion)
+                    getQuestionById(data.questionId)?.let { question ->
+                        send(message.chat, Strings.NewResponses.CopyQuestion)
+                        send(message.chat, question.text)
+                    }
                 }
 
                 else -> return@onDataCallbackQuery

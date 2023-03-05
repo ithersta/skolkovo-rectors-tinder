@@ -11,7 +11,7 @@ object Strings {
             buildEntities {
                 regular(
                     "Добрый день, один из участников сообщества хотел бы " +
-                        "выйти на коммуникацию по следующему вопросу:\n\n"
+                            "выйти на коммуникацию по следующему вопросу:\n\n"
                 )
                 boldln(subject)
                 regularln(question + "\n")
@@ -52,12 +52,6 @@ object Strings {
         }
     }
 
-    object ToAskUser {
-        const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
-            "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
-        val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседнику") }
-    }
-
     object Question {
         const val SubjectQuestion = "Напишите тему вопроса (краткая формулировка)"
         const val WordingQuestion = "Сформулируйте свой вопрос"
@@ -93,5 +87,8 @@ object Strings {
         const val NextButton = "Следующий"
         const val AcceptButton = "Принять"
         const val NoMoreResponses = "Вы посмотрели всех откликнувшихся участников"
+        const val WriteToCompanion = "Напишите сразу собеседникам, чтобы договориться о времени " +
+                "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
+        val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседникам") }
     }
 }

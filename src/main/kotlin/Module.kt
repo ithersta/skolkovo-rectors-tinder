@@ -24,7 +24,7 @@ import qna.domain.usecases.GetNewResponseNotificationFlowUseCase
 
 val dataModule = module(createdAtStart = true) {
     single {
-        Database.connect("jdbc:h2:./database", driver = "org.h2.Driver").also { database ->
+        Database.connect("jdbc:h2:./database;MODE=MySQL;", driver = "org.h2.Driver").also { database ->
             transaction(database) {
                 SchemaUtils.createMissingTablesAndColumns(
                     PhoneNumbers,

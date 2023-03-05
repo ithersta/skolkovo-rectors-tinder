@@ -18,6 +18,7 @@ class AddResponseUseCase(
     sealed interface Result {
         object NoSuchQuestion : Result
         object QuestionClosed : Result
+        object AlreadyExists : Result
         data class OK(val response: Response) : Result
     }
 
@@ -29,7 +30,7 @@ class AddResponseUseCase(
     suspend operator fun invoke(questionId: Long, respondentId: Long) = transaction {
         val question = getQuestionById(questionId) ?: return@transaction Result.NoSuchQuestion
         if (question.isClosed) return@transaction Result.QuestionClosed
-        val id = responseRepository.add(questionId, respondentId)
+        val id = responseRepository.add(questionId, respondentId) ?: return@transaction Result.AlreadyExists
         val response = Response(id, questionId, respondentId)
         val responseCount = responseRepository.count(questionId)
         runBlocking {

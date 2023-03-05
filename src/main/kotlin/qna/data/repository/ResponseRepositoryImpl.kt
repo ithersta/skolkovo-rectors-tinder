@@ -2,6 +2,7 @@ package qna.data.repository
 
 import org.jetbrains.exposed.sql.*
 import org.koin.core.annotation.Single
+import qna.data.tables.AcceptedResponses
 import qna.data.tables.Responses
 import qna.domain.entities.Response
 import qna.domain.repository.ResponseRepository
@@ -26,7 +27,12 @@ class ResponseRepositoryImpl : ResponseRepository {
 
     override fun getAnyUnsent(questionId: Long): Response? {
         return Responses
-            .select { (Responses.hasBeenSent eq false) and (Responses.questionId eq questionId) }
+            .leftJoin(AcceptedResponses)
+            .select {
+                (Responses.hasBeenSent eq false) and
+                        (Responses.questionId eq questionId) and
+                        (AcceptedResponses.responseId eq null)
+            }
             .orderBy(Responses.id)
             .limit(1)
             .firstOrNull()
@@ -39,11 +45,11 @@ class ResponseRepositoryImpl : ResponseRepository {
         }
     }
 
-    override fun add(questionId: Long, respondentId: Long): Long {
-        return Responses.insertAndGetId {
+    override fun add(questionId: Long, respondentId: Long): Long? {
+        return Responses.insertIgnoreAndGetId {
             it[Responses.questionId] = questionId
             it[Responses.respondentId] = respondentId
-        }.value
+        }?.value
     }
 
     private fun mapper(it: ResultRow) = Response(
