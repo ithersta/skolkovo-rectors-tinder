@@ -52,8 +52,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         val pagRespondent = respondent.drop(offset).take(limit)
         inlineKeyboard {
             pagRespondent.forEach { item ->
-                val user = getUserDetailsUseCase(item)
                 row {
+                    val user = getUserDetailsUseCase(item)
                     dataButton(user!!.name, SelectRespondent(user.id, data.questionId))
                 }
             }
@@ -120,6 +120,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     }
     anyState {
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
+            //тут баг (не знаю, как решить)
+            //если человек не нажал да/нет, а нажал команду отменить, то потом участник
+            // в списке встречается не 1 раз, а 2, 3 и тд
+            //возможно, эта проблема везде, где используется такая функция
             addResponseUseCase(data.questionId, data.respondentId)
             answer(query)
         }
