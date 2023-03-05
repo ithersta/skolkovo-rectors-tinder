@@ -120,7 +120,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     }
     anyState {
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            addResponseUseCase(data.respondentId, data.questionId)
+            addResponseUseCase(data.questionId, data.respondentId)
             answer(query)
         }
     }
