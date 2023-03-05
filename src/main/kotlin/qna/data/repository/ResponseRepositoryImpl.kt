@@ -30,8 +30,8 @@ class ResponseRepositoryImpl : ResponseRepository {
             .leftJoin(AcceptedResponses)
             .select {
                 (Responses.hasBeenSent eq false) and
-                        (Responses.questionId eq questionId) and
-                        (AcceptedResponses.responseId eq null)
+                    (Responses.questionId eq questionId) and
+                    (AcceptedResponses.responseId eq null)
             }
             .orderBy(Responses.id)
             .limit(1)
