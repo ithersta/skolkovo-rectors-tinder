@@ -120,11 +120,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     }
     anyState {
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            //тут баг (не знаю, как решить)
+            //тут баг
             //если человек не нажал да/нет, а нажал команду отменить, то потом участник
             // в списке встречается не 1 раз, а 2, 3 и тд
             //возможно, эта проблема везде, где используется такая функция
-            //наверно, нужна проверка, чтобы questionId respondentId полностью не совпадали
+            //наверно, нужна проверка, чтобы questionId respondentId были уникальными
             // (то есть, чтобы не было 2-х и более одинаковых строк в бд с questionId respondentId)
             addResponseUseCase(data.questionId, data.respondentId)
             answer(query)
