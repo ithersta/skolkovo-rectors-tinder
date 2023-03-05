@@ -79,9 +79,8 @@ object Strings {
     }
 
     object TargetArea {
-        const val listSpheres =
-            "Список сфер по вашему профилю, нажмите на сферу что бы посмотреть какие есть темы вопросов."
-        const val ListQuestion = "Список вопросов по вашим сферам.Нажмите на тему, чтобы посмотреть подробнее."
+        const val listSpheres = "Список сфер по вашему профилю. Нажмите на сферу, чтобы посмотреть список тем вопросов."
+        const val ListQuestion = "Список вопросов по вашим сферам. Нажмите на тему, чтобы посмотреть подробнее."
         const val haveNotQuestionInThisArea = "На данный момент нет вопросов по этой сфере."
         fun buildQuestionByQuestionText(text: String): String {
             return "Текст вопроса $text.\nХотите ли вы ответить на этот вопрос?"
