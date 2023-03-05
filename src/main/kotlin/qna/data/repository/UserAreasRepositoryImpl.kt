@@ -40,7 +40,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
         val nonRightAwayUsers = NotificationPreferences
             .slice(NotificationPreferences.userId)
             .select { NotificationPreferences.preference neq NotificationPreference.RightAway }
-        return  (UserAreas innerJoin Users)
+        return (UserAreas innerJoin Users)
             .slice(UserAreas.userId)
             .select((UserAreas.area eq questionArea) and (Users.city neq city))
             .except(muteUsers)
