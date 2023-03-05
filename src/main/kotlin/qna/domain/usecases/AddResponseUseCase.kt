@@ -17,9 +17,7 @@ class AddResponseUseCase(
     sealed interface Result {
         object NoSuchQuestion : Result
         object QuestionClosed : Result
-        object AlreadyExists : Result
         data class OK(val response: Response) : Result
-
     }
 
     private val _newResponses = Channel<Response>(BUFFERED)

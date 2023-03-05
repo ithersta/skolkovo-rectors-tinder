@@ -52,8 +52,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         val pagRespondent = respondent.drop(offset).take(limit)
         inlineKeyboard {
             pagRespondent.forEach { item ->
+                val user = getUserDetailsUseCase(item)
                 row {
-                    val user = getUserDetailsUseCase(item)
                     dataButton(user!!.name, SelectRespondent(user.id, data.questionId))
                 }
             }
@@ -120,6 +120,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     }
     anyState {
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
+            //тут должно добавляться в acceptedResponses?
             addResponseUseCase(data.questionId, data.respondentId)
             answer(query)
         }
