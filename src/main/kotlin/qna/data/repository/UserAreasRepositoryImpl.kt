@@ -1,6 +1,7 @@
 package qna.data.repository
 
 import auth.data.tables.UserAreas
+import auth.data.tables.Users
 import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
 import notifications.domain.entities.NotificationPreference
@@ -27,6 +28,21 @@ class UserAreasRepositoryImpl : UserAreasRepository {
         return UserAreas
             .slice(UserAreas.userId)
             .select { UserAreas.area eq questionArea }
+            .except(muteUsers)
+            .except(nonRightAwayUsers)
+            .map { it[UserAreas.userId].value }
+    }
+
+    override fun getFilteredUsersByArea(questionArea: QuestionArea, city: String): List<Long> {
+        val muteUsers = MuteSettings
+            .slice(MuteSettings.userId)
+            .selectAll()
+        val nonRightAwayUsers = NotificationPreferences
+            .slice(NotificationPreferences.userId)
+            .select { NotificationPreferences.preference neq NotificationPreference.RightAway }
+        return  (UserAreas innerJoin Users)
+            .slice(UserAreas.userId)
+            .select((UserAreas.area eq questionArea) and (Users.city neq city))
             .except(muteUsers)
             .except(nonRightAwayUsers)
             .map { it[UserAreas.userId].value }
