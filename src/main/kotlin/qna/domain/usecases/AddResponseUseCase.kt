@@ -19,7 +19,6 @@ class AddResponseUseCase(
         object QuestionClosed : Result
         object AlreadyExists : Result
         data class OK(val response: Response) : Result
-
     }
 
     private val _newResponses = Channel<Response>(BUFFERED)
