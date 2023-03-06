@@ -9,7 +9,7 @@ class GetRespondentsByQuestionIdUseCase(
     private val responseRepository: ResponseRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(questionId: Long): List<Long> = transaction {
-        return@transaction responseRepository.getRespondentsByQuestionId(questionId)
+    operator fun invoke(questionId: Long, offset: Int, limit: Int): List<Long> = transaction {
+        return@transaction responseRepository.getRespondentsByQuestionId(questionId).drop(offset).take(limit)
     }
 }

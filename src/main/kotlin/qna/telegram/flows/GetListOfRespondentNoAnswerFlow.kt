@@ -37,10 +37,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val addResponseUseCase: AddResponseUseCase by inject()
 
     subjectPager = pager(id = "subjectsNoAnswer") {
-        val subject = getQuestionsByUserIdUseCase(context!!.user.id)
-        val pagSubject = subject.drop(offset).take(limit)
+        val subject = getQuestionsByUserIdUseCase(context!!.user.id, offset, limit)
         inlineKeyboard {
-            pagSubject.forEach { item ->
+            subject.forEach { item ->
                 row {
                     dataButton(item.subject, SelectSubject(item.authorId, item.id!!))
                 }
@@ -49,10 +48,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         }
     }
     respondentPager = pager(id = "respondentNoAnswer", dataKClass = SeeList::class) {
-        val respondent = getRespondentsByQuestionIdUseCase(data.questionId)
-        val pagRespondent = respondent.drop(offset).take(limit)
+        val respondent = getRespondentsByQuestionIdUseCase(data.questionId, offset, limit)
         inlineKeyboard {
-            pagRespondent.forEach { item ->
+            respondent.forEach { item ->
                 val user = getUserDetailsUseCase(item)
                 row {
                     dataButton(user!!.name, SelectRespondent(user.id, data.questionId))
