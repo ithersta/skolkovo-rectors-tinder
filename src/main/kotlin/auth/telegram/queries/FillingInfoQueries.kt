@@ -9,7 +9,7 @@ import qna.domain.entities.QuestionArea
 
 @Serializable
 @SerialName("course")
-class ChooseCourseQuery(val course:Course) : Query
+class ChooseCourseQuery(val course: Course) : Query
 
 @Serializable
 @SerialName("country")
@@ -33,7 +33,8 @@ class SelectCityQuery(val city: String) : Query
 
 @Serializable
 @SerialName("type")
-class ChooseOrganizationTypeQuery(val type:OrganizationType) : Query
+class ChooseOrganizationTypeQuery(val type: OrganizationType) : Query
+
 @Serializable
 @SerialName("sq")
 class SelectQuestionQuery(val area: QuestionArea) : Query

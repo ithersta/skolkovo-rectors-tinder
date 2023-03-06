@@ -58,13 +58,13 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val contact = message.content.contact
             require(contact.userId == message.chat.id)
             val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
-            when(phoneNumberIsAllowedUseCase(phoneNumber)) {
+            when (phoneNumberIsAllowedUseCase(phoneNumber)) {
                 PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber -> {
                     sendTextMessage(
                         message.chat,
                         Strings.AuthenticationResults.DuplicatePhoneNumber
                     )
-                    state.override {DialogState.Empty }
+                    state.override { DialogState.Empty }
                 }
 
                 PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> {
@@ -72,30 +72,30 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                         message.chat,
                         Strings.AuthenticationResults.PhoneNumberNotAllowed
                     )
-                    state.override {DialogState.Empty }
+                    state.override { DialogState.Empty }
                 }
 
-                PhoneNumberIsAllowedUseCase.Result.OK ->state.override { next(phoneNumber) }
+                PhoneNumberIsAllowedUseCase.Result.OK -> state.override { next(phoneNumber) }
             }
         }
         onText { sendTextMessage(it.chat, InvalidShare) }
     }
 
-    state<ChooseCourseState>{
+    state<ChooseCourseState> {
         onEnter {
             sendTextMessage(
                 it,
                 Strings.Courses.ChooseCourse,
                 replyMarkup = inlineKeyboard {
                     courseToString.map {
-                        row{
+                        row {
                             dataButton(it.value, ChooseCourseQuery(it.key))
                         }
                     }
                 }
             )
         }
-        onDataCallbackQuery(ChooseCourseQuery::class){(data, query) ->
+        onDataCallbackQuery(ChooseCourseQuery::class) { (data, query) ->
             state.override { next(data.course) }
             answer(query)
         }
@@ -117,21 +117,21 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onText { state.override { next(it.content.text) } }
     }
 
-    state<ChooseOrganizationTypeState>{
+    state<ChooseOrganizationTypeState> {
         onEnter {
             sendTextMessage(
                 it,
                 Strings.OrganizationTypes.ChooseOrganizationType,
                 replyMarkup = inlineKeyboard {
                     organizationTypeToString.map {
-                        row{
+                        row {
                             dataButton(it.value, ChooseOrganizationTypeQuery(it.key))
                         }
                     }
                 }
             )
         }
-        onDataCallbackQuery(ChooseOrganizationTypeQuery::class){(data, query) ->
+        onDataCallbackQuery(ChooseOrganizationTypeQuery::class) { (data, query) ->
             state.override { next(data.type) }
             answer(query)
         }
