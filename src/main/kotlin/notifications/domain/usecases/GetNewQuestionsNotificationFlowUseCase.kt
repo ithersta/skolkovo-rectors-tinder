@@ -44,7 +44,7 @@ class GetNewQuestionsNotificationFlowUseCase(
             hours { at(config.dailyHour) }
             minutes { at(0) }
             seconds { at(0) }
-        }.doInfinity {
+        }.doInfinity { _ ->
             val now = adjustedNow()
             generateNotifications(NotificationPreference.Daily, now = now).forEach { emit(it) }
             if (now.toLocalDateTime(timeZone).dayOfWeek == (config.dayOfWeek)) {
