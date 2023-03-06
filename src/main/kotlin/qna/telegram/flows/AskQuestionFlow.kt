@@ -49,7 +49,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
     val addAcceptedResponseRepoUseCase: AddAcceptedResponseRepoUseCase by inject()
-    var listOfValidUsers: List<Long> = mutableListOf()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -134,6 +133,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.Question.Success
             )
             coroutineScope.launch {
+                var listOfValidUsers: List<Long> = mutableListOf()
                 state.snapshot.areas.forEach {
                     listOfValidUsers =
                         getUsersByAreaUseCase(

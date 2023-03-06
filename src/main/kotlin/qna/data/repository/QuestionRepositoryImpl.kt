@@ -71,11 +71,8 @@ class QuestionRepositoryImpl : QuestionRepository {
 
     override fun getByUserId(userId: Long): List<Question> {
         return Questions
-            .select((Questions.authorId eq userId) and (Questions.isClosed.eq(false)))
-            .map { it[Questions.id].value }
-            .stream()
-            .map { Questions.select { Questions.id eq it }.map(::mapper).first() }
-            .collect(Collectors.toList())
+            .select { (Questions.authorId eq userId) and (Questions.isClosed eq false) }
+            .map(::mapper)
     }
 
     private fun mapper(row: ResultRow): Question {
