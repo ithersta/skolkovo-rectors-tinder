@@ -2,6 +2,7 @@ package auth.data.repository
 
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
+import auth.domain.entities.OrganizationType
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository
@@ -73,6 +74,12 @@ class UserRepositoryImpl : UserRepository {
     override fun changeJob(id: Long, newJob: String) {
         Users.update({ Users.id eq id }) {
             it[job] = newJob
+        }
+    }
+
+    override fun changeOrganizationType(id: Long, newType: OrganizationType) {
+        Users.update({ Users.id eq id }) {
+            it[organizationType] = newType
         }
     }
 

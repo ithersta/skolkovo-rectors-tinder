@@ -1,5 +1,6 @@
 package changeinfo.domain.interactors
 
+import auth.domain.entities.OrganizationType
 import auth.domain.repository.UserRepository
 import common.domain.Transaction
 import org.koin.core.annotation.Single
@@ -20,6 +21,10 @@ class ChangeAccountInfoInteractor(
 
     fun changeJob(id: Long, newJob: String) = transaction {
         userRepository.changeJob(id, newJob)
+    }
+
+    fun changeOrganizationType(id: Long, newType: OrganizationType)=transaction{
+        userRepository.changeOrganizationType(id, newType)
     }
 
     fun changeOrganization(id: Long, newOrganization: String) = transaction {

@@ -21,6 +21,7 @@ object Strings {
 
         object Organization {
             const val Button = "организация"
+            const val Type="Выберите тип организации-нового места работы"
             const val Message = "Введите новое место работы"
         }
 

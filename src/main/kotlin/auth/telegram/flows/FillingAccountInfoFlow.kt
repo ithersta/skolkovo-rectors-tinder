@@ -14,16 +14,15 @@ import auth.telegram.Strings.InvalidShare
 import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.courseToString
-import auth.telegram.Strings.organizationTypeToString
 import auth.telegram.parsers.JsonParser
 import auth.telegram.queries.ChooseCourseQuery
-import auth.telegram.queries.ChooseOrganizationTypeQuery
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
 import dev.inmo.tgbotapi.extensions.api.answers.answer
@@ -118,23 +117,10 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<ChooseOrganizationTypeState>{
-        onEnter {
-            sendTextMessage(
-                it,
-                Strings.OrganizationTypes.ChooseOrganizationType,
-                replyMarkup = inlineKeyboard {
-                    organizationTypeToString.map {
-                        row{
-                            dataButton(it.value, ChooseOrganizationTypeQuery(it.key))
-                        }
-                    }
-                }
-            )
-        }
-        onDataCallbackQuery(ChooseOrganizationTypeQuery::class){(data, query) ->
-            state.override { next(data.type) }
-            answer(query)
-        }
+        chooseOrganizationType(
+            text=Strings.OrganizationTypes.ChooseOrganizationType,
+            onFinish = { state, type -> state.next(type) }
+        )
     }
 
     state<WriteOrganizationState> {
