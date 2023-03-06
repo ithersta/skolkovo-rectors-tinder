@@ -1,6 +1,7 @@
 package qna.telegram
 
 import common.telegram.MassSendLimiter
+import dev.inmo.micro_utils.coroutines.launchSafelyWithoutExceptions
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
@@ -17,7 +18,7 @@ class NewResponsesSender(
     private val getNewResponseNotificationFlow: GetNewResponseNotificationFlowUseCase,
     private val massSendLimiter: MassSendLimiter
 ) {
-    fun BehaviourContext.setup() = launch {
+    fun BehaviourContext.setup() = launchSafelyWithoutExceptions {
         getNewResponseNotificationFlow().collect { notification ->
             massSendLimiter.wait()
             runCatching {

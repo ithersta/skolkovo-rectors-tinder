@@ -1,6 +1,7 @@
 package qna.domain.usecases
 
 import common.domain.Transaction
+import dev.inmo.micro_utils.coroutines.launchSafelyWithoutExceptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,9 +22,11 @@ class AutoCloseOldQuestionsUseCase(
     class Config(val after: Duration = 28.days)
 
     context(CoroutineScope)
-    operator fun invoke() = launch {
+    operator fun invoke() = launchSafelyWithoutExceptions {
         while (true) {
-            transaction { questionRepository.closeOlderThan(clock.now() - config.after) }
+            runCatching {
+                transaction { questionRepository.closeOlderThan(clock.now() - config.after) }
+            }
             delay(1.hours)
         }
     }

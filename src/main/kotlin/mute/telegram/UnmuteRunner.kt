@@ -1,5 +1,6 @@
 package mute.telegram
 
+import dev.inmo.micro_utils.coroutines.launchSafelyWithoutExceptions
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
@@ -21,21 +22,23 @@ class UnmuteRunner(
     private val deleteMuteSettingsUseCase: DeleteMuteSettingsUseCase,
     private val clock: Clock
 ) {
-    fun BehaviourContext.unmute() = launch {
+    fun BehaviourContext.setup() = launchSafelyWithoutExceptions {
         while (true) {
             val earliestRow = getEarliestMuteSettingsUseCase()
             if (earliestRow != null && clock.now().compareTo(earliestRow.until) != -1) {
                 deleteMuteSettingsUseCase(earliestRow.userId)
-                sendTextMessage(
-                    UserId(earliestRow.userId),
-                    Strings.UnmuteQuestion,
-                    replyMarkup = inlineKeyboard {
-                        row {
-                            dataButton(Strings.Yes, YesNoMuteQuery(true))
-                            dataButton(Strings.No, YesNoMuteQuery(false))
+                runCatching {
+                    sendTextMessage(
+                        UserId(earliestRow.userId),
+                        Strings.UnmuteQuestion,
+                        replyMarkup = inlineKeyboard {
+                            row {
+                                dataButton(Strings.Yes, YesNoMuteQuery(true))
+                                dataButton(Strings.No, YesNoMuteQuery(false))
+                            }
                         }
-                    }
-                )
+                    )
+                }
             } else {
                 delay(1.hours)
             }

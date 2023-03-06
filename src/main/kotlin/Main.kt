@@ -33,7 +33,7 @@ suspend fun main() {
         with(feedbackRequester) { setup() }
         with(newResponsesSender) { setup() }
         with(newQuestionsNotificationSender) { setup() }
-        with(unmuteRunner) { unmute() }
+        with(unmuteRunner) { setup() }
         acceptedResponsesSender.setup()
         autoCloseOldQuestions()
     }.join()
