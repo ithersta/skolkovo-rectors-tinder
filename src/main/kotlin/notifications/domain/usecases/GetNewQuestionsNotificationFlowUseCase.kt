@@ -3,14 +3,17 @@ package notifications.domain.usecases
 import common.domain.Transaction
 import dev.inmo.krontab.builder.buildSchedule
 import dev.inmo.krontab.doInfinity
-import kotlinx.coroutines.flow.FlowCollector
+import dev.inmo.tgbotapi.extensions.utils.flatMap
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.datetime.*
 import notifications.domain.entities.NewQuestionsNotification
 import notifications.domain.entities.NotificationPreference
 import notifications.domain.repository.NotificationPreferenceRepository
 import org.koin.core.annotation.Single
-import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
 @Single
@@ -23,7 +26,19 @@ class GetNewQuestionsNotificationFlowUseCase(
 ) {
     class Config(val dailyHour: Int = 15, val dayOfWeek: DayOfWeek = DayOfWeek.TUESDAY)
 
-    operator fun invoke() = flow {
+    private val testNotificationChannel = Channel<NotificationPreference>(BUFFERED)
+
+    operator fun invoke() = merge(dailyFlow(), testFlow())
+
+    suspend fun triggerTestNotification(notificationPreference: NotificationPreference) {
+        testNotificationChannel.send(notificationPreference)
+    }
+
+    private fun testFlow() = testNotificationChannel.receiveAsFlow().flatMap { notificationPreference ->
+        generateNotifications(notificationPreference, now = clock.now())
+    }
+
+    private fun dailyFlow() = flow {
         val offset = timeZone.offsetAt(clock.now()).totalSeconds.seconds.inWholeMinutes.toInt()
         buildSchedule(offset) {
             hours { at(config.dailyHour) }
@@ -31,21 +46,23 @@ class GetNewQuestionsNotificationFlowUseCase(
             seconds { at(0) }
         }.doInfinity {
             val now = adjustedNow()
-            emitFor(NotificationPreference.Daily, from = now - 1.days, until = now)
+            generateNotifications(NotificationPreference.Daily, now = now).forEach { emit(it) }
             if (now.toLocalDateTime(timeZone).dayOfWeek == (config.dayOfWeek)) {
-                emitFor(NotificationPreference.Weekly, from = now - 7.days, until = now)
+                generateNotifications(NotificationPreference.Weekly, now = now).forEach { emit(it) }
             }
         }
     }
 
-    private suspend fun FlowCollector<NewQuestionsNotification>.emitFor(
+    private fun generateNotifications(
         notificationPreference: NotificationPreference,
-        from: Instant,
-        until: Instant
-    ) = transaction {
-        notificationPreferenceRepository.getUserIdsWithPreference(notificationPreference)
-    }.forEach { userId ->
-        emit(NewQuestionsNotification(userId, from, until, notificationPreference))
+        now: Instant
+    ) = run {
+        val from = now - notificationPreference.duration
+        transaction {
+            notificationPreferenceRepository.getUserIdsWithPreference(notificationPreference)
+        }.map { userId ->
+            NewQuestionsNotification(userId, from = from, until = now, notificationPreference)
+        }
     }
 
     private fun adjustedNow() = clock.now()
