@@ -1,9 +1,0 @@
-package qna.telegram.states
-
-import common.telegram.DialogState
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class GetListOfSubjects(
-    val userId: Long,
-) : DialogState
