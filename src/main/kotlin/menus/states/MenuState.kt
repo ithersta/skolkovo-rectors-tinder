@@ -22,10 +22,8 @@ object MenuState {
 
         @Serializable
         object GetListOfSubjects : DialogState
-
     }
 
     @Serializable
     object Events : DialogState
-
 }
