@@ -10,7 +10,6 @@ import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.domain.entities.Question
 import qna.domain.repository.QuestionRepository
-import java.util.stream.Collectors
 
 @Single
 class QuestionRepositoryImpl : QuestionRepository {

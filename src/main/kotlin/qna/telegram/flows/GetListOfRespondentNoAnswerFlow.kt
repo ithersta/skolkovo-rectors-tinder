@@ -5,6 +5,7 @@ import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
+import com.ithersta.tgbotapi.pagination.replyMarkup
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -24,7 +25,6 @@ import qna.telegram.queries.SelectSubject
 import qna.telegram.states.ChooseAction
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
-import com.ithersta.tgbotapi.pagination.replyMarkup
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
     val getQuestionsByUserIdUseCase: GetQuestionsByUserIdUseCase by inject()
@@ -126,4 +126,3 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         }
     }
 }
-
