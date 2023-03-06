@@ -17,21 +17,21 @@ object WaitingForContact : DialogState {
 data class ChooseCourseState(
     val phoneNumber: PhoneNumber
 ) : DialogState {
-    fun next(course: Course) = WriteNameState(phoneNumber,course)
+    fun next(course: Course) = WriteNameState(phoneNumber, course)
 }
 
 @Serializable
 data class WriteNameState(
     val phoneNumber: PhoneNumber,
-    val course:Course
+    val course: Course
 ) : DialogState {
-    fun next(name: String) = ChooseCity(phoneNumber,course, name)
+    fun next(name: String) = ChooseCity(phoneNumber, course, name)
 }
 
 @Serializable
 data class ChooseCity(
     val phoneNumber: PhoneNumber,
-    val course:Course,
+    val course: Course,
     val name: String
 ) : DialogState {
     fun next(city: String) = WriteProfessionState(phoneNumber, course, name, city)
@@ -40,18 +40,17 @@ data class ChooseCity(
 @Serializable
 data class WriteProfessionState(
     val phoneNumber: PhoneNumber,
-    val course:Course,
+    val course: Course,
     val name: String,
     val city: String
 ) : DialogState {
     fun next(profession: String) = ChooseOrganizationTypeState(phoneNumber, course, name, city, profession)
 }
 
-
 @Serializable
 data class ChooseOrganizationTypeState(
     val phoneNumber: PhoneNumber,
-    val course:Course,
+    val course: Course,
     val name: String,
     val city: String,
     val profession: String
@@ -63,7 +62,7 @@ data class ChooseOrganizationTypeState(
 @Serializable
 data class WriteOrganizationState(
     val phoneNumber: PhoneNumber,
-    val course:Course,
+    val course: Course,
     val name: String,
     val city: String,
     val profession: String,
@@ -77,7 +76,7 @@ data class WriteOrganizationState(
 @Serializable
 data class WriteProfessionalDescriptionState(
     val phoneNumber: PhoneNumber,
-    val course:Course,
+    val course: Course,
     val name: String,
     val city: String,
     val profession: String,
@@ -91,7 +90,7 @@ data class WriteProfessionalDescriptionState(
 @Serializable
 data class ChooseQuestionAreasState(
     val phoneNumber: PhoneNumber,
-    val course:Course,
+    val course: Course,
     val name: String,
     val city: String,
     val profession: String,
@@ -110,7 +109,7 @@ data class ChooseQuestionAreasState(
 @Serializable
 data class AddAccountInfoToDataBaseState(
     val phoneNumber: PhoneNumber,
-    val course:Course,
+    val course: Course,
     val name: String,
     val city: String,
     val profession: String,

@@ -15,8 +15,8 @@ import qna.domain.entities.QuestionArea
 object Strings {
     const val Welcome =
         "Дорогой участник, приветствуем тебя в боте сообщества выпускников программ Центра трансформации образования. " +
-                "Здесь собрались выпускники разных лет таких программ, как Школа ректоров, Лидеры научно-технологического прорыва, Школа управления исследовательскими программами и других программ. " +
-                "Для того, чтобы попасть в пространство единомышленников, поделитесь контактом, нажав соответствующую кнопку и заполните свой краткий профайл"
+            "Здесь собрались выпускники разных лет таких программ, как Школа ректоров, Лидеры научно-технологического прорыва, Школа управления исследовательскими программами и других программ. " +
+            "Для того, чтобы попасть в пространство единомышленников, поделитесь контактом, нажав соответствующую кнопку и заполните свой краткий профайл"
     const val ShareContact = "Поделиться номером телефона"
     const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
@@ -74,7 +74,6 @@ object Strings {
         const val ManagementSchool = "Школа управления исследовательскими программами"
         const val StepToSchoolDevelopment = "Шаг развития школы"
         const val EducationalProgramsCode = "Код образовательных программ"
-
     }
 
     val courseToString = mapOf<Course, String>(
@@ -85,11 +84,10 @@ object Strings {
         Course.EducationalProgramsCode to EducationalProgramsCode
     )
 
-
     object Question {
         const val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
-                    "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
+                "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
         const val Science = "наука"
         const val Education = "образование"
         const val Innovations = "инновации"
@@ -102,7 +100,6 @@ object Strings {
         const val Strategy = "стратегия"
         const val Others = "иное"
     }
-
 
     var questionAreaToString = mapOf<QuestionArea, String>(
         QuestionArea.Science to Question.Science,
