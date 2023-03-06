@@ -8,7 +8,6 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.toChatId
 import feedback.domain.usecases.GetFeedbackRequestsFlowUseCase
 import feedback.telegram.queries.FeedbackQueries
-import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 
 @Single

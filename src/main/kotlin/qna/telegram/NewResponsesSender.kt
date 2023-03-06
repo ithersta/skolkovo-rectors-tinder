@@ -7,7 +7,6 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import dev.inmo.tgbotapi.types.toChatId
 import generated.dataButton
-import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 import qna.domain.usecases.GetNewResponseNotificationFlowUseCase
 import qna.telegram.queries.NewResponsesQuery
