@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
 import qna.domain.entities.QuestionArea
 
+@Suppress("TooManyFunctions")
 @Single
 class UserRepositoryImpl : UserRepository {
     override fun add(user: User.Details) {
