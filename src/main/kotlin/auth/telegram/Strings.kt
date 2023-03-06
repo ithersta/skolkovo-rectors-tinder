@@ -2,14 +2,21 @@
 
 package auth.telegram
 
+import auth.domain.entities.Course
+import auth.domain.entities.OrganizationType
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
+import auth.telegram.Strings.Courses.EducationalProgramsCode
+import auth.telegram.Strings.Courses.LeadersOfBreakthrough
+import auth.telegram.Strings.Courses.ManagementSchool
+import auth.telegram.Strings.Courses.RectorsSchool
+import auth.telegram.Strings.Courses.StepToSchoolDevelopment
 import qna.domain.entities.QuestionArea
 
 object Strings {
     const val Welcome =
         "Дорогой участник, приветствуем тебя в боте сообщества выпускников программ Центра трансформации образования. " +
-            "Здесь собрались выпускники разных лет таких программ, как Школа ректоров, Лидеры научно-технологического прорыва, Школа управления исследовательскими программами и других программ. " +
-            "Для того, чтобы попасть в пространство единомышленников, поделитесь контактом, нажав соответствующую кнопку и заполните свой краткий профайл"
+                "Здесь собрались выпускники разных лет таких программ, как Школа ректоров, Лидеры научно-технологического прорыва, Школа управления исследовательскими программами и других программ. " +
+                "Для того, чтобы попасть в пространство единомышленников, поделитесь контактом, нажав соответствующую кнопку и заполните свой краткий профайл"
     const val ShareContact = "Поделиться номером телефона"
     const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
@@ -33,10 +40,56 @@ object Strings {
 
     const val FinishChoosing = "Закончить выбор"
 
+    object OrganizationTypes {
+        const val ChooseOrganizationType =
+            "Выберите тип организации, в которой вы работаете"
+        const val ScientificOrganization = "научная организация"
+        const val School = "школа"
+        const val EngineeringUniversity = "инженерно-технический университет"
+        const val ClassicalUniversity = "классический (многопрофильный) университет"
+        const val FederalUniversity = "федеральный университет"
+        const val MedicalUniversity = "медицинский университет"
+        const val AgriculturalUniversity = "аграрный университет"
+        const val TransportUniversity = "транспортный университет"
+        const val TheatreUniversity = "театральный институт"
+    }
+
+    var organizationTypeToString = mapOf<OrganizationType, String>(
+        OrganizationType.ScientificOrganization to OrganizationTypes.ScientificOrganization,
+        OrganizationType.School to OrganizationTypes.School,
+        OrganizationType.EngineeringUniversity to OrganizationTypes.EngineeringUniversity,
+        OrganizationType.ClassicalUniversity to OrganizationTypes.ClassicalUniversity,
+        OrganizationType.FederalUniversity to OrganizationTypes.FederalUniversity,
+        OrganizationType.MedicalUniversity to OrganizationTypes.MedicalUniversity,
+        OrganizationType.AgriculturalUniversity to OrganizationTypes.AgriculturalUniversity,
+        OrganizationType.TransportUniversity to OrganizationTypes.TransportUniversity,
+        OrganizationType.TheatreUniversity to OrganizationTypes.TheatreUniversity
+    )
+
+    object Courses {
+        const val ChooseCourse =
+            "Выберите программу, которую вы прошли"
+        const val RectorsSchool = "Школа ректоров"
+        const val LeadersOfBreakthrough = "Лидеры научно-технологического прорыва"
+        const val ManagementSchool = "Школа управления исследовательскими программами"
+        const val StepToSchoolDevelopment = "Шаг развития школы"
+        const val EducationalProgramsCode = "Код образовательных программ"
+
+    }
+
+    val courseToString = mapOf<Course, String>(
+        Course.RectorsSchool to RectorsSchool,
+        Course.LeadersOfBreakthrough to LeadersOfBreakthrough,
+        Course.ManagementSchool to ManagementSchool,
+        Course.StepToSchoolDevelopment to StepToSchoolDevelopment,
+        Course.EducationalProgramsCode to EducationalProgramsCode
+    )
+
+
     object Question {
         const val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
-                "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
+                    "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
         const val Science = "наука"
         const val Education = "образование"
         const val Innovations = "инновации"
@@ -49,6 +102,7 @@ object Strings {
         const val Strategy = "стратегия"
         const val Others = "иное"
     }
+
 
     var questionAreaToString = mapOf<QuestionArea, String>(
         QuestionArea.Science to Question.Science,
