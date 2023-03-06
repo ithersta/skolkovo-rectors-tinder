@@ -1,6 +1,8 @@
 package auth.domain.usecases
 
 import NoOpTransaction
+import auth.domain.entities.Course
+import auth.domain.entities.OrganizationType
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository
@@ -17,9 +19,11 @@ internal class RegisterUserUseCaseTest {
     private val sampleUserDetails = User.Details(
         id = sampleUserId,
         phoneNumber = samplePhoneNumber,
+        course = Course.RectorsSchool,
         name = "Александр",
         city = "Санкт-Петербург",
         job = "Главный специалист",
+        organizationType = OrganizationType.School,
         organization = "Организация",
         activityDescription = "Описание деятельности",
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
