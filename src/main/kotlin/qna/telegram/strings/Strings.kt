@@ -63,11 +63,15 @@ object Strings {
 
     object NewResponses {
         fun message(notification: NewResponseNotification) = when (notification) {
-            is NewResponseNotification.Daily ->
-                "Есть участники, согласившиеся ответить вам на вопрос «${notification.question.subject}»"
+            is NewResponseNotification.Daily -> buildEntities {
+                regular("Есть участники, согласившиеся ответить вам на вопрос ")
+                bold("«${notification.question.subject}»")
+            }
 
-            is NewResponseNotification.OnThreshold ->
-                "${notification.count} участника согласились ответить вам на вопрос «${notification.question.subject}»"
+            is NewResponseNotification.OnThreshold -> buildEntities {
+                regular("${notification.count} участника согласились ответить вам на вопрос ")
+                bold("«${notification.question.subject}»")
+            }
         }
 
         fun profile(userDetails: User.Details) =

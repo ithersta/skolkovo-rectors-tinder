@@ -23,7 +23,7 @@ class NewResponsesSender(
             runCatching {
                 sendTextMessage(
                     chatId = notification.question.authorId.toChatId(),
-                    text = Strings.NewResponses.message(notification),
+                    entities = Strings.NewResponses.message(notification),
                     replyMarkup = flatInlineKeyboard {
                         dataButton(Strings.NewResponses.SeeButton, NewResponsesQuery.SeeNew(notification.question.id!!))
                     }
