@@ -4,6 +4,7 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import changeinfo.telegram.sendFieldsToChange
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
+import com.ithersta.tgbotapi.pagination.PagerState
 import common.telegram.DialogState
 import generated.menu
 import menus.states.MenuState

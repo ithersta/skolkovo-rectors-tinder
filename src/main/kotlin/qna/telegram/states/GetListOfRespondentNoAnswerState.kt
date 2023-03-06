@@ -7,9 +7,3 @@ import kotlinx.serialization.Serializable
 data class GetListOfSubjects(
     val userId: Long,
 ) : DialogState
-
-@Serializable
-data class ChooseAction(
-    val userId: Long,
-    val questionId: Long
-) : DialogState

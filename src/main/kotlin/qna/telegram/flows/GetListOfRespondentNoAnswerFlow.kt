@@ -4,6 +4,7 @@ import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
+import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
 import com.ithersta.tgbotapi.pagination.replyMarkup
 import common.telegram.DialogState
@@ -22,9 +23,11 @@ import qna.telegram.queries.CloseQuestion
 import qna.telegram.queries.SeeList
 import qna.telegram.queries.SelectRespondent
 import qna.telegram.queries.SelectSubject
-import qna.telegram.states.ChooseAction
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
+
+lateinit var subjectPager: InlineKeyboardPager<Unit, DialogState, User, User.Normal>
+lateinit var respondentPager: InlineKeyboardPager<SeeList, DialogState, User, User.Normal>
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
     val getQuestionsByUserIdUseCase: GetQuestionsByUserIdUseCase by inject()
@@ -33,7 +36,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
 
-    val subjectPager = pager(id = "subjectsNoAnswer") {
+    subjectPager = pager(id = "subjectsNoAnswer") {
         val subject = getQuestionsByUserIdUseCase(context!!.user.id)
         val pagSubject = subject.drop(offset).take(limit)
         inlineKeyboard {
@@ -45,7 +48,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             navigationRow(itemCount = subject.size)
         }
     }
-    val respondentPager = pager(id = "respondentNoAnswer", dataKClass = SeeList::class) {
+    respondentPager = pager(id = "respondentNoAnswer", dataKClass = SeeList::class) {
         val respondent = getRespondentsByQuestionIdUseCase(data.questionId)
         val pagRespondent = respondent.drop(offset).take(limit)
         inlineKeyboard {
@@ -58,7 +61,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             navigationRow(itemCount = respondent.size)
         }
     }
-
     state<MenuState.GetListOfSubjects> {
         onEnter {
             val replyMarkup = subjectPager.replyMarkup
@@ -67,36 +69,32 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                 state.override { DialogState.Empty }
             } else {
                 sendTextMessage(it, Strings.RespondentsNoAnswer.ListOfSubjects, replyMarkup = replyMarkup)
+                state.overrideQuietly { DialogState.Empty }
             }
         }
-        onDataCallbackQuery(SelectSubject::class) { (data, query) ->
-            state.override { ChooseAction(data.userId, data.questionId) }
-            answer(query)
-        }
     }
-    state<ChooseAction> {
-        onEnter {
+    anyState {
+        onDataCallbackQuery(SelectSubject::class) { (data, query) ->
             sendTextMessage(
-                it,
+                query.user.id,
                 Strings.RespondentsNoAnswer.ChooseAction,
                 replyMarkup = inlineKeyboard {
                     row {
                         dataButton(
                             ButtonStrings.RespondentNoAnswer.CloseQuestion,
-                            CloseQuestion(state.snapshot.userId, state.snapshot.questionId)
+                            CloseQuestion(data.userId, data.questionId)
                         )
                     }
                     row {
                         dataButton(
                             ButtonStrings.RespondentNoAnswer.SeeList,
-                            SeeList(state.snapshot.userId, state.snapshot.questionId)
+                            SeeList(data.userId, data.questionId)
                         )
                     }
                 }
             )
+            answer(query)
         }
-    }
-    anyState {
         onDataCallbackQuery(CloseQuestion::class) { (data, query) ->
             closeQuestionUseCase(data.userId, data.questionId)
             sendTextMessage(query.user.id, Strings.RespondentsNoAnswer.CloseQuestionSuccessful)
@@ -126,3 +124,4 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         }
     }
 }
+
