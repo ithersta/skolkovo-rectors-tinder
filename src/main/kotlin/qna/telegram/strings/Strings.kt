@@ -15,14 +15,12 @@ object Strings {
                 regularln(question + "\n")
                 boldln("Готовы ответить?")
             }
-
         fun editMessage(subject: String, question: String) =
             buildEntities {
                 regular("Вы согласились ответить на вопрос:\n\n")
                 boldln(subject)
                 regularln(question)
             }
-
         fun waitingForCompanion(subject: String) =
             buildEntities {
                 regular("Владелец вопроса ")
@@ -63,7 +61,6 @@ object Strings {
                 addAll(accountInfo(name, city, job, organization, activityDescription))
                 boldln("Вы согласны пообщаться?")
             }
-
         const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
             "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
         val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседнику") }
@@ -90,14 +87,5 @@ object Strings {
 
         const val NoQuestions = "На данный момент у Вас нет актуальных вопросов"
         const val NoRespondent = "На данный момент нет людей, которые ответили бы на Ваш вопрос"
-    }
-
-    object TargetArea {
-        const val listSpheres = "Список сфер по вашему профилю. Нажмите на сферу, чтобы посмотреть список тем вопросов."
-        const val ListQuestion = "Список вопросов по вашим сферам. Нажмите на тему, чтобы посмотреть подробнее."
-        const val haveNotQuestionInThisArea = "На данный момент нет вопросов по этой сфере."
-        fun buildQuestionByQuestionText(text: String): String {
-            return "Текст вопроса $text.\nХотите ли вы ответить на этот вопрос?"
-        }
     }
 }

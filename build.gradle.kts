@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm") version "1.8.10"
     kotlin("plugin.serialization") version "1.8.10"
@@ -18,7 +16,7 @@ repositories {
 
 val exposedVersion = "0.41.1"
 dependencies {
-    implementation("com.ithersta.tgbotapi:boot:0.1.9")
+    implementation("com.ithersta.tgbotapi:boot:0.1.6")
     implementation("com.ithersta.tgbotapi:commands:0.3.0")
     implementation("io.ktor:ktor-client-okhttp:2.2.4")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -50,10 +48,4 @@ kotlin {
 
 application {
     mainClass.set("MainKt")
-}
-
-tasks.withType(KotlinCompile::class.java).configureEach {
-    kotlinOptions {
-        freeCompilerArgs += "-Xcontext-receivers"
-    }
 }

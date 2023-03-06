@@ -44,7 +44,6 @@ import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
-    val getFilteredUsersByAreaUseCase: GetFilteredUsersByAreaUseCase by inject()
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
@@ -117,7 +116,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 replyMarkup = replyKeyboard {
                     row {
                         simpleButton(ButtonStrings.SendQuestion)
-                        simpleButton(ButtonStrings.SendQuestionWithRestrictions)
                     }
                 }
             )
@@ -137,29 +135,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             coroutineScope.launch {
                 //TODO
                 state.snapshot.areas.forEach {
-                    val listOfValidUsers: List<Long> = getUsersByAreaUseCase(it, userId = message.chat.id.chatId)
-                    listOfValidUsers.forEach {
-                        runCatching {
-                            sendQuestionMessage(it.toChatId(), question)
-                        }
-                    }
-                }
-            }
-            state.override { DialogState.Empty }
-        }
-        onText(ButtonStrings.SendQuestionWithRestrictions) { message ->
-            val question = addQuestionUseCase(
-                authorId = message.chat.id.chatId,
-                state.snapshot.intent,
-                state.snapshot.subject,
-                state.snapshot.question,
-                state.snapshot.areas
-            )
-            sendTextMessage(message.chat, Strings.Question.Success)
-            coroutineScope.launch {
-                val user = getUserDetailsUseCase.invoke(message.chat.id.chatId)!!
-                state.snapshot.areas.forEach {
-                    val listOfValidUsers: List<Long> = getFilteredUsersByAreaUseCase(it, user)
+                    val listOfValidUsers: List<Long> =
+                        getUsersByAreaUseCase(
+                            it,
+                            userId = message.chat.id.chatId
+                        )
                     listOfValidUsers.forEach {
                         runCatching {
                             sendQuestionMessage(it.toChatId(), question)

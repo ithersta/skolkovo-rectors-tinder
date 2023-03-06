@@ -4,7 +4,6 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import changeinfo.telegram.sendFieldsToChange
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
-import com.ithersta.tgbotapi.pagination.PagerState
 import common.telegram.DialogState
 import generated.menu
 import menus.states.MenuState
@@ -36,16 +35,16 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             ) {
                 button(
                     MenuStrings.Questions.MyQuestions.ActualQuestions,
-                    MenuState.GetListOfSubjects
+                    DialogState.Empty
                 )
                 button(
                     MenuStrings.Questions.MyQuestions.OldQuestions,
-                    MenuState.OldQuestion(PagerState())
+                    DialogState.Empty
                 )
             }
             button(
                 MenuStrings.Questions.InterestingQuestions,
-                MenuState.CurrentIssues
+                DialogState.Empty
             )
         }
     }

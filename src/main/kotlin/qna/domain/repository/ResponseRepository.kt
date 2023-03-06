@@ -7,5 +7,4 @@ interface ResponseRepository {
     fun get(responseId: Long): Response?
     fun getRespondentsByQuestionId(questionId: Long): List<Long>
     fun has(respondentId: Long, questionId: Long): Boolean
-    fun getRespondentByQuestionId(questionId: Long): Map<String, String>
 }
