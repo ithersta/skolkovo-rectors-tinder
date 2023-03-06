@@ -7,4 +7,3 @@ enum class Course {
     StepToSchoolDevelopment,
     EducationalProgramsCode
 }
-
