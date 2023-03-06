@@ -22,7 +22,6 @@ import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
 import notifications.telegram.flows.newQuestionsNotificationFlow
 import qna.telegram.flows.askQuestionFlow
-import qna.telegram.flows.feedbackFlow
 import qna.telegram.flows.getListOfRespondentNoAnswerFlow
 
 @StateMachine(baseQueryKClass = Query::class)

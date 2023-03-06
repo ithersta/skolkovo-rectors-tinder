@@ -124,4 +124,3 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         }
     }
 }
-
