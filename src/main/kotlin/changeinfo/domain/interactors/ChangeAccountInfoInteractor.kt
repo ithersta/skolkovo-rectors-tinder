@@ -23,7 +23,7 @@ class ChangeAccountInfoInteractor(
         userRepository.changeJob(id, newJob)
     }
 
-    fun changeOrganizationType(id: Long, newType: OrganizationType)=transaction{
+    fun changeOrganizationType(id: Long, newType: OrganizationType) = transaction {
         userRepository.changeOrganizationType(id, newType)
     }
 

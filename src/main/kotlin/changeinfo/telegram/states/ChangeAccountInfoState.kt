@@ -28,7 +28,8 @@ object WaitingForProfessionState : DialogState
 object WaitingForOrganizationTypeState : DialogState
 
 @Serializable
-data class ChangeOrganizationTypeState (val type:OrganizationType): DialogState
+data class ChangeOrganizationTypeState(val type: OrganizationType) : DialogState
+
 @Serializable
 object WaitingForOrganizationState : DialogState
 

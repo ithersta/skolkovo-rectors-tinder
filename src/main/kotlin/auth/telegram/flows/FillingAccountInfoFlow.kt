@@ -87,14 +87,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 Strings.Courses.ChooseCourse,
                 replyMarkup = inlineKeyboard {
                     courseToString.map {
-                        row{
+                        row {
                             dataButton(it.value, ChooseCourseQuery(it.key))
                         }
                     }
                 }
             )
         }
-        onDataCallbackQuery(ChooseCourseQuery::class){(data, query) ->
+        onDataCallbackQuery(ChooseCourseQuery::class) { (data, query) ->
             state.override { next(data.course) }
             answer(query)
         }
@@ -116,9 +116,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onText { state.override { next(it.content.text) } }
     }
 
-    state<ChooseOrganizationTypeState>{
+    state<ChooseOrganizationTypeState> {
         chooseOrganizationType(
-            text=Strings.OrganizationTypes.ChooseOrganizationType,
+            text = Strings.OrganizationTypes.ChooseOrganizationType,
             onFinish = { state, type -> state.next(type) }
         )
     }

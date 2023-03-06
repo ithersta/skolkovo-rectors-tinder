@@ -82,9 +82,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
             onFinish = { ChangeOrganizationTypeState, type -> ChangeOrganizationTypeState(type) }
         )
     }
-    state<ChangeOrganizationTypeState>{
+    state<ChangeOrganizationTypeState> {
         onEnter {
-            changeAccountInfoInteractor.changeOrganizationType(it.chatId,state.snapshot.type)
+            changeAccountInfoInteractor.changeOrganizationType(it.chatId, state.snapshot.type)
             state.override { WaitingForOrganizationState }
         }
     }
