@@ -133,9 +133,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.Question.Success
             )
             coroutineScope.launch {
-                //TODO
+                var listOfValidUsers: List<Long>
                 state.snapshot.areas.forEach {
-                    val listOfValidUsers: List<Long> =
+                    listOfValidUsers =
                         getUsersByAreaUseCase(
                             it,
                             userId = message.chat.id.chatId
