@@ -4,7 +4,6 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import changeinfo.telegram.sendFieldsToChange
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
-import com.ithersta.tgbotapi.pagination.PagerState
 import common.telegram.DialogState
 import generated.menu
 import menus.states.MenuState
@@ -30,19 +29,19 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 MenuStrings.Questions.MyQuestions.Description,
                 MenuState.Questions.GetMyQuestion
             ) {
-                button(
+                button( // TODO
                     MenuStrings.Questions.MyQuestions.ActualQuestions,
                     DialogState.Empty
-                )
+                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
                 button(
                     MenuStrings.Questions.MyQuestions.OldQuestions,
-                    MenuState.OldQuestion(PagerState())
-                )
+                    DialogState.Empty
+                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
             }
             button(
                 MenuStrings.Questions.InterestingQuestions,
-                MenuState.CurrentIssues
-            )
+                DialogState.Empty
+            ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
         }
         button(
             MenuStrings.Questions.Ask,

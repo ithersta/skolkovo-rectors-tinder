@@ -17,6 +17,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.eventFlow() {
                     it.toChatId(),
                     "Ссылка на мероприятия: https://www.skolkovo.ru/navigator/events/"
                 )
+                state.override { DialogState.Empty }
             }
         }
     }
