@@ -77,7 +77,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
                 PhoneNumberIsAllowedUseCase.Result.OK ->state.override { next(phoneNumber) }
             }
-            state.override { next(phoneNumber) }
         }
         onText { sendTextMessage(it.chat, InvalidShare) }
     }

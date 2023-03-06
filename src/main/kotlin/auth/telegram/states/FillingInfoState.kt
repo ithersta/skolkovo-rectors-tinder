@@ -47,6 +47,8 @@ data class WriteProfessionState(
     fun next(profession: String) = ChooseOrganizationTypeState(phoneNumber, course, name, city, profession)
 }
 
+
+@Serializable
 data class ChooseOrganizationTypeState(
     val phoneNumber: PhoneNumber,
     val course:Course,
