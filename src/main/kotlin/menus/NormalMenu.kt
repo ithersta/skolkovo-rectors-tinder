@@ -39,12 +39,12 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 )
                 button(
                     MenuStrings.Questions.MyQuestions.OldQuestions,
-                    DialogState.Empty
+                    MenuState.OldQuestion(PagerState())
                 )
             }
             button(
                 MenuStrings.Questions.InterestingQuestions,
-                DialogState.Empty
+                MenuState.CurrentIssues
             )
         }
     }

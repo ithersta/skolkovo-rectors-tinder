@@ -10,6 +10,7 @@ import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.domain.entities.Question
 import qna.domain.repository.QuestionRepository
+import java.util.stream.Collectors
 
 @Single
 class QuestionRepositoryImpl : QuestionRepository {
@@ -89,5 +90,14 @@ class QuestionRepositoryImpl : QuestionRepository {
             at = row[Questions.at],
             id = row[Questions.id].value
         )
+    }
+
+    override fun getSubjectsByUserIdAndIsClosed(userId: Long): List<Question> {
+        return Questions
+            .select((Questions.authorId eq userId) and (Questions.isClosed.eq(true)))
+            .map { it[Questions.id].value }
+            .stream()
+            .map { Questions.select { Questions.id eq it }.map(::mapper).first() }
+            .collect(Collectors.toList())
     }
 }

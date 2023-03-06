@@ -15,7 +15,6 @@ import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
-import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.flows.muteFlow
@@ -23,6 +22,8 @@ import notifications.telegram.flows.changeNotificationPreferenceFlow
 import notifications.telegram.flows.newQuestionsNotificationFlow
 import qna.telegram.flows.askQuestionFlow
 import qna.telegram.flows.getListOfRespondentNoAnswerFlow
+import qna.telegram.flows.feedbackFlow
+import qna.telegram.flows.oldQuestionFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -52,10 +53,9 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         changeAccountInfoFlow()
         changeNotificationPreferenceFlow()
         newQuestionsNotificationFlow()
+        oldQuestionFlow()
     }
-    role<User.Admin> {
-        with(adminMenu) { invoke() }
-    }
+    role<User.Admin> { with(adminMenu) { invoke() } }
     muteFlow()
     eventFlow()
     addUsersFlow()

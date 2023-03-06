@@ -1,5 +1,6 @@
 package qna.data.repository
 
+import auth.data.tables.Users
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertAndGetId
@@ -20,10 +21,23 @@ class ResponseRepositoryImpl : ResponseRepository {
             )
         }
     }
+
+    override fun has(respondentId: Long, questionId: Long): Boolean {
+        return Responses
+            .select { (Responses.questionId eq questionId) and (Responses.respondentId eq respondentId) }
+            .empty().not()
+    }
+
     override fun getRespondentsByQuestionId(questionId: Long): List<Long> {
         return Responses
             .select(Responses.questionId eq questionId)
             .map { it[Responses.respondentId].value }
+    }
+
+    override fun getRespondentByQuestionId(questionId: Long): Map<String, String> {
+        return (Users innerJoin Responses)
+            .select(Responses.questionId eq questionId)
+            .associate { it[Users.name] to it[Users.phoneNumber] }
     }
 
     override fun add(questionId: Long, respondentId: Long): Long {
@@ -31,10 +45,5 @@ class ResponseRepositoryImpl : ResponseRepository {
             it[Responses.questionId] = questionId
             it[Responses.respondentId] = respondentId
         }.value
-    }
-    override fun has(respondentId: Long, questionId: Long): Boolean {
-        return Responses
-            .select { (Responses.questionId eq questionId) and (Responses.respondentId eq respondentId) }
-            .empty().not()
     }
 }
