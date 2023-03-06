@@ -6,7 +6,6 @@ import auth.domain.entities.User
 import qna.domain.entities.QuestionArea
 
 @Suppress("TooManyFunctions")
-
 interface UserRepository {
     fun add(user: User.Details)
     fun get(id: Long): User.Details?
