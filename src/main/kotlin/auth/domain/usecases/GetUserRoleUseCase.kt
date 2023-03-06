@@ -15,8 +15,8 @@ class GetUserRoleUseCase(
     operator fun invoke(id: Long): User = transaction {
         when {
             userRepository.isRegistered(id).not() -> User.Unauthenticated
-            botConfig.adminId == id -> User.Admin(id)
-            else -> User.Normal(id)
+            botConfig.adminId == id -> User.Admin
+            else -> User.Normal()
         }
     }
 }

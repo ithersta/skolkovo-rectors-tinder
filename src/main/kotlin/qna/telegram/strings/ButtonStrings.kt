@@ -21,5 +21,4 @@ object ButtonStrings {
     }
 
     const val SendQuestion = "Отправить запрос в сообщество"
-    const val SendQuestionWithRestrictions = "Отправить запрос в сообщество с ограничениями"
 }

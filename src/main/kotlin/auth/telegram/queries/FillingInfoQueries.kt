@@ -36,23 +36,3 @@ class SelectRegion(val region: String) : Query
 @Serializable
 @SerialName("city")
 class SelectCity(val city: String) : Query
-
-@Serializable
-@SerialName("subject")
-class SelectSubject(val questionId: Long) : Query
-
-@Serializable
-@SerialName("sub")
-class SelectTopic(val questionId: Long) : Query
-
-@Serializable
-@SerialName("pN")
-class SelectRespondent(val name: String, val phoneNumber: String) : Query
-
-@Serializable
-@SerialName("sa")
-class SelectArea(val area: QuestionArea) : Query
-
-@Serializable
-@SerialName("answer")
-class AnswerUser(val questionId: Long, val answer: String) : Query
