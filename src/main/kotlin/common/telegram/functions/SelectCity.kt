@@ -42,7 +42,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         }
         answer(query)
     }
-    onDataCallbackQuery(SelectCityInCIS::class) { (data, query) ->
+    onDataCallbackQuery(SelectCityInCISQuery::class) { (data, query) ->
         val city: String = data.city
         if (jsonParser.cityRegex.matches(city)) {
             state.override { onFinish(state.snapshot, city) }
@@ -50,7 +50,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         answer(query)
     }
 
-    onDataCallbackQuery(SelectDistrict::class) { (data, query) ->
+    onDataCallbackQuery(SelectDistrictQuery::class) { (data, query) ->
         sendTextMessage(
             query.from.id,
             Strings.AccountInfo.ChooseRegion,
@@ -59,7 +59,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         answer(query)
     }
 
-    onDataCallbackQuery(SelectRegion::class) { (data, query) ->
+    onDataCallbackQuery(SelectRegionQuery::class) { (data, query) ->
         sendTextMessage(
             query.from.id,
             Strings.AccountInfo.ChooseCity,
@@ -68,7 +68,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         answer(query)
     }
 
-    onDataCallbackQuery(SelectCity::class) { (data, query) ->
+    onDataCallbackQuery(SelectCityQuery::class) { (data, query) ->
         val city: String = data.city
         if (jsonParser.cityRegex.matches(city)) {
             state.override { onFinish(state.snapshot, city) }

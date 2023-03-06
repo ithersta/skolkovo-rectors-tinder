@@ -10,9 +10,11 @@ sealed interface User {
     data class Details(
         val id: Long,
         val phoneNumber: PhoneNumber,
+        val course:Course,
         val name: String,
         val city: String,
         val job: String,
+        val organizationType: OrganizationType,
         val organization: String,
         val activityDescription: String,
         val areas: Set<QuestionArea>

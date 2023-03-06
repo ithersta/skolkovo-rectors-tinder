@@ -16,9 +16,11 @@ class UserRepositoryImpl : UserRepository {
         Users.insert {
             it[id] = user.id
             it[phoneNumber] = user.phoneNumber.value
+            it[course]=user.course
             it[name] = user.name
             it[city] = user.city
             it[job] = user.job
+            it[organizationType]=user.organizationType
             it[organization] = user.organization
             it[activityDescription] = user.activityDescription
         }
@@ -36,9 +38,11 @@ class UserRepositoryImpl : UserRepository {
             User.Details(
                 id = it[Users.id].value,
                 phoneNumber = phoneNumber,
+                course=it[Users.course],
                 name = it[Users.name],
                 city = it[Users.city],
                 job = it[Users.job],
+                organizationType=it[Users.organizationType],
                 organization = it[Users.organization],
                 activityDescription = it[Users.activityDescription],
                 areas = areas
