@@ -49,7 +49,6 @@ class ResponseRepositoryImpl : ResponseRepository {
         )
     }
 
-
     override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {
         return (Users innerJoin Responses)
             .select(Responses.questionId eq questionId)
