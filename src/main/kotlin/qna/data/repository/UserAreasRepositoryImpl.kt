@@ -14,7 +14,6 @@ import qna.data.tables.Questions
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.repository.UserAreasRepository
-import java.util.stream.Collectors
 
 @Single
 class UserAreasRepositoryImpl : UserAreasRepository {
@@ -66,22 +65,9 @@ class UserAreasRepositoryImpl : UserAreasRepository {
     }
 
     override fun getSubjectsByUserId(userId: Long, userArea: QuestionArea): List<Question> {
-        return (
-            UserAreas.join(
-                QuestionAreas,
-                JoinType.INNER,
-                additionalConstraint = { UserAreas.area eq QuestionAreas.area }
-            )
-                innerJoin Questions
-            )
-            .select(
-                (UserAreas.userId eq userId)
-                    and (Questions.isClosed.eq(false))
-                    and (Questions.authorId neq userId)
-                    and (QuestionAreas.area eq userArea)
-            ).map { it[QuestionAreas.questionId].value }
-            .stream()
-            .map { Questions.select { Questions.id eq it }.map(::mapper).first() }
-            .collect(Collectors.toList())
+        return (UserAreas.join(QuestionAreas,
+            JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area }) innerJoin Questions)
+            .select((UserAreas.userId eq userId) and (Questions.isClosed.eq(false))
+                    and (Questions.authorId neq userId) and (QuestionAreas.area eq userArea)).map(::mapper)
     }
 }

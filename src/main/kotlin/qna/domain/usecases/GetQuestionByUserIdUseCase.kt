@@ -6,7 +6,7 @@ import qna.domain.entities.Question
 import qna.domain.repository.QuestionRepository
 
 @Single
-class SubjectsUseCase(
+class GetQuestionByUserIdUseCase(
     private val questionRepository: QuestionRepository,
     private val transaction: Transaction
 ) {

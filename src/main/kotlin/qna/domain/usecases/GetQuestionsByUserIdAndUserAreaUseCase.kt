@@ -7,7 +7,7 @@ import qna.domain.entities.QuestionArea
 import qna.domain.repository.UserAreasRepository
 
 @Single
-class SubjectsByUserIdAndUserAreaUseCase(
+class GetQuestionsByUserIdAndUserAreaUseCase(
     private val userAreasRepository: UserAreasRepository,
     private val transaction: Transaction
 ) {
