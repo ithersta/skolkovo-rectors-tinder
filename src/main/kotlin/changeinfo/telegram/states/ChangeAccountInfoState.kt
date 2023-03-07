@@ -1,5 +1,6 @@
 package changeinfo.telegram.states
 
+import auth.domain.entities.OrganizationType
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.types.MessageId
 import kotlinx.serialization.Serializable
@@ -22,6 +23,12 @@ class ChangeCityState(
 
 @Serializable
 object WaitingForProfessionState : DialogState
+
+@Serializable
+object WaitingForOrganizationTypeState : DialogState
+
+@Serializable
+data class ChangeOrganizationTypeState(val type: OrganizationType) : DialogState
 
 @Serializable
 object WaitingForOrganizationState : DialogState
