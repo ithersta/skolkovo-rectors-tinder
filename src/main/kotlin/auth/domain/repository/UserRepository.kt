@@ -15,7 +15,6 @@ interface UserRepository {
     fun changeName(id: Long, newName: String)
     fun changeCity(id: Long, newCity: String)
     fun changeJob(id: Long, newJob: String)
-
     fun changeOrganizationType(id: Long, newType: OrganizationType)
     fun changeOrganization(id: Long, newOrganization: String)
     fun changeAreas(id: Long, newArea: Set<QuestionArea>)
