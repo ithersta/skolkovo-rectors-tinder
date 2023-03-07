@@ -2,6 +2,7 @@ package auth.telegram.flows
 
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
+import auth.domain.usecases.PhoneNumberIsAllowedUseCase
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
@@ -12,20 +13,27 @@ import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.InvalidShare
 import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
+import auth.telegram.Strings.courseToString
 import auth.telegram.parsers.JsonParser
+import auth.telegram.queries.ChooseCourseQuery
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
+import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
-import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import dev.inmo.tgbotapi.utils.row
+import generated.dataButton
+import generated.onDataCallbackQuery
 import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 
@@ -33,6 +41,7 @@ val jsonParser: JsonParser = JsonParser()
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
+    val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
 
     state<WaitingForContact> {
         onEnter {
@@ -48,13 +57,51 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val contact = message.content.contact
             require(contact.userId == message.chat.id)
             val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
-            state.override { next(phoneNumber) }
+            when (phoneNumberIsAllowedUseCase(phoneNumber)) {
+                PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber -> {
+                    sendTextMessage(
+                        message.chat,
+                        Strings.AuthenticationResults.DuplicatePhoneNumber
+                    )
+                    state.override { DialogState.Empty }
+                }
+
+                PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> {
+                    sendTextMessage(
+                        message.chat,
+                        Strings.AuthenticationResults.PhoneNumberNotAllowed
+                    )
+                    state.override { DialogState.Empty }
+                }
+
+                PhoneNumberIsAllowedUseCase.Result.OK -> state.override { next(phoneNumber) }
+            }
         }
         onText { sendTextMessage(it.chat, InvalidShare) }
     }
 
+    state<ChooseCourseState> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.Courses.ChooseCourse,
+                replyMarkup = inlineKeyboard {
+                    courseToString.map {
+                        row {
+                            dataButton(it.value, ChooseCourseQuery(it.key))
+                        }
+                    }
+                }
+            )
+        }
+        onDataCallbackQuery(ChooseCourseQuery::class) { (data, query) ->
+            state.override { next(data.course) }
+            answer(query)
+        }
+    }
+
     state<WriteNameState> {
-        onEnter { sendTextMessage(it, WriteName, replyMarkup = ReplyKeyboardRemove()) }
+        onEnter { sendTextMessage(it, WriteName) }
         onText { state.override { next(it.content.text) } }
     }
 
@@ -68,6 +115,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onEnter { sendTextMessage(it, WriteProfession) }
         onText { state.override { next(it.content.text) } }
     }
+
+    state<ChooseOrganizationTypeState> {
+        chooseOrganizationType(
+            text = Strings.OrganizationTypes.ChooseOrganizationType,
+            onFinish = { state, type -> state.next(type) }
+        )
+    }
+
     state<WriteOrganizationState> {
         onEnter { sendTextMessage(it, WriteOrganization) }
         onText { state.override { next(it.content.text) } }
@@ -92,9 +147,11 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val details = User.Details(
                 it.chatId,
                 state.snapshot.phoneNumber,
+                state.snapshot.course,
                 state.snapshot.name,
                 state.snapshot.city,
                 state.snapshot.profession,
+                state.snapshot.organizationType,
                 state.snapshot.organization,
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas

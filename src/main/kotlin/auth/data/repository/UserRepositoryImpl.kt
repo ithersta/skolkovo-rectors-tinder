@@ -2,6 +2,7 @@ package auth.data.repository
 
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
+import auth.domain.entities.OrganizationType
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository
@@ -10,15 +11,18 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
 import qna.domain.entities.QuestionArea
 
+@Suppress("TooManyFunctions")
 @Single
 class UserRepositoryImpl : UserRepository {
     override fun add(user: User.Details) {
         Users.insert {
             it[id] = user.id
             it[phoneNumber] = user.phoneNumber.value
+            it[course] = user.course
             it[name] = user.name
             it[city] = user.city
             it[job] = user.job
+            it[organizationType] = user.organizationType
             it[organization] = user.organization
             it[activityDescription] = user.activityDescription
         }
@@ -36,9 +40,11 @@ class UserRepositoryImpl : UserRepository {
             User.Details(
                 id = it[Users.id].value,
                 phoneNumber = phoneNumber,
+                course = it[Users.course],
                 name = it[Users.name],
                 city = it[Users.city],
                 job = it[Users.job],
+                organizationType = it[Users.organizationType],
                 organization = it[Users.organization],
                 activityDescription = it[Users.activityDescription],
                 areas = areas
@@ -69,6 +75,12 @@ class UserRepositoryImpl : UserRepository {
     override fun changeJob(id: Long, newJob: String) {
         Users.update({ Users.id eq id }) {
             it[job] = newJob
+        }
+    }
+
+    override fun changeOrganizationType(id: Long, newType: OrganizationType) {
+        Users.update({ Users.id eq id }) {
+            it[organizationType] = newType
         }
     }
 
