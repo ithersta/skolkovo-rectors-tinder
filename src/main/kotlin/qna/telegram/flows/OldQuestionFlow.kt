@@ -28,9 +28,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
     val nameAndPhoneUseCase: GetNameAndPhoneUseCase by inject()
     val subjectsPager = pager(id = "sub1") {
         val subjects = subjectsUseCase.invoke(context!!.user.id)
-        val paginatedNumbers = subjects.drop(offset).take(limit)
+        val paginatedSubjects = subjects.drop(offset).take(limit)
         inlineKeyboard {
-            paginatedNumbers.forEach { item ->
+            paginatedSubjects.forEach { item ->
                 row {
                     dataButton(item.subject, SelectTopic(item.id!!))
                 }

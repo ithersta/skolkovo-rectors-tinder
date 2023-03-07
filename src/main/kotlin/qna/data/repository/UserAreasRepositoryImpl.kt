@@ -17,7 +17,8 @@ import qna.domain.repository.UserAreasRepository
 
 @Single
 class UserAreasRepositoryImpl : UserAreasRepository {
-    override fun getUsersByArea(questionArea: QuestionArea): List<Long> {
+
+    private fun getUsers(where: Op<Boolean>): List<Long> {
         val muteUsers = MuteSettings
             .slice(MuteSettings.userId)
             .selectAll()
@@ -26,25 +27,18 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .select { NotificationPreferences.preference neq NotificationPreference.RightAway }
         return UserAreas
             .slice(UserAreas.userId)
-            .select { UserAreas.area eq questionArea }
+            .select(where)
             .except(muteUsers)
             .except(nonRightAwayUsers)
             .map { it[UserAreas.userId].value }
     }
 
+    override fun getUsersByArea(questionArea: QuestionArea): List<Long> {
+        return getUsers(where = UserAreas.area eq questionArea)
+    }
+
     override fun getFilteredUsersByArea(questionArea: QuestionArea, city: String): List<Long> {
-        val muteUsers = MuteSettings
-            .slice(MuteSettings.userId)
-            .selectAll()
-        val nonRightAwayUsers = NotificationPreferences
-            .slice(NotificationPreferences.userId)
-            .select { NotificationPreferences.preference neq NotificationPreference.RightAway }
-        return (UserAreas innerJoin Users)
-            .slice(UserAreas.userId)
-            .select((UserAreas.area eq questionArea) and (Users.city neq city))
-            .except(muteUsers)
-            .except(nonRightAwayUsers)
-            .map { it[UserAreas.userId].value }
+        return getUsers(where = (UserAreas.area eq questionArea) and (Users.city neq city))
     }
 
     private fun mapper(row: ResultRow): Question {

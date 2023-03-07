@@ -5,7 +5,6 @@ import auth.telegram.Strings
 import auth.telegram.queries.AnswerUser
 import auth.telegram.queries.SelectArea
 import auth.telegram.queries.SelectSubject
-import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
@@ -41,9 +40,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     val subjectsPager =
         pager(id = "sub2", dataKClass = SelectArea::class) {
             val subjects = subjectsByChatId.invoke(context!!.user.id, data.area)
-            val paginatedNumbers = subjects.drop(offset).take(limit)
+            val paginatedSubjects = subjects.drop(offset).take(limit)
             inlineKeyboard {
-                paginatedNumbers.forEach { item ->
+                paginatedSubjects.forEach { item ->
                     row {
                         dataButton(item.subject, SelectSubject(item.id!!))
                     }
