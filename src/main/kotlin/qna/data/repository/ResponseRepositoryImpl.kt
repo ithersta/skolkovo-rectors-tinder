@@ -11,7 +11,6 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.koin.core.annotation.Single
 import qna.data.tables.Responses
-import qna.domain.entities.QuestionArea
 import qna.domain.entities.Response
 import qna.domain.repository.ResponseRepository
 
@@ -35,7 +34,7 @@ class ResponseRepositoryImpl : ResponseRepository {
 
     private fun mapper(row: ResultRow): User.Details {
         val userId = row[Users.id].value
-        val areas: Set<QuestionArea> = UserAreas
+        val areas = UserAreas
             .select { UserAreas.userId eq userId }
             .map { it[UserAreas.area] }.toSet()
         return User.Details(

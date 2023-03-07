@@ -1,9 +1,9 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
-import auth.telegram.Strings.OldQuestion.haveNotOldQuestion
-import auth.telegram.Strings.OldQuestion.listClosedQuestions
-import auth.telegram.Strings.OldQuestion.listOfDefendants
+import auth.telegram.Strings.OldQuestion.HaveNotOldQuestion
+import auth.telegram.Strings.OldQuestion.ListClosedQuestions
+import auth.telegram.Strings.OldQuestion.ListOfDefendants
 import auth.telegram.queries.SelectRespondent
 import auth.telegram.queries.SelectTopic
 import com.ithersta.tgbotapi.fsm.BaseStatefulContext
@@ -46,19 +46,21 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                 this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>
             )
             if (replyMarkup.keyboard.isNotEmpty()) {
-                sendTextMessage(chatId, listClosedQuestions, replyMarkup = replyMarkup)
+                sendTextMessage(chatId, ListClosedQuestions, replyMarkup = replyMarkup)
             } else {
-                sendTextMessage(chatId, haveNotOldQuestion)
+                sendTextMessage(chatId, HaveNotOldQuestion)
                 state.override { DialogState.Empty }
             }
         }
         onDataCallbackQuery(SelectTopic::class) { (data, query) ->
             sendTextMessage(
                 query.user.id,
-                listOfDefendants,
+                ListOfDefendants,
                 replyMarkup = inlineKeyboard {
                     nameAndPhoneUseCase.invoke(data.questionId).forEach { item ->
                         row {
+                            print(item.name)
+                            print(item.phoneNumber.toString())
                             dataButton(
                                 item.name,
                                 SelectRespondent(name = item.name, phoneNumber = item.phoneNumber.toString())

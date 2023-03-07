@@ -79,9 +79,9 @@ object Strings {
     }
 
     object OldQuestion {
-        const val listClosedQuestions = "Нажмите на один из них, чтобы посмотреть всех, кто отвечал на данный вопрос."
-        const val haveNotOldQuestion = "На данный момент нет вопросов, на которые вы бы получили ответ."
-        const val listOfDefendants =
+        const val ListClosedQuestions = "Нажмите на один из них, чтобы посмотреть всех, кто отвечал на данный вопрос."
+        const val HaveNotOldQuestion = "На данный момент нет вопросов, на которые вы бы получили ответ."
+        const val ListOfDefendants =
             "Список всех, кто отвечал на вопрос. Нажмите на одного из них, чтобы посмотреть контакт."
     }
 }
