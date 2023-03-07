@@ -59,8 +59,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                 replyMarkup = inlineKeyboard {
                     nameAndPhoneUseCase.invoke(data.questionId).forEach { item ->
                         row {
-                            print(item.name)
-                            print(item.phoneNumber.toString())
                             dataButton(
                                 item.name,
                                 SelectRespondent(name = item.name, phoneNumber = item.phoneNumber.toString())
@@ -72,11 +70,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
             answer(query)
         }
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            sendContact(
-                query.user.id,
-                phoneNumber = data.phoneNumber,
-                firstName = data.name
-            )
+            sendContact(query.user.id, phoneNumber = data.phoneNumber, firstName = data.name)
             answer(query)
             state.override { DialogState.Empty }
         }

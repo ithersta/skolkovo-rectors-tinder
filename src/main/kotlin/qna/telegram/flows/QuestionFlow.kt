@@ -10,8 +10,7 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
 import common.telegram.DialogState
-import common.telegram.strings.CommonStrings.Button.No
-import common.telegram.strings.CommonStrings.Button.Yes
+import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -39,7 +38,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     val subjectsByChatId: GetQuestionsByUserIdAndUserAreaUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
-    val answerForUser: List<String> = listOf(Yes, No)
     val subjectsPager =
         pager(id = "sub2", dataKClass = SelectArea::class) {
             val subjects = subjectsByChatId.invoke(context!!.user.id, data.area)
@@ -87,18 +85,15 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
             sendTextMessage(
                 query.user.id,
                 buildQuestionByQuestionText(getQuestionByIdUseCase.invoke(data.questionId)!!.text),
-                replyMarkup = inlineKeyboard {
-                    answerForUser.forEach {
-                        row {
-                            dataButton(it, AnswerUser(data.questionId, it))
-                        }
-                    }
-                }
+                replyMarkup = confirmationInlineKeyboard(
+                    positiveData = AnswerUser(data.questionId, true),
+                    negativeData = AnswerUser(data.questionId, false)
+                )
             )
             answer(query)
         }
         onDataCallbackQuery(AnswerUser::class) { (data, query) ->
-            if (data.answer == Yes) {
+            if (data.answer) {
                 val question: Question = getQuestionByIdUseCase(data.questionId)!!
                 sendQMessage(question.authorId.toChatId(), question)
             }
@@ -111,13 +106,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
 suspend fun TelegramBot.sendQMessage(chatId: ChatId, question: Question) = sendTextMessage(
     chatId,
     qna.telegram.strings.Strings.ToAnswerUser.message(question.subject, question.text),
-    replyMarkup = inlineKeyboard {
-        row {
-            checkNotNull(question.id)
-            dataButton(Yes, AcceptQuestionQuery(question.id))
-        }
-        row {
-            dataButton(No, DeclineQuestionQuery)
-        }
-    }
+
+    replyMarkup = confirmationInlineKeyboard(
+        positiveData = AcceptQuestionQuery(question.id!!),
+        negativeData = DeclineQuestionQuery
+    )
 )
