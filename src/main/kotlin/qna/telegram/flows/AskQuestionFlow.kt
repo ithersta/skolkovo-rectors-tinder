@@ -41,7 +41,6 @@ import qna.telegram.states.ChooseQuestionIntent
 import qna.telegram.states.SendQuestionToCommunity
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
-import java.util.*
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
