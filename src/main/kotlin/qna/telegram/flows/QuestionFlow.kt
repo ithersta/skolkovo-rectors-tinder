@@ -69,10 +69,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
     }
     anyState {
         onDataCallbackQuery(SelectArea::class) { (data, query) ->
-            val replyMarkup = subjectsPager.replyMarkup(
-                data,
-                this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>
-            )
+            val replyMarkup = subjectsPager.replyMarkup(data)
             if (replyMarkup.keyboard.isEmpty()) {
                 sendTextMessage(query.user.id, HaveNotQuestionInThisArea)
                 state.override { DialogState.Empty }
