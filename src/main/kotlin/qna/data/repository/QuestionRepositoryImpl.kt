@@ -67,10 +67,10 @@ class QuestionRepositoryImpl : QuestionRepository {
         }
     }
 
-    override fun getByUserId(userId: Long): List<Question> {
+    override fun getByUserId(userId: Long, offset: Int, limit: Int): List<Question> {
         return Questions
             .select { (Questions.authorId eq userId) and (Questions.isClosed eq false) }
-            .map(::mapper)
+            .map(::mapper).drop(offset).take(limit)
     }
 
     private fun mapper(row: ResultRow): Question {

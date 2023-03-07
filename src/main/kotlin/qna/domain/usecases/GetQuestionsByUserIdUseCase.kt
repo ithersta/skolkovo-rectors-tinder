@@ -11,6 +11,6 @@ class GetQuestionsByUserIdUseCase(
     private val transaction: Transaction,
 ) {
     operator fun invoke(userId: Long, offset: Int, limit: Int): List<Question> = transaction {
-        return@transaction questionRepository.getByUserId(userId).drop(offset).take(limit)
+        return@transaction questionRepository.getByUserId(userId, offset, limit)
     }
 }

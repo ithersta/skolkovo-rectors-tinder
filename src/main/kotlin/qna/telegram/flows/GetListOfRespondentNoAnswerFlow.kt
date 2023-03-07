@@ -1,7 +1,6 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
-import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
@@ -100,10 +99,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             answer(query)
         }
         onDataCallbackQuery(SeeList::class) { (data, query) ->
-            val replyMarkup = respondentPager.replyMarkup(
-                data,
-                this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>
-            )
+            val replyMarkup = respondentPager.replyMarkup(data)
             if (replyMarkup.keyboard.isEmpty()) {
                 sendTextMessage(query.user.id, Strings.RespondentsNoAnswer.NoRespondent)
                 state.override { DialogState.Empty }

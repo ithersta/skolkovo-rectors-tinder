@@ -21,10 +21,10 @@ class ResponseRepositoryImpl : ResponseRepository {
         }
     }
 
-    override fun getRespondentsByQuestionId(questionId: Long): List<Long> {
+    override fun getRespondentsByQuestionId(questionId: Long, offset: Int, limit: Int): List<Long> {
         return Responses
             .select(Responses.questionId eq questionId)
-            .map { it[Responses.respondentId].value }
+            .map { it[Responses.respondentId].value }.drop(offset).take(limit)
     }
 
     override fun has(respondentId: Long, questionId: Long): Boolean {

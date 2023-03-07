@@ -10,6 +10,6 @@ class GetRespondentsByQuestionIdUseCase(
     private val transaction: Transaction
 ) {
     operator fun invoke(questionId: Long, offset: Int, limit: Int): List<Long> = transaction {
-        return@transaction responseRepository.getRespondentsByQuestionId(questionId).drop(offset).take(limit)
+        return@transaction responseRepository.getRespondentsByQuestionId(questionId, offset, limit)
     }
 }
