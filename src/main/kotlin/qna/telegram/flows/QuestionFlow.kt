@@ -26,17 +26,17 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.entities.Question
 import qna.domain.usecases.GetQuestionByIdUseCase
+import qna.domain.usecases.GetQuestionsByUserIdAndUserAreaUseCase
 import qna.domain.usecases.GetUserDetailsUseCase
-import qna.domain.usecases.SubjectsByUserIdAndUserAreaUseCase
 import qna.telegram.queries.AcceptQuestionQuery
 import qna.telegram.queries.DeclineQuestionQuery
+import qna.telegram.strings.Strings.TargetArea.HaveNotQuestionInThisArea
 import qna.telegram.strings.Strings.TargetArea.ListQuestion
+import qna.telegram.strings.Strings.TargetArea.ListSpheres
 import qna.telegram.strings.Strings.TargetArea.buildQuestionByQuestionText
-import qna.telegram.strings.Strings.TargetArea.haveNotQuestionInThisArea
-import qna.telegram.strings.Strings.TargetArea.listSpheres
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
-    val subjectsByChatId: SubjectsByUserIdAndUserAreaUseCase by inject()
+    val subjectsByChatId: GetQuestionsByUserIdAndUserAreaUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val answerForUser: List<String> = listOf(Yes, No)
@@ -57,7 +57,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
         onEnter {
             sendTextMessage(
                 it.chatId.toChatId(),
-                listSpheres,
+                ListSpheres,
                 replyMarkup = inlineKeyboard {
                     getUserDetailsUseCase.invoke(it.chatId)!!.areas.forEach { area ->
                         val areaToString = Strings.questionAreaToString[area]
@@ -68,22 +68,21 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
                 }
             )
         }
-
+    }
+    anyState {
         onDataCallbackQuery(SelectArea::class) { (data, query) ->
             val replyMarkup = subjectsPager.replyMarkup(
                 data,
                 this as BaseStatefulContext<DialogState, User, DialogState, User.Normal>
             )
             if (replyMarkup.keyboard.isEmpty()) {
-                sendTextMessage(query.user.id, haveNotQuestionInThisArea)
+                sendTextMessage(query.user.id, HaveNotQuestionInThisArea)
                 state.override { DialogState.Empty }
             } else {
                 sendTextMessage(query.user.id, ListQuestion, replyMarkup = replyMarkup)
             }
             answer(query)
         }
-    }
-    anyState {
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
             sendTextMessage(
                 query.user.id,

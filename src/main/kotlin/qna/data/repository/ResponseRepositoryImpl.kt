@@ -1,12 +1,17 @@
 package qna.data.repository
 
+import auth.data.tables.UserAreas
 import auth.data.tables.Users
+import auth.domain.entities.PhoneNumber
+import auth.domain.entities.User
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.koin.core.annotation.Single
 import qna.data.tables.Responses
+import qna.domain.entities.QuestionArea
 import qna.domain.entities.Response
 import qna.domain.repository.ResponseRepository
 
@@ -28,10 +33,28 @@ class ResponseRepositoryImpl : ResponseRepository {
             .empty().not()
     }
 
-    override fun getRespondentByQuestionId(questionId: Long): Map<String, String> {
+    private fun mapper(row: ResultRow): User.Details {
+        val userId = row[Users.id].value
+        val areas: Set<QuestionArea> = UserAreas
+            .select { UserAreas.userId eq userId }
+            .map { it[UserAreas.area] }.toSet()
+        return User.Details(
+            id = userId,
+            phoneNumber = PhoneNumber.of(row[Users.phoneNumber])!!,
+            name = row[Users.name],
+            city = row[Users.city],
+            job = row[Users.job],
+            organization = row[Users.organization],
+            activityDescription = row[Users.activityDescription],
+            areas = areas
+        )
+    }
+
+
+    override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {
         return (Users innerJoin Responses)
             .select(Responses.questionId eq questionId)
-            .associate { it[Users.name] to it[Users.phoneNumber] }
+            .map(::mapper)
     }
 
     override fun add(questionId: Long, respondentId: Long): Long {

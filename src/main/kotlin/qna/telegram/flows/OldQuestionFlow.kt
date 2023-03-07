@@ -21,12 +21,12 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
-import qna.domain.usecases.NameAndPhoneUseCase
-import qna.domain.usecases.SubjectsUseCase
+import qna.domain.usecases.GetNameAndPhoneUseCase
+import qna.domain.usecases.GetQuestionByUserIdUseCase
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() {
-    val subjectsUseCase: SubjectsUseCase by inject()
-    val nameAndPhoneUseCase: NameAndPhoneUseCase by inject()
+    val subjectsUseCase: GetQuestionByUserIdUseCase by inject()
+    val nameAndPhoneUseCase: GetNameAndPhoneUseCase by inject()
     val subjectsPager = pager(id = "sub1") {
         val subjects = subjectsUseCase.invoke(context!!.user.id)
         val paginatedNumbers = subjects.drop(offset).take(limit)
@@ -59,7 +59,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                 replyMarkup = inlineKeyboard {
                     nameAndPhoneUseCase.invoke(data.questionId).forEach { item ->
                         row {
-                            dataButton(item.key, SelectRespondent(name = item.key, phoneNumber = item.value))
+                            dataButton(
+                                item.name,
+                                SelectRespondent(name = item.name, phoneNumber = item.phoneNumber.toString())
+                            )
                         }
                     }
                 }
