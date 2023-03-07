@@ -5,7 +5,6 @@ import auth.telegram.Strings
 import auth.telegram.queries.AnswerUser
 import auth.telegram.queries.SelectArea
 import auth.telegram.queries.SelectSubject
-import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.pager
