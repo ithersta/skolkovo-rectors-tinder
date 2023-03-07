@@ -65,9 +65,16 @@ class UserAreasRepositoryImpl : UserAreasRepository {
     }
 
     override fun getSubjectsByUserId(userId: Long, userArea: QuestionArea): List<Question> {
-        return (UserAreas.join(QuestionAreas,
-            JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area }) innerJoin Questions)
-            .select((UserAreas.userId eq userId) and (Questions.isClosed.eq(false))
-                    and (Questions.authorId neq userId) and (QuestionAreas.area eq userArea)).map(::mapper)
+        return (
+            UserAreas.join(
+                QuestionAreas,
+                JoinType.INNER,
+                additionalConstraint = { UserAreas.area eq QuestionAreas.area }
+            ) innerJoin Questions
+            )
+            .select(
+                (UserAreas.userId eq userId) and (Questions.isClosed.eq(false))
+                    and (Questions.authorId neq userId) and (QuestionAreas.area eq userArea)
+            ).map(::mapper)
     }
 }
