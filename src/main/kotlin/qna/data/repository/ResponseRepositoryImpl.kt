@@ -45,8 +45,11 @@ class ResponseRepositoryImpl : ResponseRepository {
             job = row[Users.job],
             organization = row[Users.organization],
             activityDescription = row[Users.activityDescription],
-            areas = areas
+            areas = areas,
+            course = row[Users.course],
+            organizationType = row[Users.organizationType]
         )
+
     }
 
     override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {

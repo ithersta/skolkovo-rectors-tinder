@@ -1,10 +1,15 @@
 package auth.telegram.queries
 
+import auth.domain.entities.Course
 import auth.domain.entities.OrganizationType
 import common.telegram.Query
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import qna.domain.entities.QuestionArea
+
+@Serializable
+@SerialName("course")
+class ChooseCourseQuery(val course: Course) : Query
 
 @Serializable
 @SerialName("country")
