@@ -130,10 +130,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 state.snapshot.question,
                 state.snapshot.areas
             )
-            sendTextMessage(
-                message.chat,
-                Strings.Question.Success
-            )
+            sendTextMessage(message.chat, Strings.Question.Success)
             coroutineScope.launch {
                 state.snapshot.areas.forEach {
                     val listOfValidUsers: List<Long> = getUsersByAreaUseCase(it, userId = message.chat.id.chatId)
@@ -157,13 +154,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(message.chat, Strings.Question.Success)
             coroutineScope.launch {
                 val user = getUserDetailsUseCase.invoke(message.chat.id.chatId)!!
-                state.snapshot.areas.forEach {
-                    val listOfValidUsers: List<Long> = getFilteredUsersByAreaUseCase(it, user)
-                    listOfValidUsers.forEach {
-                        runCatching {
-                            sendQuestionMessage(it.toChatId(), question)
-                        }
-                    }
+                state.snapshot.areas.flatMap {
+                    getFilteredUsersByAreaUseCase(it, user)
+                }.toSet().forEach {
+                    sendQuestionMessage(it.toChatId(), question)
                 }
             }
             state.override { DialogState.Empty }

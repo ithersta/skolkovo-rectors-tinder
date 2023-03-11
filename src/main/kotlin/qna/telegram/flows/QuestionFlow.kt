@@ -34,22 +34,21 @@ import qna.telegram.strings.Strings.TargetArea.ListSpheres
 import qna.telegram.strings.Strings.TargetArea.buildQuestionByQuestionText
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
-    val subjectsByChatId: GetQuestionsByUserIdAndUserAreaUseCase by inject()
+    val questionsByUserIdAndUserAreaUseCase: GetQuestionsByUserIdAndUserAreaUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
-    val subjectsPager =
-        pager(id = "sub2", dataKClass = SelectArea::class) {
-            val subjects = subjectsByChatId.invoke(context!!.user.id, data.area)
-            val paginatedSubjects = subjects.drop(offset).take(limit)
-            inlineKeyboard {
-                paginatedSubjects.forEach { item ->
-                    row {
-                        dataButton(item.subject, SelectSubject(item.id!!))
-                    }
+    val subjectsPager = pager(id = "sub2", dataKClass = SelectArea::class) {
+        val questions = questionsByUserIdAndUserAreaUseCase.invoke(context!!.user.id, data.area)
+        val paginatedSubjects = questions.drop(offset).take(limit)
+        inlineKeyboard {
+            paginatedSubjects.forEach { item ->
+                row {
+                    dataButton(item.subject, SelectSubject(item.id!!))
                 }
-                navigationRow(itemCount = subjects.size)
             }
+            navigationRow(itemCount = questions.size)
         }
+    }
     state<MenuState.CurrentIssues> {
         onEnter {
             sendTextMessage(
