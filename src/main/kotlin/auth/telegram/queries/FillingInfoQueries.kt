@@ -1,5 +1,7 @@
 package auth.telegram.queries
 
+import auth.domain.entities.Course
+import auth.domain.entities.OrganizationType
 import common.telegram.Query
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -23,19 +25,35 @@ class SelectCountryQuery(val country: String) : Query
 
 @Serializable
 @SerialName("cis")
-class SelectCityInCIS(val city: String) : Query
+class SelectCityInCISQuery(val city: String) : Query
 
 @Serializable
 @SerialName("area")
-class SelectDistrict(val district: String) : Query
+class SelectDistrictQuery(val district: String) : Query
 
 @Serializable
 @SerialName("r")
-class SelectRegion(val region: String) : Query
+class SelectRegionQuery(val region: String) : Query
 
 @Serializable
 @SerialName("city")
-class SelectCity(val city: String) : Query
+class SelectCityQuery(val city: String) : Query
+
+@Serializable
+@SerialName("type")
+class ChooseOrganizationTypeQuery(val type: OrganizationType) : Query
+
+@Serializable
+@SerialName("sq")
+class SelectQuestionQuery(val area: QuestionArea) : Query
+
+@Serializable
+@SerialName("uq")
+class UnselectQuestionQuery(val area: QuestionArea) : Query
+
+@Serializable
+@SerialName("fq")
+object FinishQuestionQuery : Query
 
 @Serializable
 @SerialName("subject")
