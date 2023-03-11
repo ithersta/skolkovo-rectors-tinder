@@ -47,7 +47,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WaitingForContact> {
         onEnter {
-            sendTextMessage(it, Welcome,
+            sendTextMessage(
+                it,
+                Welcome,
                 replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                     requestContactButton(ShareContact)
                 }
@@ -76,7 +78,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<ChooseCourseState> {
         onEnter {
-            sendTextMessage(it, ChooseCourse,
+            sendTextMessage(
+                it,
+                ChooseCourse,
                 replyMarkup = inlineKeyboard {
                     courseToString.map {
                         row {
