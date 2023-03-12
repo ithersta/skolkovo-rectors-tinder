@@ -4,9 +4,9 @@ import auth.data.tables.UserAreas
 import auth.data.tables.Users
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
+import common.domain.Paginated
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import common.domain.Paginated
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
