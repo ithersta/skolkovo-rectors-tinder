@@ -9,7 +9,7 @@ object Strings {
             buildEntities {
                 regular(
                     "Добрый день, один из участников сообщества хотел бы " +
-                            "выйти на коммуникацию по следующему вопросу:\n\n"
+                        "выйти на коммуникацию по следующему вопросу:\n\n"
                 )
                 boldln(subject)
                 regularln(question)
