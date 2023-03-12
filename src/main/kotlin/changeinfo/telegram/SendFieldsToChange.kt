@@ -15,8 +15,8 @@ import org.koin.core.context.GlobalContext
 import qna.domain.usecases.GetUserDetailsUseCase
 import qna.telegram.strings.Strings.accountInfo
 
-suspend fun <S : User> StatefulContext<DialogState,
-    User, *, S>.sendFieldsToChange(message: CommonMessage<TextContent>) {
+suspend fun <S : User> StatefulContext<DialogState, User, *, S>
+    .sendFieldsToChange(message: CommonMessage<TextContent>) {
     val getUserDetailsByIdUseCase: GetUserDetailsUseCase by GlobalContext.get().inject()
     val user = getUserDetailsByIdUseCase(message.chat.id.chatId)!!
     sendTextMessage(

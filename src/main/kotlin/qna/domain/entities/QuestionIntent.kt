@@ -4,5 +4,6 @@ enum class QuestionIntent {
     TestHypothesis,
     Consultation,
     FreeForm,
-    QuestionToColleagues
+    QuestionToColleagues,
+    LookingForPartners
 }

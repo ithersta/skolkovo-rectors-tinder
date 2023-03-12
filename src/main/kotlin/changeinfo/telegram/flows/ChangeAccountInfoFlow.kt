@@ -42,7 +42,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     }
     state<WaitingForCityState> {
         selectCity(
-            onFinish = { state, city -> ChangeCityState(city) }
+            onFinish = { _, city -> ChangeCityState(city) }
         )
     }
     state<ChangeCityState> {
