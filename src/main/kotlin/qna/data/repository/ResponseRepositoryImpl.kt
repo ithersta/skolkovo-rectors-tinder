@@ -49,7 +49,6 @@ class ResponseRepositoryImpl : ResponseRepository {
             course = row[Users.course],
             organizationType = row[Users.organizationType]
         )
-
     }
 
     override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {
