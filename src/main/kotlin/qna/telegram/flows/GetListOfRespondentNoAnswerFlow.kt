@@ -38,24 +38,24 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     subjectPager = pager(id = "subjectsNoAnswer") {
         val subject = getQuestionsByUserIdUseCase(context!!.user.id, offset, limit)
         inlineKeyboard {
-            subject.forEach { item ->
+            subject.slice.forEach { item ->
                 row {
                     dataButton(item.subject, SelectSubject(item.authorId, item.id!!))
                 }
             }
-            navigationRow(itemCount = subject.size)
+            navigationRow(itemCount = subject.count)
         }
     }
     respondentPager = pager(id = "respondentNoAnswer", dataKClass = SeeList::class) {
         val respondent = getRespondentsByQuestionIdUseCase(data.questionId, offset, limit)
         inlineKeyboard {
-            respondent.forEach { item ->
+            respondent.slice.forEach { item ->
                 val user = getUserDetailsUseCase(item)
                 row {
                     dataButton(user!!.name, SelectRespondent(user.id, data.questionId))
                 }
             }
-            navigationRow(itemCount = respondent.size)
+            navigationRow(itemCount = respondent.count)
         }
     }
     state<MenuState.Questions.GetListOfSubjects> {
