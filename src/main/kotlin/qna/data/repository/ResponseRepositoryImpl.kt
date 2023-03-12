@@ -23,10 +23,10 @@ class ResponseRepositoryImpl : ResponseRepository {
     }
 
     override fun getRespondentsByQuestionId(questionId: Long, offset: Int, limit: Int): Paginated<Long> {
-       val list = {
-           Responses
-               .select(Responses.questionId eq questionId)
-       }
+        val list = {
+            Responses
+                .select(Responses.questionId eq questionId)
+        }
         return Paginated(
             slice = list().limit(limit, offset.toLong()).map { it[Responses.respondentId].value },
             count = list().count().toInt()
