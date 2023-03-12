@@ -36,7 +36,7 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             ) {
                 button(
                     MenuStrings.Questions.MyQuestions.ActualQuestions,
-                    DialogState.Empty
+                    MenuState.Questions.GetListOfSubjects
                 )
                 button(
                     MenuStrings.Questions.MyQuestions.OldQuestions,
@@ -48,10 +48,6 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 MenuState.CurrentIssues
             )
         }
-        button(
-            MenuStrings.Questions.Ask,
-            MenuState.Questions.AskQuestion
-        )
     }
     button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it.chat.id) }
     button(MenuStrings.ChangeAccountInfo) { sendFieldsToChange(it) }
