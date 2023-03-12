@@ -20,6 +20,10 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         MenuStrings.Questions.QuestionDescription,
         MenuState.Questions.Main
     ) {
+        button(
+            MenuStrings.Questions.Ask,
+            MenuState.Questions.AskQuestion
+        )
         submenu(
             MenuStrings.Questions.Get,
             MenuStrings.Questions.Description,

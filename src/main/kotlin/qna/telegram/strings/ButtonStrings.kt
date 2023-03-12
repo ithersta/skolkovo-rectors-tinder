@@ -9,15 +9,22 @@ object ButtonStrings {
             const val Consultation = "У меня есть запрос на консультацию по теме"
             const val FreeForm = "Хочу задать вопрос участникам сообщества (в свободной форме)"
             const val QuestionToColleagues = "Xочу задать вопрос коллегам из Центра трансформации образования"
+            const val LookingForPartners = "Ищу партнеров для запуска проекта"
         }
 
         val questionIntentToString = mapOf<QuestionIntent, String>(
             QuestionIntent.TestHypothesis to Intent.TestHypothesis,
             QuestionIntent.Consultation to Intent.Consultation,
             QuestionIntent.FreeForm to Intent.FreeForm,
-            QuestionIntent.QuestionToColleagues to Intent.QuestionToColleagues
+            QuestionIntent.QuestionToColleagues to Intent.QuestionToColleagues,
+            QuestionIntent.LookingForPartners to Intent.LookingForPartners
         )
         val stringToQuestionIntent = questionIntentToString.entries.associate { it.value to it.key }
+    }
+
+    object RespondentNoAnswer {
+        const val CloseQuestion = "Закрыть вопрос"
+        const val SeeList = "Посмотреть список ответивших"
     }
 
     const val SendQuestion = "Отправить запрос в сообщество"

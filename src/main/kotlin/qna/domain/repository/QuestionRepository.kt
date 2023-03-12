@@ -16,4 +16,5 @@ interface QuestionRepository {
         limit: Int,
         offset: Int
     ): Paginated<Question>
+    fun getByUserId(userId: Long, offset: Int, limit: Int): Paginated<Question>
 }

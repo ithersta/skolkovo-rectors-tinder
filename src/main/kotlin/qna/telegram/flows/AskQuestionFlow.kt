@@ -132,13 +132,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
             sendTextMessage(message.chat, Strings.Question.Success)
             coroutineScope.launch {
-                state.snapshot.areas.forEach {
-                    val listOfValidUsers: List<Long> = getUsersByAreaUseCase(it, message.chat.id.chatId)
-                    listOfValidUsers.forEach {
-                        runCatching {
-                            sendQuestionMessage(it.toChatId(), question)
-                        }
-                    }
+                state.snapshot.areas.flatMap {
+                    getUsersByAreaUseCase(it, userId = message.chat.id.chatId)
+                }.toSet().forEach {
+                    sendQuestionMessage(it.toChatId(), question)
                 }
             }
             state.override { DialogState.Empty }
