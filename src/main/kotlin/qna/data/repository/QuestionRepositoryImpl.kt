@@ -68,13 +68,13 @@ class QuestionRepositoryImpl : QuestionRepository {
     }
 
     override fun getByUserId(userId: Long, offset: Int, limit: Int): Paginated<Question> {
-        val list = Questions
-            .select { (Questions.authorId eq userId) and (Questions.isClosed eq false) }
-            .limit(limit, offset.toLong())
-            .map(::mapper)
+        val list = {
+            Questions
+                .select { (Questions.authorId eq userId) and (Questions.isClosed eq false) }
+        }
         return Paginated(
-            slice = list,
-            count = list.count()
+            slice = list().limit(limit, offset.toLong()).map(::mapper),
+            count = list().count().toInt()
         )
     }
 
