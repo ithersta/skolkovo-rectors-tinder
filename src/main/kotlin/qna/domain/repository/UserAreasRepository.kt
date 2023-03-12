@@ -6,5 +6,5 @@ import qna.domain.entities.QuestionArea
 interface UserAreasRepository {
     fun getUsersByArea(questionArea: QuestionArea): List<Long>
     fun getFilteredUsersByArea(questionArea: QuestionArea, city: String): List<Long>
-    fun getQuestionsByUserIdAndUserArea(userId: Long, userArea: QuestionArea): List<Question>
+    fun getQuestionsByUserIdAndUserArea(userId: Long, userArea: QuestionArea, city: String): List<Question>
 }

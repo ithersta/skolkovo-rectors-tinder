@@ -24,7 +24,7 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.entities.Question
 import qna.domain.usecases.GetQuestionByIdUseCase
-import qna.domain.usecases.GetQuestionsByUserIdAndUserAreaUseCase
+import qna.domain.usecases.GetQuestionsByUserIdAndUserAreaAndCityUseCase
 import qna.domain.usecases.GetUserDetailsUseCase
 import qna.telegram.queries.AcceptQuestionQuery
 import qna.telegram.queries.DeclineQuestionQuery
@@ -34,11 +34,12 @@ import qna.telegram.strings.Strings.TargetArea.ListSpheres
 import qna.telegram.strings.Strings.TargetArea.buildQuestionByQuestionText
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
-    val questionsByUserIdAndUserAreaUseCase: GetQuestionsByUserIdAndUserAreaUseCase by inject()
+    val questionsByUserIdAndUserAreaUseCase: GetQuestionsByUserIdAndUserAreaAndCityUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val subjectsPager = pager(id = "sub2", dataKClass = SelectArea::class) {
-        val questions = questionsByUserIdAndUserAreaUseCase.invoke(context!!.user.id, data.area)
+        val city = getUserDetailsUseCase(context!!.user.id)!!.city
+        val questions = questionsByUserIdAndUserAreaUseCase(context!!.user.id, data.area, city)
         val paginatedSubjects = questions.drop(offset).take(limit)
         inlineKeyboard {
             paginatedSubjects.forEach { item ->
@@ -55,7 +56,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
                 it.chatId.toChatId(),
                 ListSpheres,
                 replyMarkup = inlineKeyboard {
-                    getUserDetailsUseCase.invoke(it.chatId)!!.areas.forEach { area ->
+                    getUserDetailsUseCase(it.chatId)!!.areas.forEach { area ->
                         val areaToString = Strings.questionAreaToString[area]
                         row {
                             dataButton(areaToString!!, SelectArea(area))
@@ -79,7 +80,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
         onDataCallbackQuery(SelectSubject::class) { (data, query) ->
             sendTextMessage(
                 query.user.id,
-                buildQuestionByQuestionText(getQuestionByIdUseCase.invoke(data.questionId)!!.text),
+                buildQuestionByQuestionText(getQuestionByIdUseCase(data.questionId)!!.text),
                 replyMarkup = confirmationInlineKeyboard(
                     positiveData = AnswerUser(data.questionId, true),
                     negativeData = AnswerUser(data.questionId, false)

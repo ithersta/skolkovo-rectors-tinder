@@ -7,11 +7,11 @@ import qna.domain.entities.QuestionArea
 import qna.domain.repository.UserAreasRepository
 
 @Single
-class GetQuestionsByUserIdAndUserAreaUseCase(
+class GetQuestionsByUserIdAndUserAreaAndCityUseCase(
     private val userAreasRepository: UserAreasRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(userId: Long, userArea: QuestionArea): List<Question> = transaction {
-        return@transaction userAreasRepository.getQuestionsByUserIdAndUserArea(userId, userArea)
+    operator fun invoke(userId: Long, userArea: QuestionArea, city: String): List<Question> = transaction {
+        return@transaction userAreasRepository.getQuestionsByUserIdAndUserArea(userId, userArea, city)
     }
 }
