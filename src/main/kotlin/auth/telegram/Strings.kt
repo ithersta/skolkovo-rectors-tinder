@@ -2,7 +2,14 @@
 
 package auth.telegram
 
+import auth.domain.entities.Course
+import auth.domain.entities.OrganizationType
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
+import auth.telegram.Strings.Courses.EducationalProgramsCode
+import auth.telegram.Strings.Courses.LeadersOfBreakthrough
+import auth.telegram.Strings.Courses.ManagementSchool
+import auth.telegram.Strings.Courses.RectorsSchool
+import auth.telegram.Strings.Courses.StepToSchoolDevelopment
 import qna.domain.entities.QuestionArea
 
 object Strings {
@@ -22,7 +29,9 @@ object Strings {
             "Укажите из какого Вы города " // /мб надо будет поменять, с указанием, что надо выбрать из выпадающего списка
         const val WriteProfession = "Напишите Вашу должность"
         const val WriteOrganization = "Напишите название Вашей организации"
-        const val ChooseProfessionalAreas = "Уточните ваши профессиональные зоны компетенций" // /возможность выбрать
+        const val ChooseProfessionalAreas = "Уточните Ваши профессиональные зоны компетенций (вы можете выбрать несколько)\n" +
+            "Когда вы выберете все Ваши профессиональные зоны компетенций, нажмите \"Закончить выбор\"\n" +
+            "\nРекомендуемое количество не более 5"
 
         const val NoQuestionArea =
             "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
@@ -33,10 +42,55 @@ object Strings {
 
     const val FinishChoosing = "Закончить выбор"
 
+    object OrganizationTypes {
+        const val ChooseOrganizationType =
+            "Выберите тип организации, в которой вы работаете"
+        const val ScientificOrganization = "научная организация"
+        const val School = "школа"
+        const val EngineeringUniversity = "инженерно-технический университет"
+        const val ClassicalUniversity = "классический (многопрофильный) университет"
+        const val FederalUniversity = "федеральный университет"
+        const val MedicalUniversity = "медицинский университет"
+        const val AgriculturalUniversity = "аграрный университет"
+        const val TransportUniversity = "транспортный университет"
+        const val TheatreUniversity = "театральный институт"
+    }
+
+    var organizationTypeToString = mapOf<OrganizationType, String>(
+        OrganizationType.ScientificOrganization to OrganizationTypes.ScientificOrganization,
+        OrganizationType.School to OrganizationTypes.School,
+        OrganizationType.EngineeringUniversity to OrganizationTypes.EngineeringUniversity,
+        OrganizationType.ClassicalUniversity to OrganizationTypes.ClassicalUniversity,
+        OrganizationType.FederalUniversity to OrganizationTypes.FederalUniversity,
+        OrganizationType.MedicalUniversity to OrganizationTypes.MedicalUniversity,
+        OrganizationType.AgriculturalUniversity to OrganizationTypes.AgriculturalUniversity,
+        OrganizationType.TransportUniversity to OrganizationTypes.TransportUniversity,
+        OrganizationType.TheatreUniversity to OrganizationTypes.TheatreUniversity
+    )
+
+    object Courses {
+        const val ChooseCourse =
+            "Выберите программу, которую вы прошли"
+        const val RectorsSchool = "Школа ректоров"
+        const val LeadersOfBreakthrough = "Лидеры научно-технологического прорыва"
+        const val ManagementSchool = "Школа управления исследовательскими программами"
+        const val StepToSchoolDevelopment = "Шаг развития школы"
+        const val EducationalProgramsCode = "Код образовательных программ"
+    }
+
+    val courseToString = mapOf<Course, String>(
+        Course.RectorsSchool to RectorsSchool,
+        Course.LeadersOfBreakthrough to LeadersOfBreakthrough,
+        Course.ManagementSchool to ManagementSchool,
+        Course.StepToSchoolDevelopment to StepToSchoolDevelopment,
+        Course.EducationalProgramsCode to EducationalProgramsCode
+    )
+
     object Question {
         const val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
-                "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\""
+                "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\"\n" +
+                "\nРекомендуемое количество не более 5"
         const val Science = "наука"
         const val Education = "образование"
         const val Innovations = "инновации"

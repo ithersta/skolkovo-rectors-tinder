@@ -8,6 +8,7 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -30,7 +31,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
             state.override { WaitingForProfessionState }
         }
         onDataCallbackQuery(WaitingForOrganization::class) {
-            state.override { WaitingForOrganizationState }
+            state.override { WaitingForOrganizationTypeState }
         }
         onDataCallbackQuery(WaitingForProfessionalDescription::class) {
             state.override { WaitingForProfessionalDescriptionState }
@@ -41,7 +42,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     }
     state<WaitingForCityState> {
         selectCity(
-            onFinish = { state, city -> ChangeCityState(city) }
+            onFinish = { _, city -> ChangeCityState(city) }
         )
     }
     state<ChangeCityState> {
@@ -72,6 +73,19 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onText {
             changeAccountInfoInteractor.changeJob(it.chat.id.chatId, it.content.text)
             state.override { DialogState.Empty }
+        }
+    }
+
+    state<WaitingForOrganizationTypeState> {
+        chooseOrganizationType(
+            text = changeinfo.Strings.Fields.Organization.Type,
+            onFinish = { ChangeOrganizationTypeState, type -> ChangeOrganizationTypeState(type) }
+        )
+    }
+    state<ChangeOrganizationTypeState> {
+        onEnter {
+            changeAccountInfoInteractor.changeOrganizationType(it.chatId, state.snapshot.type)
+            state.override { WaitingForOrganizationState }
         }
     }
 

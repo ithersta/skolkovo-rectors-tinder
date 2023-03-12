@@ -24,6 +24,7 @@ import notifications.telegram.flows.newQuestionsNotificationFlow
 import notifications.telegram.flows.testNotificationsFlow
 import qna.telegram.flows.askQuestionFlow
 import qna.telegram.flows.newResponseFlow
+import qna.telegram.flows.getListOfRespondentNoAnswerFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -49,6 +50,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         with(normalMenu) { invoke() }
         feedbackFlow()
         askQuestionFlow()
+        getListOfRespondentNoAnswerFlow()
         changeAccountInfoFlow()
         changeNotificationPreferenceFlow()
         newQuestionsNotificationFlow()

@@ -27,9 +27,9 @@ object Strings {
 
         fun waitingForCompanion(subject: String) =
             buildEntities {
-                regular("Владелец вопроса")
+                regular("Владелец вопроса ")
                 bold("\"$subject\"")
-                regular("свяжется с Вами.")
+                regular(" свяжется с Вами.")
             }
 
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
@@ -58,7 +58,21 @@ object Strings {
         const val AskingQuestionIntent = "Выберите цель вопроса"
         const val InvalidQuestionIntent = "Пожалуйста, выберите цель вопроса из кнопочного меню"
         const val CompletedQuestion = "Отлично, вопрос сформирован!"
-        const val Success = "Вопрос успешно отправлен в сообщество"
+        const val Success = "Вопрос успешно отправлен в сообщество!"
+    }
+
+    object RespondentsNoAnswer {
+        // тут мб по-другому написать
+        const val ListOfSubjects = "Список Ваших вопросов.\n" +
+            "Нажмите на один из них для просмотра списка участников, " +
+            "которые согласились ответить Вам на вопрос или для закрытия вопроса."
+        const val ChooseAction = "Выберите действие:"
+        const val CloseQuestionSuccessful = "Вопрос успешно закрыт!"
+        const val ListOfRespondents = "Список участников, которые согласились ответить на Ваш вопрос.\n" +
+            "Нажмите на одного из них для просмотра информации о профиле."
+
+        const val NoQuestions = "На данный момент у Вас нет актуальных вопросов"
+        const val NoRespondent = "На данный момент нет людей, которые ответили бы на Ваш вопрос"
     }
 
     object NewResponses {

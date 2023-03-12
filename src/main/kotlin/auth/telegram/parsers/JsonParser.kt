@@ -52,7 +52,7 @@ class JsonParser {
         return inlineKeyboard {
             createList(jsonpathDistrictsPattern).forEach {
                 row {
-                    dataButton(it, SelectDistrict(it))
+                    dataButton(it, SelectDistrictQuery(it))
                 }
             }
         }
@@ -62,7 +62,7 @@ class JsonParser {
         return inlineKeyboard {
             createList(jsonpathCitiesInCISByCountry(country)).forEach {
                 row {
-                    dataButton(it, SelectCityInCIS(it))
+                    dataButton(it, SelectCityInCISQuery(it))
                 }
             }
         }
@@ -72,7 +72,7 @@ class JsonParser {
         return inlineKeyboard {
             createList(jsonpathRegionByDistrict(district)).forEach {
                 row {
-                    dataButton(it, SelectRegion(it))
+                    dataButton(it, SelectRegionQuery(it))
                 }
             }
         }
@@ -82,7 +82,7 @@ class JsonParser {
         return inlineKeyboard {
             createList(jsonpathCityByRegion(region)).forEach {
                 row {
-                    dataButton(it, SelectCity(it))
+                    dataButton(it, SelectCityQuery(it))
                 }
             }
         }

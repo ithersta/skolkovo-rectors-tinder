@@ -1,6 +1,8 @@
 package qna.data.repository
 
 import org.jetbrains.exposed.sql.*
+import common.domain.Paginated
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
 import qna.data.tables.AcceptedResponses
 import qna.data.tables.Responses
@@ -11,6 +13,17 @@ import qna.domain.repository.ResponseRepository
 class ResponseRepositoryImpl : ResponseRepository {
     override fun get(responseId: Long): Response? {
         return Responses.select { Responses.id eq responseId }.firstOrNull()?.let(::mapper)
+    }
+
+    override fun getRespondentsByQuestionId(questionId: Long, offset: Int, limit: Int): Paginated<Long> {
+        val list = {
+            Responses
+                .select(Responses.questionId eq questionId)
+        }
+        return Paginated(
+            slice = list().limit(limit, offset.toLong()).map { it[Responses.respondentId].value },
+            count = list().count().toInt()
+        )
     }
 
     override fun has(respondentId: Long, questionId: Long): Boolean {

@@ -6,6 +6,7 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.MassSendLimiter
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
@@ -43,6 +44,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
+    val massSendLimiter: MassSendLimiter by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -127,17 +129,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.Question.Success
             )
             coroutineScope.launch {
-                state.snapshot.areas.forEach {
-                    val listOfValidUsers: List<Long> =
-                        getUsersByAreaUseCase(
-                            it,
-                            userId = message.chat.id.chatId
-                        )
-                    listOfValidUsers.forEach {
-                        runCatching {
-                            sendQuestionMessage(it.toChatId(), question)
-                        }
-                    }
+                state.snapshot.areas.flatMap {
+                    getUsersByAreaUseCase(it, userId = message.chat.id.chatId)
+                }.toSet().forEach {
+                    massSendLimiter.wait()
+                    sendQuestionMessage(it.toChatId(), question)
                 }
             }
             state.override { DialogState.Empty }
