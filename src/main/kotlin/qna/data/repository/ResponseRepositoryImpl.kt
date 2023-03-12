@@ -1,7 +1,7 @@
 package qna.data.repository
 
-import org.jetbrains.exposed.sql.*
 import common.domain.Paginated
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
 import qna.data.tables.AcceptedResponses
