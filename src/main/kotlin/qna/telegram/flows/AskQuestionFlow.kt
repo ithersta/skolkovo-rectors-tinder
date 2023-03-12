@@ -8,12 +8,16 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
+import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.asFromUser
+import dev.inmo.tgbotapi.extensions.utils.extensions.raw.from
+import dev.inmo.tgbotapi.extensions.utils.ifFromUser
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
@@ -35,10 +39,7 @@ import qna.telegram.queries.AcceptQuestionQuery
 import qna.telegram.queries.AcceptUserQuery
 import qna.telegram.queries.DeclineQuestionQuery
 import qna.telegram.queries.DeclineUserQuery
-import qna.telegram.states.AskFullQuestion
-import qna.telegram.states.ChooseQuestionAreas
-import qna.telegram.states.ChooseQuestionIntent
-import qna.telegram.states.SendQuestionToCommunity
+import qna.telegram.states.*
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
 
@@ -49,6 +50,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
     val addAcceptedResponseRepoUseCase: AddAcceptedResponseRepoUseCase by inject()
+    val botConfig: BotConfig by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -97,8 +99,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val intent = ButtonStrings.Question.stringToQuestionIntent[message.content.text]
             if (intent != null) {
                 if (intent == QuestionIntent.QuestionToColleagues) {
-                    // TODO тут нужен новый state новый для отправки вопроса в сообщество(в тг канал)
-                    state.override { SendQuestionToCommunity(subject, question, areas, intent) }
+                    state.override { SendQuestionToCurator(subject, question) }
                 } else {
                     state.override { SendQuestionToCommunity(subject, question, areas, intent) }
                 }
@@ -145,6 +146,38 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                         }
                     }
                 }
+            }
+            state.override { DialogState.Empty }
+        }
+    }
+    state<SendQuestionToCurator> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.Question.CompletedQuestion,
+                replyMarkup = replyKeyboard {
+                    row {
+                        simpleButton(ButtonStrings.SendQuestion)
+                    }
+                }
+            )
+        }
+        onText(ButtonStrings.SendQuestion) { message ->
+            if(botConfig.curatorId != null){
+                sendTextMessage(
+                    message.chat,
+                    Strings.Question.Success
+                )
+                sendTextMessage(
+                    UserId(botConfig.curatorId!!),
+                    Strings.QuestionToCurator.message(state.snapshot.subject, state.snapshot.question)
+                )
+                val respondent = getUserDetailsUseCase(message.chat.id.chatId)!!
+                sendContact(
+                    UserId(botConfig.curatorId!!),
+                    phoneNumber = respondent.phoneNumber.value,
+                    firstName = respondent.name,
+                )
             }
             state.override { DialogState.Empty }
         }
