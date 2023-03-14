@@ -172,11 +172,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                     UserId(botConfig.curatorId!!),
                     Strings.QuestionToCurator.message(state.snapshot.subject, state.snapshot.question)
                 )
-                val respondent = getUserDetailsUseCase(message.chat.id.chatId)!!
+                val userDetails = getUserDetailsUseCase(message.chat.id.chatId)!!
                 sendContact(
                     UserId(botConfig.curatorId!!),
-                    phoneNumber = respondent.phoneNumber.value,
-                    firstName = respondent.name,
+                    phoneNumber = userDetails.phoneNumber.value,
+                    firstName = userDetails.name,
                 )
             }
             state.override { DialogState.Empty }
