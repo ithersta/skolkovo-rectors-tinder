@@ -32,7 +32,7 @@ object Strings {
 
         const val Areas = "сферы компетенций"
     }
-    const val Back="Не нужно изменять данные"
+    const val Back = "Не нужно изменять данные"
 
     val namesToQueries = mapOf<String, Query>(
         Fields.Name.Button to WaitingForNewName,

@@ -40,7 +40,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onDataCallbackQuery(WaitingForQuestionAreas::class) { (_, query) ->
             state.override { WaitingForQuestionAreasState(getUserDetailsUseCase(query.from.id.chatId)!!.areas) }
         }
-        onDataCallbackQuery(BackToMain::class){(_, query) ->
+        onDataCallbackQuery(BackToMain::class) { (_, query) ->
             state.override { DialogState.Empty }
             answer(query)
         }
