@@ -32,6 +32,7 @@ object Strings {
 
         const val Areas = "сферы компетенций"
     }
+    const val Back="Не нужно изменять данные"
 
     val namesToQueries = mapOf<String, Query>(
         Fields.Name.Button to WaitingForNewName,
@@ -39,6 +40,7 @@ object Strings {
         Fields.Job.Button to WaitingForProfession,
         Fields.Organization.Button to WaitingForOrganization,
         Fields.ActivityDescription.Button to WaitingForProfessionalDescription,
-        Fields.Areas to WaitingForQuestionAreas
+        Fields.Areas to WaitingForQuestionAreas,
+        Back to BackToMain
     )
 }
