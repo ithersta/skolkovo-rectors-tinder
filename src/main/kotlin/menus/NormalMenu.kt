@@ -19,6 +19,10 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
         MenuStrings.Questions.QuestionDescription,
         MenuState.Questions.Main
     ) {
+        button(
+            MenuStrings.Questions.Ask,
+            MenuState.Questions.AskQuestion
+        )
         submenu(
             MenuStrings.Questions.Get,
             MenuStrings.Questions.Description,
@@ -29,24 +33,20 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 MenuStrings.Questions.MyQuestions.Description,
                 MenuState.Questions.GetMyQuestion
             ) {
-                button( // TODO
+                button(
                     MenuStrings.Questions.MyQuestions.ActualQuestions,
                     DialogState.Empty
-                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+                )
                 button(
                     MenuStrings.Questions.MyQuestions.OldQuestions,
                     DialogState.Empty
-                ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+                )
             }
             button(
                 MenuStrings.Questions.InterestingQuestions,
                 DialogState.Empty
-            ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+            )
         }
-        button(
-            MenuStrings.Questions.Ask,
-            MenuState.Questions.AskQuestion
-        )
     }
     button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it.chat.id) }
     button(MenuStrings.ChangeAccountInfo) { sendFieldsToChange(it) }
