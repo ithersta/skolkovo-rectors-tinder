@@ -15,9 +15,6 @@ import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.asFromUser
-import dev.inmo.tgbotapi.extensions.utils.extensions.raw.from
-import dev.inmo.tgbotapi.extensions.utils.ifFromUser
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
@@ -163,7 +160,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText(ButtonStrings.SendQuestion) { message ->
-            if(botConfig.curatorId != null){
+            if (botConfig.curatorId != null) {
                 sendTextMessage(
                     message.chat,
                     Strings.Question.Success
