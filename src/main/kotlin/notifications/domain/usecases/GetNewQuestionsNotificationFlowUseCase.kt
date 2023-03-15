@@ -16,16 +16,19 @@ import notifications.domain.repository.NotificationPreferenceRepository
 import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.seconds
 
+class QuestionNotificationConfig(
+    val notifyAt: LocalTime,
+    val dayOfWeek: DayOfWeek
+)
+
 @Single
 class GetNewQuestionsNotificationFlowUseCase(
     private val notificationPreferenceRepository: NotificationPreferenceRepository,
     private val transaction: Transaction,
     private val timeZone: TimeZone,
     private val clock: Clock,
-    private val config: Config
+    private val config: QuestionNotificationConfig
 ) {
-    class Config(val dailyHour: Int = 15, val dayOfWeek: DayOfWeek = DayOfWeek.TUESDAY)
-
     private val testNotificationChannel = Channel<NotificationPreference>(BUFFERED)
 
     operator fun invoke() = merge(dailyFlow(), testFlow())
@@ -41,9 +44,9 @@ class GetNewQuestionsNotificationFlowUseCase(
     private fun dailyFlow() = flow {
         val offset = timeZone.offsetAt(clock.now()).totalSeconds.seconds.inWholeMinutes.toInt()
         buildSchedule(offset) {
-            hours { at(config.dailyHour) }
-            minutes { at(0) }
-            seconds { at(0) }
+            hours { at(config.notifyAt.hour) }
+            minutes { at(config.notifyAt.minute) }
+            seconds { at(config.notifyAt.second) }
         }.doInfinity { _ ->
             val now = adjustedNow()
             generateNotifications(NotificationPreference.Daily, now = now).forEach { emit(it) }
@@ -67,6 +70,6 @@ class GetNewQuestionsNotificationFlowUseCase(
 
     private fun adjustedNow() = clock.now()
         .toLocalDateTime(timeZone).date
-        .atTime(config.dailyHour, 0)
+        .atTime(config.notifyAt)
         .toInstant(timeZone)
 }
