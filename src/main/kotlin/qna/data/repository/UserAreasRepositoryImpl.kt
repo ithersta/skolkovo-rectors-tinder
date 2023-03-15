@@ -68,11 +68,15 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .slice(Questions.columns)
             .select {
                 (Users.id neq userId) and
-                        (UserAreas.area eq userArea) and
-                        (Questions.isClosed eq false) and
-                        ((Questions.isBlockedCity eq false) or
-                                ((Questions.isBlockedCity eq true) and
-                                        (authorCity[Users.city] neq Users.city)))
+                    (UserAreas.area eq userArea) and
+                    (Questions.isClosed eq false) and
+                    (
+                        (Questions.isBlockedCity eq false) or
+                            (
+                                (Questions.isBlockedCity eq true) and
+                                    (authorCity[Users.city] neq Users.city)
+                                )
+                        )
             }
             .orderBy(Questions.at to SortOrder.DESC)
             .map(::mapper)
