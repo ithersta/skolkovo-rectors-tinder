@@ -62,7 +62,6 @@ class ResponseRepositoryImpl : ResponseRepository {
             .map(::mapperRespondents)
     }
 
-
     override fun countForQuestion(questionId: Long): Int {
         return Responses
             .select { Responses.questionId eq questionId }
