@@ -14,5 +14,9 @@ object Questions : LongIdTable() {
     val subject: Column<String> = varchar("subject", length = 256)
     val text: Column<String> = varchar("text", length = 2048)
     val isClosed: Column<Boolean> = bool("is_closed")
-    val at: Column<Instant> = timestamp("at").index()
+    val at: Column<Instant> = timestamp("at")
+
+    init {
+        index(isUnique = false, isClosed, at)
+    }
 }

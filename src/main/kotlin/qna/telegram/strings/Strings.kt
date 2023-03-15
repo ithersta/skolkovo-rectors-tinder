@@ -1,7 +1,9 @@
 package qna.telegram.strings
 
+import auth.domain.entities.User
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.*
+import qna.domain.usecases.NewResponseNotification
 
 object Strings {
     object ToAnswerUser {
@@ -15,12 +17,14 @@ object Strings {
                 regularln(question + "\n")
                 boldln("Готовы ответить?")
             }
+
         fun editMessage(subject: String, question: String) =
             buildEntities {
                 regular("Вы согласились ответить на вопрос:\n\n")
                 boldln(subject)
                 regularln(question)
             }
+
         fun waitingForCompanion(subject: String) =
             buildEntities {
                 regular("Владелец вопроса ")
@@ -32,38 +36,20 @@ object Strings {
         const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
-    fun accountInfo(
-        name: String,
-        city: String,
-        job: String,
-        organization: String,
-        activityDescription: String
-    ): TextSourcesList {
+    fun accountInfo(userDetails: User.Details): TextSourcesList {
         return buildEntities {
             bold("Имя: ")
-            regularln(name)
+            regularln(userDetails.name)
             bold("Город: ")
-            regularln(city)
+            regularln(userDetails.city)
             bold("Должность: ")
-            regularln(job)
+            regularln(userDetails.job)
             bold("Организация: ")
-            regularln(organization)
+            regularln(userDetails.organization)
             bold("Деятельность: ")
-            regularln(activityDescription)
+            regularln(userDetails.activityDescription)
             regularln("")
         }
-    }
-
-    object ToAskUser {
-        fun message(name: String, city: String, job: String, organization: String, activityDescription: String) =
-            buildEntities {
-                regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
-                addAll(accountInfo(name, city, job, organization, activityDescription))
-                boldln("Вы согласны пообщаться?")
-            }
-        const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
-            "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
-        val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседнику") }
     }
 
     object Question {
@@ -87,5 +73,40 @@ object Strings {
 
         const val NoQuestions = "На данный момент у Вас нет актуальных вопросов"
         const val NoRespondent = "На данный момент нет людей, которые ответили бы на Ваш вопрос"
+    }
+
+    object NewResponses {
+        fun message(notification: NewResponseNotification) = when (notification) {
+            is NewResponseNotification.Daily -> buildEntities {
+                regular("Есть участники, согласившиеся ответить вам на вопрос ")
+                bold("«${notification.question.subject}»")
+            }
+
+            is NewResponseNotification.OnThreshold -> buildEntities {
+                regular("${notification.count} участника согласились ответить вам на вопрос ")
+                bold("«${notification.question.subject}»")
+            }
+        }
+
+        fun profile(userDetails: User.Details) =
+            buildEntities {
+                regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
+                addAll(accountInfo(userDetails))
+                boldln("Вы согласны пообщаться?")
+            }
+
+        fun acceptedProfile(userDetails: User.Details) =
+            buildEntities {
+                regularln("✅Вы согласились пообщаться с:\n")
+                addAll(accountInfo(userDetails))
+            }
+
+        const val SeeButton = "Посмотреть"
+        const val NextButton = "Следующий"
+        const val AcceptButton = "Принять"
+        const val NoMoreResponses = "Вы посмотрели всех откликнувшихся участников"
+        const val WriteToCompanion = "Напишите сразу собеседникам, чтобы договориться о времени " +
+            "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
+        val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседникам") }
     }
 }

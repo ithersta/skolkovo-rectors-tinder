@@ -1,46 +1,33 @@
 package qna.telegram
 
-import common.telegram.functions.confirmationInlineKeyboard
+import common.telegram.MassSendLimiter
+import dev.inmo.micro_utils.coroutines.launchSafelyWithoutExceptions
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import dev.inmo.tgbotapi.types.toChatId
-import kotlinx.coroutines.launch
+import generated.dataButton
 import org.koin.core.annotation.Single
-import qna.domain.usecases.AddResponseUseCase
-import qna.domain.usecases.GetQuestionByIdUseCase
-import qna.domain.usecases.GetUserDetailsUseCase
-import qna.telegram.queries.AcceptUserQuery
-import qna.telegram.queries.DeclineUserQuery
+import qna.domain.usecases.GetNewResponseNotificationFlowUseCase
+import qna.telegram.queries.NewResponsesQuery
 import qna.telegram.strings.Strings
 
 @Single
 class NewResponsesSender(
-    private val addResponseUseCase: AddResponseUseCase,
-    private val getQuestionById: GetQuestionByIdUseCase,
-    private val getUserDetails: GetUserDetailsUseCase
+    private val getNewResponseNotificationFlow: GetNewResponseNotificationFlowUseCase,
+    private val massSendLimiter: MassSendLimiter
 ) {
-    fun BehaviourContext.setup() = launch {
-        addResponseUseCase.newResponses.collect { response ->
+    fun BehaviourContext.setup() = launchSafelyWithoutExceptions {
+        getNewResponseNotificationFlow().collect { notification ->
+            massSendLimiter.wait()
             runCatching {
-                val question = getQuestionById(response.questionId)!!
-                val authorId = question.authorId
-                val respondent = getUserDetails(response.respondentId)
-                if (respondent != null) {
-                    sendTextMessage(
-                        authorId.toChatId(),
-                        Strings.ToAskUser.message(
-                            respondent.name,
-                            respondent.city,
-                            respondent.job,
-                            respondent.organization,
-                            respondent.activityDescription
-                        ),
-                        replyMarkup = confirmationInlineKeyboard(
-                            positiveData = AcceptUserQuery(respondent.id, response.questionId, response.id),
-                            negativeData = DeclineUserQuery(respondent.id)
-                        )
-                    )
-                }
+                sendTextMessage(
+                    chatId = notification.question.authorId.toChatId(),
+                    entities = Strings.NewResponses.message(notification),
+                    replyMarkup = flatInlineKeyboard {
+                        dataButton(Strings.NewResponses.SeeButton, NewResponsesQuery.SeeNew(notification.question.id!!))
+                    }
+                )
             }
         }
     }
