@@ -1,13 +1,13 @@
 package backup
 
 import config.BotConfig
+import dev.inmo.micro_utils.coroutines.launchSafelyWithoutExceptions
 import dev.inmo.tgbotapi.extensions.api.send.media.sendDocument
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.requests.abstracts.asMultipartFile
 import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.toChatId
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.jetbrains.exposed.sql.Database
@@ -24,7 +24,7 @@ class BackupRunner(
 ) {
     private val mutex = Mutex()
 
-    fun BehaviourContext.setup() = launch {
+    fun BehaviourContext.setup() = launchSafelyWithoutExceptions {
         val chatId = botConfig.backupUserId.toChatId()
         while (true) {
             backup(chatId)

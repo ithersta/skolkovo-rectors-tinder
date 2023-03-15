@@ -82,10 +82,10 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                         replyMarkup = inlineKeyboard {
                             row {
                                 if (containsByIdMuteSettingsUseCase(message.user.id.chatId)) {
-                                    dataButton(notifications.telegram.Strings.Main.TurnOn, OnOffMuteQuery(true))
+                                    dataButton(notifications.telegram.Strings.Settings.TurnOn, OnOffMuteQuery(true))
                                 } else {
                                     dataButton(
-                                        notifications.telegram.Strings.Main.TurnOff,
+                                        notifications.telegram.Strings.Settings.TurnOff,
                                         OnOffMuteQuery(false)
                                     )
                                 }
