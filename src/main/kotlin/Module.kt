@@ -10,7 +10,6 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
-import notifications.domain.usecases.GetNewQuestionsNotificationFlowUseCase
 import notifications.domain.usecases.QuestionNotificationConfig
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
