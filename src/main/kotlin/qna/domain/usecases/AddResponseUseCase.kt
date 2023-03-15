@@ -32,7 +32,7 @@ class AddResponseUseCase(
         if (question.isClosed) return@transaction Result.QuestionClosed
         val id = responseRepository.add(questionId, respondentId) ?: return@transaction Result.AlreadyExists
         val response = Response(id, questionId, respondentId)
-        val responseCount = responseRepository.count(questionId)
+        val responseCount = responseRepository.countForQuestion(questionId)
         runBlocking {
             _newResponses.send(NewResponseMessage(response, responseCount))
         }

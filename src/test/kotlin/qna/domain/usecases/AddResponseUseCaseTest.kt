@@ -42,7 +42,7 @@ internal class AddResponseUseCaseTest {
         val getQuestionByIdUseCase = mockk<GetQuestionByIdUseCase>()
         every { getQuestionByIdUseCase(sampleQuestionId) } returns sampleQuestion
         every { responseRepository.add(sampleQuestionId, sampleRespondentId) } returns sampleResponseId
-        every { responseRepository.count(sampleQuestionId) } returns 3
+        every { responseRepository.countForQuestion(sampleQuestionId) } returns 3
         val addResponse = AddResponseUseCase(responseRepository, getQuestionByIdUseCase, NoOpTransaction)
         val result = addResponse(sampleQuestionId, sampleRespondentId)
         assertEquals(AddResponseUseCase.Result.OK(sampleResponse), result)

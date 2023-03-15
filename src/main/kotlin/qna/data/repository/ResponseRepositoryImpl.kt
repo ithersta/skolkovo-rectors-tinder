@@ -32,7 +32,7 @@ class ResponseRepositoryImpl : ResponseRepository {
             .empty().not()
     }
 
-    override fun count(questionId: Long): Int {
+    override fun countForQuestion(questionId: Long): Int {
         return Responses
             .select { Responses.questionId eq questionId }
             .count().toInt()
