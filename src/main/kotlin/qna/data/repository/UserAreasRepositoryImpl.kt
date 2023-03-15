@@ -58,13 +58,14 @@ class UserAreasRepositoryImpl : UserAreasRepository {
         )
     }
 
-    override fun getQuestionsByUserIdAndUserArea(userId: Long, userArea: QuestionArea, city: String): List<Question> {
+    override fun getQuestionsByUserIdAndUserArea(userId: Long, userArea: QuestionArea): List<Question> {
         return UserAreas
             .join(QuestionAreas, JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area })
             .innerJoin(Questions)
             .select(
                 (UserAreas.userId eq userId) and (Questions.isClosed.eq(false)) and (Questions.authorId neq userId)
-                    and (QuestionAreas.area eq userArea) and (Users.city neq city)
-            ).map(::mapper)
+                        and (QuestionAreas.area eq userArea)
+            )
+            .map(::mapper)
     }
 }

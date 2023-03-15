@@ -37,7 +37,7 @@ class ResponseRepositoryImpl : ResponseRepository {
             .empty().not()
     }
 
-    private fun mapper(row: ResultRow): User.Details {
+    private fun mapperRespondents(row: ResultRow): User.Details {
         val userId = row[Users.id].value
         val areas = UserAreas
             .select { UserAreas.userId eq userId }
@@ -59,11 +59,10 @@ class ResponseRepositoryImpl : ResponseRepository {
     override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {
         return (Users innerJoin Responses)
             .select(Responses.questionId eq questionId)
-            .map(::mapper)
+            .map(::mapperRespondents)
     }
 
-    override fun add(questionId: Long, respondentId: Long): Long {
-        return Responses.insertAndGetId {
+
     override fun countForQuestion(questionId: Long): Int {
         return Responses
             .select { Responses.questionId eq questionId }

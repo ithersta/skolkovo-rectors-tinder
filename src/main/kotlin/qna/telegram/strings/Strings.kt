@@ -52,19 +52,6 @@ object Strings {
         }
     }
 
-    object ToAskUser {
-        fun message(name: String, city: String, job: String, organization: String, activityDescription: String) =
-            buildEntities {
-                regularln("Профиль участника сообщества, согласившегося ответить вам:\n")
-                addAll(accountInfo(name, city, job, organization, activityDescription))
-                boldln("Вы согласны пообщаться?")
-            }
-
-        const val WriteToCompanion = "Напишите сразу собеседнику, чтобы договориться о времени " +
-            "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
-        val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседнику") }
-    }
-
     object Question {
         const val SubjectQuestion = "Напишите тему вопроса (краткая формулировка)"
         const val WordingQuestion = "Сформулируйте свой вопрос"
@@ -75,7 +62,6 @@ object Strings {
     }
 
     object RespondentsNoAnswer {
-        // тут мб по-другому написать
         const val ListOfSubjects = "Список Ваших вопросов.\n" +
             "Нажмите на один из них для просмотра списка участников, " +
             "которые согласились ответить Вам на вопрос или для закрытия вопроса."
