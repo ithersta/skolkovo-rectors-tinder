@@ -12,6 +12,6 @@ class GetQuestionsByUserIdAndUserAreaAndCityUseCase(
     private val transaction: Transaction
 ) {
     operator fun invoke(userId: Long, userArea: QuestionArea): List<Question> = transaction {
-        return@transaction userAreasRepository.getQuestionsByUserIdAndUserArea(userId, userArea)
+        return@transaction userAreasRepository.getQuestionsByUserIdAndUserArea(userId, userArea).toSet().toList()
     }
 }

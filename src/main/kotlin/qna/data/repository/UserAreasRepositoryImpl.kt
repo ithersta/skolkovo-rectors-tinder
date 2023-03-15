@@ -60,13 +60,21 @@ class UserAreasRepositoryImpl : UserAreasRepository {
     }
 
     override fun getQuestionsByUserIdAndUserArea(userId: Long, userArea: QuestionArea): List<Question> {
-        return UserAreas
-            .join(QuestionAreas, JoinType.INNER, additionalConstraint = { UserAreas.area eq QuestionAreas.area })
-            .innerJoin(Questions)
-            .select(
-                (UserAreas.userId eq userId) and (Questions.isClosed.eq(false)) and (Questions.authorId neq userId)
-                    and (QuestionAreas.area eq userArea)
-            )
+        val authorCity = Users
+            .slice(Users.id, Users.city)
+            .selectAll()
+            .alias("ac")
+        return (Questions innerJoin QuestionAreas innerJoin UserAreas innerJoin Users innerJoin authorCity)
+            .slice(Questions.columns)
+            .select {
+                (Users.id neq userId) and
+                        (UserAreas.area eq userArea) and
+                        (Questions.isClosed eq false) and
+                        ((Questions.isBlockedCity eq false) or
+                                ((Questions.isBlockedCity eq true) and
+                                        (authorCity[Users.city] neq Users.city)))
+            }
+            .orderBy(Questions.at to SortOrder.DESC)
             .map(::mapper)
     }
 }
