@@ -21,7 +21,7 @@ class AddQuestionUseCase(
         text: String,
         areas: Set<QuestionArea>
     ): Question = transaction {
-        val question = Question(authorId, intent, subject, text, false, areas, clock.now())
+        val question = Question(authorId, intent, subject, text, false, areas, clock.now(), false)
         val id = questionRepository.add(question)
         question.copy(id = id)
     }

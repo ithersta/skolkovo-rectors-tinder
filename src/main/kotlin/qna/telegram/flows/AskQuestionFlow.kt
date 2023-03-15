@@ -46,6 +46,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
     val massSendLimiter: MassSendLimiter by inject()
+    val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -151,6 +152,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 state.snapshot.areas.flatMap {
                     getFilteredUsersByAreaUseCase(it, user)
                 }.toSet().forEach {
+                    massSendLimiter.wait()
                     sendQuestionMessage(it.toChatId(), question)
                 }
             }

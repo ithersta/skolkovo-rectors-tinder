@@ -54,6 +54,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             isClosed = row[Questions.isClosed],
             areas = areas,
             at = row[Questions.at],
+            isBlockedCity = row[Questions.isBlockedCity],
             id = row[Questions.id].value
         )
     }
