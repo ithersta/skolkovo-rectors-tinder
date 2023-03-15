@@ -65,7 +65,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .innerJoin(Questions)
             .select(
                 (UserAreas.userId eq userId) and (Questions.isClosed.eq(false)) and (Questions.authorId neq userId)
-                        and (QuestionAreas.area eq userArea)
+                    and (QuestionAreas.area eq userArea)
             )
             .map(::mapper)
     }
