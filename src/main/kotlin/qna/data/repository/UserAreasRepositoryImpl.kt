@@ -61,7 +61,6 @@ class UserAreasRepositoryImpl : UserAreasRepository {
 
     override fun getQuestionsByUserIdAndUserArea(userId: Long, userArea: QuestionArea): List<Question> {
         val authorCity: String = Users.select(where = Users.id eq userId).map { it[Users.city] }.first()
-//         вот тут лежат 2 вопроса закрытых для ОРСКА.
         val badQuestion = Questions
             .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
             .slice(Questions.columns)
@@ -73,9 +72,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .join(QuestionAreas, JoinType.INNER, additionalConstraint = { Questions.id eq QuestionAreas.questionId })
             .slice(Questions.columns)
             .select {
-//                вопросы не свои
                 (Users.id neq userId) and
-//                         вопросы по сфере и вопросы не закрыты
                         (QuestionAreas.area eq userArea) and (Questions.isClosed eq false)
             }
             .except(badQuestion)

@@ -5,6 +5,7 @@ import auth.data.tables.Users
 import common.domain.Paginated
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
@@ -50,9 +51,13 @@ class QuestionRepositoryImpl : QuestionRepository {
         limit: Int,
         offset: Int
     ): Paginated<Question> {
-        val authorCity = Users
-            .slice(Users.id, Users.city)
-            .selectAll().map { it[Users.city] }.first()
+        val authorCity = Users.select(where = Users.id eq userId).map { it[Users.city] }.first()
+        val badQuestion = Questions
+            .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
+            .slice(Questions.columns)
+            .select {
+                (Questions.isBlockedCity eq true) and (Users.city neq authorCity)
+            }
         val areas = UserAreas
             .slice(UserAreas.area)
             .select { UserAreas.userId eq userId }
@@ -62,11 +67,11 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                            (Questions.authorId neq userId) and
-                            (Questions.isClosed eq false) and (Users.city neq authorCity)
+                            (Questions.authorId neq userId)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
+                .except(badQuestion)
                 .orderBy(Questions.at)
         }
         return Paginated(
