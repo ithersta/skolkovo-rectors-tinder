@@ -6,13 +6,13 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.MassSendLimiter
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
 import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
-import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
@@ -33,21 +33,23 @@ import qna.domain.entities.Question
 import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
 import qna.telegram.queries.AcceptQuestionQuery
-import qna.telegram.queries.AcceptUserQuery
 import qna.telegram.queries.DeclineQuestionQuery
-import qna.telegram.queries.DeclineUserQuery
 import qna.telegram.states.*
+import qna.telegram.states.AskFullQuestion
+import qna.telegram.states.ChooseQuestionAreas
+import qna.telegram.states.ChooseQuestionIntent
+import qna.telegram.states.SendQuestionToCommunity
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
     val addQuestionUseCase: AddQuestionUseCase by inject()
-    val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
-    val addAcceptedResponseRepoUseCase: AddAcceptedResponseRepoUseCase by inject()
     val botConfig: BotConfig by inject()
+    val massSendLimiter: MassSendLimiter by inject()
+    val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
             sendTextMessage(
@@ -131,17 +133,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 Strings.Question.Success
             )
             coroutineScope.launch {
-                state.snapshot.areas.forEach {
-                    val listOfValidUsers: List<Long> =
-                        getUsersByAreaUseCase(
-                            it,
-                            userId = message.chat.id.chatId
-                        )
-                    listOfValidUsers.forEach {
-                        runCatching {
-                            sendQuestionMessage(it.toChatId(), question)
-                        }
-                    }
+                state.snapshot.areas.flatMap {
+                    getUsersByAreaUseCase(it, userId = message.chat.id.chatId)
+                }.toSet().forEach {
+                    massSendLimiter.wait()
+                    sendQuestionMessage(it.toChatId(), question)
                 }
             }
             state.override { DialogState.Empty }
@@ -160,22 +156,20 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText(ButtonStrings.SendQuestion) { message ->
-            if (botConfig.curatorId != null) {
-                sendTextMessage(
-                    message.chat,
-                    Strings.Question.Success
-                )
-                sendTextMessage(
-                    UserId(botConfig.curatorId!!),
-                    Strings.QuestionToCurator.message(state.snapshot.subject, state.snapshot.question)
-                )
-                val userDetails = getUserDetailsUseCase(message.chat.id.chatId)!!
-                sendContact(
-                    UserId(botConfig.curatorId!!),
-                    phoneNumber = userDetails.phoneNumber.value,
-                    firstName = userDetails.name,
-                )
-            }
+            sendTextMessage(
+                message.chat,
+                Strings.Question.Success
+            )
+            sendTextMessage(
+                UserId(botConfig.curatorId),
+                Strings.QuestionToCurator.message(state.snapshot.subject, state.snapshot.question)
+            )
+            val userDetails = getUserDetailsUseCase(message.chat.id.chatId)!!
+            sendContact(
+                UserId(botConfig.curatorId),
+                phoneNumber = userDetails.phoneNumber.value,
+                firstName = userDetails.name,
+            )
             state.override { DialogState.Empty }
         }
     }
@@ -199,45 +193,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(
                 query.user.id,
                 Strings.ToAnswerUser.SentAgreement
-            )
-            answer(query)
-        }
-        onDataCallbackQuery(DeclineUserQuery::class) { (data, query) ->
-            val message = query.messageCallbackQueryOrNull()?.message
-            message?.let { delete(it) }
-            sendTextMessage(
-                data.userId.toChatId(),
-                Strings.ToAnswerUser.QuestionResolved
-            )
-            answer(query)
-        }
-        onDataCallbackQuery(AcceptUserQuery::class) { (data, query) ->
-            val message = query.messageCallbackQueryOrNull()?.message
-            message?.let { editMessageReplyMarkup(it, null) }
-            val respondent = getUserDetailsUseCase(data.respondentId)
-            checkNotNull(respondent)
-            val question = getQuestionByIdUseCase(data.questionId)
-            addAcceptedResponseRepoUseCase(data.responseId)
-            sendContact(
-                query.user,
-                phoneNumber = respondent.phoneNumber.value,
-                firstName = respondent.name,
-            )
-            sendTextMessage(
-                data.respondentId.toChatId(),
-                Strings.ToAnswerUser.waitingForCompanion(question!!.subject)
-            )
-            sendTextMessage(
-                query.user.id,
-                Strings.ToAskUser.WriteToCompanion
-            )
-            sendTextMessage(
-                query.user.id,
-                question.text
-            )
-            sendTextMessage(
-                query.user.id,
-                Strings.ToAskUser.CopyQuestion
             )
             answer(query)
         }

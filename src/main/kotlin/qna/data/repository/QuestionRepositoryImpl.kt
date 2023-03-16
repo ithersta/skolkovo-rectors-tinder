@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.*
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
+import qna.data.tables.Responses
 import qna.domain.entities.Question
 import qna.domain.repository.QuestionRepository
 
@@ -30,6 +31,15 @@ class QuestionRepositoryImpl : QuestionRepository {
 
     override fun getById(questionId: Long): Question {
         return Questions.select { Questions.id eq questionId }.map(::mapper).first()
+    }
+
+    override fun getWithUnsentResponses(): List<Question> {
+        return Questions
+            .innerJoin(Responses)
+            .slice(Questions.columns)
+            .select { (Responses.hasBeenSent eq false) and (Questions.isClosed eq false) }
+            .withDistinct()
+            .map(::mapper)
     }
 
     override fun getQuestionsDigestPaginated(
@@ -65,6 +75,23 @@ class QuestionRepositoryImpl : QuestionRepository {
         Questions.update(where = { Questions.id eq questionId }) {
             it[Questions.isClosed] = true
         }
+    }
+
+    override fun closeOlderThan(instant: Instant) {
+        Questions.update(where = { (Questions.isClosed eq false) and (Questions.at less instant) }) {
+            it[Questions.isClosed] = true
+        }
+    }
+
+    override fun getByUserId(userId: Long, offset: Int, limit: Int): Paginated<Question> {
+        val list = {
+            Questions
+                .select { (Questions.authorId eq userId) and (Questions.isClosed eq false) }
+        }
+        return Paginated(
+            slice = list().limit(limit, offset.toLong()).map(::mapper),
+            count = list().count().toInt()
+        )
     }
 
     private fun mapper(row: ResultRow): Question {

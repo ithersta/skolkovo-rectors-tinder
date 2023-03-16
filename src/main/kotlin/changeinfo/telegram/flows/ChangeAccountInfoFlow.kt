@@ -11,6 +11,7 @@ import common.telegram.DialogState
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
+import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import generated.onDataCallbackQuery
@@ -39,10 +40,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onDataCallbackQuery(WaitingForQuestionAreas::class) { (_, query) ->
             state.override { WaitingForQuestionAreasState(getUserDetailsUseCase(query.from.id.chatId)!!.areas) }
         }
+        onDataCallbackQuery(BackToMain::class) { (_, query) ->
+            state.override { DialogState.Empty }
+            answer(query)
+        }
     }
     state<WaitingForCityState> {
         selectCity(
-            onFinish = { state, city -> ChangeCityState(city) }
+            onFinish = { _, city -> ChangeCityState(city) }
         )
     }
     state<ChangeCityState> {

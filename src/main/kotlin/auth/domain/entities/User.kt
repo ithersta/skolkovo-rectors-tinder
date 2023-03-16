@@ -4,8 +4,8 @@ import qna.domain.entities.QuestionArea
 
 sealed interface User {
     object Unauthenticated : User
-    object Admin : Normal()
-    open class Normal : User
+    class Admin(id: Long) : Normal(id)
+    open class Normal(val id: Long) : User
 
     data class Details(
         val id: Long,

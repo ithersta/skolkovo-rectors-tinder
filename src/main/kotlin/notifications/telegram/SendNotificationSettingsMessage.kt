@@ -6,22 +6,26 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.IdChatIdentifier
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
+import kotlinx.datetime.TimeZone
 import mute.domain.usecases.ContainsByIdMuteSettingsUseCase
 import mute.telegram.queries.OnOffMuteQuery
 import notifications.domain.entities.NotificationPreference
 import notifications.domain.usecases.GetNotificationPreferenceUseCase
+import notifications.domain.usecases.QuestionNotificationConfig
 import notifications.telegram.Strings.localizedString
 import notifications.telegram.queries.ChangeNotificationPreferenceQuery
 import org.koin.core.context.GlobalContext
 
 private val containsByIdMuteSettings: ContainsByIdMuteSettingsUseCase by GlobalContext.get().inject()
 private val getNotificationPreference: GetNotificationPreferenceUseCase by GlobalContext.get().inject()
+private val timeZone: TimeZone by GlobalContext.get().inject()
+private val questionNotificationConfig: QuestionNotificationConfig by GlobalContext.get().inject()
 
 suspend fun TelegramBot.sendNotificationPreferencesMessage(
     idChatIdentifier: IdChatIdentifier
 ) = sendTextMessage(
     idChatIdentifier,
-    Strings.Main.Message,
+    Strings.Settings.message(questionNotificationConfig, timeZone),
     replyMarkup = notificationPreferencesInlineKeyboard(idChatIdentifier.chatId)
 )
 
@@ -40,9 +44,9 @@ fun notificationPreferencesInlineKeyboard(userId: Long) = inlineKeyboard {
     }
     row {
         if (containsByIdMuteSettings(userId)) {
-            dataButton(Strings.Main.TurnOn, OnOffMuteQuery(true))
+            dataButton(Strings.Settings.TurnOn, OnOffMuteQuery(true))
         } else {
-            dataButton(Strings.Main.TurnOff, OnOffMuteQuery(false))
+            dataButton(Strings.Settings.TurnOff, OnOffMuteQuery(false))
         }
     }
 }

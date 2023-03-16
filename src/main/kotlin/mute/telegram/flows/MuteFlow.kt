@@ -10,6 +10,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.utils.PreviewFeature
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
@@ -23,6 +24,7 @@ import mute.telegram.queries.YesNoMuteQuery
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.days
 
+@OptIn(PreviewFeature::class)
 fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
     val insertMuteSettingsUseCase: InsertMuteSettingsUseCase by inject()
     val deleteMuteSettingsUseCase: DeleteMuteSettingsUseCase by inject()
@@ -80,10 +82,10 @@ fun StateMachineBuilder<DialogState, User, UserId>.muteFlow() {
                         replyMarkup = inlineKeyboard {
                             row {
                                 if (containsByIdMuteSettingsUseCase(message.user.id.chatId)) {
-                                    dataButton(notifications.telegram.Strings.Main.TurnOn, OnOffMuteQuery(true))
+                                    dataButton(notifications.telegram.Strings.Settings.TurnOn, OnOffMuteQuery(true))
                                 } else {
                                     dataButton(
-                                        notifications.telegram.Strings.Main.TurnOff,
+                                        notifications.telegram.Strings.Settings.TurnOff,
                                         OnOffMuteQuery(false)
                                     )
                                 }

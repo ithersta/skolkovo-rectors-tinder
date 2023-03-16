@@ -27,3 +27,7 @@ object WaitingForProfessionalDescription : Query
 @Serializable
 @SerialName("ar")
 object WaitingForQuestionAreas : Query
+
+@Serializable
+@SerialName("out")
+object BackToMain : Query
