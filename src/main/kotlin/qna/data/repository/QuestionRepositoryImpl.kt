@@ -63,8 +63,8 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                            (Questions.authorId neq userId) and
-                            (Questions.isClosed eq false) and (authorCity[Users.city] neq Users.city)
+                        (Questions.authorId neq userId) and
+                        (Questions.isClosed eq false) and (authorCity[Users.city] neq Users.city)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
