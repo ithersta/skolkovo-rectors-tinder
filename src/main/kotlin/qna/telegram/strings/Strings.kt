@@ -52,7 +52,6 @@ object Strings {
             }
 
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
-        const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
     fun accountInfo(userDetails: User.Details): TextSourcesList {
