@@ -15,7 +15,6 @@ import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrThrow
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContentOrThrow
 import dev.inmo.tgbotapi.types.UserId

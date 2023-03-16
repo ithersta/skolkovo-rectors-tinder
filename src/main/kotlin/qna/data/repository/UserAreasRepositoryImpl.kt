@@ -78,7 +78,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .slice(Questions.columns)
             .select {
                 (Users.id neq userId) and
-                        (QuestionAreas.area eq userArea) and (Questions.isClosed eq false)
+                    (QuestionAreas.area eq userArea) and (Questions.isClosed eq false)
             }.except(doubled)
             .except(badQuestion)
             .map(::mapper)

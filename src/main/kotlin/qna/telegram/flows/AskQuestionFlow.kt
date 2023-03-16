@@ -1,7 +1,6 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
-import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
@@ -9,9 +8,9 @@ import common.telegram.DialogState
 import common.telegram.MassSendLimiter
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
-import dev.inmo.tgbotapi.extensions.api.answers.answer
 import config.BotConfig
 import dev.inmo.tgbotapi.bot.TelegramBot
+import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
@@ -119,7 +118,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                     row {
                         simpleButton(ButtonStrings.SendQuestionWithRestrictions)
                     }
-                    row{
+                    row {
                         simpleButton(ButtonStrings.SendQuestion)
                     }
                 }

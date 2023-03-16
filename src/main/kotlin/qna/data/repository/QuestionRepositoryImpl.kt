@@ -68,7 +68,7 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                            (Questions.authorId neq userId)
+                        (Questions.authorId neq userId)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
