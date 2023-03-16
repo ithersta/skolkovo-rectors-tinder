@@ -7,10 +7,19 @@ import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
 import com.ithersta.tgbotapi.pagination.replyMarkup
 import common.telegram.DialogState
+import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
+import dev.inmo.tgbotapi.extensions.api.delete
+import dev.inmo.tgbotapi.extensions.api.edit.edit
+import dev.inmo.tgbotapi.extensions.api.send.send
+import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrThrow
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatInlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
+import dev.inmo.tgbotapi.extensions.utils.withContentOrThrow
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.utils.row
 import feedback.domain.usecases.CloseQuestionUseCase
 import generated.dataButton
@@ -18,10 +27,7 @@ import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.usecases.*
-import qna.telegram.queries.CloseQuestion
-import qna.telegram.queries.SeeList
-import qna.telegram.queries.SelectRespondent
-import qna.telegram.queries.SelectSubject
+import qna.telegram.queries.*
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
 
@@ -33,7 +39,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val closeQuestionUseCase: CloseQuestionUseCase by inject()
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
-    val addResponseUseCase: AddResponseUseCase by inject()
+    val addAcceptedResponse: AddAcceptedResponseUseCase by inject()
+    val getRespondentByResponseId: GetRespondentByResponseIdUseCase by inject()
 
     subjectPager = pager(id = "subjectsNoAnswer") {
         val subject = getQuestionsByUserIdUseCase(context!!.user.id, offset, limit)
@@ -50,9 +57,9 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         val respondent = getRespondentsByQuestionIdUseCase(data.questionId, offset, limit)
         inlineKeyboard {
             respondent.slice.forEach { item ->
-                val user = getUserDetailsUseCase(item)
+                val user = getUserDetailsUseCase(item.respondentId)
                 row {
-                    dataButton(user!!.name, SelectRespondent(user.id, data.questionId))
+                    dataButton(user!!.name, SelectRespondent(item.id))
                 }
             }
             navigationRow(itemCount = respondent.count)
@@ -113,8 +120,28 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             answer(query)
         }
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            addResponseUseCase(data.questionId, data.respondentId)
+            val respondent = getRespondentByResponseId(data.responseId)!!
+            val keyboard = confirmationInlineKeyboard(
+                positiveData = AcceptResponseQuery(data.responseId),
+                negativeData = DeclineResponseQuery
+            )
+            val text = Strings.NewResponses.profile(respondent)
+            send(query.from, text, replyMarkup = keyboard)
             answer(query)
+        }
+        onDataCallbackQuery(DeclineResponseQuery::class) { (_, query) ->
+            delete(query.messageCallbackQueryOrThrow().message)
+        }
+        onDataCallbackQuery(AcceptResponseQuery::class) { (data, query) ->
+            val respondent = getRespondentByResponseId(data.responseId)!!
+            val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
+            addAcceptedResponse(query.user.id.chatId, data.responseId)
+            edit(message, Strings.NewResponses.acceptedProfile(respondent), replyMarkup = null)
+            sendContact(
+                chat = query.user,
+                phoneNumber = respondent.phoneNumber.value,
+                firstName = respondent.name,
+            )
         }
     }
 }

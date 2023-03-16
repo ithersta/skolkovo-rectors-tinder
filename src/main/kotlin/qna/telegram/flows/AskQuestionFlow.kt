@@ -134,8 +134,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 state.snapshot.areas.flatMap {
                     getUsersByAreaUseCase(it, userId = message.chat.id.chatId)
                 }.toSet().forEach {
-                    massSendLimiter.wait()
-                    sendQuestionMessage(it.toChatId(), question)
+                    runCatching {
+                        massSendLimiter.wait()
+                        sendQuestionMessage(it.toChatId(), question)
+                    }
                 }
             }
             state.override { DialogState.Empty }
@@ -155,8 +157,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 state.snapshot.areas.flatMap {
                     getFilteredUsersByAreaUseCase(it, user)
                 }.toSet().forEach {
-                    massSendLimiter.wait()
-                    sendQuestionMessage(it.toChatId(), question)
+                    runCatching {
+                        massSendLimiter.wait()
+                        sendQuestionMessage(it.toChatId(), question)
+                    }
                 }
             }
             state.override { DialogState.Empty }

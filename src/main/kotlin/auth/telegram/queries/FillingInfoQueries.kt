@@ -62,7 +62,3 @@ class SelectRespondent(val name: String, val phoneNumber: String) : Query
 @Serializable
 @SerialName("sa")
 class SelectArea(val area: QuestionArea) : Query
-
-@Serializable
-@SerialName("answer")
-class AnswerUser(val questionId: Long, val answer: Boolean) : Query

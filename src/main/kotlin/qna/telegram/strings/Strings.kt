@@ -114,7 +114,7 @@ object Strings {
         const val ListQuestion = "Список вопросов по вашим сферам. Нажмите на тему, чтобы посмотреть подробнее."
         const val HaveNotQuestionInThisArea = "На данный момент нет вопросов по этой сфере."
         fun buildQuestionByQuestionText(text: String): String {
-            return "Текст вопроса $text.\nХотите ли вы ответить на этот вопрос?"
+            return "$text \n\nХотите ли вы ответить на этот вопрос?"
         }
     }
 }

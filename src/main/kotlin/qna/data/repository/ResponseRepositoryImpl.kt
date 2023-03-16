@@ -20,13 +20,13 @@ class ResponseRepositoryImpl : ResponseRepository {
         return Responses.select { Responses.id eq responseId }.firstOrNull()?.let(::mapper)
     }
 
-    override fun getRespondentsByQuestionId(questionId: Long, offset: Int, limit: Int): Paginated<Long> {
+    override fun getByQuestionId(questionId: Long, offset: Int, limit: Int): Paginated<Response> {
         val list = {
             Responses
                 .select(Responses.questionId eq questionId)
         }
         return Paginated(
-            slice = list().limit(limit, offset.toLong()).map { it[Responses.respondentId].value },
+            slice = list().limit(limit, offset.toLong()).map(::mapper),
             count = list().count().toInt()
         )
     }
