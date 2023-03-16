@@ -11,6 +11,7 @@ import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import config.BotConfig
+import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
@@ -175,14 +176,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
-                replyMarkup = replyKeyboard {
+                replyMarkup = replyKeyboard(resizeKeyboard = true) {
                     row {
-                        simpleButton(ButtonStrings.SendQuestion)
+                        simpleButton(ButtonStrings.SendQuestionCenter)
                     }
                 }
             )
         }
-        onText(ButtonStrings.SendQuestion) { message ->
+        onText(ButtonStrings.SendQuestionCenter) { message ->
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
@@ -231,7 +232,7 @@ suspend fun TelegramBot.sendQuestionMessage(
     question: Question
 ) = sendTextMessage(
     chatId,
-    Strings.ToAnswerUser.message(question.subject, question.text),
+    Strings.ToAnswerUser.message(question),
     replyMarkup = confirmationInlineKeyboard(
         positiveData = AcceptQuestionQuery(question.id!!),
         negativeData = DeclineQuestionQuery

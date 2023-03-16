@@ -1,32 +1,39 @@
 package qna.telegram.strings
 
 import auth.domain.entities.User
+import auth.telegram.Strings
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.*
 import qna.domain.usecases.NewResponseNotification
+import qna.domain.entities.Question as DomainQuestion
 
 object Strings {
     object QuestionToCurator {
         fun message(subject: String, question: String) =
             buildEntities {
-                regular(
-                    "Добрый день, один из участников сообщества хотел бы " +
-                        "выйти на коммуникацию по следующему вопросу:\n\n"
-                )
+                regular("Добрый день, поступил новый вопрос ")
+                bold("центру трансформации образования\n\n")
                 boldln(subject)
                 regularln(question)
             }
     }
 
     object ToAnswerUser {
-        fun message(subject: String, question: String) =
+        fun message(question: DomainQuestion) =
             buildEntities {
                 regular(
                     "Добрый день, один из участников сообщества хотел бы " +
                         "выйти на коммуникацию по следующему вопросу:\n\n"
                 )
-                boldln(subject)
-                regularln(question + "\n")
+                underline("сферы вопроса")
+                regular(": ")
+
+                regularln(question.areas.joinToString { Strings.questionAreaToString.getValue(it) })
+
+                regularln("")
+
+                boldln(question.subject)
+                regularln(question.text + "\n")
                 boldln("Готовы ответить?")
             }
 
