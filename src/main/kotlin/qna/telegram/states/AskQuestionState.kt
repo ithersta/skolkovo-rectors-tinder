@@ -33,3 +33,9 @@ data class SendQuestionToCommunity(
     val areas: Set<QuestionArea>,
     val intent: QuestionIntent
 ) : DialogState
+
+@Serializable
+data class SendQuestionToCurator(
+    val subject: String,
+    val question: String
+) : DialogState
