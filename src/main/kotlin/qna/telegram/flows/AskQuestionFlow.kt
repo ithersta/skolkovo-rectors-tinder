@@ -125,7 +125,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 state.snapshot.intent,
                 state.snapshot.subject,
                 state.snapshot.question,
-                state.snapshot.areas
+                state.snapshot.areas,
+                false
             )
             sendTextMessage(message.chat, Strings.Question.Success)
             coroutineScope.launch {
@@ -144,7 +145,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 state.snapshot.intent,
                 state.snapshot.subject,
                 state.snapshot.question,
-                state.snapshot.areas
+                state.snapshot.areas,
+                true
             )
             sendTextMessage(message.chat, Strings.Question.Success)
             coroutineScope.launch {

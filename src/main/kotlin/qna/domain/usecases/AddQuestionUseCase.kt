@@ -19,9 +19,10 @@ class AddQuestionUseCase(
         intent: QuestionIntent,
         subject: String,
         text: String,
-        areas: Set<QuestionArea>
+        areas: Set<QuestionArea>,
+        isBlockedCity: Boolean
     ): Question = transaction {
-        val question = Question(authorId, intent, subject, text, false, areas, clock.now(), false)
+        val question = Question(authorId, intent, subject, text, false, areas, clock.now(), isBlockedCity)
         val id = questionRepository.add(question)
         question.copy(id = id)
     }

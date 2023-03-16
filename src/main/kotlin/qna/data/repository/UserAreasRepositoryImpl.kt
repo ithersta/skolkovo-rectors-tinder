@@ -70,9 +70,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
                 (Users.id neq userId) and
                         (UserAreas.area eq userArea) and
                         (Questions.isClosed eq false) and
-                        ((Questions.isBlockedCity eq false) or
-                                ((Questions.isBlockedCity eq true) and
-                                        (authorCity[Users.city] neq Users.city)))
+                        (Questions.isBlockedCity eq false) or (authorCity[Users.city] neq Users.city)
             }
             .orderBy(Questions.at to SortOrder.DESC)
             .map(::mapper)
