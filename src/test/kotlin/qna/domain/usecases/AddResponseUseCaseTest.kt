@@ -28,6 +28,7 @@ internal class AddResponseUseCaseTest {
         isClosed = false,
         areas = setOf(QuestionArea.Finance, QuestionArea.Education),
         at = Clock.System.now(),
+        isBlockedCity = false,
         id = sampleQuestionId
     )
     private val sampleResponse = Response(
