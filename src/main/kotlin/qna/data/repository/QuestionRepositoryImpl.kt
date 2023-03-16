@@ -23,6 +23,7 @@ class QuestionRepositoryImpl : QuestionRepository {
             it[text] = question.text
             it[isClosed] = question.isClosed
             it[at] = question.at
+            it[isBlockedCity] = question.isBlockedCity
         }
         QuestionAreas.batchInsert(question.areas) {
             this[QuestionAreas.questionId] = id

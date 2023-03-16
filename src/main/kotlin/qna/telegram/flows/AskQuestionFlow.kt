@@ -9,6 +9,7 @@ import common.telegram.DialogState
 import common.telegram.MassSendLimiter
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
+import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
@@ -187,7 +188,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
 }
 
-suspend fun StatefulContext<DialogState, User, SendQuestionToCommunity, User.Normal>.sendQuestionMessage(
+suspend fun TelegramBot.sendQuestionMessage(
     chatId: ChatId,
     question: Question
 ) = sendTextMessage(

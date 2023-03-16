@@ -90,20 +90,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
         onDataCallbackQuery(AnswerUser::class) { (data, query) ->
             if (data.answer) {
                 val question: Question = getQuestionByIdUseCase(data.questionId)!!
-                sendQMessage(question.authorId.toChatId(), question)
+                sendQuestionMessage(query.user.id, question)
             }
             state.override { DialogState.Empty }
             answer(query)
         }
     }
 }
-
-suspend fun TelegramBot.sendQMessage(chatId: ChatId, question: Question) = sendTextMessage(
-    chatId,
-    qna.telegram.strings.Strings.ToAnswerUser.message(question.subject, question.text),
-
-    replyMarkup = confirmationInlineKeyboard(
-        positiveData = AcceptQuestionQuery(question.id!!),
-        negativeData = DeclineQuestionQuery
-    )
-)

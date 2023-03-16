@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.koin.core.annotation.Single
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
+import qna.data.tables.Responses
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.repository.UserAreasRepository
@@ -60,13 +61,16 @@ class UserAreasRepositoryImpl : UserAreasRepository {
     }
 
     override fun getQuestionsByUserIdAndUserArea(userId: Long, userArea: QuestionArea): List<Question> {
-        val authorCity: String = Users.select(where = Users.id eq userId).map { it[Users.city] }.first()
+        val userCity: String = Users.select(where = Users.id eq userId).map { it[Users.city] }.first()
         val badQuestion = Questions
             .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
             .slice(Questions.columns)
             .select {
-                (Questions.isBlockedCity eq true) and (Users.city neq authorCity)
+                (Questions.isBlockedCity eq true) and (Users.city neq userCity)
             }
+        val doubled = (Responses innerJoin Questions).slice(Questions.columns).select {
+            Responses.respondentId eq userId
+        }
         return Questions
             .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
             .join(QuestionAreas, JoinType.INNER, additionalConstraint = { Questions.id eq QuestionAreas.questionId })
@@ -74,7 +78,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .select {
                 (Users.id neq userId) and
                         (QuestionAreas.area eq userArea) and (Questions.isClosed eq false)
-            }
+            }.except(doubled)
             .except(badQuestion)
             .map(::mapper)
     }
