@@ -1,9 +1,7 @@
 import config.BotConfig
-import io.mockk.withInstanceFactory
 import org.junit.jupiter.api.Test
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.check.checkKoinModules
 import org.koin.test.check.checkModules
 
 internal class ModuleTest {
