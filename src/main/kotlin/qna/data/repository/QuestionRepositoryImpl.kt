@@ -52,8 +52,7 @@ class QuestionRepositoryImpl : QuestionRepository {
     ): Paginated<Question> {
         val authorCity = Users
             .slice(Users.id, Users.city)
-            .selectAll()
-            .alias("ac")
+            .selectAll().map { it[Users.city] }.first()
         val areas = UserAreas
             .slice(UserAreas.area)
             .select { UserAreas.userId eq userId }
@@ -64,7 +63,7 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .select {
                     Questions.at.between(from, until) and
                             (Questions.authorId neq userId) and
-                            (Questions.isClosed eq false) and (authorCity[Users.city] neq Users.city)
+                            (Questions.isClosed eq false) and (Users.city neq authorCity)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
