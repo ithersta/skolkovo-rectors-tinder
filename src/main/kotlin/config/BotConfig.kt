@@ -1,7 +1,6 @@
 package config
 
 private const val DEFAULT_BACKUP_USER_ID = 105293829L
-private const val DEFAULT_CURATOR_ID = 0L
 
 data class BotConfig(
     val adminId: Long?,
@@ -11,6 +10,6 @@ data class BotConfig(
 
 fun readBotConfig() = BotConfig(
     adminId = System.getenv()["ADMIN_ID"]?.toLong(),
-    curatorId = System.getenv()["CURATOR_ID"]?.toLong() ?: DEFAULT_CURATOR_ID,
+    curatorId = System.getenv()["CURATOR_ID"]?.toLong()!!,
     backupUserId = System.getenv()["BACKUP_USER_ID"]?.toLong() ?: DEFAULT_BACKUP_USER_ID
 )
