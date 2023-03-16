@@ -9,10 +9,11 @@ import common.telegram.DialogState
 import common.telegram.MassSendLimiter
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
-import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.answers.answer
+import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
+import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
@@ -33,6 +34,7 @@ import qna.domain.entities.QuestionIntent
 import qna.domain.usecases.*
 import qna.telegram.queries.AcceptQuestionQuery
 import qna.telegram.queries.DeclineQuestionQuery
+import qna.telegram.states.*
 import qna.telegram.states.AskFullQuestion
 import qna.telegram.states.ChooseQuestionAreas
 import qna.telegram.states.ChooseQuestionIntent
@@ -46,6 +48,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
+    val botConfig: BotConfig by inject()
     val massSendLimiter: MassSendLimiter by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
@@ -96,8 +99,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val intent = ButtonStrings.Question.stringToQuestionIntent[message.content.text]
             if (intent != null) {
                 if (intent == QuestionIntent.QuestionToColleagues) {
-                    // TODO тут нужен новый state новый для отправки вопроса в сообщество(в тг канал)
-                    state.override { SendQuestionToCommunity(subject, question, areas, intent) }
+                    state.override { SendQuestionToCurator(subject, question) }
                 } else {
                     state.override { SendQuestionToCommunity(subject, question, areas, intent) }
                 }
@@ -165,6 +167,36 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                     }
                 }
             }
+            state.override { DialogState.Empty }
+        }
+    }
+    state<SendQuestionToCurator> {
+        onEnter {
+            sendTextMessage(
+                it,
+                Strings.Question.CompletedQuestion,
+                replyMarkup = replyKeyboard {
+                    row {
+                        simpleButton(ButtonStrings.SendQuestion)
+                    }
+                }
+            )
+        }
+        onText(ButtonStrings.SendQuestion) { message ->
+            sendTextMessage(
+                message.chat,
+                Strings.Question.Success
+            )
+            sendTextMessage(
+                UserId(botConfig.curatorId),
+                Strings.QuestionToCurator.message(state.snapshot.subject, state.snapshot.question)
+            )
+            val userDetails = getUserDetailsUseCase(message.chat.id.chatId)!!
+            sendContact(
+                UserId(botConfig.curatorId),
+                phoneNumber = userDetails.phoneNumber.value,
+                firstName = userDetails.name,
+            )
             state.override { DialogState.Empty }
         }
     }
