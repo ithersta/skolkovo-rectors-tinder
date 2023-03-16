@@ -6,6 +6,7 @@ import changeinfo.telegram.sendFieldsToChange
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import com.ithersta.tgbotapi.pagination.PagerState
 import common.telegram.DialogState
+import common.telegram.strings.CommonStrings
 import generated.menu
 import menus.states.MenuState
 import notifications.telegram.sendNotificationPreferencesMessage
@@ -42,12 +43,15 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                     MenuStrings.Questions.MyQuestions.OldQuestions,
                     MenuState.OldQuestion(PagerState())
                 )
+                backButton(CommonStrings.Button.Back)
             }
             button(
                 MenuStrings.Questions.InterestingQuestions,
                 MenuState.CurrentIssues
             )
+            backButton(CommonStrings.Button.Back)
         }
+        backButton(CommonStrings.Button.Back)
     }
     button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it.chat.id) }
     button(MenuStrings.ChangeAccountInfo) { sendFieldsToChange(it) }

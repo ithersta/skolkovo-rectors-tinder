@@ -22,6 +22,7 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.usecases.GetNameAndPhoneUseCase
 import qna.domain.usecases.GetQuestionByUserIdUseCase
+import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() {
     val subjectsUseCase: GetQuestionByUserIdUseCase by inject()
@@ -48,27 +49,34 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                 state.override { DialogState.Empty }
             }
         }
+    }
+    anyState {
         onDataCallbackQuery(SelectTopic::class) { (data, query) ->
-            sendTextMessage(
-                query.user.id,
-                ListOfDefendants,
-                replyMarkup = inlineKeyboard {
-                    nameAndPhoneUseCase.invoke(data.questionId).forEach { item ->
-                        row {
-                            dataButton(
-                                item.name,
-                                SelectRespondent(name = item.name, phoneNumber = item.phoneNumber.toString())
-                            )
+            val list = nameAndPhoneUseCase.invoke(data.questionId)
+            if (list.isNotEmpty()) {
+                sendTextMessage(
+                    query.user.id,
+                    ListOfDefendants,
+                    replyMarkup = inlineKeyboard {
+                        nameAndPhoneUseCase.invoke(data.questionId).forEach { item ->
+                            row {
+                                dataButton(
+                                    item.name,
+                                    SelectRespondent(name = item.name, phoneNumber = item.phoneNumber.toString())
+                                )
+                            }
                         }
                     }
-                }
-            )
-            answer(query)
+                )
+                answer(query)
+            } else {
+                sendTextMessage(query.user.id, Strings.RespondentsNoAnswer.NoRespondent)
+                state.override { DialogState.Empty }
+            }
         }
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
             sendContact(query.user.id, phoneNumber = data.phoneNumber, firstName = data.name)
             answer(query)
-            state.override { DialogState.Empty }
         }
     }
 }

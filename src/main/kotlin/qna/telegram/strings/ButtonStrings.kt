@@ -27,6 +27,6 @@ object ButtonStrings {
         const val SeeList = "Посмотреть список ответивших"
     }
 
-    const val SendQuestion = "Отправить запрос в сообщество"
-    const val SendQuestionWithRestrictions = "Отправить запрос в сообщество с ограничениями"
+    const val SendQuestion = "Отправить всем"
+    const val SendQuestionWithRestrictions = "Исключить участников из моего города"
 }

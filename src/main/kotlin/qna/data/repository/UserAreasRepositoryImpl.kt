@@ -27,6 +27,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .slice(NotificationPreferences.userId)
             .select { NotificationPreferences.preference neq NotificationPreference.RightAway }
         return UserAreas
+            .innerJoin(Users)
             .slice(UserAreas.userId)
             .select(where)
             .except(muteUsers)
@@ -66,7 +67,7 @@ class UserAreasRepositoryImpl : UserAreasRepository {
             .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
             .slice(Questions.columns)
             .select {
-                (Questions.isBlockedCity eq true) and (Users.city neq userCity)
+                (Questions.isBlockedCity eq true) and (Users.city eq userCity)
             }
         val doubled = (Responses innerJoin Questions).slice(Questions.columns).select {
             Responses.respondentId eq userId

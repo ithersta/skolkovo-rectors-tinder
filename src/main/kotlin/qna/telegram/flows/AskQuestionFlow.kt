@@ -112,10 +112,12 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
-                replyMarkup = replyKeyboard {
+                replyMarkup = replyKeyboard(resizeKeyboard = true) {
                     row {
-                        simpleButton(ButtonStrings.SendQuestion)
                         simpleButton(ButtonStrings.SendQuestionWithRestrictions)
+                    }
+                    row{
+                        simpleButton(ButtonStrings.SendQuestion)
                     }
                 }
             )
