@@ -1,6 +1,7 @@
 package qna.data.repository
 
 import auth.data.tables.UserAreas
+import auth.data.tables.Users
 import common.domain.Paginated
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
@@ -49,6 +50,10 @@ class QuestionRepositoryImpl : QuestionRepository {
         limit: Int,
         offset: Int
     ): Paginated<Question> {
+        val authorCity = Users
+            .slice(Users.id, Users.city)
+            .selectAll()
+            .alias("ac")
         val areas = UserAreas
             .slice(UserAreas.area)
             .select { UserAreas.userId eq userId }
@@ -58,8 +63,8 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                        (Questions.authorId neq userId) and
-                        (Questions.isClosed eq false)
+                            (Questions.authorId neq userId) and
+                            (Questions.isClosed eq false) and (authorCity[Users.city] neq Users.city)
                 }
                 .groupBy(*Questions.columns.toTypedArray())
                 .having { QuestionAreas.area inSubQuery areas }
