@@ -27,7 +27,7 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
-    implementation("org.slf4j:slf4j-simple:2.0.6")
+    implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("com.jayway.jsonpath:json-path:2.7.0")
     implementation("dev.inmo:krontab:0.9.0")
     compileOnly("io.insert-koin:koin-annotations:1.1.1")
