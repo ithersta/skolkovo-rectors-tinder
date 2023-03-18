@@ -19,17 +19,8 @@ object MenuState {
 
         @Serializable
         object AskQuestion : DialogState
-
-        @Serializable
-        object GetListOfQuestions : DialogState
     }
 
     @Serializable
     object Events : DialogState
-
-    @Serializable
-    object CurrentQuestions : DialogState
-
-    @Serializable
-    object OldQuestion : DialogState
 }

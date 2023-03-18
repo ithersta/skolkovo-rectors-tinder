@@ -1,6 +1,7 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
+import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
@@ -17,6 +18,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrThrow
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContentOrThrow
+import dev.inmo.tgbotapi.types.IdChatIdentifier
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.utils.row
@@ -30,8 +32,20 @@ import qna.telegram.queries.*
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
 
-lateinit var subjectPager: InlineKeyboardPager<Unit, DialogState, User, User.Normal>
-lateinit var respondentPager: InlineKeyboardPager<SeeList, DialogState, User, User.Normal>
+private lateinit var subjectPager: InlineKeyboardPager<Unit, DialogState, User, User.Normal>
+private lateinit var respondentPager: InlineKeyboardPager<SeeList, DialogState, User, User.Normal>
+
+suspend fun BaseStatefulContext<DialogState, User, *, out User.Normal>.sendListOfRespondentNoAnswer(
+    chatIdentifier: IdChatIdentifier
+) {
+    val replyMarkup = subjectPager.replyMarkup
+    if (replyMarkup.keyboard.isEmpty()) {
+        sendTextMessage(chatIdentifier, Strings.RespondentsNoAnswer.NoQuestions)
+        state.override { DialogState.Empty }
+    } else {
+        sendTextMessage(chatIdentifier, Strings.RespondentsNoAnswer.ListOfSubjects, replyMarkup = replyMarkup)
+    }
+}
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
     val getQuestionsByUserIdUseCase: GetQuestionsByUserIdUseCase by inject()
@@ -62,18 +76,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                 }
             }
             navigationRow(itemCount = respondent.count)
-        }
-    }
-    state<MenuState.Questions.GetListOfQuestions> {
-        onEnter {
-            val replyMarkup = subjectPager.replyMarkup
-            if (replyMarkup.keyboard.isEmpty()) {
-                sendTextMessage(it, Strings.RespondentsNoAnswer.NoQuestions)
-                state.override { DialogState.Empty }
-            } else {
-                sendTextMessage(it, Strings.RespondentsNoAnswer.ListOfSubjects, replyMarkup = replyMarkup)
-                state.overrideQuietly { DialogState.Empty }
-            }
         }
     }
     anyState {
