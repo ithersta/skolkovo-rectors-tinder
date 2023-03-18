@@ -36,6 +36,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         anyState {
             onCommand("start", null) {
                 state.override { WaitingForContact }
+                runCatching { refreshCommands() }
             }
         }
         state<DialogState.Empty> {
