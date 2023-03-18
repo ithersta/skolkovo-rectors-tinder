@@ -6,7 +6,7 @@ import org.koin.core.annotation.Single
 import qna.domain.repository.ResponseRepository
 
 @Single
-class GetNameAndPhoneUseCase(
+class GetAuthorUseCase(
     private val responseRepository: ResponseRepository,
     private val transaction: Transaction
 ) {

@@ -122,9 +122,9 @@ class QuestionRepositoryImpl : QuestionRepository {
         )
     }
 
-    override fun getSubjectsByUserIdAndIsClosed(userId: Long): List<Question> {
+    override fun getClosed(authorId: Long): List<Question> {
         return Questions
-            .select { (Questions.authorId eq userId) and (Questions.isClosed eq true) }
+            .select { (Questions.authorId eq authorId) and (Questions.isClosed eq true) }
             .map(::mapper)
     }
 }

@@ -18,6 +18,6 @@ object Questions : LongIdTable() {
     val isBlockedCity: Column<Boolean> = bool("is_blocked_city")
 
     init {
-        index(isUnique = false, isClosed, at, isBlockedCity)
+        index(isUnique = false, isClosed, at)
     }
 }

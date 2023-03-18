@@ -64,7 +64,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             navigationRow(itemCount = respondent.count)
         }
     }
-    state<MenuState.Questions.GetListOfSubjects> {
+    state<MenuState.Questions.GetListOfQuestions> {
         onEnter {
             val replyMarkup = subjectPager.replyMarkup
             if (replyMarkup.keyboard.isEmpty()) {

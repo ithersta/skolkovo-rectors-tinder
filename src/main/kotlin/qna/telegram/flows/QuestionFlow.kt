@@ -41,7 +41,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.feedbackFlow() {
             navigationRow(itemCount = questions.size)
         }
     }
-    state<MenuState.CurrentIssues> {
+    state<MenuState.CurrentQuestions> {
         onEnter {
             sendTextMessage(
                 it.chatId.toChatId(),

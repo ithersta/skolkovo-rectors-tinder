@@ -3,7 +3,7 @@ package qna.telegram.flows
 import auth.domain.entities.User
 import auth.telegram.Strings.OldQuestion.HaveNotOldQuestion
 import auth.telegram.Strings.OldQuestion.ListClosedQuestions
-import auth.telegram.Strings.OldQuestion.ListOfDefendants
+import auth.telegram.Strings.OldQuestion.ListOfRespondents
 import auth.telegram.queries.SelectRespondent
 import auth.telegram.queries.SelectTopic
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
@@ -20,15 +20,15 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import menus.states.MenuState
 import org.koin.core.component.inject
-import qna.domain.usecases.GetNameAndPhoneUseCase
-import qna.domain.usecases.GetQuestionByUserIdUseCase
+import qna.domain.usecases.GetAuthorUseCase
+import qna.domain.usecases.GetClosedQuestionsUseCase
 import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() {
-    val subjectsUseCase: GetQuestionByUserIdUseCase by inject()
-    val nameAndPhoneUseCase: GetNameAndPhoneUseCase by inject()
+    val getClosedQuestions: GetClosedQuestionsUseCase by inject()
+    val getAuthor: GetAuthorUseCase by inject()
     val subjectsPager = pager(id = "sub1") {
-        val subjects = subjectsUseCase.invoke(context!!.user.id)
+        val subjects = getClosedQuestions.invoke(context!!.user.id)
         val paginatedSubjects = subjects.drop(offset).take(limit)
         inlineKeyboard {
             paginatedSubjects.forEach { item ->
@@ -52,13 +52,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
     }
     anyState {
         onDataCallbackQuery(SelectTopic::class) { (data, query) ->
-            val list = nameAndPhoneUseCase.invoke(data.questionId)
+            val list = getAuthor.invoke(data.questionId)
             if (list.isNotEmpty()) {
                 sendTextMessage(
                     query.user.id,
-                    ListOfDefendants,
+                    ListOfRespondents,
                     replyMarkup = inlineKeyboard {
-                        nameAndPhoneUseCase.invoke(data.questionId).forEach { item ->
+                        getAuthor.invoke(data.questionId).forEach { item ->
                             row {
                                 dataButton(
                                     item.name,
