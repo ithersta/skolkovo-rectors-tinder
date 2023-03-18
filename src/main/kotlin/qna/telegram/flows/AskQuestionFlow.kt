@@ -1,7 +1,6 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
-import com.ithersta.tgbotapi.fsm.StatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
@@ -10,6 +9,7 @@ import common.telegram.MassSendLimiter
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
 import config.BotConfig
+import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.delete
 import dev.inmo.tgbotapi.extensions.api.edit.edit
@@ -44,6 +44,7 @@ import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
     val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
+    val getFilteredUsersByAreaUseCase: GetFilteredUsersByAreaUseCase by inject()
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
@@ -113,7 +114,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
-                replyMarkup = replyKeyboard {
+                replyMarkup = replyKeyboard(resizeKeyboard = true) {
+                    row {
+                        simpleButton(ButtonStrings.SendQuestionWithRestrictions)
+                    }
                     row {
                         simpleButton(ButtonStrings.SendQuestion)
                     }
@@ -126,18 +130,41 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 state.snapshot.intent,
                 state.snapshot.subject,
                 state.snapshot.question,
-                state.snapshot.areas
+                state.snapshot.areas,
+                false
             )
-            sendTextMessage(
-                message.chat,
-                Strings.Question.Success
-            )
+            sendTextMessage(message.chat, Strings.Question.Success)
             coroutineScope.launch {
                 state.snapshot.areas.flatMap {
                     getUsersByAreaUseCase(it, userId = message.chat.id.chatId)
                 }.toSet().forEach {
-                    massSendLimiter.wait()
-                    sendQuestionMessage(it.toChatId(), question)
+                    runCatching {
+                        massSendLimiter.wait()
+                        sendQuestionMessage(it.toChatId(), question)
+                    }
+                }
+            }
+            state.override { DialogState.Empty }
+        }
+        onText(ButtonStrings.SendQuestionWithRestrictions) { message ->
+            val question = addQuestionUseCase(
+                authorId = message.chat.id.chatId,
+                state.snapshot.intent,
+                state.snapshot.subject,
+                state.snapshot.question,
+                state.snapshot.areas,
+                true
+            )
+            sendTextMessage(message.chat, Strings.Question.Success)
+            coroutineScope.launch {
+                val user = getUserDetailsUseCase(message.chat.id.chatId)!!
+                state.snapshot.areas.flatMap {
+                    getFilteredUsersByAreaUseCase(it, user)
+                }.toSet().forEach {
+                    runCatching {
+                        massSendLimiter.wait()
+                        sendQuestionMessage(it.toChatId(), question)
+                    }
                 }
             }
             state.override { DialogState.Empty }
@@ -148,14 +175,14 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
-                replyMarkup = replyKeyboard {
+                replyMarkup = replyKeyboard(resizeKeyboard = true) {
                     row {
-                        simpleButton(ButtonStrings.SendQuestion)
+                        simpleButton(ButtonStrings.SendQuestionCenter)
                     }
                 }
             )
         }
-        onText(ButtonStrings.SendQuestion) { message ->
+        onText(ButtonStrings.SendQuestionCenter) { message ->
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success
@@ -199,12 +226,12 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
     }
 }
 
-suspend fun StatefulContext<DialogState, User, SendQuestionToCommunity, User.Normal>.sendQuestionMessage(
+suspend fun TelegramBot.sendQuestionMessage(
     chatId: ChatId,
     question: Question
 ) = sendTextMessage(
     chatId,
-    Strings.ToAnswerUser.message(question.subject, question.text),
+    Strings.ToAnswerUser.message(question),
     replyMarkup = confirmationInlineKeyboard(
         positiveData = AcceptQuestionQuery(question.id!!),
         negativeData = DeclineQuestionQuery

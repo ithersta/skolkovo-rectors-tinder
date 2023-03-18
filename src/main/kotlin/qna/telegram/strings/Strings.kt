@@ -1,32 +1,39 @@
 package qna.telegram.strings
 
 import auth.domain.entities.User
+import auth.telegram.Strings
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.*
 import qna.domain.usecases.NewResponseNotification
+import qna.domain.entities.Question as DomainQuestion
 
 object Strings {
     object QuestionToCurator {
         fun message(subject: String, question: String) =
             buildEntities {
-                regular(
-                    "Добрый день, один из участников сообщества хотел бы " +
-                        "выйти на коммуникацию по следующему вопросу:\n\n"
-                )
+                regular("Добрый день, поступил новый вопрос ")
+                bold("центру трансформации образования\n\n")
                 boldln(subject)
                 regularln(question)
             }
     }
 
     object ToAnswerUser {
-        fun message(subject: String, question: String) =
+        fun message(question: DomainQuestion) =
             buildEntities {
                 regular(
                     "Добрый день, один из участников сообщества хотел бы " +
                         "выйти на коммуникацию по следующему вопросу:\n\n"
                 )
-                boldln(subject)
-                regularln(question + "\n")
+                underline("сферы вопроса")
+                regular(": ")
+
+                regularln(question.areas.joinToString { Strings.questionAreaToString.getValue(it) })
+
+                regularln("")
+
+                boldln(question.subject)
+                regularln(question.text + "\n")
                 boldln("Готовы ответить?")
             }
 
@@ -45,7 +52,6 @@ object Strings {
             }
 
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
-        const val QuestionResolved = "Спасибо за готовность помочь, кто-то оказался быстрее, и вопрос уже решен!"
     }
 
     fun accountInfo(userDetails: User.Details): TextSourcesList {
@@ -74,7 +80,6 @@ object Strings {
     }
 
     object RespondentsNoAnswer {
-        // тут мб по-другому написать
         const val ListOfSubjects = "Список Ваших вопросов.\n" +
             "Нажмите на один из них для просмотра списка участников, " +
             "которые согласились ответить Вам на вопрос или для закрытия вопроса."
@@ -120,5 +125,14 @@ object Strings {
         const val WriteToCompanion = "Напишите сразу собеседникам, чтобы договориться о времени " +
             "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
         val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседникам") }
+    }
+
+    object TargetArea {
+        const val ListSpheres = "Список сфер по вашему профилю. Нажмите на сферу, чтобы посмотреть список тем вопросов."
+        const val ListQuestion = "Список вопросов по вашим сферам. Нажмите на тему, чтобы посмотреть подробнее."
+        const val HaveNotQuestionInThisArea = "На данный момент нет вопросов по этой сфере."
+        fun buildQuestionByQuestionText(text: String): String {
+            return "$text \n\nХотите ли вы ответить на этот вопрос?"
+        }
     }
 }

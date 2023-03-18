@@ -23,7 +23,8 @@ internal class CloseQuestionUseCaseTest {
         text = "Текст",
         isClosed = false,
         areas = setOf(QuestionArea.Education, QuestionArea.Finance),
-        at = Clock.System.now()
+        at = Clock.System.now(),
+        isBlockedCity = false
     )
 
     @Test

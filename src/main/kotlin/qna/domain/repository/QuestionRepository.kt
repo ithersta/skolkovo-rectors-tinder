@@ -10,6 +10,7 @@ interface QuestionRepository {
     fun add(question: Question): Long
     fun getById(questionId: Long): Question?
     fun getWithUnsentResponses(): List<Question>
+    fun getClosed(authorId: Long): List<Question>
     fun getQuestionsDigestPaginated(
         from: Instant,
         until: Instant,

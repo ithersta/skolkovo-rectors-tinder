@@ -1,7 +1,12 @@
 package qna.data.repository
 
+import auth.data.tables.UserAreas
+import auth.data.tables.Users
+import auth.domain.entities.PhoneNumber
+import auth.domain.entities.User
 import common.domain.Paginated
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
 import qna.data.tables.AcceptedResponses
@@ -15,13 +20,13 @@ class ResponseRepositoryImpl : ResponseRepository {
         return Responses.select { Responses.id eq responseId }.firstOrNull()?.let(::mapper)
     }
 
-    override fun getRespondentsByQuestionId(questionId: Long, offset: Int, limit: Int): Paginated<Long> {
+    override fun getByQuestionId(questionId: Long, offset: Int, limit: Int): Paginated<Response> {
         val list = {
             Responses
                 .select(Responses.questionId eq questionId)
         }
         return Paginated(
-            slice = list().limit(limit, offset.toLong()).map { it[Responses.respondentId].value },
+            slice = list().limit(limit, offset.toLong()).map(::mapper),
             count = list().count().toInt()
         )
     }
@@ -30,6 +35,31 @@ class ResponseRepositoryImpl : ResponseRepository {
         return Responses
             .select { (Responses.questionId eq questionId) and (Responses.respondentId eq respondentId) }
             .empty().not()
+    }
+
+    private fun mapperRespondents(row: ResultRow): User.Details {
+        val userId = row[Users.id].value
+        val areas = UserAreas
+            .select { UserAreas.userId eq userId }
+            .map { it[UserAreas.area] }.toSet()
+        return User.Details(
+            id = userId,
+            phoneNumber = PhoneNumber.of(row[Users.phoneNumber])!!,
+            name = row[Users.name],
+            city = row[Users.city],
+            job = row[Users.job],
+            organization = row[Users.organization],
+            activityDescription = row[Users.activityDescription],
+            areas = areas,
+            course = row[Users.course],
+            organizationType = row[Users.organizationType]
+        )
+    }
+
+    override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {
+        return (Users innerJoin Responses)
+            .select(Responses.questionId eq questionId)
+            .map(::mapperRespondents)
     }
 
     override fun countForQuestion(questionId: Long): Int {

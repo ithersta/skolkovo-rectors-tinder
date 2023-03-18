@@ -5,6 +5,7 @@ import auth.telegram.Strings
 import changeinfo.telegram.sendFieldsToChange
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import common.telegram.DialogState
+import common.telegram.strings.CommonStrings
 import generated.menu
 import menus.states.MenuState
 import notifications.telegram.sendNotificationPreferencesMessage
@@ -35,18 +36,21 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
             ) {
                 button(
                     MenuStrings.Questions.MyQuestions.ActualQuestions,
-                    DialogState.Empty
+                    MenuState.Questions.GetListOfQuestions
                 )
                 button(
                     MenuStrings.Questions.MyQuestions.OldQuestions,
-                    DialogState.Empty
+                    MenuState.OldQuestion
                 )
+                backButton(CommonStrings.Button.Back)
             }
             button(
                 MenuStrings.Questions.InterestingQuestions,
-                DialogState.Empty
+                MenuState.CurrentQuestions
             )
+            backButton(CommonStrings.Button.Back)
         }
+        backButton(CommonStrings.Button.Back)
     }
     button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it.chat.id) }
     button(MenuStrings.ChangeAccountInfo) { sendFieldsToChange(it) }

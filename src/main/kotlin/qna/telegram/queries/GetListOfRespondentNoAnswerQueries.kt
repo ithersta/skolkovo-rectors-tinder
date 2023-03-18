@@ -18,4 +18,12 @@ class SeeList(val userId: Long, val questionId: Long) : Query
 
 @Serializable
 @SerialName("sr")
-class SelectRespondent(val respondentId: Long, val questionId: Long) : Query
+class SelectRespondent(val responseId: Long) : Query
+
+@Serializable
+@SerialName("arq")
+class AcceptResponseQuery(val responseId: Long) : Query
+
+@Serializable
+@SerialName("drq")
+object DeclineResponseQuery : Query

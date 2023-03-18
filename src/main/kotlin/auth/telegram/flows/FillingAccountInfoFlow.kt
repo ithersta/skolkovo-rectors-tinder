@@ -4,13 +4,15 @@ import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.PhoneNumberIsAllowedUseCase
 import auth.domain.usecases.RegisterUserUseCase
-import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.WriteName
 import auth.telegram.Strings.AccountInfo.WriteOrganization
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
+import auth.telegram.Strings.AuthenticationResults
+import auth.telegram.Strings.Courses.ChooseCourse
 import auth.telegram.Strings.InvalidShare
+import auth.telegram.Strings.OrganizationTypes.ChooseOrganizationType
 import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.courseToString
@@ -59,18 +61,12 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             val phoneNumber = PhoneNumber.of(contact.phoneNumber.filter { it.isDigit() })!!
             when (phoneNumberIsAllowedUseCase(phoneNumber)) {
                 PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber -> {
-                    sendTextMessage(
-                        message.chat,
-                        Strings.AuthenticationResults.DuplicatePhoneNumber
-                    )
+                    sendTextMessage(message.chat, AuthenticationResults.DuplicatePhoneNumber)
                     state.override { DialogState.Empty }
                 }
 
                 PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> {
-                    sendTextMessage(
-                        message.chat,
-                        Strings.AuthenticationResults.PhoneNumberNotAllowed
-                    )
+                    sendTextMessage(message.chat, AuthenticationResults.PhoneNumberNotAllowed)
                     state.override { DialogState.Empty }
                 }
 
@@ -84,7 +80,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         onEnter {
             sendTextMessage(
                 it,
-                Strings.Courses.ChooseCourse,
+                ChooseCourse,
                 replyMarkup = inlineKeyboard {
                     courseToString.map {
                         row {
@@ -118,7 +114,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<ChooseOrganizationTypeState> {
         chooseOrganizationType(
-            text = Strings.OrganizationTypes.ChooseOrganizationType,
+            text = ChooseOrganizationType,
             onFinish = { state, type -> state.next(type) }
         )
     }
@@ -159,19 +155,19 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
             val resultResponse = when (registerUserUseCase(details)) {
                 RegisterUserUseCase.Result.DuplicatePhoneNumber ->
-                    Strings.AuthenticationResults.DuplicatePhoneNumber
+                    AuthenticationResults.DuplicatePhoneNumber
 
                 RegisterUserUseCase.Result.AlreadyRegistered ->
-                    Strings.AuthenticationResults.AlreadyRegistered
+                    AuthenticationResults.AlreadyRegistered
 
                 RegisterUserUseCase.Result.PhoneNumberNotAllowed ->
-                    Strings.AuthenticationResults.PhoneNumberNotAllowed
+                    AuthenticationResults.PhoneNumberNotAllowed
 
                 RegisterUserUseCase.Result.OK ->
-                    Strings.AuthenticationResults.OK
+                    AuthenticationResults.OK
 
                 RegisterUserUseCase.Result.NoAreasSet ->
-                    Strings.AuthenticationResults.NoAreaSet
+                    AuthenticationResults.NoAreaSet
             }
             sendTextMessage(it, resultResponse)
             sendNotificationPreferencesMessage(it)
