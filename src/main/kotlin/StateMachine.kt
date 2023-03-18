@@ -45,6 +45,10 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
             }
         }
     }
+    role<User.Admin> {
+        with(adminMenu) { invoke() }
+        testNotificationsFlow()
+    }
     role<User.Normal> {
         anyState {
             onCommand("start", null) {
@@ -61,10 +65,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         newResponseFlow()
         oldQuestionFlow()
         questionFlow()
-    }
-    role<User.Admin> {
-        with(adminMenu) { invoke() }
-        testNotificationsFlow()
     }
     muteFlow()
     eventFlow()
