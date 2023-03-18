@@ -21,7 +21,7 @@ object Strings {
     const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
     object AccountInfo {
-        const val WriteName = "Введите своё имя"
+        const val WriteName = "Введите свои имя и фамилию"
         const val ChooseCountry = "Укажите из какой Вы страны"
         const val ChooseDistrict = "Укажите из какого Вы округа"
         const val ChooseRegion = "Укажите из какого Вы региона"
