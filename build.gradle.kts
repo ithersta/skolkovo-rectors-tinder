@@ -29,7 +29,7 @@ dependencies {
     implementation("org.apache.poi:poi-ooxml:5.2.3")
     implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("com.jayway.jsonpath:json-path:2.7.0")
-    implementation("dev.inmo:krontab:0.9.0")
+    implementation("dev.inmo:krontab:0.10.0")
     compileOnly("io.insert-koin:koin-annotations:1.1.1")
     ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
