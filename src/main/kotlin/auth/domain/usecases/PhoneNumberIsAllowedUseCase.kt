@@ -4,13 +4,15 @@ import auth.domain.entities.PhoneNumber
 import auth.domain.repository.PhoneNumberRepository
 import auth.domain.repository.UserRepository
 import common.domain.Transaction
+import config.BotConfig
 import org.koin.core.annotation.Single
 
 @Single
 class PhoneNumberIsAllowedUseCase(
     private val phoneNumberRepository: PhoneNumberRepository,
     private val userRepository: UserRepository,
-    private val transaction: Transaction
+    private val transaction: Transaction,
+    private val isAdmin: IsAdminUseCase
 ) {
     sealed interface Result {
         object OK : Result
@@ -18,13 +20,16 @@ class PhoneNumberIsAllowedUseCase(
         object PhoneNumberNotAllowed : Result
     }
 
-    operator fun invoke(phoneNumber: PhoneNumber): PhoneNumberIsAllowedUseCase.Result = transaction {
+    operator fun invoke(userId: Long, phoneNumber: PhoneNumber): Result = transaction {
         if (userRepository.containsUserWithPhoneNumber(phoneNumber)) {
-            return@transaction PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber
+            return@transaction Result.DuplicatePhoneNumber
+        }
+        if (isAdmin(userId)) {
+            return@transaction Result.OK
         }
         if (phoneNumberRepository.isActive(phoneNumber).not()) {
-            return@transaction PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed
+            return@transaction Result.PhoneNumberNotAllowed
         }
-        PhoneNumberIsAllowedUseCase.Result.OK
+        Result.OK
     }
 }
