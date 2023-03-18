@@ -3,7 +3,6 @@ package qna.telegram.flows
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
 import com.ithersta.tgbotapi.pagination.replyMarkup
@@ -25,7 +24,6 @@ import dev.inmo.tgbotapi.utils.row
 import feedback.domain.usecases.CloseQuestionUseCase
 import generated.dataButton
 import generated.onDataCallbackQuery
-import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.usecases.*
 import qna.telegram.queries.*
