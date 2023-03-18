@@ -25,9 +25,8 @@ import qna.telegram.strings.Strings.TargetArea.HaveNotQuestionInThisArea
 import qna.telegram.strings.Strings.TargetArea.ListQuestion
 import qna.telegram.strings.Strings.TargetArea.ListSpheres
 
-private val getUserDetails: GetUserDetailsUseCase by GlobalContext.get().inject()
-
 suspend fun TelegramBot.sendInterestingQuestionAreas(chatIdentifier: IdChatIdentifier) {
+    val getUserDetails: GetUserDetailsUseCase by GlobalContext.get().inject()
     sendTextMessage(
         chatIdentifier,
         ListSpheres,
