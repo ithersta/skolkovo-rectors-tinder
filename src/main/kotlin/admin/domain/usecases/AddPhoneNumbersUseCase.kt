@@ -3,14 +3,13 @@ package admin.domain.usecases
 import auth.domain.entities.PhoneNumber
 import auth.domain.repository.PhoneNumberRepository
 import common.domain.Transaction
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.annotation.Single
 import java.util.LinkedList
 
 @Single
-class PhoneNumbersAddAllUseCase(
-    val phoneNumbersRepository: PhoneNumberRepository,
-    val transaction: Transaction
+class AddPhoneNumbersUseCase(
+    private val phoneNumbersRepository: PhoneNumberRepository,
+    private val transaction: Transaction
 ) {
     sealed interface Result {
         object OK : Result

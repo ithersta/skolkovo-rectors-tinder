@@ -1,6 +1,6 @@
 package admin.telegram
 
-import admin.domain.usecases.PhoneNumbersAddAllUseCase
+import admin.domain.usecases.AddPhoneNumbersUseCase
 import admin.parsers.Xlsx
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
@@ -18,7 +18,7 @@ import menus.states.MenuState
 import org.koin.core.component.inject
 
 fun StateMachineBuilder<DialogState, User, UserId>.addUsersFlow() {
-    val phoneNumbersAddAllUseCase: PhoneNumbersAddAllUseCase by inject()
+    val phoneNumbersAddAllUseCase: AddPhoneNumbersUseCase by inject()
     role<User.Admin> {
         state<MenuState.AddUser> {
             onEnter { user ->
@@ -37,7 +37,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addUsersFlow() {
                     when (val phoneNumbers = Xlsx.getPhoneNumbersFromXLSX(inputStream)) {
                         is Xlsx.Result.OK -> {
                             when (val result = phoneNumbersAddAllUseCase(phoneNumbers.value)) {
-                                is PhoneNumbersAddAllUseCase.Result.OK -> {
+                                is AddPhoneNumbersUseCase.Result.OK -> {
                                     sendTextMessage(
                                         message.chat,
                                         Strings.AddingUsers
@@ -45,7 +45,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addUsersFlow() {
                                     state.override { DialogState.Empty }
                                 }
 
-                                is PhoneNumbersAddAllUseCase.Result.PhoneNumberNotAllowed -> {
+                                is AddPhoneNumbersUseCase.Result.PhoneNumberNotAllowed -> {
                                     sendTextMessage(
                                         message.chat,
                                         Strings.blockedUsers(result.listOfNotActive)

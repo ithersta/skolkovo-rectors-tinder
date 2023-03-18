@@ -84,7 +84,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     state<WaitingForOrganizationTypeState> {
         chooseOrganizationType(
             text = changeinfo.Strings.Fields.Organization.Type,
-            onFinish = { ChangeOrganizationTypeState, type -> ChangeOrganizationTypeState(type) }
+            onFinish = { _, type -> ChangeOrganizationTypeState(type) }
         )
     }
     state<ChangeOrganizationTypeState> {
