@@ -1,9 +1,19 @@
 version: '3.9'
 
+secrets:
+  token:
+    file: /root/.skolkovo-rectors-tinder-token
+
 services:
   bot:
     build: .
     restart: always
+    secrets:
+      - config
+    environment:
+      TOKEN_FILE: /run/secrets/token
+      CURATOR_ID: 613919397
+      ADMIN_ID: 105293829
     volumes:
       - bot:/db
 
