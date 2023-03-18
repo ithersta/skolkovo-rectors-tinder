@@ -9,7 +9,7 @@ services:
     build: .
     restart: always
     secrets:
-      - config
+      - token
     environment:
       TOKEN_FILE: /run/secrets/token
       CURATOR_ID: 613919397
