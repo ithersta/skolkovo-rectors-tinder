@@ -14,25 +14,24 @@ object Xlsx {
 
     fun getPhoneNumbersFromXLSX(inputStream: InputStream): Result<Collection<PhoneNumber>> =
         runCatching {
-            val workbook = XSSFWorkbook(inputStream)
-            val ans = workbook.getSheetAt(0)
-                .drop(1)
-                .map {
-                    when (it.getCell(0).cellType) {
-                        CellType.NUMERIC -> it.getCell(0).numericCellValue.toString()
-                        CellType.STRING -> it.getCell(0).stringCellValue
-                        else -> error("wrong cell type")
+            val ans = XSSFWorkbook(inputStream).use { workbook ->
+                workbook.getSheetAt(0)
+                    .drop(1)
+                    .map {
+                        val cell = it.getCell(0)
+                        when (cell.cellType) {
+                            CellType.NUMERIC -> cell.numericCellValue.toULong().toString()
+                            CellType.STRING -> cell.stringCellValue
+                            else -> error("wrong cell type")
+                        }
                     }
-                }
-                .dropLastWhile { it == null }
-                .map {
-                    runCatching {
-                        val phoneNumber = PhoneNumber.of(it.removePrefix("+"))!!
-                        phoneNumber
-                    }.getOrNull()
-                }.let {
-                    it to it.mapIndexedNotNull { index, e -> (index + 2).takeIf { e == null } }
-                }
+                    .dropLastWhile { it.isNullOrBlank() }
+                    .map {
+                        PhoneNumber.of(it.removePrefix("+"))
+                    }.let {
+                        it to it.mapIndexedNotNull { index, e -> (index + 2).takeIf { e == null } }
+                    }
+            }
             return if (ans.second.isEmpty()) {
                 Result.OK(ans.first.filterNotNull())
             } else {
