@@ -46,6 +46,11 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         }
     }
     role<User.Normal> {
+        anyState {
+            onCommand("start", null) {
+                state.override { DialogState.Empty }
+            }
+        }
         with(normalMenu) { invoke() }
         feedbackFlow()
         askQuestionFlow()
