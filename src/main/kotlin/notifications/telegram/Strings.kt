@@ -43,7 +43,7 @@ object Strings {
         ): TextSourcesList {
             require(timeZone.id == "Europe/Moscow") { "TimeZone must be Europe/Moscow as it's mentioned in the text" }
             val locale = Locale.forLanguageTag("ru")
-            val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+            val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale)
             val time = questionNotificationConfig.notifyAt.toJavaLocalTime()
             val dayOfWeekDisplayName = questionNotificationConfig.dayOfWeek.getDisplayName(TextStyle.FULL, locale)
             return buildEntities {
