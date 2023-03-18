@@ -4,7 +4,6 @@ import auth.domain.entities.PhoneNumber
 import auth.domain.repository.PhoneNumberRepository
 import auth.domain.repository.UserRepository
 import common.domain.Transaction
-import config.BotConfig
 import org.koin.core.annotation.Single
 
 @Single
