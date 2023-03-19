@@ -14,7 +14,7 @@ interface QuestionRepository {
     fun getQuestionsDigestPaginated(
         from: Instant,
         until: Instant,
-        userId: Long,
+        viewerUserId: Long,
         limit: Int,
         offset: Int
     ): Paginated<Question>

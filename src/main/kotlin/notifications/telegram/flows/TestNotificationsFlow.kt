@@ -11,13 +11,14 @@ import org.koin.core.component.inject
 fun RoleFilterBuilder<User.Admin>.testNotificationsFlow() {
     val getNewQuestionsNotificationFlowUseCase: GetNewQuestionsNotificationFlowUseCase by inject()
     anyState {
-        onCommand("test-daily-notifications", description = null) { message ->
-            getNewQuestionsNotificationFlowUseCase.triggerTestNotification(NotificationPreference.Daily)
-            sendActionTyping(message.chat)
-        }
-        onCommand("test-weekly-notifications", description = null) { message ->
-            getNewQuestionsNotificationFlowUseCase.triggerTestNotification(NotificationPreference.Weekly)
-            sendActionTyping(message.chat)
+        listOf(
+            "test_daily_notifications" to NotificationPreference.Daily,
+            "test_weekly_notifications" to NotificationPreference.Weekly
+        ).forEach { (command, notificationPreference) ->
+            onCommand(command, description = null) { message ->
+                getNewQuestionsNotificationFlowUseCase.triggerTestNotification(notificationPreference)
+                sendActionTyping(message.chat)
+            }
         }
     }
 }
