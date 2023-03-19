@@ -23,7 +23,7 @@ object Strings {
             buildEntities {
                 regular(
                     "Добрый день, один из участников сообщества хотел бы " +
-                        "выйти на коммуникацию по следующему вопросу:\n\n"
+                            "выйти на коммуникацию по следующему вопросу:\n\n"
                 )
                 underline("сферы вопроса")
                 regular(": ")
@@ -81,28 +81,21 @@ object Strings {
 
     object RespondentsNoAnswer {
         const val ListOfSubjects = "Список Ваших вопросов.\n" +
-            "Нажмите на один из них для просмотра списка участников, " +
-            "которые согласились ответить Вам на вопрос или для закрытия вопроса."
+                "Нажмите на один из них для просмотра списка участников, " +
+                "которые согласились ответить Вам на вопрос или для закрытия вопроса."
         const val ChooseAction = "Выберите действие:"
         const val CloseQuestionSuccessful = "Вопрос успешно закрыт!"
         const val ListOfRespondents = "Список участников, которые согласились ответить на Ваш вопрос.\n" +
-            "Нажмите на одного из них для просмотра информации о профиле."
+                "Нажмите на одного из них для просмотра информации о профиле."
 
         const val NoQuestions = "На данный момент у Вас нет актуальных вопросов"
         const val NoRespondent = "На данный момент нет людей, которые ответили бы на Ваш вопрос"
     }
 
     object NewResponses {
-        fun message(notification: NewResponseNotification) = when (notification) {
-            is NewResponseNotification.Daily -> buildEntities {
-                regular("Есть участники, согласившиеся ответить вам на вопрос ")
-                bold("«${notification.question.subject}»")
-            }
-
-            is NewResponseNotification.OnThreshold -> buildEntities {
-                regular("${notification.count} участника согласились ответить вам на вопрос ")
-                bold("«${notification.question.subject}»")
-            }
+        fun message(notification: NewResponseNotification) = buildEntities {
+            regular("Есть участники, согласившиеся ответить вам на вопрос ")
+            bold("«${notification.question.subject}»")
         }
 
         fun profile(userDetails: User.Details) =
@@ -123,7 +116,7 @@ object Strings {
         const val AcceptButton = "Принять"
         const val NoMoreResponses = "Вы посмотрели всех откликнувшихся участников"
         const val WriteToCompanion = "Напишите сразу собеседникам, чтобы договориться о времени " +
-            "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
+                "и формате встречи - онлайн или оффлайн. А через неделю мы спросим Вас как все прошло."
         val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседникам") }
     }
 
