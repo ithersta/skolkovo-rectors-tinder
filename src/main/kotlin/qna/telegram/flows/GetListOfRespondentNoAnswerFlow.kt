@@ -51,7 +51,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val addAcceptedResponse: AddAcceptedResponseUseCase by inject()
-    val getRespondentByResponseId: GetRespondentByResponseIdUseCase by inject()
+    val viewResponse: ViewResponseUseCase by inject()
 
     subjectPager = pager(id = "subjectsNoAnswer") {
         val subject = getQuestionsByUserIdUseCase(context!!.user.id, offset, limit)
@@ -119,7 +119,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             answer(query)
         }
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            val respondent = getRespondentByResponseId(data.responseId)!!
+            val respondent = viewResponse(data.responseId)!!
             val keyboard = confirmationInlineKeyboard(
                 positiveData = AcceptResponseQuery(data.responseId),
                 negativeData = DeclineResponseQuery
@@ -132,7 +132,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             delete(query.messageCallbackQueryOrThrow().message)
         }
         onDataCallbackQuery(AcceptResponseQuery::class) { (data, query) ->
-            val respondent = getRespondentByResponseId(data.responseId)!!
+            val respondent = viewResponse(data.responseId)!!
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
             addAcceptedResponse(query.user.id.chatId, data.responseId)
             edit(message, Strings.NewResponses.acceptedProfile(respondent), replyMarkup = null)
