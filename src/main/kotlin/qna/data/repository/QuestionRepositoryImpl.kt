@@ -6,6 +6,7 @@ import common.domain.Paginated
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
 import org.koin.core.annotation.Single
+import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
@@ -38,8 +39,13 @@ class QuestionRepositoryImpl : QuestionRepository {
     override fun getWithUnsentResponses(): List<Question> {
         return Questions
             .innerJoin(Responses)
+            .leftJoin(AcceptedResponses)
             .slice(Questions.columns)
-            .select { (Responses.hasBeenSent eq false) and (Questions.isClosed eq false) }
+            .select {
+                (Responses.hasBeenSent eq false) and
+                    (Questions.isClosed eq false) and
+                    (AcceptedResponses.responseId eq null)
+            }
             .withDistinct()
             .map(::mapper)
     }
