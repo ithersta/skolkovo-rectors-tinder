@@ -26,8 +26,7 @@ class AddPhoneNumbersUseCase(
             }
         }
         if (listOfNotActive.isEmpty()) {
-            val notContainsPhoneNumbers = phoneNumbers.filter { phoneNumbersRepository.contains(it).not() }
-            phoneNumbersRepository.addAll(notContainsPhoneNumbers)
+            phoneNumbersRepository.addAll(phoneNumbers)
             Result.OK
         } else {
             Result.PhoneNumberNotAllowed(listOfNotActive)
