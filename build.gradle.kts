@@ -34,7 +34,7 @@ dependencies {
     ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
-    testImplementation("io.insert-koin:koin-test-junit5:3.3.3")
+    testImplementation("io.insert-koin:koin-test-junit5:3.4.0")
     testImplementation("io.mockk:mockk:1.13.4")
     testImplementation("app.cash.turbine:turbine:0.12.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
