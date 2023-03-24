@@ -1,8 +1,8 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
+import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
-import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
 import com.ithersta.tgbotapi.pagination.pager
 import com.ithersta.tgbotapi.pagination.replyMarkup
@@ -17,21 +17,33 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrThrow
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContentOrThrow
+import dev.inmo.tgbotapi.types.IdChatIdentifier
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.utils.row
 import feedback.domain.usecases.CloseQuestionUseCase
 import generated.dataButton
 import generated.onDataCallbackQuery
-import menus.states.MenuState
 import org.koin.core.component.inject
 import qna.domain.usecases.*
 import qna.telegram.queries.*
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
 
-lateinit var subjectPager: InlineKeyboardPager<Unit, DialogState, User, User.Normal>
-lateinit var respondentPager: InlineKeyboardPager<SeeList, DialogState, User, User.Normal>
+private lateinit var subjectPager: InlineKeyboardPager<Unit, DialogState, User, User.Normal>
+private lateinit var respondentPager: InlineKeyboardPager<SeeList, DialogState, User, User.Normal>
+
+suspend fun BaseStatefulContext<DialogState, User, *, out User.Normal>.sendListOfRespondentNoAnswer(
+    chatIdentifier: IdChatIdentifier
+) {
+    val replyMarkup = subjectPager.replyMarkup
+    if (replyMarkup.keyboard.isEmpty()) {
+        sendTextMessage(chatIdentifier, Strings.RespondentsNoAnswer.NoQuestions)
+        state.override { DialogState.Empty }
+    } else {
+        sendTextMessage(chatIdentifier, Strings.RespondentsNoAnswer.ListOfSubjects, replyMarkup = replyMarkup)
+    }
+}
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfRespondentNoAnswerFlow() {
     val getQuestionsByUserIdUseCase: GetQuestionsByUserIdUseCase by inject()
@@ -39,7 +51,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
     val getRespondentsByQuestionIdUseCase: GetRespondentsByQuestionIdUseCase by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     val addAcceptedResponse: AddAcceptedResponseUseCase by inject()
-    val getRespondentByResponseId: GetRespondentByResponseIdUseCase by inject()
+    val viewResponse: ViewResponseUseCase by inject()
 
     subjectPager = pager(id = "subjectsNoAnswer") {
         val subject = getQuestionsByUserIdUseCase(context!!.user.id, offset, limit)
@@ -62,18 +74,6 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
                 }
             }
             navigationRow(itemCount = respondent.count)
-        }
-    }
-    state<MenuState.Questions.GetListOfQuestions> {
-        onEnter {
-            val replyMarkup = subjectPager.replyMarkup
-            if (replyMarkup.keyboard.isEmpty()) {
-                sendTextMessage(it, Strings.RespondentsNoAnswer.NoQuestions)
-                state.override { DialogState.Empty }
-            } else {
-                sendTextMessage(it, Strings.RespondentsNoAnswer.ListOfSubjects, replyMarkup = replyMarkup)
-                state.overrideQuietly { DialogState.Empty }
-            }
         }
     }
     anyState {
@@ -119,7 +119,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             answer(query)
         }
         onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            val respondent = getRespondentByResponseId(data.responseId)!!
+            val respondent = viewResponse(data.responseId)!!
             val keyboard = confirmationInlineKeyboard(
                 positiveData = AcceptResponseQuery(data.responseId),
                 negativeData = DeclineResponseQuery
@@ -132,7 +132,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             delete(query.messageCallbackQueryOrThrow().message)
         }
         onDataCallbackQuery(AcceptResponseQuery::class) { (data, query) ->
-            val respondent = getRespondentByResponseId(data.responseId)!!
+            val respondent = viewResponse(data.responseId)!!
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
             addAcceptedResponse(query.user.id.chatId, data.responseId)
             edit(message, Strings.NewResponses.acceptedProfile(respondent), replyMarkup = null)

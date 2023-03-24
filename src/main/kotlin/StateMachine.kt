@@ -15,17 +15,14 @@ import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
+import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
 import notifications.telegram.flows.newQuestionsNotificationFlow
 import notifications.telegram.flows.testNotificationsFlow
-import qna.telegram.flows.askQuestionFlow
-import qna.telegram.flows.feedbackFlow
-import qna.telegram.flows.getListOfRespondentNoAnswerFlow
-import qna.telegram.flows.newResponseFlow
-import qna.telegram.flows.oldQuestionFlow
+import qna.telegram.flows.*
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -39,6 +36,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         anyState {
             onCommand("start", null) {
                 state.override { WaitingForContact }
+                runCatching { refreshCommands() }
             }
         }
         state<DialogState.Empty> {
@@ -47,7 +45,16 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
             }
         }
     }
+    role<User.Admin> {
+        with(adminMenu) { invoke() }
+        testNotificationsFlow()
+    }
     role<User.Normal> {
+        anyState {
+            onCommand("start", null) {
+                state.override { DialogState.Empty }
+            }
+        }
         with(normalMenu) { invoke() }
         feedbackFlow()
         askQuestionFlow()
@@ -57,10 +64,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         newQuestionsNotificationFlow()
         newResponseFlow()
         oldQuestionFlow()
-    }
-    role<User.Admin> {
-        with(adminMenu) { invoke() }
-        testNotificationsFlow()
+        questionFlow()
     }
     muteFlow()
     eventFlow()

@@ -9,12 +9,15 @@ import common.telegram.strings.CommonStrings
 import generated.menu
 import menus.states.MenuState
 import notifications.telegram.sendNotificationPreferencesMessage
+import qna.telegram.flows.sendInterestingQuestionAreas
+import qna.telegram.flows.sendListOfRespondentNoAnswer
+import qna.telegram.flows.sendOldQuestionsPager
 
 val normalMenu = menu<User.Normal>(Strings.RoleMenu.Normal, DialogState.Empty) {
     extracted()
 }
 
-fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
+fun <S : User.Normal> MenuBuilder<DialogState, User, S>.extracted() {
     submenu(
         MenuStrings.Questions.Question,
         MenuStrings.Questions.QuestionDescription,
@@ -34,20 +37,17 @@ fun <S : User> MenuBuilder<DialogState, User, S>.extracted() {
                 MenuStrings.Questions.MyQuestions.Description,
                 MenuState.Questions.GetMyQuestion
             ) {
-                button(
-                    MenuStrings.Questions.MyQuestions.ActualQuestions,
-                    MenuState.Questions.GetListOfQuestions
-                )
-                button(
-                    MenuStrings.Questions.MyQuestions.OldQuestions,
-                    MenuState.OldQuestion
-                )
+                button(MenuStrings.Questions.MyQuestions.ActualQuestions) {
+                    sendListOfRespondentNoAnswer(it.chat.id)
+                }
+                button(MenuStrings.Questions.MyQuestions.OldQuestions) {
+                    sendOldQuestionsPager(it.chat.id)
+                }
                 backButton(CommonStrings.Button.Back)
             }
-            button(
-                MenuStrings.Questions.InterestingQuestions,
-                MenuState.CurrentQuestions
-            )
+            button(MenuStrings.Questions.InterestingQuestions) {
+                sendInterestingQuestionAreas(it.chat.id)
+            }
             backButton(CommonStrings.Button.Back)
         }
         backButton(CommonStrings.Button.Back)

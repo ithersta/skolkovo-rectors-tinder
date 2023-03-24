@@ -3,7 +3,9 @@ import auth.data.tables.UserAreas
 import auth.data.tables.Users
 import auth.domain.usecases.GetUserRoleUseCase
 import com.ithersta.tgbotapi.fsm.engines.regularEngine
+import common.telegram.strings.CommonStrings
 import config.readBotConfig
+import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import generated.sqliteStateRepository
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalTime
@@ -56,7 +58,12 @@ val module = module(createdAtStart = true) {
         stateMachine.regularEngine(
             getUser = { get<GetUserRoleUseCase>()(it.chatId) },
             stateRepository = sqliteStateRepository(historyDepth = 1),
-            exceptionHandler = { _, throwable -> throwable.printStackTrace() }
+            exceptionHandler = { userId, throwable ->
+                throwable.printStackTrace()
+                runCatching {
+                    sendTextMessage(userId, CommonStrings.InternalError)
+                }
+            }
         )
     }
 }

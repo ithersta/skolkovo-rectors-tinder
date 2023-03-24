@@ -5,8 +5,8 @@ import auth.data.tables.Users
 import common.domain.Paginated
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
+import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
@@ -39,8 +39,13 @@ class QuestionRepositoryImpl : QuestionRepository {
     override fun getWithUnsentResponses(): List<Question> {
         return Questions
             .innerJoin(Responses)
+            .leftJoin(AcceptedResponses)
             .slice(Questions.columns)
-            .select { (Responses.hasBeenSent eq false) and (Questions.isClosed eq false) }
+            .select {
+                (Responses.hasBeenSent eq false) and
+                    (Questions.isClosed eq false) and
+                    (AcceptedResponses.responseId eq null)
+            }
             .withDistinct()
             .map(::mapper)
     }
@@ -48,31 +53,29 @@ class QuestionRepositoryImpl : QuestionRepository {
     override fun getQuestionsDigestPaginated(
         from: Instant,
         until: Instant,
-        userId: Long,
+        viewerUserId: Long,
         limit: Int,
         offset: Int
     ): Paginated<Question> {
-        val authorCity = Users.select(where = Users.id eq userId).map { it[Users.city] }.first()
-        val badQuestion = Questions
-            .join(Users, JoinType.INNER, additionalConstraint = { Questions.authorId eq Users.id })
-            .slice(Questions.columns)
-            .select {
-                (Questions.isBlockedCity eq true) and (Users.city neq authorCity)
-            }
-        val areas = UserAreas
+        val viewerCity = Users
+            .select { Users.id eq viewerUserId }
+            .map { it[Users.city] }.first()
+        val viewerAreas = UserAreas
             .slice(UserAreas.area)
-            .select { UserAreas.userId eq userId }
+            .select { UserAreas.userId eq viewerUserId }
         val query = {
             Questions
+                .innerJoin(Users)
                 .innerJoin(QuestionAreas)
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                        (Questions.authorId neq userId)
+                        (Questions.isClosed eq false) and
+                        (Questions.authorId neq viewerUserId) and
+                        ((Questions.isBlockedCity eq false) or (Users.city neq viewerCity)) and
+                        (QuestionAreas.area inSubQuery viewerAreas)
                 }
-                .groupBy(*Questions.columns.toTypedArray())
-                .having { QuestionAreas.area inSubQuery areas }
-                .except(badQuestion)
+                .withDistinct()
                 .orderBy(Questions.at)
         }
         return Paginated(

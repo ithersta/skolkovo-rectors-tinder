@@ -6,10 +6,10 @@ import common.telegram.DialogState
 import generated.menu
 import menus.states.MenuState
 
-val adminMenu = menu<User.Admin>(Strings.RoleMenu.Normal, DialogState.Empty) {
+val adminMenu = menu<User.Admin>(Strings.RoleMenu.Admin, DialogState.Empty) {
     extracted()
     button(
         MenuStrings.AddUser,
         MenuState.AddUser
-    ) // /ну видимо хендлер надо тоже или стейт нормальный реализовать
+    )
 }

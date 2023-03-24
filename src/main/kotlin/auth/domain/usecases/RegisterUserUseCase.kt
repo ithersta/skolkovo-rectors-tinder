@@ -1,6 +1,7 @@
 package auth.domain.usecases
 
 import auth.domain.entities.User
+import auth.domain.repository.PhoneNumberRepository
 import auth.domain.repository.UserRepository
 import common.domain.Transaction
 import org.koin.core.annotation.Single
@@ -9,7 +10,9 @@ import org.koin.core.annotation.Single
 class RegisterUserUseCase(
     private val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase,
     private val userRepository: UserRepository,
-    private val transaction: Transaction
+    private val phoneNumberRepository: PhoneNumberRepository,
+    private val transaction: Transaction,
+    private val isAdmin: IsAdminUseCase
 ) {
     sealed interface Result {
         object OK : Result
@@ -26,7 +29,7 @@ class RegisterUserUseCase(
         if (userRepository.isRegistered(userDetails.id)) {
             return@transaction Result.AlreadyRegistered
         }
-        when (phoneNumberIsAllowedUseCase(userDetails.phoneNumber)) {
+        when (phoneNumberIsAllowedUseCase(userDetails.id, userDetails.phoneNumber)) {
             PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber ->
                 return@transaction Result.DuplicatePhoneNumber
 
@@ -34,6 +37,9 @@ class RegisterUserUseCase(
                 return@transaction Result.PhoneNumberNotAllowed
 
             PhoneNumberIsAllowedUseCase.Result.OK -> {
+                if (isAdmin(userDetails.id)) {
+                    phoneNumberRepository.addAll(listOf(userDetails.phoneNumber))
+                }
                 userRepository.add(userDetails)
                 return@transaction Result.OK
             }

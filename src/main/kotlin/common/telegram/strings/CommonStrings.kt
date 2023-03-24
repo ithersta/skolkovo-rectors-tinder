@@ -6,4 +6,5 @@ object CommonStrings {
         const val No = "Нет"
         const val Back = "◀️ Назад"
     }
+    const val InternalError = "Произошла внутренняя ошибка бота."
 }

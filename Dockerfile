@@ -1,8 +1,18 @@
+FROM ghcr.io/graalvm/graalvm-ce:22.3.1 AS cache
+USER root
+WORKDIR /project
+ENV GRADLE_USER_HOME /cache
+COPY build.gradle.kts gradle.properties settings.gradle.kts gradlew /project/
+COPY gradle /project/gradle/
+RUN ./gradlew --no-daemon build
+USER 1000
+
 FROM ghcr.io/graalvm/graalvm-ce:22.3.1 AS build-kotlin
 USER root
 WORKDIR /project
-COPY . /project
-RUN ./gradlew installDist
+COPY --from=cache /cache /root/.gradle
+COPY . /project/
+RUN ./gradlew --no-daemon installDist
 USER 1000
 
 FROM ghcr.io/graalvm/graalvm-ce:22.3.1
