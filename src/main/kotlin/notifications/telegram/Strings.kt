@@ -13,17 +13,6 @@ import java.time.format.TextStyle
 import java.util.*
 
 object Strings {
-    fun question(question: Question) = buildEntities {
-        if (question.isClosed) regularln("❌ Вопрос закрыт")
-        boldln(question.subject)
-        regularln(question.text)
-    }
-
-    fun respondedQuestion(question: Question) = buildEntities {
-        regularln("✅ Владелец вопроса свяжется с Вами.")
-        addAll(question(question))
-    }
-
     fun NotificationPreference.localizedString() = when (this) {
         NotificationPreference.RightAway -> "Сразу"
         NotificationPreference.Daily -> "Ежедневно"
@@ -58,9 +47,5 @@ object Strings {
 
         const val TurnOn = "Включить"
         const val TurnOff = "Выключить"
-    }
-
-    object Buttons {
-        const val Respond = "Ответить"
     }
 }

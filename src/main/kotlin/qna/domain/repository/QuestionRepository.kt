@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import qna.domain.entities.HideFrom
 import qna.domain.entities.Question
+import qna.domain.entities.QuestionArea
 
 interface QuestionRepository {
     fun close(questionId: Long)
@@ -18,6 +19,7 @@ interface QuestionRepository {
         from: Instant,
         until: Instant,
         viewerUserId: Long,
+        area: QuestionArea?,
         limit: Int,
         offset: Int
     ): Paginated<Question>

@@ -3,9 +3,6 @@ package qna.data.repository
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
 import common.domain.Paginated
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.datetime.Instant
 import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
@@ -18,6 +15,7 @@ import qna.data.tables.Questions
 import qna.data.tables.Responses
 import qna.domain.entities.HideFrom.*
 import qna.domain.entities.Question
+import qna.domain.entities.QuestionArea
 import qna.domain.repository.QuestionRepository
 
 @Single
@@ -61,6 +59,7 @@ class QuestionRepositoryImpl : QuestionRepository {
         from: Instant,
         until: Instant,
         viewerUserId: Long,
+        questionArea: QuestionArea?,
         limit: Int,
         offset: Int
     ): Paginated<Question> {
@@ -85,6 +84,9 @@ class QuestionRepositoryImpl : QuestionRepository {
                                 .When(Questions.hideFrom eq SameCity, Users.city neq viewerCity)
                                 .When(Questions.hideFrom eq SameOrganization, Users.organization neq viewerOrganization)
                                 .Else(booleanLiteral(false))
+                }
+                .let { query ->
+                    questionArea?.let { query.andWhere { QuestionAreas.area eq it } } ?: query
                 }
                 .withDistinct()
                 .orderBy(Questions.at)

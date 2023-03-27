@@ -2,6 +2,7 @@ package changeinfo.telegram.flows
 
 import auth.domain.entities.User
 import changeinfo.domain.interactors.ChangeAccountInfoInteractor
+import changeinfo.telegram.Strings
 import changeinfo.telegram.queries.*
 import changeinfo.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
@@ -60,7 +61,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             sendTextMessage(
                 it,
-                changeinfo.Strings.Fields.Name.Message
+                Strings.Fields.Name.Message
             )
         }
         onText {
@@ -72,7 +73,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             sendTextMessage(
                 it,
-                changeinfo.Strings.Fields.Job.Message
+                Strings.Fields.Job.Message
             )
         }
         onText {
@@ -83,7 +84,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
 
     state<WaitingForOrganizationTypeState> {
         chooseOrganizationType(
-            text = changeinfo.Strings.Fields.Organization.Type,
+            text = Strings.Fields.Organization.Type,
             onFinish = { _, type -> ChangeOrganizationTypeState(type) }
         )
     }
@@ -98,7 +99,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             sendTextMessage(
                 it,
-                changeinfo.Strings.Fields.Organization.Message
+                Strings.Fields.Organization.Message
             )
         }
         onText {
@@ -111,7 +112,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             sendTextMessage(
                 it,
-                changeinfo.Strings.Fields.ActivityDescription.Message
+                Strings.Fields.ActivityDescription.Message
             )
         }
         onText {
@@ -121,7 +122,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     }
     state<WaitingForQuestionAreasState> {
         chooseQuestionAreas(
-            text = changeinfo.Strings.Fields.Areas,
+            text = Strings.Fields.Areas,
             getAreas = { it.questionAreas },
             getMessageId = { it.messageId },
             onSelectionChanged = { state, questionAreas -> state.copy(questionAreas = questionAreas) },

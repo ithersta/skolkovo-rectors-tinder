@@ -33,4 +33,6 @@ object ButtonStrings {
         const val ExcludeMyCity = "Исключить участников из моего города"
         const val ExcludeMyOrganization = "Исключить участников из моей организации"
     }
+
+    const val Respond = "Ответить"
 }

@@ -9,9 +9,9 @@ import common.telegram.strings.CommonStrings
 import generated.menu
 import menus.states.MenuState
 import notifications.telegram.sendNotificationPreferencesMessage
-import qna.telegram.flows.sendInterestingQuestionAreas
 import qna.telegram.flows.sendListOfRespondentNoAnswer
 import qna.telegram.flows.sendOldQuestionsPager
+import qna.telegram.flows.sendQuestionDigestAreas
 
 val normalMenu = menu<User.Normal>(Strings.RoleMenu.Normal, DialogState.Empty) {
     extracted()
@@ -46,7 +46,7 @@ fun <S : User.Normal> MenuBuilder<DialogState, User, S>.extracted() {
                 backButton(CommonStrings.Button.Back)
             }
             button(MenuStrings.Questions.InterestingQuestions) {
-                sendInterestingQuestionAreas(it.chat.id)
+                sendQuestionDigestAreas(it.chat.id)
             }
             backButton(CommonStrings.Button.Back)
         }

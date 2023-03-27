@@ -1,7 +1,7 @@
 package changeinfo.telegram
 
 import auth.domain.entities.User
-import changeinfo.Strings.namesToQueries
+import changeinfo.telegram.Strings.namesToQueries
 import com.ithersta.tgbotapi.fsm.StatefulContext
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -26,7 +26,7 @@ suspend fun <S : User> StatefulContext<DialogState, User, *, S>
     )
     sendTextMessage(
         message.chat,
-        changeinfo.Strings.ChooseFieldToChange,
+        Strings.ChooseFieldToChange,
         replyMarkup = inlineKeyboard {
             val names = namesToQueries.keys
             names.chunked(2) {

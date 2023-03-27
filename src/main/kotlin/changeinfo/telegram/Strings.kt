@@ -1,4 +1,4 @@
-package changeinfo
+package changeinfo.telegram
 
 import changeinfo.telegram.queries.*
 import common.telegram.Query
