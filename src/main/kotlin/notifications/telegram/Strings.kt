@@ -6,7 +6,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalTime
 import notifications.domain.entities.NotificationPreference
 import notifications.domain.usecases.QuestionNotificationConfig
-import qna.domain.entities.Question
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.format.TextStyle
