@@ -48,8 +48,8 @@ class QuestionRepositoryImpl : QuestionRepository {
             .slice(Questions.columns)
             .select {
                 (Responses.hasBeenSent eq false) and
-                        (Questions.isClosed eq false) and
-                        (AcceptedResponses.responseId eq null)
+                    (Questions.isClosed eq false) and
+                    (AcceptedResponses.responseId eq null)
             }
             .withDistinct()
             .map(::mapper)
@@ -76,14 +76,14 @@ class QuestionRepositoryImpl : QuestionRepository {
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                            (QuestionAreas.area inSubQuery viewerAreas) and
-                            (Questions.isClosed eq false) and
-                            (Questions.authorId neq viewerUserId) and
-                            case()
-                                .When(Questions.hideFrom eq NoOne, booleanLiteral(true))
-                                .When(Questions.hideFrom eq SameCity, Users.city neq viewerCity)
-                                .When(Questions.hideFrom eq SameOrganization, Users.organization neq viewerOrganization)
-                                .Else(booleanLiteral(false))
+                        (QuestionAreas.area inSubQuery viewerAreas) and
+                        (Questions.isClosed eq false) and
+                        (Questions.authorId neq viewerUserId) and
+                        case()
+                            .When(Questions.hideFrom eq NoOne, booleanLiteral(true))
+                            .When(Questions.hideFrom eq SameCity, Users.city neq viewerCity)
+                            .When(Questions.hideFrom eq SameOrganization, Users.organization neq viewerOrganization)
+                            .Else(booleanLiteral(false))
                 }
                 .let { query ->
                     questionArea?.let { query.andWhere { QuestionAreas.area eq it } } ?: query

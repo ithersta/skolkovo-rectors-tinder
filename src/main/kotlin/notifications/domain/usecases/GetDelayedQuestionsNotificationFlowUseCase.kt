@@ -14,7 +14,6 @@ import notifications.domain.entities.DelayedNewQuestionsNotification
 import notifications.domain.entities.NotificationPreference
 import notifications.domain.repository.NotificationPreferenceRepository
 import org.koin.core.annotation.Single
-import qna.domain.repository.QuestionRepository
 import kotlin.time.Duration.Companion.seconds
 
 class QuestionNotificationConfig(
