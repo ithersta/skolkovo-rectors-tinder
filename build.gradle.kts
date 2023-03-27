@@ -31,7 +31,7 @@ dependencies {
     implementation("com.jayway.jsonpath:json-path:2.7.0")
     implementation("dev.inmo:krontab:0.10.0")
     compileOnly("io.insert-koin:koin-annotations:1.2.0")
-    ksp("io.insert-koin:koin-ksp-compiler:1.1.1")
+    ksp("io.insert-koin:koin-ksp-compiler:1.2.0")
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.4.0")
