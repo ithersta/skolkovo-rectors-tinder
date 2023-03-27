@@ -6,6 +6,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.datetime.Clock
 import org.junit.jupiter.api.Test
+import qna.domain.entities.HideFrom
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionArea
 import qna.domain.entities.QuestionIntent
@@ -24,7 +25,7 @@ internal class CloseQuestionUseCaseTest {
         isClosed = false,
         areas = setOf(QuestionArea.Education, QuestionArea.Finance),
         at = Clock.System.now(),
-        isBlockedCity = false
+        hideFrom = HideFrom.NoOne
     )
 
     @Test

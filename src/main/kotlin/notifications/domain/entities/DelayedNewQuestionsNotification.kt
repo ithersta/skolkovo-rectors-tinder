@@ -5,7 +5,7 @@ import kotlinx.datetime.serializers.InstantComponentSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable
-class NewQuestionsNotification(
+class DelayedNewQuestionsNotification(
     val userId: Long,
     @Serializable(with = InstantComponentSerializer::class)
     val from: Instant,

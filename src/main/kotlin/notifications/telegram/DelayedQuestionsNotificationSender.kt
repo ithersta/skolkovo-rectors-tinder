@@ -5,13 +5,13 @@ import dev.inmo.micro_utils.coroutines.launchSafelyWithoutExceptions
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.toChatId
-import notifications.domain.usecases.GetNewQuestionsNotificationFlowUseCase
+import notifications.domain.usecases.GetDelayedQuestionsNotificationFlowUseCase
 import notifications.telegram.flows.newQuestionsPager
 import org.koin.core.annotation.Single
 
 @Single
-class NewQuestionsNotificationSender(
-    private val getNewQuestionsNotificationFlow: GetNewQuestionsNotificationFlowUseCase,
+class DelayedQuestionsNotificationSender(
+    private val getNewQuestionsNotificationFlow: GetDelayedQuestionsNotificationFlowUseCase,
     private val massSendLimiter: MassSendLimiter
 ) {
     fun BehaviourContext.setup() = launchSafelyWithoutExceptions {

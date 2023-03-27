@@ -17,7 +17,7 @@ import dev.inmo.tgbotapi.utils.row
 import generated.RoleFilterBuilder
 import generated.dataButton
 import generated.onDataCallbackQuery
-import notifications.domain.entities.NewQuestionsNotification
+import notifications.domain.entities.DelayedNewQuestionsNotification
 import notifications.domain.usecases.GetQuestionsDigestUseCase
 import notifications.telegram.Strings
 import notifications.telegram.queries.NewQuestionsNotificationQuery
@@ -26,14 +26,14 @@ import qna.domain.usecases.AddResponseUseCase
 import qna.domain.usecases.GetQuestionByIdUseCase
 import qna.domain.usecases.HasResponseUseCase
 
-lateinit var newQuestionsPager: InlineKeyboardPager<NewQuestionsNotification, DialogState, User, User.Normal>
+lateinit var newQuestionsPager: InlineKeyboardPager<DelayedNewQuestionsNotification, DialogState, User, User.Normal>
 
 fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow() {
     val getQuestionsDigest: GetQuestionsDigestUseCase by inject()
     val getQuestionById: GetQuestionByIdUseCase by inject()
     val addResponse: AddResponseUseCase by inject()
     val hasResponse: HasResponseUseCase by inject()
-    newQuestionsPager = pager(id = "new_questions", dataKClass = NewQuestionsNotification::class) {
+    newQuestionsPager = pager(id = "new_questions", dataKClass = DelayedNewQuestionsNotification::class) {
         val questions = getQuestionsDigest(
             from = data.from,
             until = data.until,
@@ -70,8 +70,8 @@ fun RoleFilterBuilder<User.Normal>.newQuestionsNotificationFlow() {
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
             edit(
                 message,
-                Strings.newQuestionsMessage(data.newQuestionsNotification.notificationPreference),
-                replyMarkup = newQuestionsPager.page(data.newQuestionsNotification, data.page)
+                Strings.newQuestionsMessage(data.delayedNewQuestionsNotification.notificationPreference),
+                replyMarkup = newQuestionsPager.page(data.delayedNewQuestionsNotification, data.page)
             )
             answer(query)
         }
@@ -94,7 +94,7 @@ private suspend fun StatefulContext<DialogState, User, DialogState, User.Normal>
             row {
                 dataButton(
                     text = CommonStrings.Button.Back,
-                    data = NewQuestionsNotificationQuery.Back(data.returnToPage, data.newQuestionsNotification)
+                    data = NewQuestionsNotificationQuery.Back(data.returnToPage, data.delayedNewQuestionsNotification)
                 )
                 if (hasResponse.not() && question.isClosed.not()) {
                     dataButton(
@@ -102,7 +102,7 @@ private suspend fun StatefulContext<DialogState, User, DialogState, User.Normal>
                         data = NewQuestionsNotificationQuery.Respond(
                             data.questionId,
                             data.returnToPage,
-                            data.newQuestionsNotification
+                            data.delayedNewQuestionsNotification
                         )
                     )
                 }

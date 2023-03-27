@@ -9,10 +9,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import qna.domain.entities.Question
-import qna.domain.entities.QuestionArea
-import qna.domain.entities.QuestionIntent
-import qna.domain.entities.Response
+import qna.domain.entities.*
 import qna.domain.repository.ResponseRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -28,7 +25,7 @@ internal class AddResponseUseCaseTest {
         isClosed = false,
         areas = setOf(QuestionArea.Finance, QuestionArea.Education),
         at = Clock.System.now(),
-        isBlockedCity = false,
+        hideFrom = HideFrom.NoOne,
         id = sampleQuestionId
     )
     private val sampleResponse = Response(
