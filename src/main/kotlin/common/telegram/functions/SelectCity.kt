@@ -75,4 +75,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         }
         answer(query)
     }
+    onDataCallbackQuery(SelectUniversityQuery::class) { (data, query) ->
+    }
+
 }

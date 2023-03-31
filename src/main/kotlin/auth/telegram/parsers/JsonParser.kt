@@ -28,6 +28,10 @@ class JsonParser {
         return "$.[?(@.region ==  '$region')].city"
     }
 
+    private fun jsonpathUniversities(city: String): String {
+        return "$.[?(@.city ==  '$city')].universities"
+    }
+
     private fun createList(pattern: String): List<String> {
         return HashSet(jsonContext.read<Collection<String>>(pattern)).sorted()
     }
@@ -83,6 +87,16 @@ class JsonParser {
             createList(jsonpathCityByRegion(region)).forEach {
                 row {
                     dataButton(it, SelectCityQuery(it))
+                }
+            }
+        }
+    }
+
+    fun getUniversities(city: String): InlineKeyboardMarkup {
+        return inlineKeyboard {
+            createList(jsonpathUniversities(city)).forEach {
+                row {
+                    dataButton(it, SelectUniversityQuery(it))
                 }
             }
         }
