@@ -5,6 +5,7 @@ import locations.domain.entities.Location
 import locations.domain.repository.LocationRepository
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.koin.core.annotation.Single
 
 @Single
@@ -19,5 +20,11 @@ class LocationRepositoryImpl : LocationRepository {
         return childrenTable
             .select { childrenTable.parentId eq location.id }
             .map(childrenTable::map)
+    }
+
+    override fun getAllCountries(): List<Location.Country> {
+        return LocationTable.Countries
+            .selectAll()
+            .map(LocationTable.Countries::map)
     }
 }

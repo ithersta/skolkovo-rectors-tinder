@@ -3,6 +3,7 @@ package locations.domain.entities
 sealed interface Location {
     val id: Long
     val name: String
+    val isPhantom get() = name.isEmpty()
 
     sealed interface WithChildren : Location
     sealed interface WithParent : Location {
