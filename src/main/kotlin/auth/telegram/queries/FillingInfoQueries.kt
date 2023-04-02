@@ -32,6 +32,10 @@ class SelectRegionQuery(val region: String) : Query
 class SelectCityQuery(val city: String) : Query
 
 @Serializable
+@SerialName("universities")
+class SelectUniversityQuery(val university: String) : Query
+
+@Serializable
 @SerialName("type")
 class ChooseOrganizationTypeQuery(val type: OrganizationType) : Query
 
