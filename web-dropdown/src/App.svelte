@@ -21,7 +21,9 @@
     }
 
     function onNoneClick() {
-        webApp.showConfirm(noneConfirm, () => webApp.sendData(JSON.stringify(null)))
+        webApp.showConfirm(noneConfirm, (confirmed: boolean) => {
+            if (confirmed) webApp.sendData(JSON.stringify(null))
+        })
     }
 </script>
 
