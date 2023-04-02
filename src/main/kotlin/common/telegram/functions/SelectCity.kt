@@ -78,5 +78,4 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     onDataCallbackQuery(SelectUniversityQuery::class) { (data, query) ->
 //        todo: вот сюда надо
     }
-
 }
