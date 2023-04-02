@@ -15,6 +15,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.withContentOrThrow
 import dev.inmo.tgbotapi.types.IdChatIdentifier
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
+import dev.inmo.tgbotapi.types.buttons.inline.dataInlineButton
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.queries.callback.DataCallbackQuery
 import dev.inmo.tgbotapi.utils.row
@@ -66,8 +67,9 @@ fun RoleFilterBuilder<User.Normal>.questionDigestFlow() {
         )
         inlineKeyboard {
             if (data.area != null) {
-                row {
-                    dataButton(CommonStrings.Button.Back, QuestionDigestQuery.BackToAreas)
+                row { dataButton(CommonStrings.Button.Back, QuestionDigestQuery.BackToAreas) }
+                if (questions.count == 0) {
+                    row { dataButton(Strings.NoInterestingQuestions, QuestionDigestQuery.BackToAreas) }
                 }
             }
             questions.slice.forEach { question ->
