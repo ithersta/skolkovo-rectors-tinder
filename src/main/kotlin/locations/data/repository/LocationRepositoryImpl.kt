@@ -14,7 +14,7 @@ class LocationRepositoryImpl : LocationRepository {
         table.insert { table.insertBody(it, location) }
     }
 
-    override fun getChildren(location: Location.WithChildren): List<Location> {
+    override fun getChildren(location: Location.WithChildren): List<Location.WithParent> {
         val childrenTable = LocationTable.from(location).childrenTable
         return childrenTable
             .select { childrenTable.parentId eq location.id }

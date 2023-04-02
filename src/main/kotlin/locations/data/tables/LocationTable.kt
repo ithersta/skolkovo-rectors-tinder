@@ -10,7 +10,7 @@ sealed class LocationTable<L : Location> : LongIdTable() {
     abstract fun map(row: ResultRow): L
     abstract fun insertBody(it: InsertStatement<Number>, location: L)
 
-    sealed class WithParent<L : Location>(val parentTable: LocationTable<*>) : LocationTable<L>() {
+    sealed class WithParent<L : Location.WithParent>(val parentTable: LocationTable<*>) : LocationTable<L>() {
         val parentId = reference("parent_id", parentTable)
     }
 
