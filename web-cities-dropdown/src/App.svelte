@@ -5,6 +5,7 @@
     const cities = urlParams.get("cities").split('|')
     const webApp = window.Telegram.WebApp
     webApp.MainButton.onClick(() => webApp.sendData(selectedCity))
+    webApp.MainButton.setParams({'text': 'Подтвердить'})
 
     let inputValue = ""
     let selectedCity = null
