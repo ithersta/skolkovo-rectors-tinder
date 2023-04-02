@@ -11,9 +11,14 @@ import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
+import locations.data.tables.LocationTable
 
 fun Transaction.runMigrations() {
     SchemaUtils.createMissingTablesAndColumns(
+        LocationTable.Countries,
+        LocationTable.Districts,
+        LocationTable.Regions,
+        LocationTable.Cities,
         PhoneNumbers,
         Users,
         UserAreas,
