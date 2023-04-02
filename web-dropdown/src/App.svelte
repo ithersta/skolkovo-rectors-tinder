@@ -2,20 +2,20 @@
     import Input from './lib/Input.svelte'
 
     const urlParams = new URLSearchParams(window.location.search)
-    const cities = urlParams.get("options").split('|')
+    const options = urlParams.get("options").split('|')
     const webApp = window.Telegram.WebApp
-    webApp.MainButton.onClick(() => webApp.sendData(selectedCity))
+    webApp.MainButton.onClick(() => webApp.sendData(selectedOption))
     webApp.MainButton.setParams({'text': 'Подтвердить'})
 
     let inputValue = ""
-    let selectedCity = null
-    $: filteredCities = cities.filter(city => city.toLowerCase().match(inputValue.toLowerCase()))
-    $: if (selectedCity !== null) {
+    let selectedOption = null
+    $: filteredOptions = options.filter(option => option.toLowerCase().match(inputValue.toLowerCase()))
+    $: if (selectedOption !== null) {
         webApp.MainButton.show()
     }
 
-    function onCitySelected(city: string) {
-        selectedCity = city
+    function onOptionSelected(option: string) {
+        selectedOption = option
     }
 </script>
 
@@ -32,8 +32,8 @@
 
 <main>
     <Input bind:inputValue/>
-    {#each filteredCities as city}
-        <p class="mx-2 px-2 py-3 w-auto text-slate-900 justify-start rounded-md {city === selectedCity ? 'selected' : ''}"
-           on:click={() => onCitySelected(city)}>{city}</p>
+    {#each filteredOptions as option}
+        <p class="mx-2 px-2 py-3 w-auto text-slate-900 justify-start rounded-md {option === selectedOption ? 'selected' : ''}"
+           on:click={() => onOptionSelected(option)}>{option}</p>
     {/each}
 </main>
