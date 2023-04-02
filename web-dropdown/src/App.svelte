@@ -2,7 +2,7 @@
     import Input from './lib/Input.svelte'
 
     const urlParams = new URLSearchParams(window.location.search)
-    const cities = urlParams.get("cities").split('|')
+    const cities = urlParams.get("options").split('|')
     const webApp = window.Telegram.WebApp
     webApp.MainButton.onClick(() => webApp.sendData(selectedCity))
     webApp.MainButton.setParams({'text': 'Подтвердить'})
