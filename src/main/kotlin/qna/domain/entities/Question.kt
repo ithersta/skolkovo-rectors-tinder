@@ -10,6 +10,6 @@ data class Question(
     val isClosed: Boolean,
     val areas: Set<QuestionArea>,
     val at: Instant,
-    val isBlockedCity: Boolean,
+    val hideFrom: HideFrom,
     val id: Long? = null
 )

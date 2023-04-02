@@ -20,9 +20,9 @@ import menus.adminMenu
 import menus.normalMenu
 import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
-import notifications.telegram.flows.newQuestionsNotificationFlow
 import notifications.telegram.flows.testNotificationsFlow
 import qna.telegram.flows.*
+import qna.telegram.flows.questionDigestFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -61,10 +61,9 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         getListOfRespondentNoAnswerFlow()
         changeAccountInfoFlow()
         changeNotificationPreferenceFlow()
-        newQuestionsNotificationFlow()
+        questionDigestFlow()
         newResponseFlow()
         oldQuestionFlow()
-        questionFlow()
     }
     muteFlow()
     eventFlow()

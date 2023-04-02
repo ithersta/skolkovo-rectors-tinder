@@ -6,6 +6,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
+import qna.domain.entities.HideFrom
 import qna.domain.entities.QuestionIntent
 
 object Questions : LongIdTable() {
@@ -15,7 +16,7 @@ object Questions : LongIdTable() {
     val text: Column<String> = varchar("text", length = 2048)
     val isClosed: Column<Boolean> = bool("is_closed")
     val at: Column<Instant> = timestamp("at")
-    val isBlockedCity: Column<Boolean> = bool("is_blocked_city")
+    val hideFrom: Column<HideFrom> = enumeration<HideFrom>("hide_from").default(HideFrom.NoOne)
 
     init {
         index(isUnique = false, isClosed, at)

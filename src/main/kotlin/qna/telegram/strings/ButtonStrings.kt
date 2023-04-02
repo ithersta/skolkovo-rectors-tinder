@@ -26,7 +26,13 @@ object ButtonStrings {
         const val CloseQuestion = "Закрыть вопрос"
         const val SeeList = "Посмотреть список ответивших"
     }
-    const val SendQuestionCenter = "Отправить вопрос центру трансформации образования"
-    const val SendQuestion = "Отправить всем"
-    const val SendQuestionWithRestrictions = "Исключить участников из моего города"
+
+    object SendQuestion {
+        const val ToCenter = "Отправить вопрос Центру трансформации образования"
+        const val ToAll = "Отправить всем"
+        const val ExcludeMyCity = "Исключить участников из моего города"
+        const val ExcludeMyOrganization = "Исключить участников из моей организации"
+    }
+
+    const val Respond = "Ответить"
 }

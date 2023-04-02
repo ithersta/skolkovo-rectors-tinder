@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.datetime.*
-import notifications.domain.entities.NewQuestionsNotification
+import notifications.domain.entities.DelayedNewQuestionsNotification
 import notifications.domain.entities.NotificationPreference
 import notifications.domain.repository.NotificationPreferenceRepository
 import org.koin.core.annotation.Single
@@ -22,7 +22,7 @@ class QuestionNotificationConfig(
 )
 
 @Single
-class GetNewQuestionsNotificationFlowUseCase(
+class GetDelayedQuestionsNotificationFlowUseCase(
     private val notificationPreferenceRepository: NotificationPreferenceRepository,
     private val transaction: Transaction,
     private val timeZone: TimeZone,
@@ -64,7 +64,7 @@ class GetNewQuestionsNotificationFlowUseCase(
         transaction {
             notificationPreferenceRepository.getUserIdsWithPreference(notificationPreference)
         }.map { userId ->
-            NewQuestionsNotification(userId, from = from, until = now, notificationPreference)
+            DelayedNewQuestionsNotification(userId, from = from, until = now, notificationPreference)
         }
     }
 
