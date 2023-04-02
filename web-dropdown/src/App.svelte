@@ -9,7 +9,7 @@
 
     let inputValue = ""
     let selectedOption = null
-    $: filteredOptions = options.filter(option => option.toLowerCase().match(inputValue.toLowerCase()))
+    $: filteredOptions = options.filter(option => option.toLowerCase().includes(inputValue.toLowerCase()))
     $: if (selectedOption !== null) {
         webApp.MainButton.show()
     }
