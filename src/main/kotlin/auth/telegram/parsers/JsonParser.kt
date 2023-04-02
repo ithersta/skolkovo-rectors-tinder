@@ -29,7 +29,7 @@ class JsonParser {
     }
 
     private fun jsonpathUniversities(city: String): String {
-        return "$.[?(@.city ==  '$city')].universities"
+        return "$.[?(@.city ==  '$city')].universities[:]"
     }
 
     private fun createList(pattern: String): List<String> {
@@ -42,7 +42,7 @@ class JsonParser {
 
     val cityRegex: Regex = createRegex(jsonpathCityPattern)
 
-    fun getCountries(): InlineKeyboardMarkup {
+    fun getInlineKeyboardMarkupCountries(): InlineKeyboardMarkup {
         return inlineKeyboard {
             createList(jsonpathCountiesPattern).forEach {
                 row {
@@ -52,7 +52,7 @@ class JsonParser {
         }
     }
 
-    fun getDistricts(): InlineKeyboardMarkup {
+    fun getInlineKeyboardMarkupDistricts(): InlineKeyboardMarkup {
         return inlineKeyboard {
             createList(jsonpathDistrictsPattern).forEach {
                 row {
@@ -62,7 +62,7 @@ class JsonParser {
         }
     }
 
-    fun getCitiesFromCIS(country: String): InlineKeyboardMarkup {
+    fun getInlineKeyboardMarkupCitiesFromCIS(country: String): InlineKeyboardMarkup {
         return inlineKeyboard {
             createList(jsonpathCitiesInCISByCountry(country)).forEach {
                 row {
@@ -72,7 +72,7 @@ class JsonParser {
         }
     }
 
-    fun getRegionsByDistrict(district: String): InlineKeyboardMarkup {
+    fun getInlineKeyboardMarkupRegionsByDistrict(district: String): InlineKeyboardMarkup {
         return inlineKeyboard {
             createList(jsonpathRegionByDistrict(district)).forEach {
                 row {
@@ -82,7 +82,7 @@ class JsonParser {
         }
     }
 
-    fun getCitiesByRegion(region: String): InlineKeyboardMarkup {
+    fun getInlineKeyboardMarkupCitiesByRegion(region: String): InlineKeyboardMarkup {
         return inlineKeyboard {
             createList(jsonpathCityByRegion(region)).forEach {
                 row {
@@ -92,9 +92,13 @@ class JsonParser {
         }
     }
 
-    fun getUniversities(city: String): InlineKeyboardMarkup {
+    fun getInlineKeyboardMarkupUniversities(city: String): InlineKeyboardMarkup {
+        val list: List<String> = jsonContext.read<List<String>>("$.[?(@.city ==  '$city')].universities[:]")
+        list.forEach {
+            println(it)
+        }
         return inlineKeyboard {
-            createList(jsonpathUniversities(city)).forEach {
+            list.forEach {
                 row {
                     dataButton(it, SelectUniversityQuery(it))
                 }
