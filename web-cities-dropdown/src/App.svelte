@@ -18,6 +18,12 @@
     }
 </script>
 
+<style>
+    p {
+        color: var(--tg-theme-text-color)
+    }
+</style>
+
 <main>
     <Input bind:inputValue/>
     {#each filteredCities as city}

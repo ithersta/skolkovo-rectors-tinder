@@ -13,7 +13,10 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.telegram.DialogState
 import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.webAppButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.utils.row
 import event.telegram.eventFlow
 import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
@@ -53,6 +56,13 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         anyState {
             onCommand("start", null) {
                 state.override { DialogState.Empty }
+            }
+            onCommand("city", null) {
+                sendTextMessage(it.chat, "city", replyMarkup = replyKeyboard {
+                    row {
+                        webAppButton("Выбрать город", "https://skolkovo-rectors-tinder.vercel.app/?cities=Москва|Санкт-Петербург|Казань")
+                    }
+                })
             }
         }
         with(normalMenu) { invoke() }
