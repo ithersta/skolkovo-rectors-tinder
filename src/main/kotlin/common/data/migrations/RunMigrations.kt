@@ -3,6 +3,7 @@ package common.data.migrations
 import auth.data.tables.PhoneNumbers
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
+import locations.data.tables.LocationTable
 import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -11,7 +12,6 @@ import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
 import qna.data.tables.Responses
-import locations.data.tables.LocationTable
 
 fun Transaction.runMigrations() {
     SchemaUtils.createMissingTablesAndColumns(
