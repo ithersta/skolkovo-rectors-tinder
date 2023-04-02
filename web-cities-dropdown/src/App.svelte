@@ -24,6 +24,7 @@
     }
 
     .selected {
+        color: var(--tg-theme-button-text-color);
         background-color: var(--tg-theme-button-color);
     }
 </style>
