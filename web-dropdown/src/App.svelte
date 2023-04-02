@@ -3,6 +3,8 @@
 
     const urlParams = new URLSearchParams(window.location.search)
     const options = urlParams.get("options").split('|')
+    const noneOption = urlParams.get("none")
+    const noneConfirm = urlParams.get("noneconfirm")
     const webApp = window.Telegram.WebApp
     webApp.MainButton.onClick(() => webApp.sendData(selectedOption))
     webApp.MainButton.setParams({'text': 'Подтвердить'})
@@ -16,6 +18,10 @@
 
     function onOptionSelected(option: string) {
         selectedOption = option
+    }
+
+    function onNoneClick() {
+        webApp.showConfirm(noneConfirm, () => webApp.sendData(""))
     }
 </script>
 
@@ -32,6 +38,7 @@
 
 <main>
     <Input bind:inputValue/>
+    <button class="m-2 w-full text-slate-900" on:click={onNoneClick}>{noneOption}</button>
     {#each filteredOptions as option}
         <p class="mx-2 px-2 py-3 w-auto text-slate-900 justify-start rounded-md {option === selectedOption ? 'selected' : ''}"
            on:click={() => onOptionSelected(option)}>{option}</p>
