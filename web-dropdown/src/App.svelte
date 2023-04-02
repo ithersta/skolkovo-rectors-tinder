@@ -26,7 +26,7 @@
 </script>
 
 <style>
-    p {
+    p, button {
         color: var(--tg-theme-text-color);
     }
 
