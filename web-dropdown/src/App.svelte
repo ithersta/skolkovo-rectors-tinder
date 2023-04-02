@@ -4,9 +4,9 @@
     const urlParams = new URLSearchParams(window.location.search)
     const options = urlParams.get("options").split('|')
     const noneOption = urlParams.get("none")
-    const noneConfirm = urlParams.get("noneconfirm")
+    const noneConfirm = urlParams.get("noneConfirm")
     const webApp = window.Telegram.WebApp
-    webApp.MainButton.onClick(() => webApp.sendData(selectedOption))
+    webApp.MainButton.onClick(() => webApp.sendData(JSON.stringify(selectedOption)))
     webApp.MainButton.setParams({'text': 'Подтвердить'})
 
     let inputValue = ""
@@ -21,7 +21,7 @@
     }
 
     function onNoneClick() {
-        webApp.showConfirm(noneConfirm, () => webApp.sendData(""))
+        webApp.showConfirm(noneConfirm, () => webApp.sendData(JSON.stringify(null)))
     }
 </script>
 
