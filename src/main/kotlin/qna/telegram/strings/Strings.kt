@@ -4,6 +4,7 @@ import auth.domain.entities.User
 import auth.telegram.Strings
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import dev.inmo.tgbotapi.utils.*
+import qna.domain.entities.Question
 import qna.domain.usecases.NewResponseNotification
 import qna.domain.entities.Question as DomainQuestion
 
@@ -120,9 +121,18 @@ object Strings {
         val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседникам") }
     }
 
-    object TargetArea {
-        const val ListSpheres = "Список сфер по вашему профилю. Нажмите на сферу, чтобы посмотреть список тем вопросов."
-        const val ListQuestion = "Список вопросов по вашим сферам. Нажмите на тему, чтобы посмотреть подробнее."
-        const val HaveNotQuestionInThisArea = "На данный момент нет вопросов по этой сфере."
+    fun question(question: qna.domain.entities.Question) = buildEntities {
+        if (question.isClosed) regularln("❌ Вопрос закрыт")
+        boldln(question.subject)
+        regularln(question.text)
     }
+
+    fun respondedQuestion(question: qna.domain.entities.Question) = buildEntities {
+        regularln("✅ Владелец вопроса свяжется с Вами.")
+        addAll(question(question))
+    }
+
+    const val QuestionAreasList = "Список сфер по вашему профилю. Нажмите на сферу, чтобы посмотреть список вопросов."
+    const val InterestingQuestionsList = "Список вопросов по вашим сферам. Нажмите на тему, чтобы посмотреть подробнее."
+    const val NoInterestingQuestions = "Пусто"
 }

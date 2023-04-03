@@ -5,7 +5,6 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
-import common.telegram.MassSendLimiter
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
 import config.BotConfig
@@ -16,6 +15,7 @@ import dev.inmo.tgbotapi.extensions.api.edit.edit
 import dev.inmo.tgbotapi.extensions.api.send.sendContact
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.messageCallbackQueryOrNull
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.extensions.utils.withContentOrNull
@@ -23,33 +23,28 @@ import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.message.content.TextContent
-import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.onDataCallbackQuery
-import kotlinx.coroutines.launch
 import menus.states.MenuState
 import org.koin.core.component.inject
+import qna.domain.entities.HideFrom
 import qna.domain.entities.Question
 import qna.domain.entities.QuestionIntent
-import qna.domain.usecases.*
+import qna.domain.usecases.AddQuestionUseCase
+import qna.domain.usecases.AddResponseUseCase
+import qna.domain.usecases.GetQuestionByIdUseCase
+import qna.domain.usecases.GetUserDetailsUseCase
 import qna.telegram.queries.AcceptQuestionQuery
 import qna.telegram.queries.DeclineQuestionQuery
 import qna.telegram.states.*
-import qna.telegram.states.AskFullQuestion
-import qna.telegram.states.ChooseQuestionAreas
-import qna.telegram.states.ChooseQuestionIntent
-import qna.telegram.states.SendQuestionToCommunity
 import qna.telegram.strings.ButtonStrings
 import qna.telegram.strings.Strings
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() {
-    val getUsersByAreaUseCase: GetUsersByAreaUseCase by inject()
-    val getFilteredUsersByAreaUseCase: GetFilteredUsersByAreaUseCase by inject()
     val addQuestionUseCase: AddQuestionUseCase by inject()
     val getQuestionByIdUseCase: GetQuestionByIdUseCase by inject()
     val addResponseUseCase: AddResponseUseCase by inject()
     val botConfig: BotConfig by inject()
-    val massSendLimiter: MassSendLimiter by inject()
     val getUserDetailsUseCase: GetUserDetailsUseCase by inject()
     state<MenuState.Questions.AskQuestion> {
         onEnter {
@@ -115,58 +110,32 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 it,
                 Strings.Question.CompletedQuestion,
                 replyMarkup = replyKeyboard(resizeKeyboard = true) {
-                    row {
-                        simpleButton(ButtonStrings.SendQuestionWithRestrictions)
-                    }
-                    row {
-                        simpleButton(ButtonStrings.SendQuestion)
-                    }
+                    row { simpleButton(ButtonStrings.SendQuestion.ExcludeMyOrganization) }
+                    row { simpleButton(ButtonStrings.SendQuestion.ExcludeMyCity) }
+                    row { simpleButton(ButtonStrings.SendQuestion.ToAll) }
                 }
             )
         }
-        onText(ButtonStrings.SendQuestion) { message ->
-            val question = addQuestionUseCase(
+        onText(
+            ButtonStrings.SendQuestion.ExcludeMyOrganization,
+            ButtonStrings.SendQuestion.ExcludeMyCity,
+            ButtonStrings.SendQuestion.ToAll
+        ) { message ->
+            val hideFrom = when (message.content.text) {
+                ButtonStrings.SendQuestion.ExcludeMyOrganization -> HideFrom.SameOrganization
+                ButtonStrings.SendQuestion.ExcludeMyCity -> HideFrom.SameCity
+                ButtonStrings.SendQuestion.ToAll -> HideFrom.NoOne
+                else -> error("Other messages should be filtered")
+            }
+            addQuestionUseCase(
                 authorId = message.chat.id.chatId,
-                state.snapshot.intent,
-                state.snapshot.subject,
-                state.snapshot.question,
-                state.snapshot.areas,
-                false
+                intent = state.snapshot.intent,
+                subject = state.snapshot.subject,
+                text = state.snapshot.question,
+                areas = state.snapshot.areas,
+                hideFrom = hideFrom
             )
             sendTextMessage(message.chat, Strings.Question.Success)
-            coroutineScope.launch {
-                state.snapshot.areas.flatMap {
-                    getUsersByAreaUseCase(it, userId = message.chat.id.chatId)
-                }.toSet().forEach {
-                    runCatching {
-                        massSendLimiter.wait()
-                        sendQuestionMessage(it.toChatId(), question)
-                    }
-                }
-            }
-            state.override { DialogState.Empty }
-        }
-        onText(ButtonStrings.SendQuestionWithRestrictions) { message ->
-            val question = addQuestionUseCase(
-                authorId = message.chat.id.chatId,
-                state.snapshot.intent,
-                state.snapshot.subject,
-                state.snapshot.question,
-                state.snapshot.areas,
-                true
-            )
-            sendTextMessage(message.chat, Strings.Question.Success)
-            coroutineScope.launch {
-                val user = getUserDetailsUseCase(message.chat.id.chatId)!!
-                state.snapshot.areas.flatMap {
-                    getFilteredUsersByAreaUseCase(it, user)
-                }.toSet().forEach {
-                    runCatching {
-                        massSendLimiter.wait()
-                        sendQuestionMessage(it.toChatId(), question)
-                    }
-                }
-            }
             state.override { DialogState.Empty }
         }
     }
@@ -175,14 +144,12 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(
                 it,
                 Strings.Question.CompletedQuestion,
-                replyMarkup = replyKeyboard(resizeKeyboard = true) {
-                    row {
-                        simpleButton(ButtonStrings.SendQuestionCenter)
-                    }
+                replyMarkup = flatReplyKeyboard(resizeKeyboard = true) {
+                    simpleButton(ButtonStrings.SendQuestion.ToCenter)
                 }
             )
         }
-        onText(ButtonStrings.SendQuestionCenter) { message ->
+        onText(ButtonStrings.SendQuestion.ToCenter) { message ->
             sendTextMessage(
                 message.chat,
                 Strings.Question.Success

@@ -5,10 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.datetime.Clock
 import org.junit.jupiter.api.Test
-import qna.domain.entities.Question
-import qna.domain.entities.QuestionArea
-import qna.domain.entities.QuestionIntent
-import qna.domain.entities.Response
+import qna.domain.entities.*
 import qna.domain.repository.QuestionRepository
 import qna.domain.repository.ResponseRepository
 import kotlin.test.assertEquals
@@ -26,7 +23,7 @@ internal class GetAssociatedOpenQuestionUseCaseTest {
         isClosed = false,
         areas = setOf(QuestionArea.Education, QuestionArea.Finance),
         at = Clock.System.now(),
-        isBlockedCity = false
+        hideFrom = HideFrom.NoOne
     )
     private val sampleResponse = Response(
         id = sampleResponseId,

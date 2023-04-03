@@ -5,20 +5,30 @@ import dev.inmo.micro_utils.coroutines.launchSafelyWithoutExceptions
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.toChatId
-import notifications.domain.usecases.GetNewQuestionsNotificationFlowUseCase
-import notifications.telegram.flows.newQuestionsPager
+import notifications.domain.usecases.GetDelayedQuestionsNotificationFlowUseCase
 import org.koin.core.annotation.Single
+import qna.telegram.flows.QuestionDigestPagerData
+import qna.telegram.flows.questionDigestPager
 
 @Single
-class NewQuestionsNotificationSender(
-    private val getNewQuestionsNotificationFlow: GetNewQuestionsNotificationFlowUseCase,
+class DelayedQuestionsNotificationSender(
+    private val getNewQuestionsNotificationFlow: GetDelayedQuestionsNotificationFlowUseCase,
     private val massSendLimiter: MassSendLimiter
 ) {
     fun BehaviourContext.setup() = launchSafelyWithoutExceptions {
         getNewQuestionsNotificationFlow().collect { notification ->
             massSendLimiter.wait()
             runCatching {
-                val replyMarkup = newQuestionsPager.replyMarkup(notification, context = null)
+                val replyMarkup = questionDigestPager.replyMarkup(
+                    data = QuestionDigestPagerData(
+                        userId = notification.userId,
+                        from = notification.from,
+                        until = notification.until,
+                        area = null,
+                        notificationPreference = notification.notificationPreference
+                    ),
+                    context = null
+                )
                 if (replyMarkup.keyboard.isNotEmpty()) {
                     sendTextMessage(
                         notification.userId.toChatId(),
