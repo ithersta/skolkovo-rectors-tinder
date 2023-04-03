@@ -11,7 +11,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
-import menus.functions.GetAccountInfoById
+import menus.functions.getAccountInfoById
 import menus.states.MenuState
 import menus.strings.MenuStrings
 import notifications.telegram.sendNotificationPreferencesMessage
@@ -22,7 +22,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.accountInfoFlow() {
             onEnter {
                 sendTextMessage(
                     it,
-                    GetAccountInfoById(it),
+                    getAccountInfoById(it),
                     replyMarkup = replyKeyboard (resizeKeyboard = true,oneTimeKeyboard = true) {
                         row{
                             simpleButton(MenuStrings.AccountInfo.Notifications)
