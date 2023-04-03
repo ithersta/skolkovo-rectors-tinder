@@ -25,5 +25,17 @@ object MenuState {
     object AccountInfoState : DialogState
 
     @Serializable
+    object AdminMenuState: DialogState
+
+    @Serializable
+    object AddCityState: DialogState
+
+    @Serializable
+    object AddUniversityState: DialogState
+
+    @Serializable
+    object AddEventState: DialogState
+
+    @Serializable
     object Events : DialogState
 }

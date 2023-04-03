@@ -1,6 +1,5 @@
 package menus.strings
 
-
 object MenuStrings {
     object Questions {
         const val Question = "Вопрос"
@@ -28,6 +27,8 @@ object MenuStrings {
 
     const val Events = "Календарь мероприятий"
     object AdminMenu{
+        const val Main = "Функционал администратора"
+        const val Description="Выберите, что хотите сделать"
         const val AddUser = "Добавить пользователей"
         const val AddCity = "Добавить город"
         const val AddUniversity = "Добавить университет"
