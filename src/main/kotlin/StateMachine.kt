@@ -59,14 +59,18 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
             }
             // TODO: Remove
             onCommand("city", null) {
-                sendTextMessage(it.chat, "city", replyMarkup = flatReplyKeyboard {
-                    dropdownWebAppButton(
-                        "choose city",
-                        options = listOf("Москва", "Санкт-Петербург"),
-                        noneOption = null,
-                        noneConfirmationMessage = null
-                    )
-                })
+                sendTextMessage(
+                    it.chat,
+                    "city",
+                    replyMarkup = flatReplyKeyboard {
+                        dropdownWebAppButton(
+                            "choose city",
+                            options = listOf("Москва", "Санкт-Петербург"),
+                            noneOption = null,
+                            noneConfirmationMessage = null
+                        )
+                    }
+                )
             }
             onDropdownWebAppResult { (message, result) ->
                 sendTextMessage(message.chat, result.toString())
