@@ -2,6 +2,7 @@ package auth.data.repository
 
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
+import auth.data.tables.toDomainModel
 import auth.domain.entities.OrganizationType
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
@@ -14,16 +15,15 @@ import qna.domain.entities.QuestionArea
 @Suppress("TooManyFunctions")
 @Single
 class UserRepositoryImpl : UserRepository {
-    override fun add(user: User.Details) {
+    override fun add(user: User.NewDetails) {
         Users.insert {
             it[id] = user.id
             it[phoneNumber] = user.phoneNumber.value
             it[course] = user.course
             it[name] = user.name
-            it[city] = user.city
             it[job] = user.job
             it[organizationType] = user.organizationType
-            it[organization] = user.organization
+            it[organizationId] = user.organizationId
             it[activityDescription] = user.activityDescription
         }
         UserAreas.batchInsert(user.areas) {
@@ -33,23 +33,7 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun get(id: Long): User.Details? {
-        val areas: Set<QuestionArea> = UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
-        return Users.select { Users.id eq id }.firstOrNull()?.let {
-            val phoneNumber = PhoneNumber.of(it[Users.phoneNumber])
-            checkNotNull(phoneNumber)
-            User.Details(
-                id = it[Users.id].value,
-                phoneNumber = phoneNumber,
-                course = it[Users.course],
-                name = it[Users.name],
-                city = it[Users.city],
-                job = it[Users.job],
-                organizationType = it[Users.organizationType],
-                organization = it[Users.organization],
-                activityDescription = it[Users.activityDescription],
-                areas = areas
-            )
-        }
+        return Users.Entity.findById(id)?.toDomainModel()
     }
 
     override fun isRegistered(id: Long): Boolean {
@@ -66,12 +50,6 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override fun changeCity(id: Long, newCity: String) {
-        Users.update({ Users.id eq id }) {
-            it[city] = newCity
-        }
-    }
-
     override fun changeJob(id: Long, newJob: String) {
         Users.update({ Users.id eq id }) {
             it[job] = newJob
@@ -84,9 +62,9 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override fun changeOrganization(id: Long, newOrganization: String) {
+    override fun changeOrganizationId(id: Long, newOrganizationId: Long) {
         Users.update({ Users.id eq id }) {
-            it[organization] = newOrganization
+            it[organizationId] = newOrganizationId
         }
     }
 

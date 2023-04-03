@@ -1,5 +1,6 @@
 package auth.domain.entities
 
+import organizations.domain.entities.Organization
 import qna.domain.entities.QuestionArea
 
 sealed interface User {
@@ -12,10 +13,21 @@ sealed interface User {
         val phoneNumber: PhoneNumber,
         val course: Course,
         val name: String,
-        val city: String,
         val job: String,
         val organizationType: OrganizationType,
-        val organization: String,
+        val organization: Organization,
+        val activityDescription: String,
+        val areas: Set<QuestionArea>
+    )
+
+    data class NewDetails(
+        val id: Long,
+        val phoneNumber: PhoneNumber,
+        val course: Course,
+        val name: String,
+        val job: String,
+        val organizationType: OrganizationType,
+        val organizationId: Long,
         val activityDescription: String,
         val areas: Set<QuestionArea>
     )
