@@ -23,20 +23,20 @@ fun StateMachineBuilder<DialogState, User, UserId>.accountInfoFlow() {
                 sendTextMessage(
                     it,
                     GetAccountInfoById(it),
-                    replyMarkup = replyKeyboard (resizeKeyboard = true,oneTimeKeyboard = true) {
-                        row{
+                    replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
+                        row {
                             simpleButton(MenuStrings.AccountInfo.Notifications)
                         }
-                        row{
+                        row {
                             simpleButton(MenuStrings.AccountInfo.ChangeAccountInfo)
                         }
                     }
                 )
             }
-            onText(MenuStrings.AccountInfo.Notifications){
+            onText(MenuStrings.AccountInfo.Notifications) {
                 sendNotificationPreferencesMessage(it.chat.id)
             }
-            onText(MenuStrings.AccountInfo.ChangeAccountInfo){
+            onText(MenuStrings.AccountInfo.ChangeAccountInfo) {
                 sendFieldsToChange(it)
             }
         }

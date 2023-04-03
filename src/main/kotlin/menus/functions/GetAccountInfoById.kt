@@ -8,7 +8,7 @@ import qna.domain.usecases.GetUserDetailsUseCase
 
 val getUserDetailsUseCase: GetUserDetailsUseCase by GlobalContext.get().inject()
 
-fun GetAccountInfoById(userId:UserId): TextSourcesList {
-    val userDetails=getUserDetailsUseCase(userId.chatId)
+fun GetAccountInfoById(userId: UserId): TextSourcesList {
+    val userDetails = getUserDetailsUseCase(userId.chatId)
     return accountInfo(userDetails!!)
 }
