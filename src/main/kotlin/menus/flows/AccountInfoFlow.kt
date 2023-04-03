@@ -27,16 +27,16 @@ fun StateMachineBuilder<DialogState, User, UserId>.accountInfoFlow() {
                         row{
                             simpleButton(MenuStrings.AccountInfo.Notifications)
                         }
-                        row{
+                        row {
                             simpleButton(MenuStrings.AccountInfo.ChangeAccountInfo)
                         }
                     }
                 )
             }
-            onText(MenuStrings.AccountInfo.Notifications){
+            onText(MenuStrings.AccountInfo.Notifications) {
                 sendNotificationPreferencesMessage(it.chat.id)
             }
-            onText(MenuStrings.AccountInfo.ChangeAccountInfo){
+            onText(MenuStrings.AccountInfo.ChangeAccountInfo) {
                 sendFieldsToChange(it)
             }
         }
