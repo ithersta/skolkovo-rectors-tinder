@@ -36,7 +36,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.4.0")
     testImplementation("io.mockk:mockk:1.13.4")
-    testImplementation("app.cash.turbine:turbine:0.12.1")
+    testImplementation("app.cash.turbine:turbine:0.12.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 }
 
