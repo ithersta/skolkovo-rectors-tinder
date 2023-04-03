@@ -18,6 +18,8 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.dsl.module
 import org.koin.ksp.generated.defaultModule
+import organizations.data.tables.Cities
+import organizations.data.tables.Organizations
 import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
@@ -31,6 +33,8 @@ val dataModule = module(createdAtStart = true) {
         Database.connect("jdbc:h2:./database;MODE=MySQL;", driver = "org.h2.Driver").also { database ->
             transaction(database) {
                 SchemaUtils.createMissingTablesAndColumns(
+                    Cities,
+                    Organizations,
                     PhoneNumbers,
                     Users,
                     UserAreas,

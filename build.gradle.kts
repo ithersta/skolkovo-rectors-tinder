@@ -23,6 +23,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:2.2.4")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
     implementation("com.h2database:h2:2.1.214")
     implementation("org.apache.poi:poi:5.2.3")
