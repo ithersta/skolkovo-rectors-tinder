@@ -13,12 +13,15 @@ fun ReplyKeyboardRowBuilder.dropdownWebAppButton(
     noneOption: String?,
     noneConfirmationMessage: String?
 ) {
-    webAppButton(text, url {
-        protocol = URLProtocol.HTTPS
-        host = HOST
-        pathSegments = listOf("dropdown")
-        parameters.append("options", options.joinToString(separator = "|"))
-        noneOption?.let { parameters.append("noneOption", it) }
-        noneConfirmationMessage?.let { parameters.append("noneConfirm", it) }
-    })
+    webAppButton(
+        text,
+        url {
+            protocol = URLProtocol.HTTPS
+            host = HOST
+            pathSegments = listOf("dropdown")
+            parameters.append("options", options.joinToString(separator = "|"))
+            noneOption?.let { parameters.append("noneOption", it) }
+            noneConfirmationMessage?.let { parameters.append("noneConfirm", it) }
+        }
+    )
 }
