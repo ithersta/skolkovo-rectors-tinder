@@ -17,4 +17,8 @@ class CityRepositoryImpl : CityRepository {
     override fun getAll(): List<City> {
         return Cities.Entity.all().map(Cities.Entity::toDomainModel)
     }
+
+    override fun get(id: Long): City? {
+        return Cities.Entity.findById(id)?.toDomainModel()
+    }
 }

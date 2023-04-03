@@ -22,4 +22,8 @@ class OrganizationRepositoryImpl : OrganizationRepository {
             .find { Organizations.cityId eq cityId }
             .map(Organizations.Entity::toDomainModel)
     }
+
+    override fun get(id: Long): Organization? {
+        return Organizations.Entity.findById(id)?.toDomainModel()
+    }
 }
