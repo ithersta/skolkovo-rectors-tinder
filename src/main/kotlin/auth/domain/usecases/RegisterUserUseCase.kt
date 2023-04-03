@@ -22,7 +22,7 @@ class RegisterUserUseCase(
         object NoAreasSet : Result
     }
 
-    operator fun invoke(userDetails: User.Details): Result = transaction {
+    operator fun invoke(userDetails: User.NewDetails): Result = transaction {
         if (userDetails.areas.isEmpty()) {
             return@transaction Result.NoAreasSet
         }
