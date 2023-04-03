@@ -13,15 +13,6 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.dsl.module
 import org.koin.ksp.generated.defaultModule
-<<<<<<< HEAD
-import organizations.data.tables.Cities
-import organizations.data.tables.Organizations
-import qna.data.tables.AcceptedResponses
-import qna.data.tables.QuestionAreas
-import qna.data.tables.Questions
-import qna.data.tables.Responses
-=======
->>>>>>> main
 import qna.domain.usecases.AutoCloseOldQuestionsUseCase
 import qna.domain.usecases.GetNewResponseNotificationFlowUseCase
 import java.time.DayOfWeek
