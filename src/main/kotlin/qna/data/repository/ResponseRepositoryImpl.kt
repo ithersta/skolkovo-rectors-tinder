@@ -38,6 +38,7 @@ class ResponseRepositoryImpl : ResponseRepository {
 
     override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {
         val query = (Users innerJoin Responses)
+            .slice(Users.columns)
             .select(Responses.questionId eq questionId)
         return Users.Entity.wrapRows(query).map(Users.Entity::toDomainModel)
     }
