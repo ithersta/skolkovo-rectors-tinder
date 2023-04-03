@@ -23,8 +23,8 @@ fun StateMachineBuilder<DialogState, User, UserId>.accountInfoFlow() {
                 sendTextMessage(
                     it,
                     getAccountInfoById(it),
-                    replyMarkup = replyKeyboard (resizeKeyboard = true,oneTimeKeyboard = true) {
-                        row{
+                    replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
+                        row {
                             simpleButton(MenuStrings.AccountInfo.Notifications)
                         }
                         row {
