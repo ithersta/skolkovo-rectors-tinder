@@ -5,11 +5,12 @@ import auth.telegram.Strings
 import common.telegram.DialogState
 import generated.menu
 import menus.states.MenuState
+import menus.strings.MenuStrings
 
 val adminMenu = menu<User.Admin>(Strings.RoleMenu.Admin, DialogState.Empty) {
-    extracted()
+    menu()
     button(
-        MenuStrings.AddUser,
+        MenuStrings.AdminMenu.AddUser,
         MenuState.AddUser
     )
 }
