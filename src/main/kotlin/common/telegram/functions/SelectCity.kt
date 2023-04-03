@@ -2,7 +2,6 @@ package common.telegram.functions
 
 import auth.domain.entities.User
 import auth.telegram.Strings
-import auth.telegram.flows.jsonParser
 import auth.telegram.queries.*
 import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter

@@ -16,7 +16,6 @@ import auth.telegram.Strings.OrganizationTypes.ChooseOrganizationType
 import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.courseToString
-import auth.telegram.parsers.JsonParser
 import auth.telegram.queries.ChooseCourseQuery
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
@@ -38,8 +37,6 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
-
-val jsonParser: JsonParser = JsonParser()
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val registerUserUseCase: RegisterUserUseCase by inject()
