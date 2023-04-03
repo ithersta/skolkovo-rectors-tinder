@@ -9,7 +9,6 @@ import notifications.data.tables.NotificationPreferences
 import notifications.domain.entities.NotificationPreference
 import org.jetbrains.exposed.sql.*
 import org.koin.core.annotation.Single
-import organizations.data.tables.Cities
 import organizations.data.tables.Organizations
 import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
