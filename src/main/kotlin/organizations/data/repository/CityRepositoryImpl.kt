@@ -8,10 +8,10 @@ import organizations.domain.repository.CityRepository
 
 @Single
 class CityRepositoryImpl : CityRepository {
-    override fun add(city: City.New) {
-        Cities.Entity.new {
+    override fun add(city: City.New): City {
+        return Cities.Entity.new {
             name = city.name
-        }
+        }.toDomainModel()
     }
 
     override fun getAll(): List<City> {

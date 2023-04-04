@@ -10,11 +10,11 @@ import organizations.domain.repository.OrganizationRepository
 
 @Single
 class OrganizationRepositoryImpl : OrganizationRepository {
-    override fun add(organization: Organization.New) {
-        Organizations.Entity.new {
+    override fun add(organization: Organization.New): Organization {
+        return Organizations.Entity.new {
             name = organization.name
             cityId = EntityID(organization.cityId, Cities)
-        }
+        }.toDomainModel()
     }
 
     override fun getByCityId(cityId: Long): List<Organization> {
