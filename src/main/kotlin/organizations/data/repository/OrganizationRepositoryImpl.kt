@@ -26,4 +26,8 @@ class OrganizationRepositoryImpl : OrganizationRepository {
     override fun get(id: Long): Organization? {
         return Organizations.Entity.findById(id)?.toDomainModel()
     }
+
+    override fun getByName(name: String): Organization? {
+        return Organizations.Entity.find { Organizations.name eq name }.singleOrNull()?.toDomainModel()
+    }
 }

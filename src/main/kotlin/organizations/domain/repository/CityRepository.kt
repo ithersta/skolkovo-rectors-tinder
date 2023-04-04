@@ -4,6 +4,7 @@ import organizations.domain.entities.City
 
 interface CityRepository {
     fun add(city: City.New)
-    fun getAll(): List<City>
     fun get(id: Long): City?
+    fun getByName(name: String): City?
+    fun getAll(): List<City>
 }

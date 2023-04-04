@@ -21,4 +21,8 @@ class CityRepositoryImpl : CityRepository {
     override fun get(id: Long): City? {
         return Cities.Entity.findById(id)?.toDomainModel()
     }
+
+    override fun getByName(name: String): City? {
+        return Cities.Entity.find { Cities.name eq name }.singleOrNull()?.toDomainModel()
+    }
 }
