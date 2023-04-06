@@ -18,7 +18,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         sendTextMessage(
             it,
             Strings.AccountInfo.ChooseCountry,
-            replyMarkup = jsonParser.getCountries()
+            replyMarkup = TODO()
         )
     }
     onDataCallbackQuery(SelectCountryQuery::class) { (data, query) ->
@@ -27,7 +27,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
                 sendTextMessage(
                     query.from.id,
                     Strings.AccountInfo.ChooseDistrict,
-                    replyMarkup = jsonParser.getDistricts()
+                    replyMarkup = TODO()
                 )
             }
 
@@ -35,7 +35,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
                 sendTextMessage(
                     query.from.id,
                     Strings.AccountInfo.ChooseCity,
-                    replyMarkup = jsonParser.getCitiesFromCIS(data.country)
+                    replyMarkup = TODO()
                 )
             }
         }
@@ -43,7 +43,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     }
     onDataCallbackQuery(SelectCityInCISQuery::class) { (data, query) ->
         val city: String = data.city
-        if (jsonParser.cityRegex.matches(city)) {
+        if (TODO()) {
             state.override { onFinish(state.snapshot, city) }
         }
         answer(query)
@@ -53,7 +53,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         sendTextMessage(
             query.from.id,
             Strings.AccountInfo.ChooseRegion,
-            replyMarkup = jsonParser.getRegionsByDistrict(data.district)
+            replyMarkup = TODO()
         )
         answer(query)
     }
@@ -62,14 +62,14 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         sendTextMessage(
             query.from.id,
             Strings.AccountInfo.ChooseCity,
-            replyMarkup = jsonParser.getCitiesByRegion(data.region)
+            replyMarkup = TODO()
         )
         answer(query)
     }
 
     onDataCallbackQuery(SelectCityQuery::class) { (data, query) ->
         val city: String = data.city
-        if (jsonParser.cityRegex.matches(city)) {
+        if (TODO()) {
             state.override { onFinish(state.snapshot, city) }
         }
         answer(query)

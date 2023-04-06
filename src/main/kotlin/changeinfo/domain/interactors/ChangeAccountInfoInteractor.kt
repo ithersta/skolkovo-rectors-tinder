@@ -15,10 +15,6 @@ class ChangeAccountInfoInteractor(
         userRepository.changeName(id, newName)
     }
 
-    fun changeCity(id: Long, newCity: String) = transaction {
-        userRepository.changeCity(id, newCity)
-    }
-
     fun changeJob(id: Long, newJob: String) = transaction {
         userRepository.changeJob(id, newJob)
     }
@@ -27,8 +23,8 @@ class ChangeAccountInfoInteractor(
         userRepository.changeOrganizationType(id, newType)
     }
 
-    fun changeOrganization(id: Long, newOrganization: String) = transaction {
-        userRepository.changeOrganization(id, newOrganization)
+    fun changeOrganization(id: Long, newOrganizationId: Long) = transaction {
+        userRepository.changeOrganizationId(id, newOrganizationId)
     }
 
     fun changeActivityDescription(id: Long, newDescription: String) = transaction {

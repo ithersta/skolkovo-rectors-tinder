@@ -137,15 +137,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<AddAccountInfoToDataBaseState> {
         onEnter {
-            val details = User.Details(
+            val details = User.NewDetails(
                 it.chatId,
                 state.snapshot.phoneNumber,
                 state.snapshot.course,
                 state.snapshot.name,
-                state.snapshot.city,
                 state.snapshot.profession,
                 state.snapshot.organizationType,
-                state.snapshot.organization,
+                TODO(),
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas
             )
