@@ -1,6 +1,5 @@
 package common.data.migrations
 
-import auth.data.tables.PhoneNumbers
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
 import mute.data.tables.MuteSettings
@@ -19,7 +18,6 @@ fun Transaction.runMigrations(organizationFiller: OrganizationFiller) {
     SchemaUtils.createMissingTablesAndColumns(
         Cities,
         Organizations,
-        PhoneNumbers,
         Users,
         UserAreas,
         Questions,

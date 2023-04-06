@@ -62,11 +62,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     state.override { DialogState.Empty }
                 }
 
-                PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> {
-                    sendTextMessage(message.chat, AuthenticationResults.PhoneNumberNotAllowed)
-                    state.override { DialogState.Empty }
-                }
-
                 PhoneNumberIsAllowedUseCase.Result.OK -> state.override { next(phoneNumber) }
             }
         }
@@ -155,9 +150,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
                 RegisterUserUseCase.Result.AlreadyRegistered ->
                     AuthenticationResults.AlreadyRegistered
-
-                RegisterUserUseCase.Result.PhoneNumberNotAllowed ->
-                    AuthenticationResults.PhoneNumberNotAllowed
 
                 RegisterUserUseCase.Result.OK ->
                     AuthenticationResults.OK

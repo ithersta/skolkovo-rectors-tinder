@@ -15,6 +15,7 @@ import dropdown.dropdownWebAppButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import organizations.domain.repository.CityRepository
+import dropdown.onDropdownWebAppResult
 
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
     onFinish: (State, String) -> DialogState
@@ -30,57 +31,8 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
             }
         )
     }
-    onDataCallbackQuery(SelectCountryQuery::class) { (data, query) ->
-        when (data.country) {
-            "\uD83C\uDDF7\uD83C\uDDFA" -> {
-                sendTextMessage(
-                    query.from.id,
-                    Strings.AccountInfo.ChooseDistrict,
-                    replyMarkup = TODO()
-                )
-            }
-
-            else -> {
-                sendTextMessage(
-                    query.from.id,
-                    Strings.AccountInfo.ChooseCity,
-                    replyMarkup = TODO()
-                )
-            }
-        }
-        answer(query)
-    }
-    onDataCallbackQuery(SelectCityInCISQuery::class) { (data, query) ->
-        val city: String = data.city
-        if (TODO()) {
-            state.override { onFinish(state.snapshot, city) }
-        }
-        answer(query)
-    }
-
-    onDataCallbackQuery(SelectDistrictQuery::class) { (data, query) ->
-        sendTextMessage(
-            query.from.id,
-            Strings.AccountInfo.ChooseRegion,
-            replyMarkup = TODO()
-        )
-        answer(query)
-    }
-
-    onDataCallbackQuery(SelectRegionQuery::class) { (data, query) ->
-        sendTextMessage(
-            query.from.id,
-            Strings.AccountInfo.ChooseCity,
-            replyMarkup = TODO()
-        )
-        answer(query)
-    }
-
-    onDataCallbackQuery(SelectCityQuery::class) { (data, query) ->
-        val city: String = data.city
-        if (TODO()) {
-            state.override { onFinish(state.snapshot, city) }
-        }
-        answer(query)
+    onDropdownWebAppResult { (message, result) ->
+//        result
+//        state.override { onFinish(state.snapshot, city) }
     }
 }

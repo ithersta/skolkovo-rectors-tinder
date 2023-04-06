@@ -14,7 +14,7 @@ import organizations.data.tables.Organizations
 import organizations.data.tables.toDomainModel
 
 object Users : LongIdTable() {
-    val phoneNumber: Column<String> = reference("phone_number", PhoneNumbers.phoneNumber).uniqueIndex()
+    val phoneNumber: Column<String> = varchar("phone_number", length = 15).uniqueIndex()
     val course: Column<Course> = enumeration<Course>("course").index()
     val name: Column<String> = varchar("name", length = 256)
     val job: Column<String> = varchar("job", length = 256)
