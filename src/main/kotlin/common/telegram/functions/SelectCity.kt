@@ -7,15 +7,13 @@ import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.domain.Transaction
 import common.telegram.DialogState
-import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dropdown.dropdownWebAppButton
-import generated.onDataCallbackQuery
+import dropdown.onDropdownWebAppResult
 import org.koin.core.component.inject
 import organizations.domain.repository.CityRepository
-import dropdown.onDropdownWebAppResult
 
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
     onFinish: (State, String) -> DialogState
