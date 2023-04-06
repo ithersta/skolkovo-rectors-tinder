@@ -21,6 +21,7 @@ object Users : LongIdTable() {
     val organizationType: Column<OrganizationType> = enumeration<OrganizationType>("organization_type").index()
     val organizationId: Column<EntityID<Long>> = reference("organization_id", Organizations)
     val activityDescription: Column<String> = varchar("activity_description", length = 1024)
+    val isApproved: Column<Boolean> = bool("is_approved").default(false)
 
     class Entity(id: EntityID<Long>) : LongEntity(id) {
         companion object : LongEntityClass<Entity>(Users)
@@ -32,6 +33,7 @@ object Users : LongIdTable() {
         var organizationType by Users.organizationType
         var organization by Organizations.Entity referencedOn Users.organizationId
         var activityDescription by Users.activityDescription
+        var isApproved by Users.isApproved
     }
 }
 
@@ -44,5 +46,6 @@ fun Users.Entity.toDomainModel() = User.Details(
     organizationType = organizationType,
     organization = organization.toDomainModel(),
     activityDescription = activityDescription,
+    isApproved = isApproved,
     areas = UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
 )

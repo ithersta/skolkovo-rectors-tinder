@@ -5,6 +5,7 @@ import qna.domain.entities.QuestionArea
 
 sealed interface User {
     object Unauthenticated : User
+    object Unapproved : User
     class Admin(id: Long) : Normal(id)
     open class Normal(val id: Long) : User
 
@@ -17,6 +18,7 @@ sealed interface User {
         val organizationType: OrganizationType,
         val organization: Organization,
         val activityDescription: String,
+        val isApproved: Boolean,
         val areas: Set<QuestionArea>
     )
 
