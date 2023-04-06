@@ -32,6 +32,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         )
     }
     onDropdownWebAppResult { (message, result) ->
+        //TODO
 //        result
 //        state.override { onFinish(state.snapshot, city) }
     }
