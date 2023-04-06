@@ -12,10 +12,6 @@ val adminMenu = menu<User.Admin>(Strings.RoleMenu.Admin, DialogState.Empty) {
     menu()
     submenu(MenuStrings.AdminMenu.Main, MenuStrings.AdminMenu.Description, MenuState.AdminMenuState) {
         button(
-            MenuStrings.AdminMenu.AddUser,
-            MenuState.AddUser
-        )
-        button(
             MenuStrings.AdminMenu.AddCity,
             MenuState.AddCityState
         )

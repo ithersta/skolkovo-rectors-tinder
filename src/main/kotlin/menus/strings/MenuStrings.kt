@@ -28,7 +28,6 @@ object MenuStrings {
     object AdminMenu {
         const val Main = "Функционал администратора"
         const val Description = "Выберите, что хотите сделать"
-        const val AddUser = "Добавить пользователей"
         const val AddCity = "Добавить город"
         const val AddUniversity = "Добавить университет"
         const val AddEvent = "Добавить мероприятие"

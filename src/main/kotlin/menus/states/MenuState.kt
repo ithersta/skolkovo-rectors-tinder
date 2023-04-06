@@ -4,8 +4,6 @@ import common.telegram.DialogState
 import kotlinx.serialization.Serializable
 
 object MenuState {
-    @Serializable
-    object AddUser : DialogState
 
     object Questions {
         @Serializable
