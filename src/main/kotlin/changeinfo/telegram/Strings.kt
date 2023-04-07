@@ -4,7 +4,7 @@ import changeinfo.telegram.queries.*
 import common.telegram.Query
 
 object Strings {
-    const val ChooseFieldToChange = "Выберите какие данные вы бы хотели изменить"
+    const val ChooseFieldToChange = "Выберите, какие данные вы бы хотели изменить"
 
     object Fields {
         object Name {
