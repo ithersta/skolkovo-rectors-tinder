@@ -12,10 +12,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.telegram.DialogState
 import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.types.UserId
-import dropdown.dropdownWebAppButton
-import dropdown.onDropdownWebAppResult
 import event.telegram.eventFlow
 import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
@@ -25,7 +22,6 @@ import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
 import notifications.telegram.flows.testNotificationsFlow
 import qna.telegram.flows.*
-import qna.telegram.flows.questionDigestFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(
@@ -56,24 +52,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         anyState {
             onCommand("start", null) {
                 state.override { DialogState.Empty }
-            }
-            // TODO: Remove
-            onCommand("city", null) {
-                sendTextMessage(
-                    it.chat,
-                    "city",
-                    replyMarkup = flatReplyKeyboard {
-                        dropdownWebAppButton(
-                            "choose city",
-                            options = listOf("Москва", "Санкт-Петербург"),
-                            noneOption = null,
-                            noneConfirmationMessage = null
-                        )
-                    }
-                )
-            }
-            onDropdownWebAppResult { (message, result) ->
-                sendTextMessage(message.chat, result.toString())
             }
         }
         with(normalMenu) { invoke() }
