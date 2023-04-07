@@ -2,22 +2,21 @@ package menus
 
 import auth.domain.entities.User
 import auth.telegram.Strings
-import changeinfo.telegram.sendFieldsToChange
 import com.ithersta.tgbotapi.menu.builders.MenuBuilder
 import common.telegram.DialogState
 import common.telegram.strings.CommonStrings
 import generated.menu
 import menus.states.MenuState
-import notifications.telegram.sendNotificationPreferencesMessage
+import menus.strings.MenuStrings
 import qna.telegram.flows.sendListOfRespondentNoAnswer
 import qna.telegram.flows.sendOldQuestionsPager
 import qna.telegram.flows.sendQuestionDigestAreas
 
 val normalMenu = menu<User.Normal>(Strings.RoleMenu.Normal, DialogState.Empty) {
-    extracted()
+    menu()
 }
 
-fun <S : User.Normal> MenuBuilder<DialogState, User, S>.extracted() {
+fun <S : User.Normal> MenuBuilder<DialogState, User, S>.menu() {
     submenu(
         MenuStrings.Questions.Question,
         MenuStrings.Questions.QuestionDescription,
@@ -52,8 +51,8 @@ fun <S : User.Normal> MenuBuilder<DialogState, User, S>.extracted() {
         }
         backButton(CommonStrings.Button.Back)
     }
-    button(MenuStrings.Notifications.Main) { sendNotificationPreferencesMessage(it.chat.id) }
-    button(MenuStrings.ChangeAccountInfo) { sendFieldsToChange(it) }
+    button(MenuStrings.AccountInfo.Main, MenuState.AccountInfoState)
+
     button(
         MenuStrings.Events,
         MenuState.Events
