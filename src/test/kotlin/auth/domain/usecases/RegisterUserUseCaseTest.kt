@@ -99,7 +99,7 @@ internal class RegisterUserUseCaseTest {
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns true
         val phoneNumberIsAllowedUseCase = mockk<PhoneNumberIsAllowedUseCase>()
         every { phoneNumberIsAllowedUseCase.invoke(sampleUserId, details.phoneNumber) } returns
-                PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber
+            PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber
         val isAdminUseCase = mockk<IsAdminUseCase>()
         every { isAdminUseCase.invoke(any()) } returns false
         val registerUser = RegisterUserUseCase(
@@ -120,7 +120,7 @@ internal class RegisterUserUseCaseTest {
         every { userRepository.add(details) } returns Unit
         val phoneNumberIsAllowedUseCase = mockk<PhoneNumberIsAllowedUseCase>()
         every { phoneNumberIsAllowedUseCase.invoke(sampleUserId, details.phoneNumber) } returns
-                PhoneNumberIsAllowedUseCase.Result.OK
+            PhoneNumberIsAllowedUseCase.Result.OK
         val isAdminUseCase = mockk<IsAdminUseCase>()
         every { isAdminUseCase.invoke(any()) } returns false
         val registerUser = RegisterUserUseCase(
