@@ -8,7 +8,6 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import common.telegram.strings.CommonStrings
 import common.telegram.strings.accountInfo
-import dev.inmo.micro_utils.coroutines.contextSafelyExceptionHandler
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
@@ -27,7 +26,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.accountInfoFlow() {
         state<MenuState.AccountInfoState> {
             onEnter {
                 val userDetails = getUserDetailsUseCase(it.chatId)
-                val userInfo=  accountInfo(userDetails!!)
+                val userInfo = accountInfo(userDetails!!)
                 sendTextMessage(
                     it,
                     userInfo,
@@ -38,7 +37,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.accountInfoFlow() {
                         row {
                             simpleButton(MenuStrings.AccountInfo.ChangeAccountInfo)
                         }
-                        row{
+                        row {
                             simpleButton(CommonStrings.Button.Back)
                         }
                     }
@@ -50,7 +49,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.accountInfoFlow() {
             onText(MenuStrings.AccountInfo.ChangeAccountInfo) {
                 sendFieldsToChange(it)
             }
-            onText(CommonStrings.Button.Back){
+            onText(CommonStrings.Button.Back) {
                 state.override { DialogState.Empty }
             }
         }
