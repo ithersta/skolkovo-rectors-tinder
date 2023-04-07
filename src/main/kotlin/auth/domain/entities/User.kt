@@ -1,5 +1,6 @@
 package auth.domain.entities
 
+import organizations.domain.entities.City
 import organizations.domain.entities.Organization
 import qna.domain.entities.QuestionArea
 
@@ -15,6 +16,7 @@ sealed interface User {
         val course: Course,
         val name: String,
         val job: String,
+        val city: City,
         val organizationType: OrganizationType,
         val organization: Organization,
         val activityDescription: String,
@@ -28,6 +30,7 @@ sealed interface User {
         val course: Course,
         val name: String,
         val job: String,
+        val cityId: Long,
         val organizationType: OrganizationType,
         val organizationId: Long,
         val activityDescription: String,

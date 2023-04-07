@@ -12,6 +12,7 @@ interface UserRepository {
     fun isRegistered(id: Long): Boolean
     fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean
     fun changeName(id: Long, newName: String)
+    fun changeCityId(id: Long, cityId: Long)
     fun changeJob(id: Long, newJob: String)
     fun changeOrganizationType(id: Long, newType: OrganizationType)
     fun changeOrganizationId(id: Long, newOrganizationId: Long)

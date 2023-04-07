@@ -1,8 +1,9 @@
 package organizations.data.repository
 
-import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.insertIgnore
+import org.jetbrains.exposed.sql.select
 import org.koin.core.annotation.Single
-import organizations.data.tables.Cities
+import organizations.data.tables.OrganizationCities
 import organizations.data.tables.Organizations
 import organizations.data.tables.toDomainModel
 import organizations.domain.entities.Organization
@@ -13,13 +14,22 @@ class OrganizationRepositoryImpl : OrganizationRepository {
     override fun add(organization: Organization.New): Organization {
         return Organizations.Entity.new {
             name = organization.name
-            cityId = EntityID(organization.cityId, Cities)
         }.toDomainModel()
     }
 
+    override fun addCity(id: Long, cityId: Long) {
+        OrganizationCities.insertIgnore {
+            it[organizationId] = id
+            it[OrganizationCities.cityId] = cityId
+        }
+    }
+
     override fun getByCityId(cityId: Long): List<Organization> {
-        return Organizations.Entity
-            .find { Organizations.cityId eq cityId }
+        return Organizations
+            .innerJoin(OrganizationCities)
+            .slice(Organizations.columns)
+            .select { OrganizationCities.cityId eq cityId }
+            .let { Organizations.Entity.wrapRows(it) }
             .map(Organizations.Entity::toDomainModel)
     }
 

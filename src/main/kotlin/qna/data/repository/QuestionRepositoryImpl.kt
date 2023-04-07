@@ -9,7 +9,6 @@ import notifications.data.tables.NotificationPreferences
 import notifications.domain.entities.NotificationPreference
 import org.jetbrains.exposed.sql.*
 import org.koin.core.annotation.Single
-import organizations.data.tables.Organizations
 import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
 import qna.data.tables.Questions
@@ -49,8 +48,8 @@ class QuestionRepositoryImpl : QuestionRepository {
             .slice(Questions.columns)
             .select {
                 (Responses.hasBeenSent eq false) and
-                    (Questions.isClosed eq false) and
-                    (AcceptedResponses.responseId eq null)
+                        (Questions.isClosed eq false) and
+                        (AcceptedResponses.responseId eq null)
             }
             .withDistinct()
             .map(::mapper)
@@ -65,28 +64,29 @@ class QuestionRepositoryImpl : QuestionRepository {
         offset: Int
     ): Paginated<Question> {
         val (viewerCityId, viewerOrganizationId) = Users
-            .innerJoin(Organizations)
             .select { Users.id eq viewerUserId }
-            .map { it[Organizations.cityId] to it[Users.organizationId] }.first()
+            .map { it[Users.cityId] to it[Users.organizationId] }.first()
         val viewerAreas = UserAreas
             .slice(UserAreas.area)
             .select { UserAreas.userId eq viewerUserId }
         val query = {
             Questions
                 .innerJoin(Users)
-                .innerJoin(Organizations)
                 .innerJoin(QuestionAreas)
                 .slice(Questions.columns)
                 .select {
                     Questions.at.between(from, until) and
-                        (QuestionAreas.area inSubQuery viewerAreas) and
-                        (Questions.isClosed eq false) and
-                        (Questions.authorId neq viewerUserId) and
-                        case()
-                            .When(Questions.hideFrom eq NoOne, booleanLiteral(true))
-                            .When(Questions.hideFrom eq SameCity, Organizations.cityId neq viewerCityId)
-                            .When(Questions.hideFrom eq SameOrganization, Users.organizationId neq viewerOrganizationId)
-                            .Else(booleanLiteral(false))
+                            (QuestionAreas.area inSubQuery viewerAreas) and
+                            (Questions.isClosed eq false) and
+                            (Questions.authorId neq viewerUserId) and
+                            case()
+                                .When(Questions.hideFrom eq NoOne, booleanLiteral(true))
+                                .When(Questions.hideFrom eq SameCity, Users.cityId neq viewerCityId)
+                                .When(
+                                    Questions.hideFrom eq SameOrganization,
+                                    Users.organizationId neq viewerOrganizationId
+                                )
+                                .Else(booleanLiteral(false))
                 }
                 .let { query ->
                     area?.let { query.andWhere { QuestionAreas.area eq it } } ?: query
@@ -135,10 +135,9 @@ class QuestionRepositoryImpl : QuestionRepository {
             .select { QuestionAreas.questionId eq questionId }
         val (hideFrom, authorCityId, authorOrganizationId) = Questions
             .innerJoin(Users)
-            .innerJoin(Organizations)
-            .slice(Questions.hideFrom, Organizations.cityId, Users.organizationId)
+            .slice(Questions.hideFrom, Users.cityId, Users.organizationId)
             .select { Questions.id eq questionId }.first()
-            .let { Triple(it[Questions.hideFrom], it[Organizations.cityId], it[Users.organizationId]) }
+            .let { Triple(it[Questions.hideFrom], it[Users.cityId], it[Users.organizationId]) }
         val muteUsers = MuteSettings
             .slice(MuteSettings.userId)
             .selectAll()
@@ -147,13 +146,12 @@ class QuestionRepositoryImpl : QuestionRepository {
             .select { NotificationPreferences.preference neq NotificationPreference.RightAway }
         return UserAreas
             .innerJoin(Users)
-            .innerJoin(Organizations)
             .slice(UserAreas.userId)
             .select { UserAreas.area inSubQuery questionAreas }
             .let { query ->
                 when (hideFrom) {
                     NoOne -> query
-                    SameCity -> query.andWhere { Organizations.cityId neq authorCityId }
+                    SameCity -> query.andWhere { Users.cityId neq authorCityId }
                     SameOrganization -> query.andWhere { Users.organizationId neq authorOrganizationId }
                 }
             }

@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
 import organizations.data.OrganizationFiller
 import organizations.data.tables.Cities
+import organizations.data.tables.OrganizationCities
 import organizations.data.tables.Organizations
 import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
@@ -18,6 +19,7 @@ fun Transaction.runMigrations(organizationFiller: OrganizationFiller) {
     SchemaUtils.createMissingTablesAndColumns(
         Cities,
         Organizations,
+        OrganizationCities,
         Users,
         UserAreas,
         Questions,
@@ -29,5 +31,4 @@ fun Transaction.runMigrations(organizationFiller: OrganizationFiller) {
     )
     OrganizationFiller::class.java.getResourceAsStream("/organizations.json")
         ?.let { organizationFiller.run { loadFromJson(it) } }
-    exec("ALTER TABLE QUESTIONS DROP COLUMN IF EXISTS IS_BLOCKED_CITY")
 }

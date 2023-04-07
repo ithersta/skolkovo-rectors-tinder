@@ -30,7 +30,10 @@ class OrganizationFiller(
         cities.forEach { jsonCity ->
             val city = cityRepository.add(City.New(name = jsonCity.city))
             jsonCity.universities.forEach { jsonUniversity ->
-                organizationRepository.add(Organization.New(name = jsonUniversity, cityId = city.id))
+                val organization = organizationRepository.getByName(jsonUniversity) ?: run {
+                    organizationRepository.add(Organization.New(name = jsonUniversity))
+                }
+                organizationRepository.addCity(id = organization.id, cityId = city.id)
             }
         }
     }

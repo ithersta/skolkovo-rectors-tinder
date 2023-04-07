@@ -10,6 +10,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.select
+import organizations.data.tables.Cities
 import organizations.data.tables.Organizations
 import organizations.data.tables.toDomainModel
 
@@ -18,6 +19,7 @@ object Users : LongIdTable() {
     val course: Column<Course> = enumeration<Course>("course").index()
     val name: Column<String> = varchar("name", length = 256)
     val job: Column<String> = varchar("job", length = 256)
+    val cityId: Column<EntityID<Long>> = reference("city", Cities)
     val organizationType: Column<OrganizationType> = enumeration<OrganizationType>("organization_type").index()
     val organizationId: Column<EntityID<Long>> = reference("organization_id", Organizations)
     val activityDescription: Column<String> = varchar("activity_description", length = 1024)
@@ -30,8 +32,9 @@ object Users : LongIdTable() {
         var course by Users.course
         var name by Users.name
         var job by Users.job
+        var city by Cities.Entity referencedOn cityId
         var organizationType by Users.organizationType
-        var organization by Organizations.Entity referencedOn Users.organizationId
+        var organization by Organizations.Entity referencedOn organizationId
         var activityDescription by Users.activityDescription
         var isApproved by Users.isApproved
     }
@@ -43,6 +46,7 @@ fun Users.Entity.toDomainModel() = User.Details(
     course = course,
     name = name,
     job = job,
+    city = city.toDomainModel(),
     organizationType = organizationType,
     organization = organization.toDomainModel(),
     activityDescription = activityDescription,

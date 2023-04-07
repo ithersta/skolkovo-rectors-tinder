@@ -8,19 +8,15 @@ import organizations.domain.entities.Organization
 
 object Organizations : LongIdTable() {
     val name = varchar("name", length = 256).uniqueIndex()
-    val cityId = reference("city_id", Cities)
 
     class Entity(id: EntityID<Long>) : LongEntity(id) {
         companion object : LongEntityClass<Entity>(Organizations)
 
         var name by Organizations.name
-        var city by Cities.Entity referencedOn Organizations.cityId
-        var cityId by Organizations.cityId
     }
 }
 
 fun Organizations.Entity.toDomainModel() = Organization(
     id = id.value,
-    name = name,
-    city = city.toDomainModel()
+    name = name
 )

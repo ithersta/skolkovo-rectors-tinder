@@ -22,6 +22,7 @@ class UserRepositoryImpl : UserRepository {
             it[course] = user.course
             it[name] = user.name
             it[job] = user.job
+            it[cityId] = user.cityId
             it[organizationType] = user.organizationType
             it[organizationId] = user.organizationId
             it[activityDescription] = user.activityDescription
@@ -47,6 +48,12 @@ class UserRepositoryImpl : UserRepository {
     override fun changeName(id: Long, newName: String) {
         Users.update({ Users.id eq id }) {
             it[name] = newName
+        }
+    }
+
+    override fun changeCityId(id: Long, newCityId: Long) {
+        Users.update({ Users.id eq id }) {
+            it[cityId] = newCityId
         }
     }
 
