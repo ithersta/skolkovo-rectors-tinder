@@ -15,6 +15,7 @@ import dropdown.onDropdownWebAppResult
 import org.koin.core.component.inject
 import organizations.domain.repository.CityRepository
 
+@Suppress("UnusedPrivateMember")
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
     onFinish: (State, String) -> DialogState
 ) {
@@ -25,7 +26,12 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
             it,
             Strings.AccountInfo.ChooseCity,
             replyMarkup = flatReplyKeyboard {
-                dropdownWebAppButton("dsf", options = transaction { cityRepository.getAll() }.map { it.name }, noneConfirmationMessage = "ТОЧНО??", noneOption = "МОЕГО ГОРОДА НЕТ В СПИСКЕ")
+                dropdownWebAppButton(
+                    TODO(),
+                    options = transaction { cityRepository.getAll() }.map { it.name },
+                    noneConfirmationMessage = TODO(),
+                    noneOption = TODO()
+                )
             }
         )
     }
