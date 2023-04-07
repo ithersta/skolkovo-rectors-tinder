@@ -12,11 +12,12 @@ class GetUserRoleUseCase(
     private val transaction: Transaction
 ) {
     operator fun invoke(id: Long): User = transaction {
+        val userDetails = userRepository.get(id)
         when {
-            userRepository.isRegistered(id).not() -> User.Unauthenticated
-            userRepository.get(id)?.isApproved == false -> User.Unapproved
+            userDetails == null -> User.Unauthenticated
             isAdmin(id) -> User.Admin(id)
-            else -> User.Normal(id)
+            userDetails.isApproved -> User.Normal(id)
+            else -> User.Unapproved
         }
     }
 }

@@ -37,10 +37,6 @@ class UserRepositoryImpl : UserRepository {
         return Users.Entity.findById(id)?.toDomainModel()
     }
 
-    override fun isRegistered(id: Long): Boolean {
-        return Users.select { Users.id eq id }.empty().not()
-    }
-
     override fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean {
         return Users.select { Users.phoneNumber eq phoneNumber.value }.empty().not()
     }

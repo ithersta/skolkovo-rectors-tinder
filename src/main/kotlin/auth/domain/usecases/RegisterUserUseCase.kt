@@ -22,7 +22,7 @@ class RegisterUserUseCase(
         if (userDetails.areas.isEmpty()) {
             return@transaction Result.NoAreasSet
         }
-        if (userRepository.isRegistered(userDetails.id)) {
+        if (userRepository.get(userDetails.id) != null) {
             return@transaction Result.AlreadyRegistered
         }
         when (phoneNumberIsAllowedUseCase(userDetails.id, userDetails.phoneNumber)) {
