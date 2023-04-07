@@ -11,7 +11,7 @@ interface UserRepository {
     fun get(id: Long): User.Details?
     fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean
     fun changeName(id: Long, newName: String)
-    fun changeCityId(id: Long, cityId: Long)
+    fun changeCityId(id: Long, newCityId: Long)
     fun changeJob(id: Long, newJob: String)
     fun changeOrganizationType(id: Long, newType: OrganizationType)
     fun changeOrganizationId(id: Long, newOrganizationId: Long)
