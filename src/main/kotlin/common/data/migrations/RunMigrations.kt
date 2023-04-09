@@ -3,6 +3,7 @@ package common.data.migrations
 import auth.data.tables.PhoneNumbers
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
+import event.data.tables.Events
 import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -22,7 +23,8 @@ fun Transaction.runMigrations() {
         Responses,
         AcceptedResponses,
         MuteSettings,
-        NotificationPreferences
+        NotificationPreferences,
+        Events
     )
     exec("ALTER TABLE QUESTIONS DROP COLUMN IF EXISTS IS_BLOCKED_CITY")
 }
