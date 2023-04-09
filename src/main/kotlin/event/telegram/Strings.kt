@@ -1,4 +1,3 @@
 package event.telegram
 
-object Strings {
-}
+object Strings
