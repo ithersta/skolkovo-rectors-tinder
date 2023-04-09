@@ -1,7 +1,6 @@
 package event.telegram
 
 import dev.inmo.tgbotapi.utils.buildEntities
-import dev.inmo.tgbotapi.utils.link
 import dev.inmo.tgbotapi.utils.regular
 import dev.inmo.tgbotapi.utils.regularln
 import event.domain.entities.Event
@@ -31,7 +30,7 @@ object Strings {
             regularln(dateTimeFormatter.format(event.timestampEnd.toLocalDateTime()))
             event.description?.let { regularln(it) }
             regularln(event.url)
-            //link()
+            // link()
             regularln("")
             regularln("Все верно?")
         }
