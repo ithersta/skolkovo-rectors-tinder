@@ -2,6 +2,7 @@ package dropdown
 
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -14,6 +15,10 @@ class JsonStorageClient(
         expectSuccess = true
         install(ContentNegotiation) {
             json()
+        }
+        install(HttpRequestRetry) {
+            retryOnServerErrors(maxRetries = 5)
+            exponentialDelay()
         }
     }
 ) {
