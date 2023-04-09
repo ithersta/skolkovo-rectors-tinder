@@ -25,6 +25,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
+import common.telegram.functions.confirmationInlineKeyboard
 import common.telegram.functions.selectCity
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -35,6 +36,7 @@ import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
+import notifications.telegram.admin.AdminNotice
 import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 
@@ -152,11 +154,23 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 RegisterUserUseCase.Result.AlreadyRegistered ->
                     AuthenticationResults.AlreadyRegistered
 
+                RegisterUserUseCase.Result.NoAreasSet ->
+                    AuthenticationResults.NoAreaSet
+
                 RegisterUserUseCase.Result.OK ->
                     AuthenticationResults.OK
 
-                RegisterUserUseCase.Result.NoAreasSet ->
-                    AuthenticationResults.NoAreaSet
+
+            }
+            if (resultResponse.equals(AuthenticationResults.OK)) {
+                // отправить админу текст какой-то о том что новый пользователь хочет присоединиться.
+                sendTextMessage(
+                    System.getenv()["ADMIN_ID"]?.toLong(), "text",
+                    replyMarkup = confirmationInlineKeyboard(
+                        positiveData = AdminNotice.AdminAnswerYes,
+                        negativeData = AdminNotice.AdminAnswerNo
+                    )
+                )
             }
             sendTextMessage(it, resultResponse)
             sendNotificationPreferencesMessage(it)
@@ -164,3 +178,4 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
     }
 }
+
