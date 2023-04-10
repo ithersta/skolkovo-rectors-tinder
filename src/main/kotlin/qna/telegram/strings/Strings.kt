@@ -2,9 +2,8 @@ package qna.telegram.strings
 
 import auth.domain.entities.User
 import auth.telegram.Strings
-import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
+import common.telegram.strings.accountInfo
 import dev.inmo.tgbotapi.utils.*
-import qna.domain.entities.Question
 import qna.domain.usecases.NewResponseNotification
 import qna.domain.entities.Question as DomainQuestion
 
@@ -53,22 +52,6 @@ object Strings {
             }
 
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
-    }
-
-    fun accountInfo(userDetails: User.Details): TextSourcesList {
-        return buildEntities {
-            bold("Имя: ")
-            regularln(userDetails.name)
-            bold("Город: ")
-            regularln(userDetails.city)
-            bold("Должность: ")
-            regularln(userDetails.job)
-            bold("Организация: ")
-            regularln(userDetails.organization)
-            bold("Деятельность: ")
-            regularln(userDetails.activityDescription)
-            regularln("")
-        }
     }
 
     object Question {

@@ -1,4 +1,3 @@
-import admin.telegram.addUsersFlow
 import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
@@ -17,6 +16,7 @@ import dev.inmo.tgbotapi.types.UserId
 import event.telegram.eventFlow
 import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
+import menus.flows.accountInfoFlow
 import menus.normalMenu
 import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
@@ -65,8 +65,8 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         newResponseFlow()
         oldQuestionFlow()
     }
+    accountInfoFlow()
     muteFlow()
     eventFlow()
-    addUsersFlow()
     fallback()
 }
