@@ -17,7 +17,7 @@ object Strings {
 
         // TODO тут придумать сообщение
         const val EventIsCreated = "Мероприятие добавлено в календарь! " +
-                "Участникам отправлено оповещение о новом мероприятии"
+            "Участникам отправлено оповещение о новом мероприятии"
 
         const val EventNotCreated = "Мероприятие не создано"
         const val InvalidDataFormat = "Введён неверный формат данных. "
@@ -55,7 +55,7 @@ object Strings {
         regularln("🕓 ")
         regular(
             dateTimeFormatter.format(event.timestampBegin.toLocalDateTime()) +
-                    " - " + dateTimeFormatter.format(event.timestampEnd.toLocalDateTime())
+                " - " + dateTimeFormatter.format(event.timestampEnd.toLocalDateTime())
         )
         if (event.description.isNotEmpty()) {
             regularln(event.description)

@@ -15,16 +15,16 @@ fun StateMachineBuilder<DialogState, User, UserId>.removeEventFlow() {
         state<MenuState.RemoveEventState> {
             onEnter {
                 sendTextMessage(it, Strings.RemoveEvent.ChooseEvent)
-                //TODO пагинация
+                // TODO пагинация
             }
             onText {
                 state.override { DialogState.Empty }
             }
-            //сначала будет список inline кнопок с названиями мероприятий(пагинация)
-            //далее при нажатии на кнопку, выводится информация о мероприятии +
+            // сначала будет список inline кнопок с названиями мероприятий(пагинация)
+            // далее при нажатии на кнопку, выводится информация о мероприятии +
             // вы действительно хотите удалить мероприятие?
-            //и 2 кнопки - да/нет
-            //все это должно быть в anyState
+            // и 2 кнопки - да/нет
+            // все это должно быть в anyState
         }
     }
 }
