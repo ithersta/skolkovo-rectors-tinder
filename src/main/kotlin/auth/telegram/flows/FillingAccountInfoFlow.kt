@@ -27,6 +27,7 @@ import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
 import common.telegram.functions.selectCity
+import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
@@ -41,6 +42,7 @@ import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
+    val botConfig: BotConfig
     val registerUserUseCase: RegisterUserUseCase by inject()
     val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
 
@@ -165,7 +167,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             if (resultResponse.equals(AuthenticationResults.OK)) {
                 // отправить админу текст какой-то о том что новый пользователь хочет присоединиться.
                 sendTextMessage(
-                    System.getenv()["ADMIN_ID"]?.toLong(), "text",
+                    botConfig.adminId, "text",
                     replyMarkup = confirmationInlineKeyboard(
                         positiveData = AdminNotice.AdminAnswerYes,
                         negativeData = AdminNotice.AdminAnswerNo
