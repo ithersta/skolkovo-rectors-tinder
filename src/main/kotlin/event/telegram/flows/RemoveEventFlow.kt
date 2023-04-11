@@ -11,11 +11,11 @@ import menus.states.MenuState
 
 fun StateMachineBuilder<DialogState, User, UserId>.removeEventFlow() {
     role<User.Normal> {
-        state<MenuState.RemoveEventState>{
+        state<MenuState.RemoveEventState> {
             onEnter {
                 sendTextMessage(it, "TODO")
             }
-            onText{
+            onText {
                 state.override { DialogState.Empty }
             }
         }
