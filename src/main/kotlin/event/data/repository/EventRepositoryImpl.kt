@@ -11,9 +11,9 @@ class EventRepositoryImpl : EventRepository {
     override fun add(event: Event) {
         Events.insert {
             it[name] = event.name
-            //TODO тут пока проблемы
-            //it[timestampBegin] = event.timestampBegin
-            //it[timestampEnd] = event.timestampEnd
+            // TODO тут пока проблемы
+            // it[timestampBegin] = event.timestampBegin
+            // it[timestampEnd] = event.timestampEnd
             it[description] = event.description
             it[url] = event.url
         }
