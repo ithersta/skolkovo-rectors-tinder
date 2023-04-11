@@ -9,6 +9,7 @@ import java.time.OffsetDateTime
 data class InputBeginDateTimeState(
     val name: String
 ) : DialogState
+
 @Serializable
 data class InputEndDateTimeState(
     val name: String,
