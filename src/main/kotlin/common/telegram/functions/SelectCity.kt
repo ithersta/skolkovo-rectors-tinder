@@ -10,6 +10,7 @@ import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.types.UserId
+import dropdown.DropdownOption
 import dropdown.dropdownWebAppButton
 import dropdown.onDropdownWebAppResult
 import org.koin.core.component.inject
@@ -28,7 +29,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
             replyMarkup = flatReplyKeyboard {
                 dropdownWebAppButton(
                     TODO(),
-                    options = transaction { cityRepository.getAll() }.map { it.name },
+                    options = transaction { cityRepository.getAll() }.map { DropdownOption(it.id, it.name) },
                     noneConfirmationMessage = TODO(),
                     noneOption = TODO()
                 )

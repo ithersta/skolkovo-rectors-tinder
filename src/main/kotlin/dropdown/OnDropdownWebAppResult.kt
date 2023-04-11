@@ -9,10 +9,10 @@ import dev.inmo.tgbotapi.types.message.PrivateEventMessage
 import generated.StateFilterBuilder
 
 fun <S : DialogState, U : User> StateFilterBuilder<S, U>.onDropdownWebAppResult(
-    handler: Handler<DialogState, User, S, U, Pair<PrivateEventMessage<WebAppData>, String?>>
+    handler: Handler<DialogState, User, S, U, Pair<PrivateEventMessage<WebAppData>, Long?>>
 ) = onWebAppData { message ->
     val result = message.chatEvent.data
         .takeIf { it != "null" }
-        ?.removeSurrounding("\"")
+        ?.toLongOrNull()
     handler(this, message to result)
 }
