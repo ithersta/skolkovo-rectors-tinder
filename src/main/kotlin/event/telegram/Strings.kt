@@ -27,7 +27,7 @@ object Strings {
                 regular(dateTimeFormatter.format(event.timestampBegin.toLocalDateTime()))
                 boldln("Дата и время окончания: ")
                 regular(dateTimeFormatter.format(event.timestampEnd.toLocalDateTime()))
-                if(event.description.isNotEmpty()) {
+                if (event.description.isNotEmpty()) {
                     boldln("Краткое описание: ")
                     regular(event.description)
                 }
