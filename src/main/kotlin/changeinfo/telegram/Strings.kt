@@ -12,7 +12,10 @@ object Strings {
             const val Message = "Введите новые имя и фамилию"
         }
 
-        const val City = "город"
+        object City {
+            const val Button = "город"
+            const val OrganizationQuestion = "Изменилось ли ваше место работы?"
+        }
 
         object Job {
             const val Button = "профессия"
@@ -22,7 +25,7 @@ object Strings {
         object Organization {
             const val Button = "организация"
             const val Type = "Выберите тип организации – нового места работы"
-            const val Message = "Введите новое место работы"
+            const val SorryMessage = "Внимание! \nЕсли у вас изменился также и город работы, сначала необходимо изменить его."
         }
 
         object ActivityDescription {
@@ -32,11 +35,12 @@ object Strings {
 
         const val Areas = "сферы компетенций"
     }
+
     private const val Back = "Не нужно изменять данные"
 
     val namesToQueries = mapOf<String, Query>(
         Fields.Name.Button to WaitingForNewName,
-        Fields.City to WaitingForCity,
+        Fields.City.Button to WaitingForCity,
         Fields.Job.Button to WaitingForProfession,
         Fields.Organization.Button to WaitingForOrganization,
         Fields.ActivityDescription.Button to WaitingForProfessionalDescription,

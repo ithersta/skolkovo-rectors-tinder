@@ -3,6 +3,7 @@ package changeinfo.telegram.flows
 import auth.domain.entities.User
 import changeinfo.domain.interactors.ChangeAccountInfoInteractor
 import changeinfo.telegram.Strings
+import changeinfo.telegram.Strings.Fields.Organization.SorryMessage
 import changeinfo.telegram.queries.*
 import changeinfo.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
@@ -12,9 +13,14 @@ import common.telegram.DialogState
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
+import common.telegram.functions.selectOrganization
+import common.telegram.strings.CommonStrings
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
+import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.utils.row
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.usecases.GetUserDetailsUseCase
@@ -54,7 +60,23 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     state<ChangeCityState> {
         onEnter {
             changeAccountInfoInteractor.changeCity(it.chatId, state.snapshot.city)
+
+            sendTextMessage(
+                it,
+                Strings.Fields.City.OrganizationQuestion,
+                replyMarkup = replyKeyboard(resizeKeyboard = true,oneTimeKeyboard = true){
+                    row{
+                        simpleButton(CommonStrings.Button.No)
+                        simpleButton(CommonStrings.Button.Yes)
+                    }
+                }
+            )
+        }
+        onText(CommonStrings.Button.No){
             state.override { DialogState.Empty }
+        }
+        onText(CommonStrings.Button.Yes){
+            state.override { WaitingForOrganizationTypeState }
         }
     }
     state<WaitingForNewNameState> {
@@ -91,19 +113,22 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     state<ChangeOrganizationTypeState> {
         onEnter {
             changeAccountInfoInteractor.changeOrganizationType(it.chatId, state.snapshot.type)
-            state.override { WaitingForOrganizationState }
+            sendTextMessage(
+                it,SorryMessage)
+            state.override { WaitingForOrganizationState(getUserDetailsUseCase(it.chatId)!!.city.id) }
         }
     }
 
     state<WaitingForOrganizationState> {
+         selectOrganization(
+             cityId = {it.cityId},
+             onFinish = { state, organization -> state.next(organization)}
+         )
+    }
+
+    state<ChangeOrganizationState>{
         onEnter {
-            sendTextMessage(
-                it,
-                Strings.Fields.Organization.Message
-            )
-        }
-        onText {
-            changeAccountInfoInteractor.changeOrganization(it.chat.id.chatId, TODO())
+            changeAccountInfoInteractor.changeOrganization(it.chatId, state.snapshot.organizationId)
             state.override { DialogState.Empty }
         }
     }

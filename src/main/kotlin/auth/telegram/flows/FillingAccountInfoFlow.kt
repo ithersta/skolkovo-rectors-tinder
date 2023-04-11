@@ -3,10 +3,8 @@ package auth.telegram.flows
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.PhoneNumberIsAllowedUseCase
-import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.WriteName
-import auth.telegram.Strings.AccountInfo.WriteOrganization
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.AuthenticationResults
@@ -26,6 +24,7 @@ import common.telegram.DialogState
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
+import common.telegram.functions.selectOrganization
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
@@ -39,7 +38,6 @@ import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
-    val registerUserUseCase: RegisterUserUseCase by inject()
     val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
 
     state<WaitingForContact> {
@@ -112,9 +110,12 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteOrganizationState> {
-        onEnter { sendTextMessage(it, WriteOrganization) }
-//        onText { state.override { next(it.content.text) } }
+        selectOrganization(
+            cityId = {it.cityId},
+            onFinish = { state, organization -> state.next(organization) }
+        )
     }
+
     state<WriteProfessionalDescriptionState> {
         onEnter { sendTextMessage(it, WriteProfessionalActivity) }
         onText { state.override { next(it.content.text) } }
@@ -144,21 +145,21 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas
             )
-
-            val resultResponse = when (registerUserUseCase(details)) {
-                RegisterUserUseCase.Result.DuplicatePhoneNumber ->
-                    AuthenticationResults.DuplicatePhoneNumber
-
-                RegisterUserUseCase.Result.AlreadyRegistered ->
-                    AuthenticationResults.AlreadyRegistered
-
-                RegisterUserUseCase.Result.OK ->
-                    AuthenticationResults.OK
-
-                RegisterUserUseCase.Result.NoAreasSet ->
-                    AuthenticationResults.NoAreaSet
-            }
-            sendTextMessage(it, resultResponse)
+//
+//            val resultResponse = when (registerUserUseCase(details)) {
+//                RegisterUserUseCase.Result.DuplicatePhoneNumber ->
+//                    AuthenticationResults.DuplicatePhoneNumber
+//
+//                RegisterUserUseCase.Result.AlreadyRegistered ->
+//                    AuthenticationResults.AlreadyRegistered
+//
+//                RegisterUserUseCase.Result.OK ->
+//                    AuthenticationResults.OK
+//
+//                RegisterUserUseCase.Result.NoAreasSet ->
+//                    AuthenticationResults.NoAreaSet
+//            }
+//            sendTextMessage(it, resultResponse)
             sendNotificationPreferencesMessage(it)
             state.override { DialogState.Empty }
         }

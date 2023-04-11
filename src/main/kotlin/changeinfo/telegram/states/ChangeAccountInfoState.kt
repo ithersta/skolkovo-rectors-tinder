@@ -31,7 +31,18 @@ object WaitingForOrganizationTypeState : DialogState
 data class ChangeOrganizationTypeState(val type: OrganizationType) : DialogState
 
 @Serializable
-object WaitingForOrganizationState : DialogState
+class WaitingForOrganizationState (
+    val cityId: Long
+
+) : DialogState {
+    fun next(organization: Long) = ChangeOrganizationState(organization)
+}
+
+@Serializable
+class ChangeOrganizationState (
+    val organizationId : Long
+
+) : DialogState
 
 @Serializable
 object WaitingForProfessionalDescriptionState : DialogState
