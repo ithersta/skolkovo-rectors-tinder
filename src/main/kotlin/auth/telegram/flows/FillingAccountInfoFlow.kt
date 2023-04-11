@@ -1,10 +1,13 @@
 package auth.telegram.flows
 
+import auth.data.tables.Users
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.PhoneNumberIsAllowedUseCase
 import auth.domain.usecases.RegisterUserUseCase
+import auth.telegram.Strings.AccountInfo.AdminDoNotAccept
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
+import auth.telegram.Strings.AccountInfo.PersonWantsAdd
 import auth.telegram.Strings.AccountInfo.WriteName
 import auth.telegram.Strings.AccountInfo.WriteOrganization
 import auth.telegram.Strings.AccountInfo.WriteProfession
@@ -40,6 +43,7 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import notifications.telegram.admin.AdminNotice
 import notifications.telegram.sendNotificationPreferencesMessage
+import org.jetbrains.exposed.sql.update
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
@@ -165,19 +169,30 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             }
             if (resultResponse.equals(AuthenticationResults.OK)) {
                 // отправить админу текст какой-то о том что новый пользователь хочет присоединиться.
+                val chatId = details.id
                 botConfig.adminId?.let { it1 ->
                     sendTextMessage(
-                        it1.toChatId(), "Пользователь хочет присоединиться к чату.\n" + details.toString(),
+                        it1.toChatId(), PersonWantsAdd + details.toString(),
                         replyMarkup = confirmationInlineKeyboard(
-                            positiveData = AdminNotice.AdminAnswerYes,
-                            negativeData = AdminNotice.AdminAnswerNo
+                            positiveData = AdminNotice.AdminAnswerYes(chatId),
+                            negativeData = AdminNotice.AdminAnswerNo(chatId)
                         )
                     )
                 }
             }
             sendTextMessage(it, resultResponse)
-            sendNotificationPreferencesMessage(it)
+        }
+    }
+    anyState {
+        onDataCallbackQuery(AdminNotice.AdminAnswerYes::class) { (data, query) ->
+            Users.update({ Users.id eq data.chatId }) {
+                it[isApproved] = true
+            }
+            sendNotificationPreferencesMessage(data.chatId.toChatId())
             state.override { DialogState.Empty }
+        }
+        onDataCallbackQuery(AdminNotice.AdminAnswerNo::class) { (data, query) ->
+            sendTextMessage(data.chatId.toChatId(), AdminDoNotAccept)
         }
     }
 }

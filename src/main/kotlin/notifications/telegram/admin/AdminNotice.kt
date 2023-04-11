@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 object AdminNotice {
     @Serializable
     @SerialName("aay")
-    object AdminAnswerYes : Query
+    class AdminAnswerYes(val chatId: Long) : Query
 
     @Serializable
     @SerialName("aaN")
-    object AdminAnswerNo : Query
+    class AdminAnswerNo(val chatId: Long) : Query
 }
