@@ -34,6 +34,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
@@ -48,9 +49,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WaitingForContact> {
         onEnter {
-            sendTextMessage(
-                it,
-                Welcome,
+            sendTextMessage(it, Welcome,
                 replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                     requestContactButton(ShareContact)
                 }
@@ -166,21 +165,15 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             }
             if (resultResponse.equals(AuthenticationResults.OK)) {
                 // отправить админу текст какой-то о том что новый пользователь хочет присоединиться.
-                sendTextMessage(
-                    botConfig.adminId, "text",
-                    replyMarkup = confirmationInlineKeyboard(
-                        positiveData = AdminNotice.AdminAnswerYes,
-                        negativeData = AdminNotice.AdminAnswerNo
+                botConfig.adminId?.let { it1 ->
+                    sendTextMessage(
+                        it1.toChatId(), "Пользователь хочет присоединиться к чату.\n" + details.toString(),
+                        replyMarkup = confirmationInlineKeyboard(
+                            positiveData = AdminNotice.AdminAnswerYes,
+                            negativeData = AdminNotice.AdminAnswerNo
+                        )
                     )
-                )
-
-                /*
-                todo:
-                 Было отправлено сообщение с кнопками администратору.
-                 Если администратор нажмет на кнопку "Да",
-                 то пользователю будет отправлено сообщение о возможности работы в боте, так же его стейт будет изменен.
-                 Иначе пользователю будет отправлено сообщение о проблеме.
-                 */
+                }
             }
             sendTextMessage(it, resultResponse)
             sendNotificationPreferencesMessage(it)
