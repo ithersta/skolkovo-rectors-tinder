@@ -171,6 +171,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                         negativeData = AdminNotice.AdminAnswerNo
                     )
                 )
+
+                /*
+                todo:
+                 Было отправлено сообщение с кнопками администратору.
+                 Если администратор нажмет на кнопку "Да",
+                 то пользователю будет отправлено сообщение о возможности работы в боте, так же его стейт будет изменен.
+                 Иначе пользователю будет отправлено сообщение о проблеме.
+                 */
             }
             sendTextMessage(it, resultResponse)
             sendNotificationPreferencesMessage(it)
