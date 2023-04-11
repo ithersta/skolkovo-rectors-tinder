@@ -113,7 +113,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WriteOrganizationState> {
         onEnter { sendTextMessage(it, WriteOrganization) }
-        onText { state.override { next(it.content.text) } }
+//        onText { state.override { next(it.content.text) } }
     }
     state<WriteProfessionalDescriptionState> {
         onEnter { sendTextMessage(it, WriteProfessionalActivity) }

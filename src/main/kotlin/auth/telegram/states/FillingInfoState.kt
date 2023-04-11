@@ -34,7 +34,7 @@ data class ChooseCity(
     val course: Course,
     val name: String
 ) : DialogState {
-    fun next(city: String) = WriteProfessionState(phoneNumber, course, name, city)
+    fun next(city: Long) = WriteProfessionState(phoneNumber, course, name, city)
 }
 
 @Serializable
@@ -42,7 +42,7 @@ data class WriteProfessionState(
     val phoneNumber: PhoneNumber,
     val course: Course,
     val name: String,
-    val city: String
+    val city: Long
 ) : DialogState {
     fun next(profession: String) = ChooseOrganizationTypeState(phoneNumber, course, name, city, profession)
 }
@@ -52,7 +52,7 @@ data class ChooseOrganizationTypeState(
     val phoneNumber: PhoneNumber,
     val course: Course,
     val name: String,
-    val city: String,
+    val city: Long,
     val profession: String
 ) : DialogState {
     fun next(organizationType: OrganizationType) =
@@ -64,13 +64,13 @@ data class WriteOrganizationState(
     val phoneNumber: PhoneNumber,
     val course: Course,
     val name: String,
-    val city: String,
+    val city: Long,
     val profession: String,
     val organizationType: OrganizationType
 
 ) : DialogState {
-    fun next(organization: String) =
-        WriteProfessionalDescriptionState(phoneNumber, course, name, city, profession, organizationType, organization)
+    fun next(organization: Long) =
+        WriteProfessionalDescriptionState(phoneNumber, course, name, profession, organizationType, organization)
 }
 
 @Serializable
@@ -78,17 +78,15 @@ data class WriteProfessionalDescriptionState(
     val phoneNumber: PhoneNumber,
     val course: Course,
     val name: String,
-    val city: String,
     val profession: String,
     val organizationType: OrganizationType,
-    val organization: String
+    val organization: Long
 ) : DialogState {
     fun next(professionalDescription: String) =
         ChooseQuestionAreasState(
             phoneNumber,
             course,
             name,
-            city,
             profession,
             organizationType,
             organization,
@@ -101,16 +99,15 @@ data class ChooseQuestionAreasState(
     val phoneNumber: PhoneNumber,
     val course: Course,
     val name: String,
-    val city: String,
     val profession: String,
     val organizationType: OrganizationType,
-    val organization: String,
+    val organization: Long,
     val professionalDescription: String,
     val questionAreas: Set<QuestionArea> = emptySet(),
     val messageId: MessageId? = null
 ) : DialogState {
     fun next() = AddAccountInfoToDataBaseState(
-        phoneNumber, course, name, city,
+        phoneNumber, course, name,
         profession, organizationType, organization, professionalDescription, questionAreas
     )
 }
@@ -120,10 +117,9 @@ data class AddAccountInfoToDataBaseState(
     val phoneNumber: PhoneNumber,
     val course: Course,
     val name: String,
-    val city: String,
     val profession: String,
     val organizationType: OrganizationType,
-    val organization: String,
+    val organization: Long,
     val professionalDescription: String,
     val questionAreas: Set<QuestionArea>
 ) : DialogState

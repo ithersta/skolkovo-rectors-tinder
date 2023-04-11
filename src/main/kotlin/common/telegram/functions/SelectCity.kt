@@ -2,11 +2,11 @@ package common.telegram.functions
 
 import auth.domain.entities.User
 import auth.telegram.Strings
-import auth.telegram.queries.*
 import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.domain.Transaction
 import common.telegram.DialogState
+import common.telegram.strings.DropdownWebAppStrings
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.types.UserId
@@ -16,9 +16,8 @@ import dropdown.onDropdownWebAppResult
 import org.koin.core.component.inject
 import organizations.domain.repository.CityRepository
 
-@Suppress("UnusedPrivateMember")
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
-    onFinish: (State, String) -> DialogState
+    onFinish: (State, Long) -> DialogState
 ) {
     val cityRepository: CityRepository by inject()
     val transaction: Transaction by inject()
@@ -28,17 +27,18 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
             Strings.AccountInfo.ChooseCity,
             replyMarkup = flatReplyKeyboard {
                 dropdownWebAppButton(
-                    TODO(),
+                    DropdownWebAppStrings.CityDropdown.Button,
                     options = transaction { cityRepository.getAll() }.map { DropdownOption(it.id, it.name) },
-                    noneConfirmationMessage = TODO(),
-                    noneOption = TODO()
+                    noneConfirmationMessage = DropdownWebAppStrings.CityDropdown.Confirmation,
+                    noneOption = DropdownWebAppStrings.CityDropdown.NoCity
                 )
             }
         )
     }
     onDropdownWebAppResult { (message, result) ->
-        // TODO
-//        result
-//        state.override { onFinish(state.snapshot, city) }
+        if (result != null) {
+            state.override { onFinish(state.snapshot, result) }
+        }
+        ///TODO:потом обработчик Ивана сюда вставить
     }
 }

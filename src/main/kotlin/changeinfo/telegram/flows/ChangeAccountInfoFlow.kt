@@ -53,7 +53,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     }
     state<ChangeCityState> {
         onEnter {
-            TODO()
+            changeAccountInfoInteractor.changeCity(it.chatId, state.snapshot.city)
+            state.override { DialogState.Empty }
         }
     }
     state<WaitingForNewNameState> {

@@ -11,14 +11,14 @@ object WaitingForNewNameState : DialogState
 
 @Serializable
 data class WaitingForCityState(
-    val city: String? = null
+    val city: Long? = null
 ) : DialogState {
     fun next() = ChangeCityState(city!!)
 }
 
 @Serializable
 class ChangeCityState(
-    val city: String
+    val city: Long
 ) : DialogState
 
 @Serializable
