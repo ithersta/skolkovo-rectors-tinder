@@ -20,7 +20,7 @@ val adminMenu = menu<User.Admin>(Strings.RoleMenu.Admin, DialogState.Empty) {
             MenuState.AddUniversityState
         )
         button(
-            MenuStrings.AdminMenu.AddEvent, //TODO тут надо будет добавить кнопку с удалением мероприятия
+            MenuStrings.AdminMenu.AddEvent, // TODO тут надо будет добавить кнопку с удалением мероприятия
             MenuState.AddEventState
         )
         backButton(CommonStrings.Button.Back)
