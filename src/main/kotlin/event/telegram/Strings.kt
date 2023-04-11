@@ -11,12 +11,13 @@ object Strings {
         const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.ММ.гггг чч:мм"
         const val InputEndDateTime = "Введите дату и время окончания мероприятия в формате дд.ММ.гггг чч:мм"
         const val InputDescription = "Введите краткое описание мероприятия. " +
-            "\nЕсли такого не имеется, нажмите соответствующую кнопку"
+                "\nЕсли такого не имеется, нажмите соответствующую кнопку"
         const val NoDescription = "Нет описания"
         const val InputUrl = "Введите ссылку на мероприятие"
 
         // TODO тут придумать сообщение
-        const val EventIsCreated = "Мероприятие успешно добавлено в календарь! Участникам отправлено оповещение"
+        const val EventIsCreated = "Мероприятие добавлено в календарь! " +
+                "Участникам отправлено оповещение о новом мероприятии"
 
         const val EventNotCreated = "Мероприятие не создано"
         const val InvalidDataFormat = "Введён неверный формат данных. "
@@ -39,19 +40,31 @@ object Strings {
             }
     }
 
+    object RemoveEvent {
+        const val ChooseEvent = "Выберите мероприятие: "
+        const val Remove = "Вы действительно хотите удалить мероприятие?"
+        const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
+        const val NotRemove = "Мероприятие не удалено ❌"
+    }
+
     private val dateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
 
     // TODO тут придумать сообщение для рассылки пользователям
+
+    const val New = "📅Новое мероприятие"
     fun eventMessage(event: Event) =
         buildEntities {
-            regular(event.name)
-            regularln(dateTimeFormatter.format(event.timestampBegin.toLocalDateTime()))
-            regularln(dateTimeFormatter.format(event.timestampEnd.toLocalDateTime()))
+            bold(event.name)
+            regularln("🕓 ")
+            regular(
+                dateTimeFormatter.format(event.timestampBegin.toLocalDateTime()) + " - "
+                        + dateTimeFormatter.format(event.timestampEnd.toLocalDateTime())
+            )
             if (event.description.isNotEmpty()) {
                 regularln(event.description)
             }
-            regularln(event.url)
-            // link()
+            regularln("🔗")
+            link("Подробнее", event.url)
         }
 }
