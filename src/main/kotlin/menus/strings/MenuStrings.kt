@@ -31,5 +31,6 @@ object MenuStrings {
         const val AddCity = "Добавить город"
         const val AddUniversity = "Добавить университет"
         const val AddEvent = "Добавить мероприятие"
+        const val RemoveEvent = "Удалить мероприятие"
     }
 }

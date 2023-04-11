@@ -35,5 +35,8 @@ object MenuState {
     object AddEventState : DialogState
 
     @Serializable
+    object RemoveEventState : DialogState
+
+    @Serializable
     object Events : DialogState
 }

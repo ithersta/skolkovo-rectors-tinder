@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import event.domain.entities.Event
 
-fun StateMachineBuilder<DialogState, User, UserId>.eventFlow() {
+fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     role<User.Normal> {
         state<MenuState.Events> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName) }
