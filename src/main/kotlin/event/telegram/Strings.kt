@@ -10,12 +10,15 @@ object Strings {
         const val InputName = "Введите название мероприятия"
         const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.ММ.гггг чч:мм"
         const val InputEndDateTime = "Введите дату и время окончания мероприятия в формате дд.ММ.гггг чч:мм"
-        const val InputDescription = "Введите краткое описание мероприятия"
+        const val InputDescription = "Введите краткое описание мероприятия. " +
+                "\nЕсли такого не имеется, нажмите соответствующую кнопку"
+        const val NoDescription = "Нет описания"
         const val InputUrl = "Введите ссылку на мероприятие"
-        const val EventIsCreated = "Мероприятие успешно добавлено!"
+        //TODO тут придумать сообщение
+        const val EventIsCreated = "Мероприятие успешно добавлено в календарь! Участникам отправлено оповещение"
 
         const val EventNotCreated = "Мероприятие не создано"
-        const val InvalidDataFormat = "Введён неверный формат данных"
+        const val InvalidDataFormat = "Введён неверный формат данных. "
         fun message(event: Event) =
             buildEntities {
                 bold("Название: ")
@@ -30,7 +33,6 @@ object Strings {
                 }
                 boldln("Ссылка: ")
                 regular(event.url)
-                //link()
                 regularln("")
                 italicln("Все верно?")
             }
@@ -39,15 +41,16 @@ object Strings {
     private val dateTimeFormatter = DateTimeFormatter
         .ofLocalizedDateTime(FormatStyle.LONG)
 
+    //TODO тут придумать сообщение для рассылки пользователям
     fun eventMessage(event: Event) =
         buildEntities {
             regular(event.name)
             regularln(dateTimeFormatter.format(event.timestampBegin.toLocalDateTime()))
             regularln(dateTimeFormatter.format(event.timestampEnd.toLocalDateTime()))
-            event.description?.let { regularln(it) }
+            if(event.description.isNotEmpty()) {
+                regularln(event.description)
+            }
             regularln(event.url)
             // link()
-            regularln("")
-            regularln("Все верно?")
         }
 }
