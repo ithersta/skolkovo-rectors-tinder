@@ -32,6 +32,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
@@ -100,7 +101,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteProfessionState> {
-        onEnter { sendTextMessage(it, WriteProfession) }
+        onEnter { sendTextMessage(it, WriteProfession, replyMarkup = ReplyKeyboardRemove()) }
         onText { state.override { next(it.content.text) } }
     }
 
@@ -119,7 +120,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteProfessionalDescriptionState> {
-        onEnter { sendTextMessage(it, WriteProfessionalActivity) }
+        onEnter { sendTextMessage(it, WriteProfessionalActivity, replyMarkup = ReplyKeyboardRemove()) }
         onText { state.override { next(it.content.text) } }
     }
     state<ChooseQuestionAreasState> {
