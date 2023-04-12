@@ -1,16 +1,14 @@
 package auth.telegram.flows
 
-import auth.data.tables.Users
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.PhoneNumberIsAllowedUseCase
 import auth.domain.usecases.RegisterUserUseCase
-import auth.telegram.Strings.AccountInfo.AdminDoNotAccept
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
-import auth.telegram.Strings.AccountInfo.PersonWantsAdd
 import auth.telegram.Strings.AccountInfo.WriteName
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
+import auth.telegram.Strings.AccountInfo.writePersonInfo
 import auth.telegram.Strings.AuthenticationResults
 import auth.telegram.Strings.Courses.ChooseCourse
 import auth.telegram.Strings.InvalidShare
@@ -19,18 +17,15 @@ import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.courseToString
 import auth.telegram.queries.ChooseCourseQuery
+import auth.telegram.queries.StartQuery
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
-import common.telegram.functions.chooseOrganizationType
-import common.telegram.functions.chooseQuestionAreas
-import common.telegram.functions.confirmationInlineKeyboard
-import common.telegram.functions.selectCity
+import common.telegram.functions.*
 import config.BotConfig
-import common.telegram.functions.selectOrganization
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
@@ -42,14 +37,12 @@ import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import notifications.telegram.admin.AdminNotice
-import notifications.telegram.sendNotificationPreferencesMessage
-import org.jetbrains.exposed.sql.update
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
+    val botConfig: BotConfig by inject()
     val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
     val registerUserUseCase: RegisterUserUseCase by inject()
-    val botConfig: BotConfig
 
     state<WaitingForContact> {
         onEnter {
@@ -155,7 +148,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 state.snapshot.questionAreas
             )
 
-            val resultResponse = when (registerUserUseCase(details)) {
+            val resultResponse = when (val result = registerUserUseCase(details)) {
                 RegisterUserUseCase.Result.DuplicatePhoneNumber ->
                     AuthenticationResults.DuplicatePhoneNumber
 
@@ -165,38 +158,23 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 RegisterUserUseCase.Result.NoAreasSet ->
                     AuthenticationResults.NoAreaSet
 
-                RegisterUserUseCase.Result.OK ->
-                    AuthenticationResults.OK
-
-
-            }
-            if (resultResponse.equals(AuthenticationResults.OK)) {
-                // отправить админу текст какой-то о том что новый пользователь хочет присоединиться.
-                val chatId = details.id
-                botConfig.adminId?.let { it1 ->
-                    sendTextMessage(
-                        it1.toChatId(), PersonWantsAdd + details.toString(),
-                        replyMarkup = confirmationInlineKeyboard(
-                            positiveData = AdminNotice.AdminAnswerYes(chatId),
-                            negativeData = AdminNotice.AdminAnswerNo(chatId)
+                is RegisterUserUseCase.Result.OK -> {
+                    val chatId = details.id
+                    botConfig.adminId?.let { it1 ->
+                        sendTextMessage(
+                            it1.toChatId(), writePersonInfo(result.userDetails),
+                            replyMarkup = confirmationInlineKeyboard(
+                                positiveData = AdminNotice.AdminAnswerYes(chatId),
+                                negativeData = AdminNotice.AdminAnswerNo(chatId)
+                            )
                         )
-                    )
+                    }
+                    AuthenticationResults.OK
                 }
             }
             sendTextMessage(it, resultResponse)
         }
     }
-    anyState {
-        onDataCallbackQuery(AdminNotice.AdminAnswerYes::class) { (data, query) ->
-            Users.update({ Users.id eq data.chatId }) {
-                it[isApproved] = true
-            }
-            sendNotificationPreferencesMessage(data.chatId.toChatId())
-            state.override { DialogState.Empty }
-        }
-        onDataCallbackQuery(AdminNotice.AdminAnswerNo::class) { (data, query) ->
-            sendTextMessage(data.chatId.toChatId(), AdminDoNotAccept)
-        }
-    }
+
 }
 

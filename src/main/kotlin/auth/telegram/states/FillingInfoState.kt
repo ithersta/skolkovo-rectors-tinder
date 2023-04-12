@@ -127,3 +127,5 @@ data class AddAccountInfoToDataBaseState(
     val professionalDescription: String,
     val questionAreas: Set<QuestionArea>
 ) : DialogState
+
+

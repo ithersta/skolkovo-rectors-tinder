@@ -4,19 +4,23 @@ package auth.telegram
 
 import auth.domain.entities.Course
 import auth.domain.entities.OrganizationType
+import auth.domain.entities.User
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import auth.telegram.Strings.Courses.EducationalProgramsCode
 import auth.telegram.Strings.Courses.LeadersOfBreakthrough
 import auth.telegram.Strings.Courses.ManagementSchool
 import auth.telegram.Strings.Courses.RectorsSchool
 import auth.telegram.Strings.Courses.StepToSchoolDevelopment
+import common.telegram.strings.accountInfo
+import dev.inmo.tgbotapi.utils.buildEntities
+import dev.inmo.tgbotapi.utils.regularln
 import qna.domain.entities.QuestionArea
 
 object Strings {
     const val Welcome =
         "Дорогой участник, приветствуем тебя в боте сообщества выпускников программ Центра трансформации образования. " +
-            "Здесь собрались выпускники разных лет таких программ, как Школа ректоров, Лидеры научно-технологического прорыва, Школа управления исследовательскими программами и других программ. " +
-            "Для того, чтобы попасть в пространство единомышленников, поделитесь контактом, нажав соответствующую кнопку и заполните свой краткий профайл"
+                "Здесь собрались выпускники разных лет таких программ, как Школа ректоров, Лидеры научно-технологического прорыва, Школа управления исследовательскими программами и других программ. " +
+                "Для того, чтобы попасть в пространство единомышленников, поделитесь контактом, нажав соответствующую кнопку и заполните свой краткий профайл"
     const val ShareContact = "Поделиться номером телефона"
     const val InvalidShare = "Чтобы поделиться контактом, нажмите на кнопку из меню"
 
@@ -26,18 +30,40 @@ object Strings {
             "Выберите свой город, нажав на кнопку"
         const val WriteProfession = "Напишите Вашу должность"
         const val WriteOrganization = "Выберите ваше место работы, нажав на кнопку"
-        const val ChooseProfessionalAreas = "Уточните Ваши профессиональные зоны компетенций (вы можете выбрать несколько)\n" +
-            "Когда вы выберете все Ваши профессиональные зоны компетенций, нажмите \"Закончить выбор\"\n" +
-            "\nРекомендуемое количество не более 5"
+        const val ChooseProfessionalAreas =
+            "Уточните Ваши профессиональные зоны компетенций (вы можете выбрать несколько)\n" +
+                    "Когда вы выберете все Ваши профессиональные зоны компетенций, нажмите \"Закончить выбор\"\n" +
+                    "\nРекомендуемое количество не более 5"
 
         const val NoQuestionArea =
             "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
 
         const val WriteProfessionalActivity =
             "Напишите о своей деятельности - что именно Вы делаете на работе, с какими задачами сталкиваетесь"
-        const val PersonWantsAdd  ="Пользователь хочет присоединиться к чату.\n"
-        const val AdminDoNotAccept = "Вы не можете присоединиться к сообществу вас не добавил админ. Прощайте."
+        const val PersonWantsAdd = "Пользователь хочет присоединиться к сообществу.\n"
+
+        fun writePersonInfo(userDetails: User.Details) =
+            buildEntities {
+                regularln(PersonWantsAdd)
+                addAll(accountInfo(userDetails))
+            }
+
+        const val Approved = "Новый пользователь был добавлен ✅"
+        const val NotApproved = "Новый пользователь не был добавлен ❌"
+
+        fun approvePersonInfo(userDetails: User.Details, boolean: Boolean) =
+            buildEntities {
+                regularln(if (boolean) Approved else NotApproved)
+                addAll(accountInfo(userDetails))
+            }
     }
+
+
+    const val AccountWasVerified = "Ваш аккаунт успешно прошел верификацию"
+    const val StartButton = "Начать работу"
+
+    const val AdminDoNotAccept = "Вы не можете присоединиться к сообществу вас не добавил админ. Прощайте."
+
 
     const val FinishChoosing = "Закончить выбор"
 
@@ -88,8 +114,8 @@ object Strings {
     object Question {
         const val ChooseQuestionArea =
             "Выберите область, к которой относится Ваш вопрос (вы можете выбрать несколько)\n" +
-                "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\"\n" +
-                "\nРекомендуемое количество не более 5"
+                    "Когда вы выберете все интересные вам сферы, нажмите \"Закончить выбор\"\n" +
+                    "\nРекомендуемое количество не более 5"
         const val Science = "наука"
         const val Education = "образование"
         const val Innovations = "инновации"
@@ -118,7 +144,7 @@ object Strings {
     )
 
     object AuthenticationResults {
-        const val OK = "Вы успешно зарегистрированы."
+        const val OK = "Ваш аккаунт на верификации."
         const val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         const val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
         const val NoAreaSet = NoQuestionArea
