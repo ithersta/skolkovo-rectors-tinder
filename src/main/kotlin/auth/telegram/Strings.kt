@@ -22,13 +22,10 @@ object Strings {
 
     object AccountInfo {
         const val WriteName = "Введите свои имя и фамилию"
-        const val ChooseCountry = "Укажите из какой Вы страны"
-        const val ChooseDistrict = "Укажите из какого Вы округа"
-        const val ChooseRegion = "Укажите из какого Вы региона"
         const val ChooseCity =
-            "Укажите из какого Вы города " // /мб надо будет поменять, с указанием, что надо выбрать из выпадающего списка
+            "Выберите свой город, нажав на кнопку"
         const val WriteProfession = "Напишите Вашу должность"
-        const val WriteOrganization = "Напишите название Вашей организации"
+        const val WriteOrganization = "Выберите ваше место работы, нажав на кнопку"
         const val ChooseProfessionalAreas = "Уточните Ваши профессиональные зоны компетенций (вы можете выбрать несколько)\n" +
             "Когда вы выберете все Ваши профессиональные зоны компетенций, нажмите \"Закончить выбор\"\n" +
             "\nРекомендуемое количество не более 5"
@@ -124,7 +121,6 @@ object Strings {
         const val OK = "Вы успешно зарегистрированы."
         const val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         const val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
-        const val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
         const val NoAreaSet = NoQuestionArea
     }
 

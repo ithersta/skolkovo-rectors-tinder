@@ -9,7 +9,6 @@ import auth.telegram.Strings.AccountInfo.AdminDoNotAccept
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.PersonWantsAdd
 import auth.telegram.Strings.AccountInfo.WriteName
-import auth.telegram.Strings.AccountInfo.WriteOrganization
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.AuthenticationResults
@@ -31,6 +30,7 @@ import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
 import common.telegram.functions.selectCity
 import config.BotConfig
+import common.telegram.functions.selectOrganization
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
@@ -47,9 +47,9 @@ import org.jetbrains.exposed.sql.update
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
-    val botConfig: BotConfig
-    val registerUserUseCase: RegisterUserUseCase by inject()
     val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
+    val registerUserUseCase: RegisterUserUseCase by inject()
+    val botConfig: BotConfig
 
     state<WaitingForContact> {
         onEnter {
@@ -119,9 +119,12 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteOrganizationState> {
-        onEnter { sendTextMessage(it, WriteOrganization) }
-        onText { state.override { next(it.content.text) } }
+        selectOrganization(
+            cityId = { it.cityId },
+            onFinish = { state, organization -> state.next(organization) }
+        )
     }
+
     state<WriteProfessionalDescriptionState> {
         onEnter { sendTextMessage(it, WriteProfessionalActivity) }
         onText { state.override { next(it.content.text) } }
@@ -145,9 +148,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 state.snapshot.course,
                 state.snapshot.name,
                 state.snapshot.profession,
-                TODO(),
+                state.snapshot.cityId,
                 state.snapshot.organizationType,
-                TODO(),
+                state.snapshot.organization,
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas
             )
