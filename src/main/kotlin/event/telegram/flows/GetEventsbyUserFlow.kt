@@ -16,7 +16,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.getEventsByUserFlow() {
     val getEventsUseCase: GetEventsUseCase by inject()
     role<User.Normal> {
         state<MenuState.Events> {
-            //TODO переделать, так как выводится не то
+            // TODO переделать, так как выводится не то
             onEnter {
                 val entities = buildEntities {
                     getEventsUseCase.invoke().forEach() { event ->
