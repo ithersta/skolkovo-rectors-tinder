@@ -4,7 +4,6 @@ package auth.telegram
 
 import auth.domain.entities.Course
 import auth.domain.entities.OrganizationType
-import auth.domain.entities.User
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import auth.telegram.Strings.Courses.EducationalProgramsCode
 import auth.telegram.Strings.Courses.LeadersOfBreakthrough
@@ -145,6 +144,7 @@ object Strings {
         const val OK = "Ваш аккаунт на верификации."
         const val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         const val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
+        const val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
         const val NoAreaSet = NoQuestionArea
     }
 

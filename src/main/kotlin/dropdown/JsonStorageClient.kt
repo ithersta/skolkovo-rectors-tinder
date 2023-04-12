@@ -9,6 +9,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 
+private const val TIMEOUT_MILLIS = 1000L
+
 class JsonStorageClient(
     val host: String = "https://petrobot-jsonstorage.shuttleapp.rs/",
     val client: HttpClient = HttpClient(OkHttp) {
@@ -17,10 +19,16 @@ class JsonStorageClient(
             json()
         }
         install(HttpRequestRetry) {
-            retryIf(maxRetries = 5) { _, response ->
+            retryIf(maxRetries = 30) { _, response ->
                 response.status.isSuccess().not()
             }
-            exponentialDelay()
+            retryOnException(retryOnTimeout = true)
+            constantDelay()
+        }
+        install(HttpTimeout) {
+            requestTimeoutMillis = TIMEOUT_MILLIS
+            socketTimeoutMillis = TIMEOUT_MILLIS
+            connectTimeoutMillis = TIMEOUT_MILLIS
         }
     }
 ) {
