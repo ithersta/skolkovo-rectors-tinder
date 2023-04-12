@@ -9,14 +9,10 @@ import com.ithersta.tgbotapi.commands.fallback
 import com.ithersta.tgbotapi.fsm.builders.stateMachine
 import com.ithersta.tgbotapi.fsm.entities.triggers.onCommand
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
-import common.domain.Transaction
 import common.telegram.DialogState
 import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.types.UserId
-import dropdown.DropdownOption
-import dropdown.dropdownWebAppButton
 import event.telegram.eventFlow
 import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
@@ -25,8 +21,6 @@ import menus.normalMenu
 import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
 import notifications.telegram.flows.testNotificationsFlow
-import org.koin.core.component.inject
-import organizations.domain.repository.CityRepository
 import qna.telegram.flows.*
 
 @StateMachine(baseQueryKClass = Query::class)
@@ -36,26 +30,6 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
 ) {
     cancelCommand(initialState = DialogState.Empty)
 
-    anyRole {
-        val cityRepository: CityRepository by inject()
-        val transaction: Transaction by inject()
-        anyState {
-            onCommand("city", null) { message ->
-                sendTextMessage(
-                    message.chat,
-                    Strings.AccountInfo.ChooseCity,
-                    replyMarkup = flatReplyKeyboard {
-                        dropdownWebAppButton(
-                            "TODO()",
-                            options = transaction { cityRepository.getAll() }.map { DropdownOption(it.id, it.name) },
-                            noneConfirmationMessage = "TODO()",
-                            noneOption = "TODO()"
-                        )
-                    }
-                )
-            }
-        }
-    }
     role<User.Unauthenticated> {
         fillingAccountInfoFlow()
         anyState {
