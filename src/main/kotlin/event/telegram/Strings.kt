@@ -2,8 +2,6 @@ package event.telegram
 
 import dev.inmo.tgbotapi.utils.*
 import event.domain.entities.Event
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 object Strings {
     object ScheduleEvent {
@@ -16,24 +14,29 @@ object Strings {
         const val InputUrl = "Введите ссылку на мероприятие"
 
         // TODO тут придумать сообщение
-        const val EventIsCreated = "Мероприятие добавлено в календарь! " +
+        const val EventIsCreated = "Мероприятие добавлено в календарь ✅ " +
             "Участникам отправлено оповещение о новом мероприятии"
 
-        const val EventNotCreated = "Мероприятие не создано"
+        const val EventNotCreated = "❌ Мероприятие не создано"
         const val InvalidDataFormat = "Введён неверный формат данных. "
         fun message(event: Event) = buildEntities {
             bold("Название: ")
             regular(event.name)
+            regularln("")
             boldln("Дата и время начала: ")
             regular(event.timestampBegin.toString())
+            regularln("")
             boldln("Дата и время окончания: ")
             regular(event.timestampEnd.toString())
-            if (!event.description.equals(null)) {
+            if (event.description != null) {
+                regularln("")
                 boldln("Краткое описание: ")
                 event.description?.let { regular(it) }
             }
+            regularln("")
             boldln("Ссылка: ")
             regular(event.url)
+            regularln("")
             italicln("\nВсе верно?")
         }
     }
@@ -45,9 +48,8 @@ object Strings {
         const val NotRemove = "❌ Мероприятие не удалено "
     }
 
-    private val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)
 
-    // TODO тут придумать сообщение для рассылки пользователям
+    // TODO придумать как выводить дату и время
 
     const val New = "📅 Новое мероприятие\n"
     fun eventMessage(event: Event) = buildEntities {

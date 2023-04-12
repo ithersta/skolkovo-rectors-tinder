@@ -30,6 +30,7 @@ data class InputUrlState(
     val description: String? = null
 ) : DialogState
 
+@Serializable
 data class AskUserToCreateEvent(
     val name: String,
     val beginDateTime: Instant,
