@@ -24,7 +24,8 @@ data class StringsCity(
 
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
     stringsCity: StringsCity,
-    onFinish: (State, Long) -> DialogState
+    onFinish: (State, Long) -> DialogState,
+    onNone: (State) -> DialogState
 ) {
     val cityRepository: CityRepository by inject()
     val transaction: Transaction by inject()
@@ -46,8 +47,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         if (result != null) {
             state.override { onFinish(state.snapshot, result) }
         } else {
-            System.out.println("J____________")
-            state.override { AddCityUserState() }
+            state.override { onNone(state.snapshot) }
         }
         // /TODO:потом обработчик Ивана сюда вставить
     }

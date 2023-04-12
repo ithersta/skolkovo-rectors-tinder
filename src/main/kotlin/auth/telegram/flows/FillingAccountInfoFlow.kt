@@ -1,5 +1,6 @@
 package auth.telegram.flows
 
+import addorganizations.telegram.states.AddCityUserState
 import addorganizations.telegram.states.AddOrganizationUserState
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
@@ -99,7 +100,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseCity> {
         selectCity(
             stringsCity = DropdownWebAppStrings.CityDropdown,
-            onFinish = { state, city -> state.next(city) }
+            onFinish = { state, city -> state.next(city) },
+            onNone = { AddCityUserState() }
         )
     }
 

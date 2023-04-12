@@ -33,6 +33,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
 
     role<User.Unauthenticated> {
         fillingAccountInfoFlow()
+        addCityOrganizationUserFlow()
         anyState {
             onCommand("start", null) {
                 state.override { WaitingForContact }
