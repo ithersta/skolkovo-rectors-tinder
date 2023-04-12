@@ -20,7 +20,7 @@ import java.time.DayOfWeek
 val dataModule = module(createdAtStart = true) {
     single {
         Database.connect("jdbc:h2:./database;MODE=MySQL;", driver = "org.h2.Driver").also { database ->
-            transaction(database) { runMigrations() }
+            transaction(database) { runMigrations(get()) }
         }
     }
 }

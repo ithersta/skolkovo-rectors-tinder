@@ -12,18 +12,20 @@ object CommonStrings {
         const val No = "Нет"
         const val Back = "◀️ Назад"
     }
+
     const val InternalError = "Произошла внутренняя ошибка бота."
 }
+
 fun accountInfo(userDetails: User.Details): TextSourcesList {
     return buildEntities {
         bold("Имя: ")
         regularln(userDetails.name)
         bold("Город: ")
-        regularln(userDetails.city)
+        regularln(userDetails.city.name)
         bold("Должность: ")
         regularln(userDetails.job)
         bold("Организация: ")
-        regularln(userDetails.organization)
+        regularln(userDetails.organization.name)
         bold("Деятельность: ")
         regularln(userDetails.activityDescription)
         regularln("")

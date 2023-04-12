@@ -12,6 +12,7 @@ import common.telegram.DialogState
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
+import common.telegram.functions.selectOrganization
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
@@ -24,7 +25,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     val changeAccountInfoInteractor: ChangeAccountInfoInteractor by inject()
     anyState {
         onDataCallbackQuery(WaitingForCity::class) {
-            state.override { WaitingForCityState() }
+            state.override { WaitingForCityState }
         }
         onDataCallbackQuery(WaitingForNewName::class) {
             state.override { WaitingForNewNameState }
@@ -54,7 +55,8 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     state<ChangeCityState> {
         onEnter {
             changeAccountInfoInteractor.changeCity(it.chatId, state.snapshot.city)
-            state.override { DialogState.Empty }
+
+            state.override { WaitingForOrganizationTypeState }
         }
     }
     state<WaitingForNewNameState> {
@@ -91,19 +93,25 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     state<ChangeOrganizationTypeState> {
         onEnter {
             changeAccountInfoInteractor.changeOrganizationType(it.chatId, state.snapshot.type)
-            state.override { WaitingForOrganizationState }
+
+            state.override {
+                WaitingForOrganizationState(
+                    getUserDetailsUseCase(it.chatId)!!.city.id
+                )
+            }
         }
     }
 
     state<WaitingForOrganizationState> {
+        selectOrganization(
+            cityId = { it.cityId },
+            onFinish = { state, organization -> state.next(organization) }
+        )
+    }
+
+    state<ChangeOrganizationState> {
         onEnter {
-            sendTextMessage(
-                it,
-                Strings.Fields.Organization.Message
-            )
-        }
-        onText {
-            changeAccountInfoInteractor.changeOrganization(it.chat.id.chatId, it.content.text)
+            changeAccountInfoInteractor.changeOrganization(it.chatId, state.snapshot.organizationId)
             state.override { DialogState.Empty }
         }
     }
