@@ -58,7 +58,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
         state<InputEndDateTimeState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputEndDateTime) }
             onText {
-                // TODO тут нужна проверка на то, чтобы дата и время начала не были позже даты и время окончания
                 val endDateTime = try {
                     LocalDateTime.parse(
                         it.content.text,
@@ -73,7 +72,21 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     )
                     return@onText
                 }
-                state.override { InputDescriptionState(state.snapshot.name, state.snapshot.beginDateTime, endDateTime) }
+                if (endDateTime.epochSeconds < state.snapshot.beginDateTime.epochSeconds) {
+                    sendTextMessage(
+                        it.chat,
+                        Strings.ScheduleEvent.InvalidTimeInterval
+                    )
+                    state.override { InputBeginDateTimeState(state.snapshot.name) }
+                } else {
+                    state.override {
+                        InputDescriptionState(
+                            state.snapshot.name,
+                            state.snapshot.beginDateTime,
+                            endDateTime
+                        )
+                    }
+                }
             }
         }
         state<InputDescriptionState> {

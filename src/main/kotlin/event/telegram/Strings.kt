@@ -17,6 +17,7 @@ object Strings {
             "Участникам сообщества отправлено оповещение о новом мероприятии"
 
         const val EventNotCreated = "❌ Мероприятие не создано"
+        const val InvalidTimeInterval = "Некорректно указан временной интервал"
         const val InvalidDataFormat = "Введён неверный формат данных. "
         fun message(event: Event) = buildEntities {
             bold("Название: ")
@@ -48,6 +49,11 @@ object Strings {
     }
 
     // TODO придумать как выводить дату и время
+//    fun formatInstant(instant: Instant): String {
+//        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+//        return formatter.format(instant)
+//    }
+
 
     fun eventMessage(event: Event) = buildEntities {
         regular("📅 Новое мероприятие  ")
