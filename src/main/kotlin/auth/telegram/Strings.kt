@@ -4,6 +4,7 @@ package auth.telegram
 
 import auth.domain.entities.Course
 import auth.domain.entities.OrganizationType
+import auth.domain.entities.User
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import auth.telegram.Strings.Courses.EducationalProgramsCode
 import auth.telegram.Strings.Courses.LeadersOfBreakthrough

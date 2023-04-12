@@ -25,7 +25,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     val changeAccountInfoInteractor: ChangeAccountInfoInteractor by inject()
     anyState {
         onDataCallbackQuery(WaitingForCity::class) {
-            state.override { WaitingForCityState }
+            state.override { WaitingForCityState() }
         }
         onDataCallbackQuery(WaitingForNewName::class) {
             state.override { WaitingForNewNameState }
