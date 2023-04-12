@@ -20,7 +20,11 @@ class JsonStorageClient(
             retryIf(maxRetries = 30) { _, response ->
                 response.status.isSuccess().not()
             }
+            retryOnException(retryOnTimeout = true)
             constantDelay()
+        }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 1000
         }
     }
 ) {
