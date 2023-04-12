@@ -9,10 +9,10 @@ import dev.inmo.tgbotapi.types.UserId
 import menus.states.MenuState
 
 fun StateMachineBuilder<DialogState, User, UserId>.getEventsByUserFlow() {
-    role<User.Normal>{
-        state<MenuState.Events>{
-            onEnter{
-                //TODO
+    role<User.Normal> {
+        state<MenuState.Events> {
+            onEnter {
+                // TODO
                 sendTextMessage(it, "Ссылка на мероприятия: https://www.skolkovo.ru/navigator/events/")
                 state.override { DialogState.Empty }
             }

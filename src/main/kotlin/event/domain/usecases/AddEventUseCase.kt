@@ -10,7 +10,7 @@ class AddEventUseCase(
     private val eventRepository: EventRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(event: Event) = transaction{
+    operator fun invoke(event: Event) = transaction {
         eventRepository.add(event)
     }
 }
