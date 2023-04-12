@@ -18,11 +18,14 @@ repositories {
 
 val exposedVersion = "0.41.1"
 dependencies {
-    implementation("com.ithersta.tgbotapi:boot:0.1.12")
+    implementation("com.ithersta.tgbotapi:boot:0.1.14")
     implementation("com.ithersta.tgbotapi:commands:0.3.0")
     implementation("io.ktor:ktor-client-okhttp:2.2.4")
+    implementation("io.ktor:ktor-client-content-negotiation:2.2.4")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.4")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
     implementation("com.h2database:h2:2.1.214")
     implementation("org.apache.poi:poi:5.2.3")
@@ -35,7 +38,7 @@ dependencies {
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.4.0")
-    testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("io.mockk:mockk:1.13.5")
     testImplementation("app.cash.turbine:turbine:0.12.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 }

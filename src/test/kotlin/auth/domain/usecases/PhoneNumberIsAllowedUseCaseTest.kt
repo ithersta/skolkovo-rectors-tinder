@@ -2,7 +2,6 @@ package auth.domain.usecases
 
 import NoOpTransaction
 import auth.domain.entities.PhoneNumber
-import auth.domain.repository.PhoneNumberRepository
 import auth.domain.repository.UserRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -16,30 +15,11 @@ internal class PhoneNumberIsAllowedUseCaseTest {
     fun `Duplicate phone number`() {
         val userRepository = mockk<UserRepository>()
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns true
-        val phoneNumberRepository = mockk<PhoneNumberRepository>()
-        every { phoneNumberRepository.isActive(samplePhoneNumber) } returns true
         val isAdminUseCase = mockk<IsAdminUseCase>()
         every { isAdminUseCase.invoke(any()) } returns false
-        val phoneNumberIsAllowed =
-            PhoneNumberIsAllowedUseCase(phoneNumberRepository, userRepository, NoOpTransaction, isAdminUseCase)
+        val phoneNumberIsAllowed = PhoneNumberIsAllowedUseCase(userRepository, NoOpTransaction, isAdminUseCase)
         assertEquals(
             PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber,
-            phoneNumberIsAllowed(0L, samplePhoneNumber)
-        )
-    }
-
-    @Test
-    fun `Phone number not allowed`() {
-        val userRepository = mockk<UserRepository>()
-        every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
-        val phoneNumberRepository = mockk<PhoneNumberRepository>()
-        every { phoneNumberRepository.isActive(samplePhoneNumber) } returns false
-        val isAdminUseCase = mockk<IsAdminUseCase>()
-        every { isAdminUseCase.invoke(any()) } returns false
-        val phoneNumberIsAllowed =
-            PhoneNumberIsAllowedUseCase(phoneNumberRepository, userRepository, NoOpTransaction, isAdminUseCase)
-        assertEquals(
-            PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed,
             phoneNumberIsAllowed(0L, samplePhoneNumber)
         )
     }
@@ -48,12 +28,9 @@ internal class PhoneNumberIsAllowedUseCaseTest {
     fun ok() {
         val userRepository = mockk<UserRepository>()
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
-        val phoneNumberRepository = mockk<PhoneNumberRepository>()
-        every { phoneNumberRepository.isActive(samplePhoneNumber) } returns true
         val isAdminUseCase = mockk<IsAdminUseCase>()
         every { isAdminUseCase.invoke(any()) } returns false
-        val phoneNumberIsAllowed =
-            PhoneNumberIsAllowedUseCase(phoneNumberRepository, userRepository, NoOpTransaction, isAdminUseCase)
+        val phoneNumberIsAllowed = PhoneNumberIsAllowedUseCase(userRepository, NoOpTransaction, isAdminUseCase)
         assertEquals(PhoneNumberIsAllowedUseCase.Result.OK, phoneNumberIsAllowed(0L, samplePhoneNumber))
     }
 }

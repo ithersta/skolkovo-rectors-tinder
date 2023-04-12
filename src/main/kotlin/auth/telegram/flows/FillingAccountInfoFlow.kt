@@ -6,7 +6,6 @@ import auth.domain.usecases.PhoneNumberIsAllowedUseCase
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.WriteName
-import auth.telegram.Strings.AccountInfo.WriteOrganization
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.AuthenticationResults
@@ -16,7 +15,6 @@ import auth.telegram.Strings.OrganizationTypes.ChooseOrganizationType
 import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.courseToString
-import auth.telegram.parsers.JsonParser
 import auth.telegram.queries.ChooseCourseQuery
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
@@ -27,23 +25,23 @@ import common.telegram.DialogState
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
+import common.telegram.functions.selectOrganization
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 
-val jsonParser: JsonParser = JsonParser()
-
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
-    val registerUserUseCase: RegisterUserUseCase by inject()
     val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
+    val registerUserUseCase: RegisterUserUseCase by inject()
 
     state<WaitingForContact> {
         onEnter {
@@ -62,11 +60,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             when (phoneNumberIsAllowedUseCase(message.chat.id.chatId, phoneNumber)) {
                 PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber -> {
                     sendTextMessage(message.chat, AuthenticationResults.DuplicatePhoneNumber)
-                    state.override { DialogState.Empty }
-                }
-
-                PhoneNumberIsAllowedUseCase.Result.PhoneNumberNotAllowed -> {
-                    sendTextMessage(message.chat, AuthenticationResults.PhoneNumberNotAllowed)
                     state.override { DialogState.Empty }
                 }
 
@@ -108,7 +101,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteProfessionState> {
-        onEnter { sendTextMessage(it, WriteProfession) }
+        onEnter { sendTextMessage(it, WriteProfession, replyMarkup = ReplyKeyboardRemove()) }
         onText { state.override { next(it.content.text) } }
     }
 
@@ -120,11 +113,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteOrganizationState> {
-        onEnter { sendTextMessage(it, WriteOrganization) }
-        onText { state.override { next(it.content.text) } }
+        selectOrganization(
+            cityId = { it.cityId },
+            onFinish = { state, organization -> state.next(organization) }
+        )
     }
+
     state<WriteProfessionalDescriptionState> {
-        onEnter { sendTextMessage(it, WriteProfessionalActivity) }
+        onEnter { sendTextMessage(it, WriteProfessionalActivity, replyMarkup = ReplyKeyboardRemove()) }
         onText { state.override { next(it.content.text) } }
     }
     state<ChooseQuestionAreasState> {
@@ -140,13 +136,13 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<AddAccountInfoToDataBaseState> {
         onEnter {
-            val details = User.Details(
+            val details = User.NewDetails(
                 it.chatId,
                 state.snapshot.phoneNumber,
                 state.snapshot.course,
                 state.snapshot.name,
-                state.snapshot.city,
                 state.snapshot.profession,
+                state.snapshot.cityId,
                 state.snapshot.organizationType,
                 state.snapshot.organization,
                 state.snapshot.professionalDescription,
@@ -159,9 +155,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
                 RegisterUserUseCase.Result.AlreadyRegistered ->
                     AuthenticationResults.AlreadyRegistered
-
-                RegisterUserUseCase.Result.PhoneNumberNotAllowed ->
-                    AuthenticationResults.PhoneNumberNotAllowed
 
                 RegisterUserUseCase.Result.OK ->
                     AuthenticationResults.OK

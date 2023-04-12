@@ -23,7 +23,6 @@ import mute.telegram.flows.muteFlow
 import notifications.telegram.flows.changeNotificationPreferenceFlow
 import notifications.telegram.flows.testNotificationsFlow
 import qna.telegram.flows.*
-import qna.telegram.flows.questionDigestFlow
 
 @StateMachine(baseQueryKClass = Query::class)
 val stateMachine = stateMachine<DialogState, User, UserId>(

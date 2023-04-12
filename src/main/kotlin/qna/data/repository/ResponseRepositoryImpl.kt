@@ -1,8 +1,7 @@
 package qna.data.repository
 
-import auth.data.tables.UserAreas
 import auth.data.tables.Users
-import auth.domain.entities.PhoneNumber
+import auth.data.tables.toDomainModel
 import auth.domain.entities.User
 import common.domain.Paginated
 import org.jetbrains.exposed.sql.*
@@ -37,29 +36,11 @@ class ResponseRepositoryImpl : ResponseRepository {
             .empty().not()
     }
 
-    private fun mapperRespondents(row: ResultRow): User.Details {
-        val userId = row[Users.id].value
-        val areas = UserAreas
-            .select { UserAreas.userId eq userId }
-            .map { it[UserAreas.area] }.toSet()
-        return User.Details(
-            id = userId,
-            phoneNumber = PhoneNumber.of(row[Users.phoneNumber])!!,
-            name = row[Users.name],
-            city = row[Users.city],
-            job = row[Users.job],
-            organization = row[Users.organization],
-            activityDescription = row[Users.activityDescription],
-            areas = areas,
-            course = row[Users.course],
-            organizationType = row[Users.organizationType]
-        )
-    }
-
     override fun getRespondentByQuestionId(questionId: Long): List<User.Details> {
-        return (Users innerJoin Responses)
+        val query = (Users innerJoin Responses)
+            .slice(Users.columns)
             .select(Responses.questionId eq questionId)
-            .map(::mapperRespondents)
+        return Users.Entity.wrapRows(query).map(Users.Entity::toDomainModel)
     }
 
     override fun countForQuestion(questionId: Long): Int {
