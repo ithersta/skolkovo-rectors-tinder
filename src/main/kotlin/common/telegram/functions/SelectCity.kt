@@ -25,7 +25,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         sendTextMessage(
             it,
             Strings.AccountInfo.ChooseCity,
-            replyMarkup = flatReplyKeyboard {
+            replyMarkup = flatReplyKeyboard(oneTimeKeyboard = true) {
                 dropdownWebAppButton(
                     DropdownWebAppStrings.CityDropdown.Button,
                     options = transaction { cityRepository.getAll() }.map { DropdownOption(it.id, it.name) },
@@ -35,7 +35,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
             }
         )
     }
-    onDropdownWebAppResult { (message, result) ->
+    onDropdownWebAppResult { (_, result) ->
         if (result != null) {
             state.override { onFinish(state.snapshot, result) }
         }

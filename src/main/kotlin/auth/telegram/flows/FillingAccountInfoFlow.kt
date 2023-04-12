@@ -3,6 +3,7 @@ package auth.telegram.flows
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.PhoneNumberIsAllowedUseCase
+import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.WriteName
 import auth.telegram.Strings.AccountInfo.WriteProfession
@@ -39,6 +40,7 @@ import org.koin.core.component.inject
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
     val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
+    val registerUserUseCase: RegisterUserUseCase by inject()
 
     state<WaitingForContact> {
         onEnter {
@@ -139,27 +141,28 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 state.snapshot.course,
                 state.snapshot.name,
                 state.snapshot.profession,
-                TODO(),
+                state.snapshot.cityId,
                 state.snapshot.organizationType,
-                TODO(),
+                state.snapshot.organization,
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas
             )
-//
-//            val resultResponse = when (registerUserUseCase(details)) {
-//                RegisterUserUseCase.Result.DuplicatePhoneNumber ->
-//                    AuthenticationResults.DuplicatePhoneNumber
-//
-//                RegisterUserUseCase.Result.AlreadyRegistered ->
-//                    AuthenticationResults.AlreadyRegistered
-//
-//                RegisterUserUseCase.Result.OK ->
-//                    AuthenticationResults.OK
-//
-//                RegisterUserUseCase.Result.NoAreasSet ->
-//                    AuthenticationResults.NoAreaSet
-//            }
-//            sendTextMessage(it, resultResponse)
+
+
+            val resultResponse = when (registerUserUseCase(details)) {
+                RegisterUserUseCase.Result.DuplicatePhoneNumber ->
+                    AuthenticationResults.DuplicatePhoneNumber
+
+                RegisterUserUseCase.Result.AlreadyRegistered ->
+                    AuthenticationResults.AlreadyRegistered
+
+                RegisterUserUseCase.Result.OK ->
+                    AuthenticationResults.OK
+
+                RegisterUserUseCase.Result.NoAreasSet ->
+                    AuthenticationResults.NoAreaSet
+            }
+            sendTextMessage(it, resultResponse)
             sendNotificationPreferencesMessage(it)
             state.override { DialogState.Empty }
         }
