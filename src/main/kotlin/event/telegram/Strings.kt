@@ -30,7 +30,7 @@ object Strings {
             if (event.description != null) {
                 regularln("")
                 bold("Краткое описание: ")
-                event.description?.let { regular(it) }
+                regular(event.description)
             }
             regularln("")
             bold("Ссылка: ")
