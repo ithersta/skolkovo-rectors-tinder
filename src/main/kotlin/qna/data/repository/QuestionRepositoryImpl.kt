@@ -59,13 +59,13 @@ class QuestionRepositoryImpl : QuestionRepository {
         from: Instant,
         until: Instant,
         viewerUserId: Long,
-        questionArea: QuestionArea?,
+        area: QuestionArea?,
         limit: Int,
         offset: Int
     ): Paginated<Question> {
-        val (viewerCity, viewerOrganization) = Users
+        val (viewerCityId, viewerOrganizationId) = Users
             .select { Users.id eq viewerUserId }
-            .map { it[Users.city] to it[Users.organization] }.first()
+            .map { it[Users.cityId] to it[Users.organizationId] }.first()
         val viewerAreas = UserAreas
             .slice(UserAreas.area)
             .select { UserAreas.userId eq viewerUserId }
@@ -81,12 +81,15 @@ class QuestionRepositoryImpl : QuestionRepository {
                         (Questions.authorId neq viewerUserId) and
                         case()
                             .When(Questions.hideFrom eq NoOne, booleanLiteral(true))
-                            .When(Questions.hideFrom eq SameCity, Users.city neq viewerCity)
-                            .When(Questions.hideFrom eq SameOrganization, Users.organization neq viewerOrganization)
+                            .When(Questions.hideFrom eq SameCity, Users.cityId neq viewerCityId)
+                            .When(
+                                Questions.hideFrom eq SameOrganization,
+                                Users.organizationId neq viewerOrganizationId
+                            )
                             .Else(booleanLiteral(false))
                 }
                 .let { query ->
-                    questionArea?.let { query.andWhere { QuestionAreas.area eq it } } ?: query
+                    area?.let { query.andWhere { QuestionAreas.area eq it } } ?: query
                 }
                 .withDistinct()
                 .orderBy(Questions.at)
@@ -130,11 +133,11 @@ class QuestionRepositoryImpl : QuestionRepository {
         val questionAreas = QuestionAreas
             .slice(QuestionAreas.area)
             .select { QuestionAreas.questionId eq questionId }
-        val (hideFrom, authorCity, authorOrganization) = Questions
+        val (hideFrom, authorCityId, authorOrganizationId) = Questions
             .innerJoin(Users)
-            .slice(Questions.hideFrom, Users.city, Users.organization)
+            .slice(Questions.hideFrom, Users.cityId, Users.organizationId)
             .select { Questions.id eq questionId }.first()
-            .let { Triple(it[Questions.hideFrom], it[Users.city], it[Users.organization]) }
+            .let { Triple(it[Questions.hideFrom], it[Users.cityId], it[Users.organizationId]) }
         val muteUsers = MuteSettings
             .slice(MuteSettings.userId)
             .selectAll()
@@ -148,8 +151,8 @@ class QuestionRepositoryImpl : QuestionRepository {
             .let { query ->
                 when (hideFrom) {
                     NoOne -> query
-                    SameCity -> query.andWhere { Users.city neq authorCity }
-                    SameOrganization -> query.andWhere { Users.organization neq authorOrganization }
+                    SameCity -> query.andWhere { Users.cityId neq authorCityId }
+                    SameOrganization -> query.andWhere { Users.organizationId neq authorOrganizationId }
                 }
             }
             .except(muteUsers)

@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.koin.core.annotation.Single
+import organizations.data.tables.Organizations
 import qna.data.tables.AcceptedResponses
 import qna.data.tables.Questions
 import qna.data.tables.Responses
@@ -20,6 +21,7 @@ class FeedbackRepositoryImpl : FeedbackRepository {
         return AcceptedResponses
             .join(Responses, JoinType.INNER, AcceptedResponses.responseId, Responses.id)
             .join(Users, JoinType.INNER, Responses.respondentId, Users.id)
+            .join(Organizations, JoinType.INNER, Users.organizationId, Organizations.id)
             .join(Questions, JoinType.INNER, Responses.questionId, Questions.id)
             .select {
                 (AcceptedResponses.at less atUntil) and
@@ -31,7 +33,7 @@ class FeedbackRepositoryImpl : FeedbackRepository {
                     responseId = it[Responses.id].value,
                     respondentName = it[Users.name],
                     respondentPhoneNumber = PhoneNumber.of(it[Users.phoneNumber])!!,
-                    respondentOrganization = it[Users.organization],
+                    respondentOrganization = it[Organizations.name],
                     questionAuthorUserId = it[Questions.authorId].value
                 )
             }
