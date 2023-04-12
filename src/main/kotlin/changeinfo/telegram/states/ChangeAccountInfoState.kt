@@ -31,7 +31,7 @@ object WaitingForOrganizationTypeState : DialogState
 data class ChangeOrganizationTypeState(val type: OrganizationType) : DialogState
 
 @Serializable
-class WaitingForOrganizationState (
+class WaitingForOrganizationState(
     val cityId: Long
 
 ) : DialogState {
@@ -39,8 +39,8 @@ class WaitingForOrganizationState (
 }
 
 @Serializable
-class ChangeOrganizationState (
-    val organizationId : Long
+class ChangeOrganizationState(
+    val organizationId: Long
 
 ) : DialogState
 

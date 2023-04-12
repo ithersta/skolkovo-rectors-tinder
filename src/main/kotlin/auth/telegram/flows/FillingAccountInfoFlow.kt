@@ -113,7 +113,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WriteOrganizationState> {
         selectOrganization(
-            cityId = {it.cityId},
+            cityId = { it.cityId },
             onFinish = { state, organization -> state.next(organization) }
         )
     }
@@ -147,7 +147,6 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas
             )
-
 
             val resultResponse = when (registerUserUseCase(details)) {
                 RegisterUserUseCase.Result.DuplicatePhoneNumber ->
