@@ -1,4 +1,4 @@
-package adduniversity.telegram.queries
+package addorganizations.telegram.queries
 
 import common.telegram.Query
 import kotlinx.serialization.SerialName
@@ -12,6 +12,6 @@ class AddCityQuery(
 
 @Serializable
 @SerialName("add_university_admin")
-class AddUniversityQuery(
+class AddOrganizationQuery(
     val userId: Long
 ) : Query

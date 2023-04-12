@@ -1,3 +1,4 @@
+import addorganizations.telegram.flows.addCityOrganizationUserFlow
 import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.fillingAccountInfoFlow
@@ -63,6 +64,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         questionDigestFlow()
         newResponseFlow()
         oldQuestionFlow()
+        addCityOrganizationUserFlow()
     }
     accountInfoFlow()
     muteFlow()

@@ -1,12 +1,10 @@
 package common.telegram.functions
 
 import auth.domain.entities.User
-import auth.telegram.Strings
 import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.domain.Transaction
 import common.telegram.DialogState
-import common.telegram.strings.DropdownWebAppStrings
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.types.UserId
@@ -16,25 +14,37 @@ import dropdown.onDropdownWebAppResult
 import org.koin.core.component.inject
 import organizations.domain.repository.OrganizationRepository
 
+data class StringsOrganization(
+    val chooseOrganization: String,
+    val button: String,
+    val confirmation: String,
+    val noOrganization: String
+)
+
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectOrganization(
-    cityId: (State) -> Long,
-    onFinish: (State, Long) -> DialogState
+    stringsOrganization: StringsOrganization,
+    cityId: (State) -> Long?,
+    onFinish: (State, Long) -> DialogState,
+    onNone: (State) -> DialogState
 ) {
     val organizationRepository: OrganizationRepository by inject()
     val transaction: Transaction by inject()
     onEnter {
         sendTextMessage(
             it,
-            Strings.AccountInfo.WriteOrganization,
+            stringsOrganization.chooseOrganization,
             replyMarkup = flatReplyKeyboard(oneTimeKeyboard = true) {
                 dropdownWebAppButton(
-                    DropdownWebAppStrings.OrganizationDropdown.Button,
+                    stringsOrganization.button,
                     options = transaction {
-                        organizationRepository.getByCityId(cityId((state.snapshot)))
-                    }
-                        .map { DropdownOption(it.id, it.name) },
-                    noneConfirmationMessage = DropdownWebAppStrings.OrganizationDropdown.Confirmation,
-                    noneOption = DropdownWebAppStrings.OrganizationDropdown.NoOrganization
+                        if (cityId((state.snapshot)) != null) {
+                            organizationRepository.getByCityId(cityId((state.snapshot))!!)
+                        } else {
+                            organizationRepository.getAll()
+                        }
+                    }.map { DropdownOption(it.id, it.name) },
+                    noneConfirmationMessage = stringsOrganization.confirmation,
+                    noneOption = stringsOrganization.noOrganization
                 )
             }
         )
@@ -42,7 +52,9 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     onDropdownWebAppResult { (_, result) ->
         if (result != null) {
             state.override { onFinish(state.snapshot, result) }
+        } else {
+            state.override { onNone(state.snapshot) }
         }
-        // /TODO:потом обработчик Ивана сюда вставить
+        //TODO:потом обработчик Ивана сюда вставить
     }
 }

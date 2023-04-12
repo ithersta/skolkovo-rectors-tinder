@@ -1,5 +1,6 @@
 package auth.telegram.flows
 
+import addorganizations.telegram.states.AddOrganizationUserState
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.PhoneNumberIsAllowedUseCase
@@ -26,6 +27,7 @@ import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
 import common.telegram.functions.selectOrganization
+import common.telegram.strings.DropdownWebAppStrings
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
@@ -96,6 +98,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<ChooseCity> {
         selectCity(
+            stringsCity = DropdownWebAppStrings.CityDropdown,
             onFinish = { state, city -> state.next(city) }
         )
     }
@@ -114,8 +117,10 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WriteOrganizationState> {
         selectOrganization(
+            stringsOrganization = DropdownWebAppStrings.organizationDropdown,
             cityId = { it.cityId },
-            onFinish = { state, organization -> state.next(organization) }
+            onFinish = { state, organization -> state.next(organization) },
+            onNone = { AddOrganizationUserState(it.cityId) }
         )
     }
 

@@ -1,12 +1,11 @@
 package common.telegram.functions
 
+import addorganizations.telegram.states.AddCityUserState
 import auth.domain.entities.User
-import auth.telegram.Strings
 import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.domain.Transaction
 import common.telegram.DialogState
-import common.telegram.strings.DropdownWebAppStrings
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.types.UserId
@@ -16,7 +15,15 @@ import dropdown.onDropdownWebAppResult
 import org.koin.core.component.inject
 import organizations.domain.repository.CityRepository
 
+data class StringsCity(
+    val chooseCity: String,
+    val button: String,
+    val confirmation: String,
+    val noCity: String
+)
+
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
+    stringsCity: StringsCity,
     onFinish: (State, Long) -> DialogState
 ) {
     val cityRepository: CityRepository by inject()
@@ -24,13 +31,13 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     onEnter {
         sendTextMessage(
             it,
-            Strings.AccountInfo.ChooseCity,
+            stringsCity.chooseCity,
             replyMarkup = flatReplyKeyboard(oneTimeKeyboard = true) {
                 dropdownWebAppButton(
-                    DropdownWebAppStrings.CityDropdown.Button,
+                    stringsCity.button,
                     options = transaction { cityRepository.getAll() }.map { DropdownOption(it.id, it.name) },
-                    noneConfirmationMessage = DropdownWebAppStrings.CityDropdown.Confirmation,
-                    noneOption = DropdownWebAppStrings.CityDropdown.NoCity
+                    noneConfirmationMessage = stringsCity.confirmation,
+                    noneOption = stringsCity.noCity
                 )
             }
         )
@@ -38,6 +45,9 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
     onDropdownWebAppResult { (_, result) ->
         if (result != null) {
             state.override { onFinish(state.snapshot, result) }
+        } else {
+            System.out.println("J____________")
+            state.override { AddCityUserState() }
         }
         // /TODO:потом обработчик Ивана сюда вставить
     }

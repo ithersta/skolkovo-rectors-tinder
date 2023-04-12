@@ -1,5 +1,6 @@
 package changeinfo.telegram.flows
 
+import addorganizations.telegram.states.AddOrganizationUserState
 import auth.domain.entities.User
 import changeinfo.domain.interactors.ChangeAccountInfoInteractor
 import changeinfo.telegram.Strings
@@ -13,6 +14,7 @@ import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
 import common.telegram.functions.selectOrganization
+import common.telegram.strings.DropdownWebAppStrings
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
@@ -49,6 +51,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     }
     state<WaitingForCityState> {
         selectCity(
+            stringsCity = DropdownWebAppStrings.CityDropdown,
             onFinish = { _, city -> ChangeCityState(city) }
         )
     }
@@ -104,8 +107,10 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
 
     state<WaitingForOrganizationState> {
         selectOrganization(
+            stringsOrganization = DropdownWebAppStrings.organizationDropdown,
             cityId = { it.cityId },
-            onFinish = { state, organization -> state.next(organization) }
+            onFinish = { state, organization -> state.next(organization) },
+            onNone = { AddOrganizationUserState(it.cityId) }
         )
     }
 

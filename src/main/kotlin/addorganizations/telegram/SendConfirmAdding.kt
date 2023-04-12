@@ -1,7 +1,7 @@
-package adduniversity.telegram
+package addorganizations.telegram
 
-import adduniversity.telegram.queries.AddCityQuery
-import adduniversity.telegram.queries.AddUniversityQuery
+import addorganizations.telegram.queries.AddCityQuery
+import addorganizations.telegram.queries.AddOrganizationQuery
 import common.domain.Transaction
 import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -10,7 +10,6 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
-import mute.telegram.queries.YesNoMuteQuery
 
 
 class SendConfirmAdding(
@@ -27,20 +26,20 @@ class SendConfirmAdding(
         if (university == null) {
             sendTextMessage(
                 UserId(botConfig.adminId!!),
-                Strings.confirmationAddingCityAdmin(city),
+                AddingStrings.confirmationAddingCityAdmin(city),
                 replyMarkup = inlineKeyboard {
                     row {
-                        dataButton(Strings.confirmation, AddCityQuery(userId))
+                        dataButton(AddingStrings.Confirmation, AddCityQuery(userId))
                     }
                 }
             )
         } else {
             sendTextMessage(
                 UserId(botConfig.adminId!!),
-                Strings.confirmationAddingUniversityAdmin(havingCity, city, university),
+                AddingStrings.confirmationAddingUniversityAdmin(havingCity, city, university),
                 replyMarkup = inlineKeyboard {
                     row {
-                        dataButton(Strings.confirmation, AddUniversityQuery(userId))
+                        dataButton(AddingStrings.Confirmation, AddOrganizationQuery(userId))
                     }
                 }
             )
