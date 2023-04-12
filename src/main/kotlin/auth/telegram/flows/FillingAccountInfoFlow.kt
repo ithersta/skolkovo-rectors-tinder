@@ -159,9 +159,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
                 is RegisterUserUseCase.Result.OK -> {
                     val chatId = details.id
-                    botConfig.adminId?.let { it1 ->
+                    if (chatId != botConfig.adminId) {
                         sendTextMessage(
-                            it1.toChatId(), writePersonInfo(result.userDetails),
+                            botConfig.adminId!!.toChatId(), writePersonInfo(result.userDetails),
                             replyMarkup = confirmationInlineKeyboard(
                                 positiveData = AdminNotice.AdminAnswerYes(chatId),
                                 negativeData = AdminNotice.AdminAnswerNo(chatId)

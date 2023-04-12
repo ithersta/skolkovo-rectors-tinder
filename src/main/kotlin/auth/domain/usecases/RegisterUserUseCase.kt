@@ -3,7 +3,6 @@ package auth.domain.usecases
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository
 import common.domain.Transaction
-import org.jetbrains.exposed.sql.update
 import org.koin.core.annotation.Single
 
 @Single
@@ -20,21 +19,21 @@ class RegisterUserUseCase(
         object NoAreasSet : Result
     }
 
-    operator fun invoke(userDetails: User.NewDetails): Result = transaction {
+    operator fun invoke(userNewDetails: User.NewDetails): Result = transaction {
 
-        if (userDetails.areas.isEmpty()) {
+        if (userNewDetails.areas.isEmpty()) {
             return@transaction Result.NoAreasSet
         }
-        if (userRepository.get(userDetails.id) != null) {
+        if (userRepository.get(userNewDetails.id) != null) {
             return@transaction Result.AlreadyRegistered
         }
-        when (phoneNumberIsAllowedUseCase(userDetails.id, userDetails.phoneNumber)) {
+        when (phoneNumberIsAllowedUseCase(userNewDetails.id, userNewDetails.phoneNumber)) {
             PhoneNumberIsAllowedUseCase.Result.DuplicatePhoneNumber ->
                 return@transaction Result.DuplicatePhoneNumber
 
             PhoneNumberIsAllowedUseCase.Result.OK -> {
-                val userDetails = userRepository.add(userDetails)
-                if (isAdminUseCase.invoke(userDetails.id)){
+                val userDetails = userRepository.add(userNewDetails)
+                if (isAdminUseCase.invoke(userDetails.id)) {
                     userRepository.approve(userDetails.id)
                 }
                 return@transaction Result.OK(userDetails)

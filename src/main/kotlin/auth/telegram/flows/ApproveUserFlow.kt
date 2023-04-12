@@ -2,7 +2,6 @@ package auth.telegram.flows
 
 import auth.domain.entities.User
 import auth.domain.usecases.ApproveUserUseCase
-import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.approvePersonInfo
 import auth.telegram.Strings.AccountWasVerified
 import auth.telegram.Strings.AdminDoNotAccept
@@ -21,7 +20,6 @@ import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.toChatId
 import generated.dataButton
 import generated.onDataCallbackQuery
-import io.ktor.http.content.*
 import notifications.telegram.admin.AdminNotice
 import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
