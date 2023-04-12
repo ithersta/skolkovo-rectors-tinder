@@ -29,7 +29,9 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
             replyMarkup = flatReplyKeyboard(oneTimeKeyboard = true) {
                 dropdownWebAppButton(
                     DropdownWebAppStrings.OrganizationDropdown.Button,
-                    options = transaction {organizationRepository.getByCityId(cityId((state.snapshot))) }.map { DropdownOption(it.id, it.name) },
+                    options = transaction {
+                        organizationRepository.getByCityId(cityId((state.snapshot))) }.
+                    map { DropdownOption(it.id, it.name) },
                     noneConfirmationMessage = DropdownWebAppStrings.OrganizationDropdown.Confirmation,
                     noneOption = DropdownWebAppStrings.OrganizationDropdown.NoOrganization
                 )
