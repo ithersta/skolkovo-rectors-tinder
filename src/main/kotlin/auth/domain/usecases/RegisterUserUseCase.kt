@@ -20,7 +20,6 @@ class RegisterUserUseCase(
     }
 
     operator fun invoke(userNewDetails: User.NewDetails): Result = transaction {
-
         if (userNewDetails.areas.isEmpty()) {
             return@transaction Result.NoAreasSet
         }
@@ -39,6 +38,5 @@ class RegisterUserUseCase(
                 return@transaction Result.OK(userDetails)
             }
         }
-
     }
 }

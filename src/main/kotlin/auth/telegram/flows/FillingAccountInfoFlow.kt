@@ -23,11 +23,11 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.functions.*
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
 import common.telegram.functions.selectOrganization
-import common.telegram.functions.*
 import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -35,8 +35,8 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
-import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
@@ -50,7 +50,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WaitingForContact> {
         onEnter {
-            sendTextMessage(it, Welcome,
+            sendTextMessage(
+                it,
+                Welcome,
                 replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                     requestContactButton(ShareContact)
                 }
@@ -166,7 +168,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     val chatId = details.id
                     if (chatId != botConfig.adminId) {
                         sendTextMessage(
-                            botConfig.adminId!!.toChatId(), writePersonInfo(result.userDetails),
+                            botConfig.adminId!!.toChatId(),
+                            writePersonInfo(result.userDetails),
                             replyMarkup = confirmationInlineKeyboard(
                                 positiveData = AdminNotice.AdminAnswerYes(chatId),
                                 negativeData = AdminNotice.AdminAnswerNo(chatId)
@@ -180,4 +183,3 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
     }
 }
-
