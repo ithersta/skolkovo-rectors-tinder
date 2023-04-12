@@ -145,7 +145,6 @@ object Strings {
         const val OK = "Ваш аккаунт на верификации."
         const val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         const val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
-        const val PhoneNumberNotAllowed = "Ваш номер телефона отсутствует в базе номеров. Обратитесь к администратору."
         const val NoAreaSet = NoQuestionArea
     }
 

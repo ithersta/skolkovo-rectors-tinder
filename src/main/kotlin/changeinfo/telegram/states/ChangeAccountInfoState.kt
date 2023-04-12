@@ -10,11 +10,7 @@ import qna.domain.entities.QuestionArea
 object WaitingForNewNameState : DialogState
 
 @Serializable
-data class WaitingForCityState(
-    val city: Long? = null
-) : DialogState {
-    fun next() = ChangeCityState(city!!)
-}
+object WaitingForCityState : DialogState
 
 @Serializable
 class ChangeCityState(
