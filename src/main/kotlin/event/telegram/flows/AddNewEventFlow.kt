@@ -10,6 +10,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.utils.row
 import event.domain.entities.Event
 import event.domain.usecases.AddEventUseCase
@@ -28,7 +29,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val addEventUseCase: AddEventUseCase by inject()
     role<User.Admin> {
         state<MenuState.AddEventState> {
-            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName) } // удалять клавиатуру тут
+            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName, replyMarkup = ReplyKeyboardRemove()) }
             onText { state.override { InputBeginDateTimeState(it.content.text) } }
         }
         state<InputBeginDateTimeState> {
@@ -38,8 +39,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     LocalDateTime.parse(
                         it.content.text,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                            .withZone(ZoneId.of("Europe/Moscow"))
-                    ) // тут как лучше?
+                            .withZone(ZoneId.of("Europe/Moscow")))
                         .toInstant(ZoneOffset.UTC).toKotlinInstant()
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(
@@ -59,8 +59,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     LocalDateTime.parse(
                         it.content.text,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                            .withZone(ZoneId.of("Europe/Moscow"))
-                    )
+                            .withZone(ZoneId.of("Europe/Moscow")))
                         .toInstant(ZoneOffset.UTC).toKotlinInstant()
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(
@@ -138,8 +137,8 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                         oneTimeKeyboard = true
                     ) {
                         row {
-                            simpleButton(CommonStrings.Button.Yes)
                             simpleButton(CommonStrings.Button.No)
+                            simpleButton(CommonStrings.Button.Yes)
                         }
                     }
                 )

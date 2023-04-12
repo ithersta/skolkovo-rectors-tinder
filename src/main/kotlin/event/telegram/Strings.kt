@@ -13,9 +13,8 @@ object Strings {
         const val NoDescription = "Нет описания"
         const val InputUrl = "Введите ссылку на мероприятие"
 
-        // TODO тут придумать сообщение
         const val EventIsCreated = "Мероприятие добавлено в календарь ✅ " +
-            "Участникам отправлено оповещение о новом мероприятии"
+            "Участникам сообщества отправлено оповещение о новом мероприятии"
 
         const val EventNotCreated = "❌ Мероприятие не создано"
         const val InvalidDataFormat = "Введён неверный формат данных. "
@@ -48,12 +47,11 @@ object Strings {
         const val NotRemove = "❌ Мероприятие не удалено "
     }
 
-
     // TODO придумать как выводить дату и время
 
-    const val New = "📅 Новое мероприятие\n"
     fun eventMessage(event: Event) = buildEntities {
-        bold(event.name)
+        regular("📅 Новое мероприятие\n")
+        boldln(event.name)
         regularln("🕓 ")
         regular(
             event.timestampBegin.toString() +
@@ -61,6 +59,6 @@ object Strings {
         )
         event.description?.let { regularln(it) }
         regularln("🔗")
-        link("Подробнее", event.url)
+        link("Ссылка", event.url)
     }
 }
