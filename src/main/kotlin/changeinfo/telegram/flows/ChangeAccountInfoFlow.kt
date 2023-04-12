@@ -64,18 +64,18 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
             sendTextMessage(
                 it,
                 Strings.Fields.City.OrganizationQuestion,
-                replyMarkup = replyKeyboard(resizeKeyboard = true,oneTimeKeyboard = true){
-                    row{
+                replyMarkup = replyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
+                    row {
                         simpleButton(CommonStrings.Button.No)
                         simpleButton(CommonStrings.Button.Yes)
                     }
                 }
             )
         }
-        onText(CommonStrings.Button.No){
+        onText(CommonStrings.Button.No) {
             state.override { DialogState.Empty }
         }
-        onText(CommonStrings.Button.Yes){
+        onText(CommonStrings.Button.Yes) {
             state.override { WaitingForOrganizationTypeState }
         }
     }
@@ -114,19 +114,21 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
         onEnter {
             changeAccountInfoInteractor.changeOrganizationType(it.chatId, state.snapshot.type)
             sendTextMessage(
-                it,SorryMessage)
+                it,
+                SorryMessage
+            )
             state.override { WaitingForOrganizationState(getUserDetailsUseCase(it.chatId)!!.city.id) }
         }
     }
 
     state<WaitingForOrganizationState> {
-         selectOrganization(
-             cityId = {it.cityId},
-             onFinish = { state, organization -> state.next(organization)}
-         )
+        selectOrganization(
+            cityId = { it.cityId },
+            onFinish = { state, organization -> state.next(organization) }
+        )
     }
 
-    state<ChangeOrganizationState>{
+    state<ChangeOrganizationState> {
         onEnter {
             changeAccountInfoInteractor.changeOrganization(it.chatId, state.snapshot.organizationId)
             state.override { DialogState.Empty }
