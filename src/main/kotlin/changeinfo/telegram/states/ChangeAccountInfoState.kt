@@ -11,14 +11,14 @@ object WaitingForNewNameState : DialogState
 
 @Serializable
 data class WaitingForCityState(
-    val city: String? = null
+    val city: Long? = null
 ) : DialogState {
     fun next() = ChangeCityState(city!!)
 }
 
 @Serializable
 class ChangeCityState(
-    val city: String
+    val city: Long
 ) : DialogState
 
 @Serializable
@@ -31,7 +31,18 @@ object WaitingForOrganizationTypeState : DialogState
 data class ChangeOrganizationTypeState(val type: OrganizationType) : DialogState
 
 @Serializable
-object WaitingForOrganizationState : DialogState
+class WaitingForOrganizationState(
+    val cityId: Long
+
+) : DialogState {
+    fun next(organization: Long) = ChangeOrganizationState(organization)
+}
+
+@Serializable
+class ChangeOrganizationState(
+    val organizationId: Long
+
+) : DialogState
 
 @Serializable
 object WaitingForProfessionalDescriptionState : DialogState
