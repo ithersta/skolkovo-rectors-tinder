@@ -17,10 +17,10 @@ class JsonStorageClient(
             json()
         }
         install(HttpRequestRetry) {
-            retryIf(maxRetries = 5) { _, response ->
+            retryIf(maxRetries = 30) { _, response ->
                 response.status.isSuccess().not()
             }
-            exponentialDelay()
+            constantDelay()
         }
     }
 ) {

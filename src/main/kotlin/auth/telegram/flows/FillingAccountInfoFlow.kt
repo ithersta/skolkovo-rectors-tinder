@@ -6,7 +6,6 @@ import auth.domain.usecases.PhoneNumberIsAllowedUseCase
 import auth.domain.usecases.RegisterUserUseCase
 import auth.telegram.Strings.AccountInfo.ChooseProfessionalAreas
 import auth.telegram.Strings.AccountInfo.WriteName
-import auth.telegram.Strings.AccountInfo.WriteOrganization
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.AuthenticationResults
@@ -26,12 +25,14 @@ import common.telegram.DialogState
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
+import common.telegram.functions.selectOrganization
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.requestContactButton
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
@@ -39,8 +40,8 @@ import notifications.telegram.sendNotificationPreferencesMessage
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
-    val registerUserUseCase: RegisterUserUseCase by inject()
     val phoneNumberIsAllowedUseCase: PhoneNumberIsAllowedUseCase by inject()
+    val registerUserUseCase: RegisterUserUseCase by inject()
 
     state<WaitingForContact> {
         onEnter {
@@ -100,7 +101,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteProfessionState> {
-        onEnter { sendTextMessage(it, WriteProfession) }
+        onEnter { sendTextMessage(it, WriteProfession, replyMarkup = ReplyKeyboardRemove()) }
         onText { state.override { next(it.content.text) } }
     }
 
@@ -112,11 +113,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     }
 
     state<WriteOrganizationState> {
-        onEnter { sendTextMessage(it, WriteOrganization) }
-        onText { state.override { next(it.content.text) } }
+        selectOrganization(
+            cityId = { it.cityId },
+            onFinish = { state, organization -> state.next(organization) }
+        )
     }
+
     state<WriteProfessionalDescriptionState> {
-        onEnter { sendTextMessage(it, WriteProfessionalActivity) }
+        onEnter { sendTextMessage(it, WriteProfessionalActivity, replyMarkup = ReplyKeyboardRemove()) }
         onText { state.override { next(it.content.text) } }
     }
     state<ChooseQuestionAreasState> {
@@ -138,9 +142,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 state.snapshot.course,
                 state.snapshot.name,
                 state.snapshot.profession,
-                TODO(),
+                state.snapshot.cityId,
                 state.snapshot.organizationType,
-                TODO(),
+                state.snapshot.organization,
                 state.snapshot.professionalDescription,
                 state.snapshot.questionAreas
             )
