@@ -14,7 +14,6 @@ object Strings {
 
         object City {
             const val Button = "город"
-            const val OrganizationQuestion = "Изменилось ли ваше место работы?"
         }
 
         object Job {
@@ -25,8 +24,6 @@ object Strings {
         object Organization {
             const val Button = "организация"
             const val Type = "Выберите тип организации – нового места работы"
-            const val SorryMessage = "Внимание! " +
-                    "\nЕсли у вас изменился также и город работы, сначала необходимо изменить его."
         }
 
         object ActivityDescription {
