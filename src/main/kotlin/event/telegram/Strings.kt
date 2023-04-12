@@ -57,7 +57,7 @@ object Strings {
         regularln("🕓 ")
         regular(
             event.timestampBegin.toString() +
-                    " - " + event.timestampEnd.toString()
+                " - " + event.timestampEnd.toString()
         )
         event.description?.let { regularln(it) }
         regularln("🔗")

@@ -28,7 +28,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val addEventUseCase: AddEventUseCase by inject()
     role<User.Admin> {
         state<MenuState.AddEventState> {
-            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName) }//удалять клавиатуру тут
+            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName) } // удалять клавиатуру тут
             onText { state.override { InputBeginDateTimeState(it.content.text) } }
         }
         state<InputBeginDateTimeState> {
@@ -36,8 +36,10 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
             onText {
                 val beginDateTime = try {
                     LocalDateTime.parse(
-                        it.content.text, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                            .withZone(ZoneId.of("Europe/Moscow"))) // тут как лучше?
+                        it.content.text,
+                        DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                            .withZone(ZoneId.of("Europe/Moscow"))
+                    ) // тут как лучше?
                         .toInstant(ZoneOffset.UTC).toKotlinInstant()
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(
@@ -55,8 +57,10 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                 // TODO тут нужна проверка на то, чтобы дата и время начала не были позже даты и время окончания
                 val endDateTime = try {
                     LocalDateTime.parse(
-                        it.content.text, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                            .withZone(ZoneId.of("Europe/Moscow")))
+                        it.content.text,
+                        DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                            .withZone(ZoneId.of("Europe/Moscow"))
+                    )
                         .toInstant(ZoneOffset.UTC).toKotlinInstant()
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(

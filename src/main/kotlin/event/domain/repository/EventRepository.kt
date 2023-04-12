@@ -7,5 +7,4 @@ interface EventRepository {
     fun getAll(): List<Event>
     fun getById(id: Int): Event
     fun removeById(id: Int)
-
 }
