@@ -23,18 +23,18 @@ object Strings {
             bold("Название: ")
             regular(event.name)
             regularln("")
-            boldln("Дата и время начала: ")
+            bold("Дата и время начала: ")
             regular(event.timestampBegin.toString())
             regularln("")
-            boldln("Дата и время окончания: ")
+            bold("Дата и время окончания: ")
             regular(event.timestampEnd.toString())
             if (event.description != null) {
                 regularln("")
-                boldln("Краткое описание: ")
+                bold("Краткое описание: ")
                 event.description?.let { regular(it) }
             }
             regularln("")
-            boldln("Ссылка: ")
+            bold("Ссылка: ")
             regular(event.url)
             regularln("")
             italicln("\nВсе верно?")
