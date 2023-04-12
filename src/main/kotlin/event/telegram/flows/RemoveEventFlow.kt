@@ -7,10 +7,15 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
+import event.domain.usecases.DeleteEventUseCase
+import event.domain.usecases.GetEventsUseCase
 import event.telegram.Strings
 import menus.states.MenuState
+import org.koin.core.component.inject
 
 fun StateMachineBuilder<DialogState, User, UserId>.removeEventFlow() {
+    val getEventsUseCase: GetEventsUseCase by inject()
+    val deleteEventUseCase: DeleteEventUseCase by inject()
     role<User.Admin> {
         state<MenuState.RemoveEventState> {
             onEnter {

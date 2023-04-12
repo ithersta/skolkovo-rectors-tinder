@@ -3,7 +3,10 @@ package event.data.repository
 import event.data.tables.Events
 import event.domain.entities.Event
 import event.domain.repository.EventRepository
+import mute.data.tables.MuteSettings
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.koin.core.annotation.Single
@@ -24,12 +27,8 @@ class EventRepositoryImpl : EventRepository {
         return Events.selectAll().map(::mapper)
     }
 
-    override fun getById(id: Int): Event {
-        TODO("Not yet implemented")
-    }
-
-    override fun removeById(id: Int) {
-        TODO("Not yet implemented")
+    override fun delete(idDel: Long) {
+        Events.deleteWhere { id eq idDel }
     }
 
     companion object {

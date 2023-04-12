@@ -5,6 +5,5 @@ import event.domain.entities.Event
 interface EventRepository {
     fun add(event: Event)
     fun getAll(): List<Event>
-    fun getById(id: Int): Event
-    fun removeById(id: Int)
+    fun delete(idDel: Long)
 }
