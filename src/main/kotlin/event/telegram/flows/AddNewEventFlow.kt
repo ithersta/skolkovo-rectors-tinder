@@ -42,7 +42,8 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     LocalDateTime.parse(
                         it.content.text,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                            .withZone(ZoneId.of("Europe/Moscow")))
+                            .withZone(ZoneId.of("Europe/Moscow"))
+                    )
                         .toInstant(ZoneOffset.UTC).toKotlinInstant()
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(
@@ -62,7 +63,8 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     LocalDateTime.parse(
                         it.content.text,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                            .withZone(ZoneId.of("Europe/Moscow")))
+                            .withZone(ZoneId.of("Europe/Moscow"))
+                    )
                         .toInstant(ZoneOffset.UTC).toKotlinInstant()
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(
