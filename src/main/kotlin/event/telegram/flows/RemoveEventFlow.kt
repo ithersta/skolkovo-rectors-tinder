@@ -11,7 +11,7 @@ import event.telegram.Strings
 import menus.states.MenuState
 
 fun StateMachineBuilder<DialogState, User, UserId>.removeEventFlow() {
-    role<User.Normal> {
+    role<User.Admin> {
         state<MenuState.RemoveEventState> {
             onEnter {
                 sendTextMessage(it, Strings.RemoveEvent.ChooseEvent)

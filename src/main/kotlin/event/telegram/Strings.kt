@@ -25,12 +25,12 @@ object Strings {
             bold("Название: ")
             regular(event.name)
             boldln("Дата и время начала: ")
-            regular(dateTimeFormatter.format(event.timestampBegin.toLocalDateTime()))
+            regular(event.timestampBegin.toString())
             boldln("Дата и время окончания: ")
-            regular(dateTimeFormatter.format(event.timestampEnd.toLocalDateTime()))
-            if (event.description.isNotEmpty()) {
+            regular(event.timestampEnd.toString())
+            if (!event.description.equals(null)) {
                 boldln("Краткое описание: ")
-                regular(event.description)
+                event.description?.let { regular(it) }
             }
             boldln("Ссылка: ")
             regular(event.url)
@@ -42,24 +42,23 @@ object Strings {
         const val ChooseEvent = "Выберите мероприятие: "
         const val Remove = "Вы действительно хотите удалить мероприятие?"
         const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
-        const val NotRemove = "Мероприятие не удалено ❌"
+        const val NotRemove = "❌ Мероприятие не удалено "
     }
 
     private val dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)
 
     // TODO тут придумать сообщение для рассылки пользователям
 
-    const val New = "📅Новое мероприятие\n"
+    const val New = "📅 Новое мероприятие\n"
     fun eventMessage(event: Event) = buildEntities {
         bold(event.name)
         regularln("🕓 ")
         regular(
-            dateTimeFormatter.format(event.timestampBegin.toLocalDateTime()) +
-                    " - " + dateTimeFormatter.format(event.timestampEnd.toLocalDateTime())
+            event.timestampBegin.toString() +
+                    " - " + event.timestampEnd.toString()
         )
-        if (event.description.isNotEmpty()) {
-            regularln(event.description)
-        }
+        event.description?.let { regularln(it) }
+
         regularln("🔗")
         link("Подробнее", event.url)
     }

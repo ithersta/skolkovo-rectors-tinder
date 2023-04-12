@@ -68,7 +68,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     }
     accountInfoFlow()
     muteFlow()
-    addEventFlow()
+    addEventFlow() //это разместить в Admin?
     removeEventFlow()
     fallback()
 }

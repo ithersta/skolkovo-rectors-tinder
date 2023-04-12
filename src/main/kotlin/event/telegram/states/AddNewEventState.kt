@@ -1,9 +1,8 @@
 package event.telegram.states
 
 import common.telegram.DialogState
-import event.telegram.serializers.OffsetDateTimeSerializer
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import java.time.OffsetDateTime
 
 @Serializable
 data class InputBeginDateTimeState(
@@ -13,35 +12,28 @@ data class InputBeginDateTimeState(
 @Serializable
 data class InputEndDateTimeState(
     val name: String,
-    @Serializable(with = OffsetDateTimeSerializer::class)
-    val beginDateTime: OffsetDateTime
+    val beginDateTime: Instant
 ) : DialogState
 
 @Serializable
 data class InputDescriptionState(
     val name: String,
-    @Serializable(with = OffsetDateTimeSerializer::class)
-    val beginDateTime: OffsetDateTime,
-    @Serializable(with = OffsetDateTimeSerializer::class)
-    val endDateTime: OffsetDateTime
+    val beginDateTime: Instant,
+    val endDateTime: Instant
 ) : DialogState
 
 @Serializable
 data class InputUrlState(
     val name: String,
-    @Serializable(with = OffsetDateTimeSerializer::class)
-    val beginDateTime: OffsetDateTime,
-    @Serializable(with = OffsetDateTimeSerializer::class)
-    val endDateTime: OffsetDateTime,
-    val description: String = ""
+    val beginDateTime: Instant,
+    val endDateTime: Instant,
+    val description: String? = null
 ) : DialogState
 
 data class AskUserToCreateEvent(
     val name: String,
-    @Serializable(with = OffsetDateTimeSerializer::class)
-    val beginDateTime: OffsetDateTime,
-    @Serializable(with = OffsetDateTimeSerializer::class)
-    val endDateTime: OffsetDateTime,
-    val description: String = "",
+    val beginDateTime: Instant,
+    val endDateTime: Instant,
+    val description: String? = null,
     val url: String
 ) : DialogState

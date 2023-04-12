@@ -12,26 +12,33 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import event.domain.entities.Event
+import event.domain.usecases.AddEventUseCase
 import event.telegram.Strings
 import event.telegram.states.*
+import kotlinx.datetime.toKotlinInstant
 import menus.states.MenuState
-import java.time.ZonedDateTime
+import org.koin.core.component.inject
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
-    role<User.Normal> {
-        state<MenuState.Events> {
-            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName) }
+    val addEventUseCase: AddEventUseCase by inject()
+    role<User.Admin> {
+        state<MenuState.AddEventState> {
+            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName) }//удалять клавиатуру тут
             onText { state.override { InputBeginDateTimeState(it.content.text) } }
         }
         state<InputBeginDateTimeState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputBeginDateTime) }
             onText {
                 val beginDateTime = try {
-                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                    // TODO тут все будет по МСК ?
-                    ZonedDateTime.parse(it.content.text, formatter).toOffsetDateTime()
+                    LocalDateTime.parse(
+                        it.content.text, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                            .withZone(ZoneId.of("Europe/Moscow"))) // тут как лучше?
+                        .toInstant(ZoneOffset.UTC).toKotlinInstant()
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(
                         it.chat,
@@ -45,19 +52,19 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
         state<InputEndDateTimeState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputEndDateTime) }
             onText {
-                val endDateTime =
-                    // TODO тут нужна проверка на то, чтобы дата и время начала не были позже даты и время окончания ?
-                    try {
-                        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                        // TODO тут все будет по МСК ?
-                        ZonedDateTime.parse(it.content.text, formatter).toOffsetDateTime()
-                    } catch (e: DateTimeParseException) {
-                        sendTextMessage(
-                            it.chat,
-                            Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputEndDateTime
-                        )
-                        return@onText
-                    }
+                // TODO тут нужна проверка на то, чтобы дата и время начала не были позже даты и время окончания
+                val endDateTime = try {
+                    LocalDateTime.parse(
+                        it.content.text, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                            .withZone(ZoneId.of("Europe/Moscow")))
+                        .toInstant(ZoneOffset.UTC).toKotlinInstant()
+                } catch (e: DateTimeParseException) {
+                    sendTextMessage(
+                        it.chat,
+                        Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputEndDateTime
+                    )
+                    return@onText
+                }
                 state.override { InputDescriptionState(state.snapshot.name, state.snapshot.beginDateTime, endDateTime) }
             }
         }
@@ -134,7 +141,14 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                 )
             }
             onText(CommonStrings.Button.Yes) {
-                // TODO добавление в бд
+                val event = Event(
+                    state.snapshot.name,
+                    state.snapshot.beginDateTime,
+                    state.snapshot.endDateTime,
+                    state.snapshot.description,
+                    state.snapshot.url
+                )
+                addEventUseCase(event)
                 // TODO рассылка всем пользователям
                 sendTextMessage(it.chat, Strings.ScheduleEvent.EventIsCreated)
                 state.override { DialogState.Empty }

@@ -11,9 +11,8 @@ class EventRepositoryImpl : EventRepository {
     override fun add(event: Event) {
         Events.insert {
             it[name] = event.name
-            // TODO тут пока проблемы
-            // it[timestampBegin] = event.timestampBegin
-            // it[timestampEnd] = event.timestampEnd
+            it[timestampBegin] = event.timestampBegin
+            it[timestampEnd] = event.timestampEnd
             it[description] = event.description
             it[url] = event.url
         }
@@ -24,6 +23,10 @@ class EventRepositoryImpl : EventRepository {
     }
 
     override fun getById(id: Int): Event {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeById(id: Int) {
         TODO("Not yet implemented")
     }
 }

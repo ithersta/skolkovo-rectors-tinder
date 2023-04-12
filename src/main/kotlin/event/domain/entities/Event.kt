@@ -1,11 +1,11 @@
 package event.domain.entities
 
-import java.time.OffsetDateTime
+import kotlinx.datetime.Instant
 
 data class Event(
     val name: String,
-    val timestampBegin: OffsetDateTime,
-    val timestampEnd: OffsetDateTime,
-    val description: String = "",
+    val timestampBegin: Instant,
+    val timestampEnd: Instant,
+    val description: String? = null,
     val url: String
 )
