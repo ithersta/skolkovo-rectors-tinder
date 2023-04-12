@@ -38,7 +38,7 @@ object Strings {
 
         const val WriteProfessionalActivity =
             "Напишите о своей деятельности - что именно Вы делаете на работе, с какими задачами сталкиваетесь"
-        const val PersonWantsAdd  ="Пользователь хочет присоединиться к чату.\n"
+        const val PersonWantsAdd = "Пользователь хочет присоединиться к чату.\n"
         const val AdminDoNotAccept = "Вы не можете присоединиться к сообществу вас не добавил админ. Прощайте."
     }
 

@@ -53,7 +53,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WaitingForContact> {
         onEnter {
-            sendTextMessage(it, Welcome,
+            sendTextMessage(
+                it,
+                Welcome,
                 replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                     requestContactButton(ShareContact)
                 }
@@ -164,15 +166,14 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
                 RegisterUserUseCase.Result.OK ->
                     AuthenticationResults.OK
-
-
             }
             if (resultResponse.equals(AuthenticationResults.OK)) {
                 // отправить админу текст какой-то о том что новый пользователь хочет присоединиться.
                 val chatId = details.id
                 botConfig.adminId?.let { it1 ->
                     sendTextMessage(
-                        it1.toChatId(), PersonWantsAdd + details.toString(),
+                        it1.toChatId(),
+                        PersonWantsAdd + details.toString(),
                         replyMarkup = confirmationInlineKeyboard(
                             positiveData = AdminNotice.AdminAnswerYes(chatId),
                             negativeData = AdminNotice.AdminAnswerNo(chatId)
@@ -196,4 +197,3 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         }
     }
 }
-
