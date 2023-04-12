@@ -17,7 +17,6 @@ import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.courseToString
 import auth.telegram.queries.ChooseCourseQuery
-import auth.telegram.queries.StartQuery
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
@@ -46,7 +45,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WaitingForContact> {
         onEnter {
-            sendTextMessage(it, Welcome,
+            sendTextMessage(
+                it,
+                Welcome,
                 replyMarkup = flatReplyKeyboard(resizeKeyboard = true, oneTimeKeyboard = true) {
                     requestContactButton(ShareContact)
                 }
@@ -162,7 +163,8 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                     val chatId = details.id
                     botConfig.adminId?.let { it1 ->
                         sendTextMessage(
-                            it1.toChatId(), writePersonInfo(result.userDetails),
+                            it1.toChatId(),
+                            writePersonInfo(result.userDetails),
                             replyMarkup = confirmationInlineKeyboard(
                                 positiveData = AdminNotice.AdminAnswerYes(chatId),
                                 negativeData = AdminNotice.AdminAnswerNo(chatId)
@@ -175,6 +177,4 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             sendTextMessage(it, resultResponse)
         }
     }
-
 }
-

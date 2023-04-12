@@ -2,7 +2,6 @@ package auth.telegram.flows
 
 import auth.domain.entities.User
 import auth.domain.usecases.ApproveUserUseCase
-import auth.telegram.Strings
 import auth.telegram.Strings.AccountInfo.approvePersonInfo
 import auth.telegram.Strings.AccountWasVerified
 import auth.telegram.Strings.AdminDoNotAccept
@@ -35,9 +34,13 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.approveUserFlow() {
             val chatID = data.chatId
             approveUserUseCase.invoke(chatID)
             sendNotificationPreferencesMessage(chatID.toChatId())
-            sendTextMessage(chatID.toChatId(), AccountWasVerified, replyMarkup = flatInlineKeyboard {
-                dataButton(StartButton, StartQuery)
-            })
+            sendTextMessage(
+                chatID.toChatId(),
+                AccountWasVerified,
+                replyMarkup = flatInlineKeyboard {
+                    dataButton(StartButton, StartQuery)
+                }
+            )
             edit(
                 query.messageCallbackQueryOrThrow().message.withContent<TextContent>()!!,
                 approvePersonInfo(getUserDetailsUseCase(chatID)!!, true),

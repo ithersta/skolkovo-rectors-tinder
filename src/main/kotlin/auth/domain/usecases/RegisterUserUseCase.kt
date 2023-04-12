@@ -3,7 +3,6 @@ package auth.domain.usecases
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository
 import common.domain.Transaction
-import org.jetbrains.exposed.sql.update
 import org.koin.core.annotation.Single
 
 @Single
@@ -21,7 +20,6 @@ class RegisterUserUseCase(
     }
 
     operator fun invoke(userDetails: User.NewDetails): Result = transaction {
-
         if (userDetails.areas.isEmpty()) {
             return@transaction Result.NoAreasSet
         }
@@ -34,12 +32,11 @@ class RegisterUserUseCase(
 
             PhoneNumberIsAllowedUseCase.Result.OK -> {
                 val userDetails = userRepository.add(userDetails)
-                if (isAdminUseCase.invoke(userDetails.id)){
+                if (isAdminUseCase.invoke(userDetails.id)) {
                     userRepository.approve(userDetails.id)
                 }
                 return@transaction Result.OK(userDetails)
             }
         }
-
     }
 }
