@@ -57,6 +57,7 @@ object Strings {
             event.timestampBegin.toString() +
                 " - " + event.timestampEnd.toString()
         )
+        regularln("")
         event.description?.let { regularln(it) }
         regularln("🔗")
         link("Ссылка", event.url)

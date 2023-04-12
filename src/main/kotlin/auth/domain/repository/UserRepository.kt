@@ -9,6 +9,7 @@ import qna.domain.entities.QuestionArea
 interface UserRepository {
     fun add(user: User.NewDetails)
     fun get(id: Long): User.Details?
+    fun getAllExceptAdmin(id: Long): List<User.Details?>
     fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean
     fun changeName(id: Long, newName: String)
     fun changeCityId(id: Long, newCityId: Long)

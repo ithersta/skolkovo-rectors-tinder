@@ -37,6 +37,11 @@ class UserRepositoryImpl : UserRepository {
         return Users.Entity.findById(id)?.toDomainModel()
     }
 
+    override fun getAllExceptAdmin(id: Long): List<User.Details?> {
+        val query = Users.select { Users.id.neq(id) }
+        return Users.Entity.wrapRows(query).map(Users.Entity::toDomainModel)
+    }
+
     override fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean {
         return Users.select { Users.phoneNumber eq phoneNumber.value }.empty().not()
     }

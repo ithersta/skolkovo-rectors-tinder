@@ -11,9 +11,11 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import event.domain.entities.Event
 import event.domain.usecases.AddEventUseCase
+import event.domain.usecases.GetAllExceptAdminUseCase
 import event.telegram.Strings
 import event.telegram.states.*
 import kotlinx.datetime.toKotlinInstant
@@ -27,6 +29,7 @@ import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val addEventUseCase: AddEventUseCase by inject()
+    val getAllExceptAdminUseCase: GetAllExceptAdminUseCase by inject()
     role<User.Admin> {
         state<MenuState.AddEventState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName, replyMarkup = ReplyKeyboardRemove()) }
@@ -152,7 +155,14 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     state.snapshot.url
                 )
                 addEventUseCase(event)
-                // TODO рассылка всем пользователям
+                getAllExceptAdminUseCase(it.messageId).forEach { user ->
+                    val id = user?.id?.toChatId()
+                    if (id != null) {
+                        runCatching {
+                            sendTextMessage(id.chatId.toChatId(), Strings.eventMessage(event))
+                        }
+                    }
+                }
                 sendTextMessage(it.chat, Strings.ScheduleEvent.EventIsCreated)
                 state.override { DialogState.Empty }
             }
