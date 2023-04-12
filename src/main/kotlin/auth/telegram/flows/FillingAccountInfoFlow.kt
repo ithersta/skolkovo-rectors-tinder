@@ -17,7 +17,6 @@ import auth.telegram.Strings.ShareContact
 import auth.telegram.Strings.Welcome
 import auth.telegram.Strings.courseToString
 import auth.telegram.queries.ChooseCourseQuery
-import auth.telegram.queries.StartQuery
 import auth.telegram.states.*
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
@@ -175,6 +174,5 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
             sendTextMessage(it, resultResponse)
         }
     }
-
 }
 
