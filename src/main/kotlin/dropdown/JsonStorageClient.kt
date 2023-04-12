@@ -25,6 +25,8 @@ class JsonStorageClient(
         }
         install(HttpTimeout) {
             requestTimeoutMillis = 1000
+            socketTimeoutMillis = 1000
+            connectTimeoutMillis = 1000
         }
     }
 ) {
