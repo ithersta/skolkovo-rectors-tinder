@@ -54,18 +54,32 @@ object Strings {
 //        return formatter.format(instant)
 //    }
 
-
-    fun eventMessage(event: Event) = buildEntities {
+    fun newEventMessage(event: Event) = buildEntities {
         regular("📅 Новое мероприятие  ")
         bold(event.name)
-        regularln("🕓 ")
+        regular("\n🕓 ")
         regular(
             event.timestampBegin.toString() +
                 " - " + event.timestampEnd.toString()
         )
         regularln("")
-        event.description?.let { regularln(it) }
-        regularln("🔗")
+        event.description?.let { italicln(it) }
+        regular("🔗")
         link("Ссылка", event.url)
+    }
+
+    fun eventMessage(event: Event) = buildEntities {
+        regular("📅 ")
+        bold(event.name)
+        regular("\n🕓 ")
+        regular(
+            event.timestampBegin.toString() +
+                    " - " + event.timestampEnd.toString()
+        )
+        regularln("")
+        event.description?.let { italicln(it) }
+        regular("🔗")
+        link("Ссылка", event.url)
+        regularln("\n")
     }
 }
