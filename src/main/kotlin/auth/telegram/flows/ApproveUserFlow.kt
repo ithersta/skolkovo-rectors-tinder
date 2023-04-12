@@ -33,9 +33,13 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.approveUserFlow() {
             val chatID = data.chatId
             approveUserUseCase.invoke(chatID)
             sendNotificationPreferencesMessage(chatID.toChatId())
-            sendTextMessage(chatID.toChatId(), AccountWasVerified, replyMarkup = flatInlineKeyboard {
-                dataButton(StartButton, StartQuery)
-            })
+            sendTextMessage(
+                chatID.toChatId(),
+                AccountWasVerified,
+                replyMarkup = flatInlineKeyboard {
+                    dataButton(StartButton, StartQuery)
+                }
+            )
             edit(
                 query.messageCallbackQueryOrThrow().message.withContent<TextContent>()!!,
                 approvePersonInfo(getUserDetailsUseCase(chatID)!!, true),

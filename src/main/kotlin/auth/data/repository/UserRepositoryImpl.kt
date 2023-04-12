@@ -16,7 +16,7 @@ import qna.domain.entities.QuestionArea
 @Single
 class UserRepositoryImpl : UserRepository {
     override fun add(user: User.NewDetails): User.Details {
-         Users.insert {
+        Users.insert {
             it[id] = user.id
             it[phoneNumber] = user.phoneNumber.value
             it[course] = user.course
