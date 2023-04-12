@@ -3,7 +3,9 @@ package event.data.repository
 import event.data.tables.Events
 import event.domain.entities.Event
 import event.domain.repository.EventRepository
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import org.koin.core.annotation.Single
 
 @Single
@@ -19,7 +21,7 @@ class EventRepositoryImpl : EventRepository {
     }
 
     override fun getAll(): List<Event> {
-        TODO("Not yet implemented")
+        return Events.selectAll().map(::mapper)
     }
 
     override fun getById(id: Int): Event {
@@ -28,5 +30,17 @@ class EventRepositoryImpl : EventRepository {
 
     override fun removeById(id: Int) {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        fun mapper(row: ResultRow): Event {
+            return Event(
+                name = row[Events.name],
+                timestampBegin = row[Events.timestampBegin],
+                timestampEnd = row[Events.timestampEnd],
+                description = row[Events.description],
+                url = row[Events.url]
+            )
+        }
     }
 }

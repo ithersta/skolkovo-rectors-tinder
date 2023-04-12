@@ -50,8 +50,8 @@ object Strings {
     // TODO придумать как выводить дату и время
 
     fun eventMessage(event: Event) = buildEntities {
-        regular("📅 Новое мероприятие\n")
-        boldln(event.name)
+        regular("📅 Новое мероприятие  ")
+        bold(event.name)
         regularln("🕓 ")
         regular(
             event.timestampBegin.toString() +

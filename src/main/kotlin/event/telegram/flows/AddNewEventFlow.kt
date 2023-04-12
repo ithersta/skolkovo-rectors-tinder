@@ -161,7 +161,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     val id = user?.id?.toChatId()
                     if (id != null) {
                         runCatching {
-                            sendTextMessage(id.chatId.toChatId(), Strings.eventMessage(event))
+                            sendTextMessage(id, Strings.eventMessage(event))
                         }
                     }
                 }
