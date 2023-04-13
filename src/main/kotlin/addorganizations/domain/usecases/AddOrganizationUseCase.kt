@@ -10,7 +10,7 @@ class AddOrganizationUseCase(
     private val organizationRepository: OrganizationRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(organization: String) : Organization = transaction {
+    operator fun invoke(organization: String): Organization = transaction {
         return@transaction organizationRepository.add(Organization.New(organization))
     }
 }

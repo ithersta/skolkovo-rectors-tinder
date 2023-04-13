@@ -1,7 +1,6 @@
 package addorganizations.telegram.states
 
 import common.telegram.DialogState
-import dev.inmo.tgbotapi.types.usernameRegex
 import kotlinx.serialization.Serializable
 
 @Serializable

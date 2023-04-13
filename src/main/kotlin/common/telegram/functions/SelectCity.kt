@@ -1,6 +1,5 @@
 package common.telegram.functions
 
-import addorganizations.telegram.states.AddCityUserState
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
