@@ -56,4 +56,3 @@ data class StringsOrganization(
     val confirmation: String,
     val noOrganization: String
 )
-
