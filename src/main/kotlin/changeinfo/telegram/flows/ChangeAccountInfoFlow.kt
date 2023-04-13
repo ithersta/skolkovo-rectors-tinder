@@ -53,7 +53,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
     state<WaitingForCityState> {
         selectCity(
             stringsCity = DropdownWebAppStrings.CityDropdown,
-            onFinish = { _, city -> ChangeCityState(city) },
+            onFinish = { _, _, city -> ChangeCityState(city) },
             onNone = { AddCityUserState() }
         )
     }

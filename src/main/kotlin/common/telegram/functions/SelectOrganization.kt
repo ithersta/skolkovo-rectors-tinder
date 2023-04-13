@@ -21,19 +21,17 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
 ) {
     val organizationRepository: OrganizationRepository by inject()
     val transaction: Transaction by inject()
-    onEnter {
+    onEnter { chatId ->
         sendTextMessage(
-            it,
+            chatId,
             stringsOrganization.chooseOrganization,
             replyMarkup = flatReplyKeyboard(oneTimeKeyboard = true) {
                 dropdownWebAppButton(
                     stringsOrganization.button,
                     options = transaction {
-                        if (cityId((state.snapshot)) != null) {
-                            organizationRepository.getByCityId(cityId((state.snapshot))!!)
-                        } else {
-                            organizationRepository.getAll()
-                        }
+                        cityId(state.snapshot)?.let { cityId ->
+                            organizationRepository.getByCityId(cityId)
+                        } ?: organizationRepository.getAll()
                     }.map { DropdownOption(it.id, it.name) },
                     noneConfirmationMessage = stringsOrganization.confirmation,
                     noneOption = stringsOrganization.noOrganization

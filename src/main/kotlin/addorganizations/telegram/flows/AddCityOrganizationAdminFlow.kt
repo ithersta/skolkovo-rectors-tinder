@@ -15,6 +15,7 @@ import common.telegram.functions.selectOrganization
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
+import dev.inmo.tgbotapi.types.toChatId
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 
@@ -35,7 +36,18 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
     state<CheckCityAdminState> {
         selectCity(
             stringsCity = AddingStrings.CityDropdown,
-            onFinish = { state, cityId -> state.end(cityId) },
+            onFinish = { chatId, state, cityId ->
+                val city = getCityByIdUseCase(cityId)!!
+                sendTextMessage(
+                    chatId,
+                    AddingStrings.havingCityAdmin(city.name)
+                )
+                sendTextMessage(
+                    state.userId.toChatId(),
+                    AddingStrings.havingCityUser(city.name)
+                )
+                DialogState.Empty
+            },
             onNone = { state -> state.next() }
         )
     }
@@ -60,23 +72,10 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
             state.override { DialogState.Empty }
         }
     }
-    state<HavingCityState> {
-        onEnter { user ->
-            val city = getCityByIdUseCase(state.snapshot.cityId)!!
-            sendTextMessage(
-                user,
-                AddingStrings.havingCityAdmin(city.name)
-            )
-            sendTextMessage(
-                UserId(state.snapshot.userId),
-                AddingStrings.havingCityUser(city.name)
-            )
-        }
-    }
     state<ChooseCityOrganizationAdminState> {
         selectCity(
             stringsCity = AddingStrings.CityOrganizationDropdown,
-            onFinish = { state, cityId -> state.next(cityId) },
+            onFinish = { _, state, cityId -> state.next(cityId) },
             onNone = { DialogState.Empty }
         )
     }

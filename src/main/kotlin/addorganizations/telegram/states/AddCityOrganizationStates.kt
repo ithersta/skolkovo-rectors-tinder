@@ -31,10 +31,6 @@ data class CheckCityAdminState(
     fun next(): DialogState {
         return AddCityAdminState(userId)
     }
-
-    fun end(cityId: Long): DialogState {
-        return HavingCityState(userId, cityId)
-    }
 }
 
 @Serializable
@@ -68,8 +64,3 @@ data class AddOrganizationAdminState(
     val organizationId: Long?
 ) : DialogState
 
-@Serializable
-data class HavingCityState(
-    val userId: Long,
-    val cityId: Long
-) : DialogState

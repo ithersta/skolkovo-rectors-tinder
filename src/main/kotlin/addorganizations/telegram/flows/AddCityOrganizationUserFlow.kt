@@ -32,7 +32,7 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
         }
         onText { message ->
             sendTextMessage(message.chat.id, AddingStrings.sentCity(message.content.text))
-            sendConfirmAdding(message.chat.id.chatId, botConfig.adminId!!, message.content.text, false, null)
+            sendConfirmAdding(message.chat.id.chatId, botConfig.adminId, message.content.text, false, null)
             state.override { ChooseOrganizationInputState(message.content.text) }
         }
     }
@@ -48,7 +48,7 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
         onEnter { user ->
             if (state.snapshot.organizationId != null) {
                 val organization = getOrganizationByIdUseCase(state.snapshot.organizationId!!)!!.name
-                sendConfirmAdding(user.chatId, botConfig.adminId!!, state.snapshot.city, false, organization)
+                sendConfirmAdding(user.chatId, botConfig.adminId, state.snapshot.city, false, organization)
                 sendTextMessage(
                     user,
                     AddingStrings.sentOrganization(
@@ -76,7 +76,7 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
             )
             sendConfirmAdding(
                 message.chat.id.chatId,
-                botConfig.adminId!!,
+                botConfig.adminId,
                 state.snapshot.city,
                 false,
                 message.content.text
@@ -103,7 +103,7 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
             )
             sendConfirmAdding(
                 message.chat.id.chatId,
-                botConfig.adminId!!,
+                botConfig.adminId,
                 city,
                 true,
                 message.content.text

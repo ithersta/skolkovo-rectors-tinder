@@ -5,8 +5,10 @@ import com.ithersta.tgbotapi.fsm.builders.StateFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import common.domain.Transaction
 import common.telegram.DialogState
+import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.flatReplyKeyboard
+import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.UserId
 import dropdown.DropdownOption
 import dropdown.dropdownWebAppButton
@@ -16,7 +18,7 @@ import organizations.domain.repository.CityRepository
 
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
     stringsCity: StringsCity,
-    onFinish: (State, Long) -> DialogState,
+    onFinish: suspend TelegramBot.(ChatId, State, Long) -> DialogState,
     onNone: (State) -> DialogState
 ) {
     val cityRepository: CityRepository by inject()
@@ -35,9 +37,10 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
             }
         )
     }
-    onDropdownWebAppResult { (_, result) ->
+    onDropdownWebAppResult { (message, result) ->
         if (result != null) {
-            state.override { onFinish(state.snapshot, result) }
+            val newState = onFinish(message.chat.id, state.snapshot, result)
+            state.override { newState }
         } else {
             state.override { onNone(state.snapshot) }
         }

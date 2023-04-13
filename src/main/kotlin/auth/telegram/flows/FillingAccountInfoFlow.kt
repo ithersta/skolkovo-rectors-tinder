@@ -100,7 +100,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<ChooseCity> {
         selectCity(
             stringsCity = DropdownWebAppStrings.CityDropdown,
-            onFinish = { state, city -> state.next(city) },
+            onFinish = { _, state, city -> state.next(city) },
             onNone = { AddCityUserState() }
         )
     }
