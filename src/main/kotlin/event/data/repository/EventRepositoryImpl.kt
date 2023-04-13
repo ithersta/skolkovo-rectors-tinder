@@ -4,7 +4,6 @@ import common.domain.Paginated
 import event.data.tables.Events
 import event.domain.entities.Event
 import event.domain.repository.EventRepository
-import mute.data.tables.MuteSettings
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
