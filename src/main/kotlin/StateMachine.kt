@@ -1,6 +1,8 @@
 import auth.domain.entities.User
 import auth.telegram.Strings
+import auth.telegram.flows.approveUserFlow
 import auth.telegram.flows.fillingAccountInfoFlow
+import auth.telegram.flows.startButtonFlow
 import auth.telegram.states.WaitingForContact
 import changeinfo.telegram.flows.changeAccountInfoFlow
 import com.ithersta.tgbotapi.boot.annotations.StateMachine
@@ -47,6 +49,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Admin> {
         with(adminMenu) { invoke() }
         testNotificationsFlow()
+        approveUserFlow()
     }
     role<User.Normal> {
         anyState {
@@ -55,6 +58,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
             }
         }
         with(normalMenu) { invoke() }
+        startButtonFlow()
         feedbackFlow()
         askQuestionFlow()
         getListOfRespondentNoAnswerFlow()
