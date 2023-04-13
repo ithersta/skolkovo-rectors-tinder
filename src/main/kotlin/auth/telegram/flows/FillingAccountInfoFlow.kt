@@ -1,5 +1,7 @@
 package auth.telegram.flows
 
+import addorganizations.telegram.states.AddCityUserState
+import addorganizations.telegram.states.AddOrganizationUserState
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.usecases.PhoneNumberIsAllowedUseCase
@@ -24,6 +26,11 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import common.telegram.functions.*
+import common.telegram.functions.chooseOrganizationType
+import common.telegram.functions.chooseQuestionAreas
+import common.telegram.functions.selectCity
+import common.telegram.functions.selectOrganization
+import common.telegram.strings.DropdownWebAppStrings
 import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -97,7 +104,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<ChooseCity> {
         selectCity(
-            onFinish = { state, city -> state.next(city) }
+            stringsCity = DropdownWebAppStrings.CityDropdown,
+            onFinish = { _, state, city -> state.next(city) },
+            onNone = { AddCityUserState() }
         )
     }
 
@@ -115,8 +124,10 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WriteOrganizationState> {
         selectOrganization(
+            stringsOrganization = DropdownWebAppStrings.OrganizationDropdown,
             cityId = { it.cityId },
-            onFinish = { state, organization -> state.next(organization) }
+            onFinish = { state, organization -> state.next(organization) },
+            onNone = { AddOrganizationUserState(it.cityId) }
         )
     }
 
@@ -165,7 +176,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
                 is RegisterUserUseCase.Result.RequiresApproval -> {
                     sendTextMessage(
-                        botConfig.adminId!!.toChatId(),
+                        botConfig.adminId.toChatId(),
                         writePersonInfo(result.userDetails),
                         replyMarkup = confirmationInlineKeyboard(
                             positiveData = UserApprovalQueries.Approve(details.id),

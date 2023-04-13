@@ -1,3 +1,5 @@
+import addorganizations.telegram.flows.addCityOrganizationAdminFlow
+import addorganizations.telegram.flows.addCityOrganizationUserFlow
 import auth.domain.entities.User
 import auth.telegram.Strings
 import auth.telegram.flows.approveUserFlow
@@ -34,6 +36,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
 
     role<User.Unauthenticated> {
         fillingAccountInfoFlow()
+        addCityOrganizationUserFlow()
         anyState {
             onCommand("start", null) {
                 state.override { WaitingForContact }
@@ -49,6 +52,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Admin> {
         with(adminMenu) { invoke() }
         testNotificationsFlow()
+        addCityOrganizationAdminFlow()
         approveUserFlow()
     }
     role<User.Normal> {
@@ -67,6 +71,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         questionDigestFlow()
         newResponseFlow()
         oldQuestionFlow()
+        addCityOrganizationUserFlow()
     }
     accountInfoFlow()
     muteFlow()

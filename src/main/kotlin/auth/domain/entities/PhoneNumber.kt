@@ -15,7 +15,7 @@ value class PhoneNumber private constructor(
                 .filterNot { it.isWhitespace() }
                 .filterNot { it in punctuation }
                 .removePrefix("+")
-        ).takeIf { "7\\d{10}".toRegex().matches(it.value) }
+        ).takeIf { "\\d{11}".toRegex().matches(it.value) }
     }
 
     override fun toString(): String {

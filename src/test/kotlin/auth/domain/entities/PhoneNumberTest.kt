@@ -14,7 +14,6 @@ internal class PhoneNumberTest {
 
     @Test
     fun `Invalid telegram phone numbers`() {
-        assertNull(PhoneNumber.of("19000000000"))
         assertNull(PhoneNumber.of("7900000000"))
         assertNull(PhoneNumber.of("79o00000000"))
         assertNull(PhoneNumber.of("++79000000000"))

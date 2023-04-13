@@ -26,10 +26,7 @@ object Strings {
 
     object AccountInfo {
         const val WriteName = "Введите свои имя и фамилию"
-        const val ChooseCity =
-            "Выберите свой город, нажав на кнопку"
         const val WriteProfession = "Напишите Вашу должность"
-        const val WriteOrganization = "Выберите ваше место работы, нажав на кнопку"
         const val ChooseProfessionalAreas =
             "Уточните Ваши профессиональные зоны компетенций (вы можете выбрать несколько)\n" +
                 "Когда вы выберете все Ваши профессиональные зоны компетенций, нажмите \"Закончить выбор\"\n" +

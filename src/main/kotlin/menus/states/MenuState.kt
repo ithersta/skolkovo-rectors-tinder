@@ -26,12 +26,6 @@ object MenuState {
     object AdminMenuState : DialogState
 
     @Serializable
-    object AddCityState : DialogState
-
-    @Serializable
-    object AddUniversityState : DialogState
-
-    @Serializable
     object AddEventState : DialogState
 
     @Serializable

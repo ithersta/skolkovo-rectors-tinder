@@ -11,6 +11,10 @@ import organizations.domain.repository.OrganizationRepository
 
 @Single
 class OrganizationRepositoryImpl : OrganizationRepository {
+    override fun getAll(): List<Organization> {
+        return Organizations.Entity.all().map(Organizations.Entity::toDomainModel)
+    }
+
     override fun add(organization: Organization.New): Organization {
         return Organizations.Entity.new {
             name = organization.name
