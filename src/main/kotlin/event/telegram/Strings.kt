@@ -43,6 +43,7 @@ object Strings {
 
     object RemoveEvent {
         const val ChooseEvent = "Выберите мероприятие: "
+        const val NoEvent = "На данный момент нет актуальных мероприятий"
         const val Remove = "Вы действительно хотите удалить мероприятие?"
         const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
         const val NotRemove = "❌ Мероприятие не удалено "

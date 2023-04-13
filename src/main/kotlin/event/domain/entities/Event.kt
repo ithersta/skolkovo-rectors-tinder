@@ -7,5 +7,6 @@ data class Event(
     val timestampBegin: Instant,
     val timestampEnd: Instant,
     val description: String? = null,
-    val url: String
+    val url: String,
+    val id: Long? = null
 )

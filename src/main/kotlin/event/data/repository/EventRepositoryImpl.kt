@@ -48,7 +48,8 @@ class EventRepositoryImpl : EventRepository {
                 timestampBegin = row[Events.timestampBegin],
                 timestampEnd = row[Events.timestampEnd],
                 description = row[Events.description],
-                url = row[Events.url]
+                url = row[Events.url],
+                id = row[Events.id].value
             )
         }
     }
