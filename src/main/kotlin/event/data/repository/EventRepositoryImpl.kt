@@ -1,5 +1,6 @@
 package event.data.repository
 
+import common.domain.Paginated
 import event.data.tables.Events
 import event.domain.entities.Event
 import event.domain.repository.EventRepository
@@ -29,6 +30,16 @@ class EventRepositoryImpl : EventRepository {
 
     override fun delete(idDel: Long) {
         Events.deleteWhere { id eq idDel }
+    }
+
+    override fun getAllPaginated(offset: Int, limit: Int): Paginated<Event> {
+        val list = {
+            Events.selectAll()
+        }
+        return Paginated(
+            slice = list().limit(limit, offset.toLong()).map(::mapper),
+            count = list().count().toInt()
+        )
     }
 
     companion object {

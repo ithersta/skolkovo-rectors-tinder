@@ -49,6 +49,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Admin> {
         with(adminMenu) { invoke() }
         testNotificationsFlow()
+        removeEventFlow()
     }
     role<User.Normal> {
         anyState {
@@ -70,6 +71,5 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     getEventsByUserFlow()
     muteFlow()
     addEventFlow()
-    removeEventFlow()
     fallback()
 }
