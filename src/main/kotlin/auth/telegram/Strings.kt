@@ -4,12 +4,16 @@ package auth.telegram
 
 import auth.domain.entities.Course
 import auth.domain.entities.OrganizationType
+import auth.domain.entities.User
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import auth.telegram.Strings.Courses.EducationalProgramsCode
 import auth.telegram.Strings.Courses.LeadersOfBreakthrough
 import auth.telegram.Strings.Courses.ManagementSchool
 import auth.telegram.Strings.Courses.RectorsSchool
 import auth.telegram.Strings.Courses.StepToSchoolDevelopment
+import common.telegram.strings.accountInfo
+import dev.inmo.tgbotapi.utils.buildEntities
+import dev.inmo.tgbotapi.utils.regularln
 import qna.domain.entities.QuestionArea
 
 object Strings {
@@ -29,11 +33,35 @@ object Strings {
                 "\nРекомендуемое количество не более 5"
 
         const val NoQuestionArea =
-            "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
+            "Вы не выбрали ни одной сферы, интересующей вас. Необходимо выбрать хотя бы одну сферу."
 
         const val WriteProfessionalActivity =
             "Напишите о своей деятельности - что именно Вы делаете на работе, с какими задачами сталкиваетесь"
+        const val PersonWantsAdd = "Пользователь хочет присоединиться к сообществу.\n"
+
+        fun writePersonInfo(userDetails: User.Details) =
+            buildEntities {
+                regularln(PersonWantsAdd)
+                addAll(accountInfo(userDetails))
+            }
+
+        const val Approved = "Новый пользователь был добавлен ✅"
+        const val NotApproved = "Новый пользователь не был добавлен ❌"
+
+        fun approvePersonInfo(userDetails: User.Details, boolean: Boolean) =
+            buildEntities {
+                regularln(if (boolean) Approved else NotApproved)
+                addAll(accountInfo(userDetails))
+            }
     }
+
+    const val AccountWasVerified = "Ваш аккаунт успешно прошел верификацию"
+    const val StartButton = "Начать работу"
+
+    val AdminDoNotAccept = """
+        |Ваша заявка не была одобрена администратором.
+        |Если вы думаете, что произошла ошибка, напишите /start и заполните профайл ещё раз.
+    """.trimMargin()
 
     const val FinishChoosing = "Закончить выбор"
 
@@ -115,6 +143,7 @@ object Strings {
 
     object AuthenticationResults {
         const val OK = "Вы успешно зарегистрированы."
+        const val RequiresApproval = "Ваш аккаунт на верификации."
         const val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         const val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
         const val NoAreaSet = NoQuestionArea

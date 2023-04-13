@@ -7,7 +7,7 @@ import qna.domain.entities.QuestionArea
 
 @Suppress("TooManyFunctions")
 interface UserRepository {
-    fun add(user: User.NewDetails)
+    fun add(user: User.NewDetails): User.Details
     fun get(id: Long): User.Details?
     fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean
     fun changeName(id: Long, newName: String)
@@ -17,4 +17,6 @@ interface UserRepository {
     fun changeOrganizationId(id: Long, newOrganizationId: Long)
     fun changeAreas(id: Long, newArea: Set<QuestionArea>)
     fun changeActivityDescription(id: Long, newActivityDescription: String)
+    fun approve(id: Long)
+    fun delete(id: Long)
 }

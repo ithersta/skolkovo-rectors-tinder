@@ -15,7 +15,7 @@ import qna.domain.entities.QuestionArea
 @Suppress("TooManyFunctions")
 @Single
 class UserRepositoryImpl : UserRepository {
-    override fun add(user: User.NewDetails) {
+    override fun add(user: User.NewDetails): User.Details {
         Users.insert {
             it[id] = user.id
             it[phoneNumber] = user.phoneNumber.value
@@ -31,6 +31,7 @@ class UserRepositoryImpl : UserRepository {
             this[UserAreas.userId] = user.id
             this[UserAreas.area] = it
         }
+        return get(user.id)!!
     }
 
     override fun get(id: Long): User.Details? {
@@ -83,5 +84,15 @@ class UserRepositoryImpl : UserRepository {
         Users.update({ Users.id eq id }) {
             it[activityDescription] = newActivityDescription
         }
+    }
+
+    override fun approve(id: Long) {
+        Users.update({ Users.id eq id }) {
+            it[isApproved] = true
+        }
+    }
+
+    override fun delete(id: Long) {
+        Users.deleteWhere { Users.id eq id }
     }
 }
