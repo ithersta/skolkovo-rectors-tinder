@@ -124,7 +124,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
                 message.chat.id,
                 AddingStrings.addOrganizationAdmin(city.name, organization.name)
             )
-            state.snapshot.userId?.let{ userId ->
+            state.snapshot.userId?.let { userId ->
                 sendTextMessage(
                     userId.toChatId(),
                     AddingStrings.addOrganizationUser(city.name, organization.name)

@@ -25,12 +25,12 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onContact
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.functions.*
 import common.telegram.functions.chooseOrganizationType
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.selectCity
 import common.telegram.functions.selectOrganization
 import common.telegram.strings.DropdownWebAppStrings
-import common.telegram.functions.*
 import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
