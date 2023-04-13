@@ -176,7 +176,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
                 is RegisterUserUseCase.Result.RequiresApproval -> {
                     sendTextMessage(
-                        botConfig.adminId!!.toChatId(),
+                        botConfig.adminId.toChatId(),
                         writePersonInfo(result.userDetails),
                         replyMarkup = confirmationInlineKeyboard(
                             positiveData = UserApprovalQueries.Approve(details.id),
