@@ -26,7 +26,7 @@ data class AddOrganizationUserState(
 
 @Serializable
 data class CheckCityAdminState(
-    val userId: Long
+    val userId: Long?
 ) : DialogState {
     fun next(): DialogState {
         return AddCityAdminState(userId)
@@ -35,12 +35,12 @@ data class CheckCityAdminState(
 
 @Serializable
 data class AddCityAdminState(
-    val userId: Long
+    val userId: Long?
 ) : DialogState
 
 @Serializable
 data class ChooseCityOrganizationAdminState(
-    val userId: Long
+    val userId: Long?
 ) : DialogState {
     fun next(cityId: Long): DialogState {
         return ChooseOrganizationAdminState(userId, cityId)
@@ -49,7 +49,7 @@ data class ChooseCityOrganizationAdminState(
 
 @Serializable
 data class ChooseOrganizationAdminState(
-    val userId: Long,
+    val userId: Long?,
     val cityId: Long
 ) : DialogState {
     fun next(organizationId: Long?): DialogState {
@@ -59,8 +59,7 @@ data class ChooseOrganizationAdminState(
 
 @Serializable
 data class AddOrganizationAdminState(
-    val userId: Long,
+    val userId: Long?,
     val cityId: Long,
     val organizationId: Long?
 ) : DialogState
-

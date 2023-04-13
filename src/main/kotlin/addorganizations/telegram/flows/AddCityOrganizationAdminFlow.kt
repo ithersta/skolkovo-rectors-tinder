@@ -26,10 +26,10 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
     val addOrganizationCityUseCase: AddOrganizationCityUseCase by inject()
     val addOrganizationUseCase: AddOrganizationUseCase by inject()
     anyState {
-        onDataCallbackQuery(AddCityQuery::class) { (data, message) ->
+        onDataCallbackQuery(AddCityQuery::class) { (data, _) ->
             state.override { CheckCityAdminState(data.userId) }
         }
-        onDataCallbackQuery(AddOrganizationQuery::class) { (data, message) ->
+        onDataCallbackQuery(AddOrganizationQuery::class) { (data, _) ->
             state.override { ChooseCityOrganizationAdminState(data.userId) }
         }
     }
@@ -42,10 +42,12 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
                     chatId,
                     AddingStrings.havingCityAdmin(city.name)
                 )
-                sendTextMessage(
-                    state.userId.toChatId(),
-                    AddingStrings.havingCityUser(city.name)
-                )
+                state.userId?.let { userId ->
+                    sendTextMessage(
+                        userId.toChatId(),
+                        AddingStrings.havingCityUser(city.name)
+                    )
+                }
                 DialogState.Empty
             },
             onNone = { state -> state.next() }
@@ -65,10 +67,12 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
                 message.chat.id,
                 AddingStrings.addCityAdmin(message.content.text)
             )
-            sendTextMessage(
-                UserId(state.snapshot.userId),
-                AddingStrings.addCityUser(message.content.text)
-            )
+            state.snapshot.userId?.let { userId ->
+                sendTextMessage(
+                    userId.toChatId(),
+                    AddingStrings.addCityUser(message.content.text)
+                )
+            }
             state.override { DialogState.Empty }
         }
     }
@@ -97,10 +101,12 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
                     user,
                     AddingStrings.havingOrganizationAdmin(city.name, organization.name)
                 )
-                sendTextMessage(
-                    UserId(state.snapshot.userId),
-                    AddingStrings.havingOrganizationUser(city.name, organization.name)
-                )
+                state.snapshot.userId?.let { userId ->
+                    sendTextMessage(
+                        userId.toChatId(),
+                        AddingStrings.havingOrganizationUser(city.name, organization.name)
+                    )
+                }
                 state.override { DialogState.Empty }
             } else {
                 sendTextMessage(
@@ -118,10 +124,13 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
                 message.chat.id,
                 AddingStrings.addOrganizationAdmin(city.name, organization.name)
             )
-            sendTextMessage(
-                UserId(state.snapshot.userId),
-                AddingStrings.addOrganizationUser(city.name, organization.name)
-            )
+            state.snapshot.userId?.let{ userId ->
+                sendTextMessage(
+                    userId.toChatId(),
+                    AddingStrings.addOrganizationUser(city.name, organization.name)
+                )
+            }
+
             state.override { DialogState.Empty }
         }
     }
