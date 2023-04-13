@@ -2,6 +2,7 @@ package addorganizations.telegram
 
 import common.telegram.functions.StringsCity
 import common.telegram.functions.StringsOrganization
+import common.telegram.strings.DropdownWebAppStrings
 
 @Suppress("TooManyFunctions")
 object AddingStrings {
@@ -10,25 +11,25 @@ object AddingStrings {
     const val InputCity = "Введите название города"
     const val InputOrganization = "Введите название организации"
     val CityDropdown = StringsCity(
-        button = "Выбрать город",
+        button = DropdownWebAppStrings.CityDropdown.button,
         confirmation = "Пожалуйста, убедитесь, что этого города действительно нет в списке.\n\n" +
             "Если вы подтвердите отсутствие города, вам будет предложено ввести его.",
-        noCity = "такого города нет в списке",
-        chooseCity = "Выберите город, нажав на кнопку"
+        noCity = DropdownWebAppStrings.CityDropdown.noCity,
+        chooseCity = DropdownWebAppStrings.CityDropdown.chooseCity
     )
     val CityOrganizationDropdown = StringsCity(
-        button = "Выбрать город",
+        button = DropdownWebAppStrings.CityDropdown.button,
         confirmation = "Пожалуйста, убедитесь, что этого города действительно нет в списке.\n\n" +
             "Если вы подтвердите отсутствие города, вы не сможете продолжить добавление организации.",
-        noCity = "такого города нет в списке",
-        chooseCity = "Выберите город, нажав на кнопку"
+        noCity = DropdownWebAppStrings.CityDropdown.noCity,
+        chooseCity = DropdownWebAppStrings.CityDropdown.chooseCity
     )
     val OrganizationDropdown = StringsOrganization(
-        button = "Выбрать организацию",
+        button = DropdownWebAppStrings.OrganizationDropdown.button,
         confirmation = "Пожалуйста, убедитесь, что этой организации действительно нет в списке.\n\n" +
             "Если вы подтвердите отсутствие организации, вам будет предложено ввести её.",
-        noOrganization = "этой организации нет в списке",
-        chooseOrganization = "Выберите организацию, нажав на кнопку"
+        noOrganization = DropdownWebAppStrings.OrganizationDropdown.noOrganization,
+        chooseOrganization = DropdownWebAppStrings.OrganizationDropdown.chooseOrganization
     )
     fun havingOrganizationAdmin(city: String, organization: String) = "Вы привязали организацию: $organization\n" +
             "к городу: $city."

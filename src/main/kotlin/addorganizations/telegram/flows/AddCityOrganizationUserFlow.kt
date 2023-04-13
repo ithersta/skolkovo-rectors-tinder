@@ -38,7 +38,7 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
     }
     state<ChooseOrganizationInputState> {
         selectOrganization(
-            stringsOrganization = DropdownWebAppStrings.organizationDropdown,
+            stringsOrganization = DropdownWebAppStrings.OrganizationDropdown,
             cityId = { null },
             onFinish = { state, organization -> state.next(organization) },
             onNone = { state -> state.next(null) }

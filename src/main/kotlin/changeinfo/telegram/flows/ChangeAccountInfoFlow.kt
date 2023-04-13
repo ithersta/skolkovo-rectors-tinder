@@ -109,7 +109,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
 
     state<WaitingForOrganizationState> {
         selectOrganization(
-            stringsOrganization = DropdownWebAppStrings.organizationDropdown,
+            stringsOrganization = DropdownWebAppStrings.OrganizationDropdown,
             cityId = { it.cityId },
             onFinish = { state, organization -> state.next(organization) },
             onNone = { AddOrganizationUserState(it.cityId) }

@@ -13,7 +13,7 @@ object DropdownWebAppStrings {
         noCity = "моего города нет в списке",
         chooseCity = "Выберите свой город, нажав на кнопку"
     )
-    val organizationDropdown = StringsOrganization(
+    val OrganizationDropdown = StringsOrganization(
         button = "Выбрать организацию",
         confirmation = "Пожалуйста, убедитесь, что вашей организации действительно нет в списке.\n\n" +
             "Если вы подтвердите отсутствие организации, вам будет предложено ввести её, " +
