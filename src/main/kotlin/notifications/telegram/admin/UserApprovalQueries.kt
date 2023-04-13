@@ -4,12 +4,12 @@ import common.telegram.Query
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-object AdminNotice {
+object UserApprovalQueries {
     @Serializable
     @SerialName("aay")
-    class AdminAnswerYes(val chatId: Long) : Query
+    class Approve(val chatId: Long) : Query
 
     @Serializable
     @SerialName("aaN")
-    class AdminAnswerNo(val chatId: Long) : Query
+    class Disapprove(val chatId: Long) : Query
 }

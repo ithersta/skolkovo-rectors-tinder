@@ -24,10 +24,6 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import common.telegram.functions.*
-import common.telegram.functions.chooseOrganizationType
-import common.telegram.functions.chooseQuestionAreas
-import common.telegram.functions.selectCity
-import common.telegram.functions.selectOrganization
 import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -40,7 +36,7 @@ import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
-import notifications.telegram.admin.AdminNotice
+import notifications.telegram.admin.UserApprovalQueries
 import org.koin.core.component.inject
 
 fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAccountInfoFlow() {
@@ -164,19 +160,19 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 RegisterUserUseCase.Result.NoAreasSet ->
                     AuthenticationResults.NoAreaSet
 
-                is RegisterUserUseCase.Result.OK -> {
-                    val chatId = details.id
-                    if (chatId != botConfig.adminId) {
-                        sendTextMessage(
-                            botConfig.adminId!!.toChatId(),
-                            writePersonInfo(result.userDetails),
-                            replyMarkup = confirmationInlineKeyboard(
-                                positiveData = AdminNotice.AdminAnswerYes(chatId),
-                                negativeData = AdminNotice.AdminAnswerNo(chatId)
-                            )
-                        )
-                    }
+                RegisterUserUseCase.Result.OK ->
                     AuthenticationResults.OK
+
+                is RegisterUserUseCase.Result.RequiresApproval -> {
+                    sendTextMessage(
+                        botConfig.adminId!!.toChatId(),
+                        writePersonInfo(result.userDetails),
+                        replyMarkup = confirmationInlineKeyboard(
+                            positiveData = UserApprovalQueries.Approve(details.id),
+                            negativeData = UserApprovalQueries.Disapprove(details.id)
+                        )
+                    )
+                    AuthenticationResults.RequiresApproval
                 }
             }
             sendTextMessage(it, resultResponse)

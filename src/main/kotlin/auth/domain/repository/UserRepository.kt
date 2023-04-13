@@ -18,4 +18,5 @@ interface UserRepository {
     fun changeAreas(id: Long, newArea: Set<QuestionArea>)
     fun changeActivityDescription(id: Long, newActivityDescription: String)
     fun approve(id: Long)
+    fun delete(id: Long)
 }

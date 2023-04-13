@@ -145,7 +145,7 @@ internal class RegisterUserUseCaseTest {
             NoOpTransaction,
             isAdminUseCase
         )
-        assertEquals(RegisterUserUseCase.Result.OK(details), registerUser(newDetails))
+        assertEquals(RegisterUserUseCase.Result.RequiresApproval(details), registerUser(newDetails))
         verify(exactly = 1) { userRepository.add(any()) }
     }
 }

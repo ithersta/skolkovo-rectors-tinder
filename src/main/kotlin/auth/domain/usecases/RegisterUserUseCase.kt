@@ -13,7 +13,8 @@ class RegisterUserUseCase(
     private val isAdminUseCase: IsAdminUseCase
 ) {
     sealed interface Result {
-        data class OK(val userDetails: User.Details) : Result
+        data class RequiresApproval(val userDetails: User.Details) : Result
+        object OK : Result
         object DuplicatePhoneNumber : Result
         object AlreadyRegistered : Result
         object NoAreasSet : Result
@@ -34,8 +35,10 @@ class RegisterUserUseCase(
                 val userDetails = userRepository.add(userNewDetails)
                 if (isAdminUseCase.invoke(userDetails.id)) {
                     userRepository.approve(userDetails.id)
+                    return@transaction Result.OK
+                } else {
+                    return@transaction Result.RequiresApproval(userDetails)
                 }
-                return@transaction Result.OK(userDetails)
             }
         }
     }

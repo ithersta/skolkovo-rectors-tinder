@@ -91,4 +91,8 @@ class UserRepositoryImpl : UserRepository {
             it[isApproved] = true
         }
     }
+
+    override fun delete(id: Long) {
+        Users.deleteWhere { Users.id eq id }
+    }
 }
