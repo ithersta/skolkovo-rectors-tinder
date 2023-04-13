@@ -49,7 +49,8 @@ internal class RegisterUserUseCaseTest {
         val registerUser = RegisterUserUseCase(
             phoneNumberIsAllowedUseCase,
             userRepository,
-            NoOpTransaction
+            NoOpTransaction,
+            isAdminUseCase
         )
         assertEquals(RegisterUserUseCase.Result.NoAreasSet, registerUser(details))
         verify(exactly = 0) { userRepository.add(any()) }
@@ -85,7 +86,8 @@ internal class RegisterUserUseCaseTest {
         val registerUser = RegisterUserUseCase(
             phoneNumberIsAllowedUseCase,
             userRepository,
-            NoOpTransaction
+            NoOpTransaction,
+            isAdminUseCase
         )
         assertEquals(RegisterUserUseCase.Result.AlreadyRegistered, registerUser(details))
         verify(exactly = 0) { userRepository.add(any()) }
@@ -105,7 +107,8 @@ internal class RegisterUserUseCaseTest {
         val registerUser = RegisterUserUseCase(
             phoneNumberIsAllowedUseCase,
             userRepository,
-            NoOpTransaction
+            NoOpTransaction,
+            isAdminUseCase
         )
         assertEquals(RegisterUserUseCase.Result.DuplicatePhoneNumber, registerUser(details))
         verify(exactly = 0) { userRepository.add(any()) }
@@ -113,22 +116,36 @@ internal class RegisterUserUseCaseTest {
 
     @Test
     fun ok() {
-        val details = sampleUserDetails
+        val newDetails = sampleUserDetails
+        val details = User.Details(
+            id = newDetails.id,
+            phoneNumber = newDetails.phoneNumber,
+            course = newDetails.course,
+            name = newDetails.name,
+            job = newDetails.job,
+            city = City(newDetails.cityId, ""),
+            organizationType = newDetails.organizationType,
+            organization = Organization(newDetails.organizationId, ""),
+            activityDescription = newDetails.activityDescription,
+            isApproved = false,
+            areas = newDetails.areas
+        )
         val userRepository = mockk<UserRepository>()
         every { userRepository.get(sampleUserId) } returns null
         every { userRepository.containsUserWithPhoneNumber(samplePhoneNumber) } returns false
-        every { userRepository.add(details) } returns Unit
+        every { userRepository.add(newDetails) } returns details
         val phoneNumberIsAllowedUseCase = mockk<PhoneNumberIsAllowedUseCase>()
-        every { phoneNumberIsAllowedUseCase.invoke(sampleUserId, details.phoneNumber) } returns
+        every { phoneNumberIsAllowedUseCase.invoke(sampleUserId, newDetails.phoneNumber) } returns
             PhoneNumberIsAllowedUseCase.Result.OK
         val isAdminUseCase = mockk<IsAdminUseCase>()
         every { isAdminUseCase.invoke(any()) } returns false
         val registerUser = RegisterUserUseCase(
             phoneNumberIsAllowedUseCase,
             userRepository,
-            NoOpTransaction
+            NoOpTransaction,
+            isAdminUseCase
         )
-        assertEquals(RegisterUserUseCase.Result.OK, registerUser(details))
+        assertEquals(RegisterUserUseCase.Result.OK(details), registerUser(newDetails))
         verify(exactly = 1) { userRepository.add(any()) }
     }
 }
