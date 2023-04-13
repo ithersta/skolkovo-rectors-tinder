@@ -14,13 +14,6 @@ import dropdown.onDropdownWebAppResult
 import org.koin.core.component.inject
 import organizations.domain.repository.CityRepository
 
-data class StringsCity(
-    val chooseCity: String,
-    val button: String,
-    val confirmation: String,
-    val noCity: String
-)
-
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectCity(
     stringsCity: StringsCity,
     onFinish: (State, Long) -> DialogState,
@@ -50,3 +43,10 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         }
     }
 }
+
+data class StringsCity(
+    val chooseCity: String,
+    val button: String,
+    val confirmation: String,
+    val noCity: String
+)

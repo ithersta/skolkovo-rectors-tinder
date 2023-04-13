@@ -3,6 +3,7 @@ package addorganizations.telegram
 import common.telegram.functions.StringsCity
 import common.telegram.functions.StringsOrganization
 
+@Suppress("TooManyFunctions")
 object AddingStrings {
 
     const val Confirmation = "Добавить"
@@ -29,27 +30,32 @@ object AddingStrings {
         noOrganization = "этой организации нет в списке",
         chooseOrganization = "Выберите организацию, нажав на кнопку"
     )
-    fun havingOrganizationAdmin(city: String, organization: String) = "Вы привязали организацию: $organization\n к городу: $city."
-    fun havingOrganizationUser(city: String, organization: String) = "Вашу организацию: $organization\n привязали к городу: $city.\n" +
+    fun havingOrganizationAdmin(city: String, organization: String) = "Вы привязали организацию: $organization\n" +
+            "к городу: $city."
+    fun havingOrganizationUser(city: String, organization: String) = "Вашу организацию: $organization\n" +
+            "привязали к городу: $city.\n" +
         "Чтобы зарегистрироваться введите /start."
     fun havingCityAdmin(city: String) = "Вы выбрали существующий город: $city"
     fun havingCityUser(city: String) = "Ваш город нашли в таблице под названием: $city.\n" +
         "Чтобы зарегистрироваться введите /start."
     fun addCityAdmin(city: String) = "Вы добавили город: $city."
     fun addCityUser(city: String) = "Ваш город добавили: $city.\n" +
-        "Чтобы зарегистрироваться введите /start."
+        "Этот город теперь можно выбрать в своем профиле." +
+            "Чтобы зарегистрироваться введите /start."
     fun addOrganizationAdmin(city: String, organization: String) = "Вы создали организацию: $organization\n" +
         "и привязали её к городу: $city."
     fun addOrganizationUser(city: String, organization: String) = "Вашу организацию добавили: $organization\n" +
         "и привязали её к городу: $city.\n" +
         "Чтобы зарегистрироваться введите /start."
     fun confirmationAddingCityAdmin(city: String) =
-        "Предлжено добавить новый город: $city\n"
+        "Предложено добавить новый город: $city\n"
     fun sentCity(city: String) = "Вы отправили запрос на добавление города: $city.\n" +
-        "Пожалуйста, подождите, пока администраторы добавят его, когда это произойдёт вам прийдет уведомление и вы сможете зарегистрироваться"
-    fun sentOrganization(organization: String, city: String) = "Вы отправили запрос на добавление организации: $organization.\n" +
-        "В городе: $city\n" +
-        "Пожалуйста, подождите, пока администраторы добавят её, когда это произойдёт вам прийдет уведомление и вы сможете зарегистрироваться"
+        "Пожалуйста, подождите, пока администраторы добавят его, когда это произойдёт вам прийдет уведомление и вы" +
+            " сможете зарегистрироваться"
+    fun sentOrganization(organization: String, city: String) = "Вы отправили запрос на добавление организации:" +
+            " $organization.\nВ городе: $city\n" +
+        "Пожалуйста, подождите, пока администраторы добавят её, когда это произойдёт вам прийдет уведомление и вы" +
+            " сможете зарегистрироваться"
 
     fun confirmationAddingOrganizationAdmin(having: Boolean, city: String, organization: String) =
         "${

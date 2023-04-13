@@ -13,14 +13,6 @@ import dropdown.dropdownWebAppButton
 import dropdown.onDropdownWebAppResult
 import org.koin.core.component.inject
 import organizations.domain.repository.OrganizationRepository
-
-data class StringsOrganization(
-    val chooseOrganization: String,
-    val button: String,
-    val confirmation: String,
-    val noOrganization: String
-)
-
 fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId>.selectOrganization(
     stringsOrganization: StringsOrganization,
     cityId: (State) -> Long?,
@@ -55,6 +47,13 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         } else {
             state.override { onNone(state.snapshot) }
         }
-        // TODO:потом обработчик Ивана сюда вставить
     }
 }
+
+data class StringsOrganization(
+    val chooseOrganization: String,
+    val button: String,
+    val confirmation: String,
+    val noOrganization: String
+)
+
