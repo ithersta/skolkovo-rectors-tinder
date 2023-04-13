@@ -63,4 +63,3 @@ data class AddOrganizationAdminState(
     val cityId: Long,
     val organizationId: Long?
 ) : DialogState
-
