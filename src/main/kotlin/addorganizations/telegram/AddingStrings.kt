@@ -15,7 +15,7 @@ object AddingStrings {
         confirmation = "Пожалуйста, убедитесь, что этого города действительно нет в списке.\n\n" +
             "Если вы подтвердите отсутствие города, вам будет предложено ввести его.",
         noCity = DropdownWebAppStrings.CityDropdown.noCity,
-        chooseCity = "Проверьте отстутствие города в списке"
+        chooseCity = "Проверьте отсутствие города в списке"
     )
     val CityOrganizationDropdown = StringsCity(
         button = DropdownWebAppStrings.CityDropdown.button,
