@@ -4,7 +4,6 @@ import addorganizations.domain.usecases.GetCityByIdUseCase
 import addorganizations.domain.usecases.GetOrganizationByIdUseCase
 import addorganizations.telegram.AddingStrings
 import addorganizations.telegram.functions.sendConfirmAdding
-import addorganizations.telegram.queries.AddCityQuery
 import addorganizations.telegram.states.*
 import auth.domain.entities.User
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
@@ -15,11 +14,8 @@ import common.telegram.functions.selectOrganization
 import common.telegram.strings.DropdownWebAppStrings
 import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
-import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
-import dev.inmo.tgbotapi.utils.row
-import generated.dataButton
 import org.koin.core.component.inject
 
 fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrganizationUserFlow() {
@@ -65,7 +61,7 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
             } else {
                 sendTextMessage(
                     user,
-                    AddingStrings.InputUniversity,
+                    AddingStrings.InputOrganization,
                     replyMarkup = ReplyKeyboardRemove()
                 )
             }
@@ -92,7 +88,7 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
         onEnter { user ->
             sendTextMessage(
                 user,
-                AddingStrings.InputUniversity,
+                AddingStrings.InputOrganization,
                 replyMarkup = ReplyKeyboardRemove()
             )
         }

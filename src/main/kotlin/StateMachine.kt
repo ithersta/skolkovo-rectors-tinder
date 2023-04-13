@@ -1,3 +1,4 @@
+import addorganizations.telegram.flows.addCityOrganizationAdminFlow
 import addorganizations.telegram.flows.addCityOrganizationUserFlow
 import auth.domain.entities.User
 import auth.telegram.Strings
@@ -49,6 +50,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
     role<User.Admin> {
         with(adminMenu) { invoke() }
         testNotificationsFlow()
+        addCityOrganizationAdminFlow()
     }
     role<User.Normal> {
         anyState {

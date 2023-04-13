@@ -1,6 +1,7 @@
 package addorganizations.telegram.states
 
 import common.telegram.DialogState
+import dev.inmo.tgbotapi.types.usernameRegex
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,5 +22,55 @@ data class AddOrganizationCityUserState(
 
 @Serializable
 data class AddOrganizationUserState(
+    val cityId: Long
+) : DialogState
+
+@Serializable
+data class CheckCityAdminState(
+    val userId: Long
+) : DialogState {
+    fun next(): DialogState {
+        return AddCityAdminState(userId)
+    }
+
+    fun end(cityId: Long): DialogState {
+        return HavingCityState(userId, cityId)
+    }
+}
+
+@Serializable
+data class AddCityAdminState(
+    val userId: Long
+) : DialogState
+
+@Serializable
+data class ChooseCityOrganizationAdminState(
+    val userId: Long
+) : DialogState {
+    fun next(cityId: Long): DialogState {
+        return ChooseOrganizationAdminState(userId, cityId)
+    }
+}
+
+@Serializable
+data class ChooseOrganizationAdminState(
+    val userId: Long,
+    val cityId: Long
+) : DialogState {
+    fun next(organizationId: Long?): DialogState {
+        return AddOrganizationAdminState(userId, cityId, organizationId)
+    }
+}
+
+@Serializable
+data class AddOrganizationAdminState(
+    val userId: Long,
+    val cityId: Long,
+    val organizationId: Long?
+) : DialogState
+
+@Serializable
+data class HavingCityState(
+    val userId: Long,
     val cityId: Long
 ) : DialogState

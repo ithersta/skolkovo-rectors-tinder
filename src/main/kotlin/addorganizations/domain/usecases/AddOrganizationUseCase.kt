@@ -6,11 +6,11 @@ import organizations.domain.entities.Organization
 import organizations.domain.repository.OrganizationRepository
 
 @Single
-class GetOrganizationByIdUseCase(
+class AddOrganizationUseCase(
     private val organizationRepository: OrganizationRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(id: Long): Organization? = transaction {
-        return@transaction organizationRepository.get(id)
+    operator fun invoke(organization: String) : Organization = transaction {
+        return@transaction organizationRepository.add(Organization.New(organization))
     }
 }

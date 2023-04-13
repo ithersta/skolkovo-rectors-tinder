@@ -38,4 +38,3 @@ suspend fun <State : DialogState, Role : User> BaseStatefulContext<DialogState, 
         )
     }
 }
-

@@ -49,6 +49,5 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
         } else {
             state.override { onNone(state.snapshot) }
         }
-        // /TODO:потом обработчик Ивана сюда вставить
     }
 }

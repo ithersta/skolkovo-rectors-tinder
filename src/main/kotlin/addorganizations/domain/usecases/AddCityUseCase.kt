@@ -6,11 +6,11 @@ import organizations.domain.entities.City
 import organizations.domain.repository.CityRepository
 
 @Single
-class GetCityByIdUseCase(
+class AddCityUseCase(
     private val cityRepository: CityRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(id: Long): City? = transaction {
-        return@transaction cityRepository.get(id)
+    operator fun invoke(city: String) = transaction {
+        cityRepository.add(City.New(city))
     }
 }
