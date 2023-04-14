@@ -11,8 +11,10 @@ import auth.telegram.Strings.AccountInfo.WriteName
 import auth.telegram.Strings.AccountInfo.WriteProfession
 import auth.telegram.Strings.AccountInfo.WriteProfessionalActivity
 import auth.telegram.Strings.AccountInfo.writePersonInfo
+import auth.telegram.Strings.ApproveButton
 import auth.telegram.Strings.AuthenticationResults
 import auth.telegram.Strings.Courses.ChooseCourse
+import auth.telegram.Strings.DisapproveButton
 import auth.telegram.Strings.InvalidShare
 import auth.telegram.Strings.OrganizationTypes.ChooseOrganizationType
 import auth.telegram.Strings.ShareContact
@@ -26,10 +28,6 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import common.telegram.functions.*
-import common.telegram.functions.chooseOrganizationType
-import common.telegram.functions.chooseQuestionAreas
-import common.telegram.functions.selectCity
-import common.telegram.functions.selectOrganization
 import common.telegram.strings.DropdownWebAppStrings
 import config.BotConfig
 import dev.inmo.tgbotapi.extensions.api.answers.answer
@@ -180,7 +178,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                         writePersonInfo(result.userDetails),
                         replyMarkup = confirmationInlineKeyboard(
                             positiveData = UserApprovalQueries.Approve(details.id),
-                            negativeData = UserApprovalQueries.Disapprove(details.id)
+                            negativeData = UserApprovalQueries.Disapprove(details.id),
+                            positiveText = ApproveButton,
+                            negativeText = DisapproveButton
                         )
                     )
                     AuthenticationResults.RequiresApproval

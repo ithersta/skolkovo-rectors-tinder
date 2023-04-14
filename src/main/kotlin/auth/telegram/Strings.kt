@@ -55,6 +55,9 @@ object Strings {
             }
     }
 
+    const val ApproveButton = "Принять"
+    const val DisapproveButton = "Отклонить"
+
     const val AccountWasVerified = "Ваш аккаунт успешно прошел верификацию"
     const val StartButton = "Начать работу"
 
