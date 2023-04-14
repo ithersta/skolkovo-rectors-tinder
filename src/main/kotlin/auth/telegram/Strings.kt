@@ -55,6 +55,9 @@ object Strings {
             }
     }
 
+    const val ApproveButton = "Принять"
+    const val DisapproveButton = "Отклонить"
+
     const val AccountWasVerified = "Ваш аккаунт успешно прошел верификацию"
     const val StartButton = "Начать работу"
 
@@ -142,8 +145,8 @@ object Strings {
     )
 
     object AuthenticationResults {
-        const val OK = "Вы успешно зарегистрированы."
-        const val RequiresApproval = "Ваш аккаунт на верификации."
+        const val OK = "Вы успешно зарегистрированы"
+        const val RequiresApproval = "Ваш аккаунт на верификации"
         const val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         const val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
         const val NoAreaSet = NoQuestionArea
@@ -151,13 +154,13 @@ object Strings {
 
     object RoleMenu {
         const val Admin = "Меню администратора"
-        const val Unauthenticated = "Неудачная попытка авторизации."
+        const val Unauthenticated = "Неудачная попытка авторизации"
         const val Normal = "Меню пользователя"
     }
 
     object OldQuestion {
-        const val ListClosedQuestions = "Нажмите на один из них, чтобы посмотреть всех, кто отвечал на данный вопрос."
-        const val HaveNotOldQuestion = "На данный момент нет вопросов, на которые вы бы получили ответ."
+        const val ListClosedQuestions = "Нажмите на один из них, чтобы посмотреть всех, кто отвечал на данный вопрос"
+        const val HaveNotOldQuestion = "На данный момент нет вопросов, на которые вы бы получили ответ"
         const val ListOfRespondents =
             "Список всех, кто отвечал на вопрос. Нажмите на одного из них, чтобы посмотреть контакт."
     }

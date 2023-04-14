@@ -13,7 +13,7 @@ object CommonStrings {
         const val Back = "◀️ Назад"
     }
 
-    const val InternalError = "Произошла внутренняя ошибка бота."
+    const val InternalError = "Произошла внутренняя ошибка бота"
 }
 
 fun accountInfo(userDetails: User.Details): TextSourcesList {
