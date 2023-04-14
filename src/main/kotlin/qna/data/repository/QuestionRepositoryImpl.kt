@@ -8,6 +8,7 @@ import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
 import notifications.domain.entities.NotificationPreference
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.koin.core.annotation.Single
 import qna.data.tables.AcceptedResponses
 import qna.data.tables.QuestionAreas
@@ -133,11 +134,17 @@ class QuestionRepositoryImpl : QuestionRepository {
         val questionAreas = QuestionAreas
             .slice(QuestionAreas.area)
             .select { QuestionAreas.questionId eq questionId }
-        val (hideFrom, authorCityId, authorOrganizationId) = Questions
+        val hideCondition = Questions
             .innerJoin(Users)
             .slice(Questions.hideFrom, Users.cityId, Users.organizationId)
             .select { Questions.id eq questionId }.first()
-            .let { Triple(it[Questions.hideFrom], it[Users.cityId], it[Users.organizationId]) }
+            .let {
+                when (it[Questions.hideFrom]) {
+                    NoOne -> (Users.id neq it[Questions.authorId])
+                    SameCity -> (Users.cityId neq it[Users.cityId])
+                    SameOrganization -> (Users.organizationId neq it[Users.organizationId])
+                }
+            }
         val muteUsers = MuteSettings
             .slice(MuteSettings.userId)
             .selectAll()
@@ -147,14 +154,7 @@ class QuestionRepositoryImpl : QuestionRepository {
         return UserAreas
             .innerJoin(Users)
             .slice(UserAreas.userId)
-            .select { UserAreas.area inSubQuery questionAreas }
-            .let { query ->
-                when (hideFrom) {
-                    NoOne -> query
-                    SameCity -> query.andWhere { Users.cityId neq authorCityId }
-                    SameOrganization -> query.andWhere { Users.organizationId neq authorOrganizationId }
-                }
-            }
+            .select { (UserAreas.area inSubQuery questionAreas) and Users.isApproved and hideCondition }
             .except(muteUsers)
             .except(nonRightAwayUsers)
             .map { it[UserAreas.userId].value }
