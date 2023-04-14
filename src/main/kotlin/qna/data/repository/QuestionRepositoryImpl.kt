@@ -154,7 +154,7 @@ class QuestionRepositoryImpl : QuestionRepository {
         return UserAreas
             .innerJoin(Users)
             .slice(UserAreas.userId)
-            .select { (UserAreas.area inSubQuery questionAreas) and hideCondition }
+            .select { (UserAreas.area inSubQuery questionAreas) and Users.isApproved and hideCondition }
             .except(muteUsers)
             .except(nonRightAwayUsers)
             .map { it[UserAreas.userId].value }
