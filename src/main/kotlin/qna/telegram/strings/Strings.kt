@@ -48,7 +48,7 @@ object Strings {
             buildEntities {
                 regular("Владелец вопроса ")
                 bold("\"$subject\"")
-                regular(" свяжется с Вами.")
+                regular(" свяжется с Вами")
             }
 
         const val SentAgreement = "Спасибо, Ваше согласие направлено владельцу вопроса. Ожидаем ответ."
