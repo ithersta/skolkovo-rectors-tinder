@@ -11,4 +11,3 @@ class SelectTopic(val questionId: Long) : Query
 @Serializable
 @SerialName("sor")
 class SelectOldQuestionRespondent(val responseId: Long) : Query
-
