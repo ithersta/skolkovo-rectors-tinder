@@ -17,7 +17,9 @@ fun RoleFilterBuilder<User.Normal>.changeNotificationPreferenceFlow() {
         onDataCallbackQuery(ChangeNotificationPreferenceQuery::class) { (data, query) ->
             updateNotificationPreference(query.from.id.chatId, data.newPreference)
             val message = query.messageCallbackQueryOrThrow().message
-            editMessageReplyMarkup(message, notificationPreferencesInlineKeyboard(query.from.id.chatId))
+            runCatching {
+                editMessageReplyMarkup(message, notificationPreferencesInlineKeyboard(query.from.id.chatId))
+            }
             answer(query)
         }
     }
