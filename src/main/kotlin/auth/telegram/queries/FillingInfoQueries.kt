@@ -52,9 +52,5 @@ object FinishQuestionQuery : Query
 class SelectTopic(val questionId: Long) : Query
 
 @Serializable
-@SerialName("pN")
-class SelectRespondent(val name: String, val phoneNumber: String) : Query
-
-@Serializable
 @SerialName("start")
 object StartQuery : Query
