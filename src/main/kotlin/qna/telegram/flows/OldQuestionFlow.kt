@@ -1,9 +1,6 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
-import auth.telegram.Strings.OldQuestion.HaveNotOldQuestion
-import auth.telegram.Strings.OldQuestion.ListClosedQuestions
-import auth.telegram.Strings.OldQuestion.ListOfRespondents
 import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
@@ -26,6 +23,9 @@ import qna.domain.usecases.GetUserDetailsUseCase
 import qna.telegram.queries.SelectRespondent2
 import qna.telegram.queries.SelectTopic
 import qna.telegram.strings.Strings
+import qna.telegram.strings.Strings.OldQuestion.HaveNotOldQuestion
+import qna.telegram.strings.Strings.OldQuestion.ListClosedQuestions
+import qna.telegram.strings.Strings.OldQuestion.ListOfRespondents
 
 private lateinit var oldQuestionsPager: InlineKeyboardPager<Unit, DialogState, User, User.Normal>
 
