@@ -115,6 +115,13 @@ object Strings {
         addAll(question(question))
     }
 
+    object OldQuestion {
+        const val ListClosedQuestions = "Нажмите на один из них, чтобы посмотреть всех, кто отвечал на данный вопрос"
+        const val HaveNotOldQuestion = "На данный момент нет вопросов, на которые вы бы получили ответ"
+        const val ListOfRespondents =
+            "Список всех, кто отвечал на вопрос. Нажмите на одного из них, чтобы посмотреть контакт."
+    }
+
     const val QuestionAreasList = "Список сфер по вашему профилю. Нажмите на сферу, чтобы посмотреть список вопросов."
     const val InterestingQuestionsList = "Список вопросов по вашим сферам. Нажмите на тему, чтобы посмотреть подробнее."
     const val NoInterestingQuestions = "Пусто"
