@@ -18,9 +18,9 @@ import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
 import qna.domain.usecases.GetClosedQuestionsUseCase
-import qna.domain.usecases.GetResponseUseCase
+import qna.domain.usecases.GetRespondentUseCase
 import qna.domain.usecases.GetUserDetailsUseCase
-import qna.telegram.queries.SelectRespondent2
+import qna.telegram.queries.SelectOldQuestionRespondent
 import qna.telegram.queries.SelectTopic
 import qna.telegram.strings.Strings
 import qna.telegram.strings.Strings.OldQuestion.HaveNotOldQuestion
@@ -42,7 +42,7 @@ suspend fun BaseStatefulContext<DialogState, User, *, out User.Normal>.sendOldQu
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() {
     val getClosedQuestions: GetClosedQuestionsUseCase by inject()
-    val getAuthor: GetResponseUseCase by inject()
+    val getAuthor: GetRespondentUseCase by inject()
     val getUserById: GetUserDetailsUseCase by inject()
     oldQuestionsPager = pager(id = "old_questions_pager") {
         val subjects = getClosedQuestions.invoke(context!!.user.id)
@@ -68,7 +68,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                             row {
                                 dataButton(
                                     item.name,
-                                    SelectRespondent2(item.id)
+                                    SelectOldQuestionRespondent(item.id)
                                 )
                             }
                         }
@@ -80,7 +80,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                 state.override { DialogState.Empty }
             }
         }
-        onDataCallbackQuery(SelectRespondent2::class) { (data, query) ->
+        onDataCallbackQuery(SelectOldQuestionRespondent::class) { (data, query) ->
             val user = getUserById(data.responseId)
             if (user != null) {
                 sendContact(query.user.id, phoneNumber = user.phoneNumber.toString(), firstName = user.name)
