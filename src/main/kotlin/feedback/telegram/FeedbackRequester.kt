@@ -8,7 +8,10 @@ import dev.inmo.tgbotapi.extensions.behaviour_builder.BehaviourContext
 import dev.inmo.tgbotapi.types.toChatId
 import feedback.domain.usecases.GetFeedbackRequestsFlowUseCase
 import feedback.telegram.queries.FeedbackQueries
+import io.github.oshai.KotlinLogging
 import org.koin.core.annotation.Single
+
+private val logger = KotlinLogging.logger {}
 
 @Single
 class FeedbackRequester(
@@ -27,6 +30,8 @@ class FeedbackRequester(
                         negativeData = FeedbackQueries.SendFeedback(feedbackRequest.responseId, false)
                     )
                 )
+            }.onFailure { exception ->
+                logger.error("Couldn't request feedback from ${feedbackRequest.questionAuthorUserId}", exception)
             }
         }
     }
