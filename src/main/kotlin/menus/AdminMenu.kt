@@ -1,9 +1,9 @@
 package menus
 
-import auth.domain.entities.User
-import auth.telegram.Strings
 import addorganizations.telegram.states.CheckCityAdminState
 import addorganizations.telegram.states.ChooseCityOrganizationAdminState
+import auth.domain.entities.User
+import auth.telegram.Strings
 import common.telegram.DialogState
 import common.telegram.strings.CommonStrings
 import generated.menu
