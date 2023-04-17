@@ -8,7 +8,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 object Strings {
-    // TODO если пользователь ввел НЕ ссылку, а просто текст, возникает проблема CommonRequestException
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
         const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.ММ.гггг чч:мм"
@@ -23,6 +22,7 @@ object Strings {
 
         const val EventNotCreated = "❌ Мероприятие не создано"
         const val InvalidTimeInterval = "Некорректно указан временной интервал"
+        const val InvalidLink = "Неверный формат ссылки"
         const val InvalidDataFormat = "Введён неверный формат данных. "
         fun message(event: Event) = buildEntities {
             bold("Название: ")

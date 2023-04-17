@@ -18,6 +18,7 @@ import event.domain.usecases.AddEventUseCase
 import event.domain.usecases.GetAllExceptAdminUseCase
 import event.telegram.Strings
 import event.telegram.states.*
+import event.telegram.validation.IsLinkValid
 import kotlinx.datetime.toKotlinInstant
 import menus.states.MenuState
 import org.koin.core.component.inject
@@ -110,7 +111,20 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
         state<InputUrlState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputUrl) }
             onText {
-                state.override { AskUserToCreateEvent(name, beginDateTime, endDateTime, description, it.content.text) }
+                if (IsLinkValid(it.content.text)) {
+                    state.override {
+                        AskUserToCreateEvent(
+                            name,
+                            beginDateTime,
+                            endDateTime,
+                            description,
+                            it.content.text
+                        )
+                    }
+                } else {
+                    sendTextMessage(it.chat, Strings.ScheduleEvent.InvalidLink)
+                    state.override { InputUrlState(name, beginDateTime, endDateTime, description) }
+                }
             }
         }
         state<AskUserToCreateEvent> {
