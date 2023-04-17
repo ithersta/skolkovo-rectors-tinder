@@ -5,6 +5,7 @@ import event.domain.entities.Event
 
 interface EventRepository {
     fun add(event: Event)
+    fun getById(id: Long): Event
     fun getAll(): List<Event>
     fun delete(idDel: Long)
     fun getAllPaginated(offset: Int, limit: Int): Paginated<Event>

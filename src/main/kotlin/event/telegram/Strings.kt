@@ -14,7 +14,7 @@ object Strings {
         const val InputUrl = "Введите ссылку на мероприятие"
 
         const val EventIsCreated = "Мероприятие добавлено в календарь ✅ " +
-            "\nУчастникам сообщества отправлено оповещение о новом мероприятии"
+                "\nУчастникам сообщества отправлено оповещение о новом мероприятии"
 
         const val EventNotCreated = "❌ Мероприятие не создано"
         const val InvalidTimeInterval = "Некорректно указан временной интервал"
@@ -44,7 +44,7 @@ object Strings {
     object RemoveEvent {
         const val ChooseEvent = "Выберите мероприятие: "
         const val NoEvent = "На данный момент нет актуальных мероприятий"
-        const val Remove = "Вы действительно хотите удалить мероприятие?"
+        const val Remove = "Вы действительно хотите удалить мероприятие?\n"
         const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
         const val NotRemove = "❌ Мероприятие не удалено "
     }
@@ -61,7 +61,7 @@ object Strings {
         regular("\n🕓 ")
         regular(
             event.timestampBegin.toString() +
-                " - " + event.timestampEnd.toString()
+                    " - " + event.timestampEnd.toString()
         )
         regularln("")
         event.description?.let { italicln(it) }
@@ -75,7 +75,7 @@ object Strings {
         regular("\n🕓 ")
         regular(
             event.timestampBegin.toString() +
-                " - " + event.timestampEnd.toString()
+                    " - " + event.timestampEnd.toString()
         )
         regularln("")
         event.description?.let { italicln(it) }

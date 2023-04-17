@@ -4,11 +4,8 @@ import common.domain.Paginated
 import event.data.tables.Events
 import event.domain.entities.Event
 import event.domain.repository.EventRepository
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
 import org.koin.core.annotation.Single
 
 @Single
@@ -21,6 +18,10 @@ class EventRepositoryImpl : EventRepository {
             it[description] = event.description
             it[url] = event.url
         }
+    }
+
+    override fun getById(id: Long): Event {
+        return Events.select { Events.id eq id }.map(::mapper).first()
     }
 
     override fun getAll(): List<Event> {
