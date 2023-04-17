@@ -52,7 +52,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     )
                     return@onText
                 }
-                state.override { InputEndDateTimeState(state.snapshot.name, beginDateTime) }
+                state.override { InputEndDateTimeState(name, beginDateTime) }
             }
         }
         state<InputEndDateTimeState> {
@@ -80,11 +80,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     state.override { InputBeginDateTimeState(state.snapshot.name) }
                 } else {
                     state.override {
-                        InputDescriptionState(
-                            state.snapshot.name,
-                            state.snapshot.beginDateTime,
-                            endDateTime
-                        )
+                        InputDescriptionState(name, beginDateTime, endDateTime)
                     }
                 }
             }
@@ -105,37 +101,16 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                 )
             }
             onText(Strings.ScheduleEvent.NoDescription) {
-                state.override {
-                    InputUrlState(
-                        state.snapshot.name,
-                        state.snapshot.beginDateTime,
-                        state.snapshot.endDateTime
-                    )
-                }
+                state.override { InputUrlState(name, beginDateTime, endDateTime) }
             }
             onText {
-                state.override {
-                    InputUrlState(
-                        state.snapshot.name,
-                        state.snapshot.beginDateTime,
-                        state.snapshot.endDateTime,
-                        it.content.text
-                    )
-                }
+                state.override { InputUrlState(name, beginDateTime, endDateTime, it.content.text) }
             }
         }
         state<InputUrlState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputUrl) }
             onText {
-                state.override {
-                    AskUserToCreateEvent(
-                        state.snapshot.name,
-                        state.snapshot.beginDateTime,
-                        state.snapshot.endDateTime,
-                        state.snapshot.description,
-                        it.content.text
-                    )
-                }
+                state.override { AskUserToCreateEvent(name, beginDateTime, endDateTime, description, it.content.text) }
             }
         }
         state<AskUserToCreateEvent> {
