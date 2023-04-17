@@ -67,9 +67,6 @@ fun RoleFilterBuilder<User.Normal>.questionDigestFlow() {
         inlineKeyboard {
             if (data.area != null) {
                 row { dataButton(CommonStrings.Button.Back, QuestionDigestQuery.BackToAreas) }
-                if (questions.count == 0) {
-                    row { dataButton(Strings.NoInterestingQuestions, QuestionDigestQuery.BackToAreas) }
-                }
             }
             questions.slice.forEach { question ->
                 row {
@@ -85,6 +82,12 @@ fun RoleFilterBuilder<User.Normal>.questionDigestFlow() {
             navigationRow(questions.count)
         }
     }
+    fun pagerText(replyMarkup: InlineKeyboardMarkup) =
+        if (replyMarkup.keyboard.size == 1) {
+            Strings.NoInterestingQuestions
+        } else {
+            Strings.InterestingQuestionsList
+        }
     anyState {
         onDataCallbackQuery(QuestionDigestQuery.BackToAreas::class) { (_, query) ->
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
@@ -93,19 +96,18 @@ fun RoleFilterBuilder<User.Normal>.questionDigestFlow() {
         }
         onDataCallbackQuery(QuestionDigestQuery.SelectArea::class) { (data, query) ->
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
-            edit(
-                message,
-                Strings.InterestingQuestionsList,
-                replyMarkup = questionDigestPager.replyMarkup(
-                    QuestionDigestPagerData(
-                        userId = query.from.id.chatId,
-                        from = Instant.DISTANT_PAST,
-                        until = Instant.DISTANT_FUTURE,
-                        area = data.area,
-                        notificationPreference = null
-                    )
+            val replyMarkup = questionDigestPager.replyMarkup(
+                QuestionDigestPagerData(
+                    userId = query.from.id.chatId,
+                    from = Instant.DISTANT_PAST,
+                    until = Instant.DISTANT_FUTURE,
+                    area = data.area,
+                    notificationPreference = null
                 )
             )
+            runCatching {
+                edit(message, pagerText(replyMarkup), replyMarkup = replyMarkup)
+            }
             answer(query)
         }
         onDataCallbackQuery(QuestionDigestQuery.SelectQuestion::class) { (data, query) ->
@@ -119,13 +121,16 @@ fun RoleFilterBuilder<User.Normal>.questionDigestFlow() {
         }
         onDataCallbackQuery(QuestionDigestQuery.Back::class) { (data, query) ->
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
-            edit(
-                message,
-                data.pagerData.notificationPreference?.let {
-                    notifications.telegram.Strings.newQuestionsMessage(it)
-                } ?: Strings.InterestingQuestionsList,
-                replyMarkup = questionDigestPager.page(data.pagerData, data.page)
-            )
+            val replyMarkup = questionDigestPager.page(data.pagerData, data.page)
+            runCatching {
+                edit(
+                    message,
+                    data.pagerData.notificationPreference?.let {
+                        notifications.telegram.Strings.newQuestionsMessage(it)
+                    } ?: pagerText(replyMarkup),
+                    replyMarkup = replyMarkup
+                )
+            }
             answer(query)
         }
     }
@@ -156,22 +161,24 @@ private suspend fun StatefulContext<DialogState, User, DialogState, User.Normal>
     val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
     val question = getQuestionById(data.questionId)!!
     val hasResponse = hasResponseUseCase(query.from.id.chatId, data.questionId)
-    edit(
-        message = message,
-        entities = if (hasResponse) Strings.respondedQuestion(question) else Strings.question(question),
-        replyMarkup = inlineKeyboard {
-            row {
-                dataButton(
-                    text = CommonStrings.Button.Back,
-                    data = QuestionDigestQuery.Back(data.returnToPage, data.pagerData)
-                )
-                if (hasResponse.not() && question.isClosed.not()) {
+    runCatching {
+        edit(
+            message = message,
+            entities = if (hasResponse) Strings.respondedQuestion(question) else Strings.question(question),
+            replyMarkup = inlineKeyboard {
+                row {
                     dataButton(
-                        text = ButtonStrings.Respond,
-                        data = QuestionDigestQuery.Respond(data.questionId, data.returnToPage, data.pagerData)
+                        text = CommonStrings.Button.Back,
+                        data = QuestionDigestQuery.Back(data.returnToPage, data.pagerData)
                     )
+                    if (hasResponse.not() && question.isClosed.not()) {
+                        dataButton(
+                            text = ButtonStrings.Respond,
+                            data = QuestionDigestQuery.Respond(data.questionId, data.returnToPage, data.pagerData)
+                        )
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 }
