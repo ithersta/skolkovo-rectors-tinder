@@ -51,5 +51,5 @@ data class StringsCity(
     val chooseCity: String,
     val button: String,
     val confirmation: String?,
-    val noCity: String?
+    val noCity: String?,
 )
