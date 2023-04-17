@@ -20,7 +20,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.getEventsByUserFlow() {
                     sendTextMessage(it, Strings.NoEvent)
                 } else {
                     val entities = getEventsUseCase()
-                        .sortedBy { it.timestampBegin }
+                        .sortedBy { event -> event.timestampBegin }
                         .flatMap { event -> Strings.eventMessage(event) }
                     sendTextMessage(it, entities)
                 }
