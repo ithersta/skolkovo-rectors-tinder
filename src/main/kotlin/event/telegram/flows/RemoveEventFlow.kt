@@ -79,7 +79,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
                 query.user.id,
                 Strings.RemoveEvent.SuccessfulRemove
             )
-            //тут можно как-то менять сообщение, но хз как лучше
+            // тут можно как-то менять сообщение, но хз как лучше
             editMessageReplyMarkup(
                 query.asMessageCallbackQuery()?.message?.withContent<TextContent>()
                     ?: return@onDataCallbackQuery,
