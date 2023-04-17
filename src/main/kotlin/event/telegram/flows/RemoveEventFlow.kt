@@ -9,10 +9,15 @@ import com.ithersta.tgbotapi.pagination.replyMarkup
 import common.telegram.DialogState
 import common.telegram.functions.confirmationInlineKeyboard
 import dev.inmo.tgbotapi.extensions.api.answers.answer
+import dev.inmo.tgbotapi.extensions.api.edit.reply_markup.editMessageReplyMarkup
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
+import dev.inmo.tgbotapi.extensions.utils.asMessageCallbackQuery
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
+import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.IdChatIdentifier
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.utils.PreviewFeature
 import dev.inmo.tgbotapi.utils.row
 import event.domain.usecases.DeleteEventUseCase
 import event.domain.usecases.GetEventByIdUseCase
@@ -38,6 +43,7 @@ suspend fun BaseStatefulContext<DialogState, User, *, out User.Admin>.sendListOf
     }
 }
 
+@OptIn(PreviewFeature::class)
 fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
     val getEventsPaginatedUseCase: GetEventsPaginatedUseCase by inject()
     val getEventByIdUseCase: GetEventByIdUseCase by inject()
@@ -73,12 +79,22 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
                 query.user.id,
                 Strings.RemoveEvent.SuccessfulRemove
             )
+            editMessageReplyMarkup(
+                query.asMessageCallbackQuery()?.message?.withContent<TextContent>()
+                    ?: return@onDataCallbackQuery,
+                replyMarkup = null
+            )
             answer(query)
         }
         onDataCallbackQuery(NotDeleteEvent::class) { (_, query) ->
             sendTextMessage(
                 query.user.id,
                 Strings.RemoveEvent.NotRemove
+            )
+            editMessageReplyMarkup(
+                query.asMessageCallbackQuery()?.message?.withContent<TextContent>()
+                    ?: return@onDataCallbackQuery,
+                replyMarkup = null
             )
             answer(query)
         }

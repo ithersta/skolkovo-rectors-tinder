@@ -170,7 +170,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     state.snapshot.url
                 )
                 addEventUseCase(event)
-                getAllExceptAdminUseCase(it.messageId).forEach { user ->
+                getAllExceptAdminUseCase(it.chat.id.chatId).forEach { user ->
                     val id = user?.id?.toChatId()
                     if (id != null) {
                         runCatching {

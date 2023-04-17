@@ -11,6 +11,6 @@ class GetAllExceptAdminUseCase(
     private val transaction: Transaction
 ) {
     operator fun invoke(id: Long): List<User.Details?> = transaction {
-        return@transaction userRepository.getAllExceptAdmin(id)
+        return@transaction userRepository.getAllExceptUser(id)
     }
 }
