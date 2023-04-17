@@ -52,7 +52,7 @@ object Strings {
             regular("\n🕓 ")
             regular(
                 event.timestampBegin.toString() +
-                        " - " + event.timestampEnd.toString()
+                    " - " + event.timestampEnd.toString()
             )
             regularln("")
             event.description?.let { italicln(it) }
