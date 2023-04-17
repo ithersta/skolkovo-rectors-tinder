@@ -50,6 +50,6 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
 data class StringsCity(
     val chooseCity: String,
     val button: String,
-    val confirmation: String,
-    val noCity: String
+    val confirmation: String?,
+    val noCity: String?,
 )
