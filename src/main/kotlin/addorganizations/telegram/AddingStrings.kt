@@ -19,9 +19,8 @@ object AddingStrings {
     )
     val CityOrganizationDropdown = StringsCity(
         button = DropdownWebAppStrings.CityDropdown.button,
-        confirmation = "Пожалуйста, убедитесь, что этого города действительно нет в списке.\n\n" +
-            "Если вы подтвердите отсутствие города, вы не сможете продолжить добавление организации.",
-        noCity = DropdownWebAppStrings.CityDropdown.noCity,
+        confirmation = null,
+        noCity = null,
         chooseCity = "Выберите город, в котором расположена организация"
     )
     val OrganizationDropdown = StringsOrganization(
