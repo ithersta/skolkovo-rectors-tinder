@@ -2,7 +2,7 @@ import event.telegram.validation.IsLinkValid
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 
-internal class IsFullNameValidTest {
+internal class IsLinkValidTest {
     @org.junit.jupiter.api.Test
     operator fun invoke() {
         assertTrue(IsLinkValid("vk.com"))
