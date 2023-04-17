@@ -1,0 +1,17 @@
+name: ktlint-format
+on: workflow_dispatch
+jobs:
+  ktlint-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Run ktlint auto-format
+        uses: ithersta/ktlint-format-action@v0.3
+        continue-on-error: true
+        with:
+          github_token: ${{ secrets.github_token }}
+      - name: Commit fixes
+        if: ${{ github.ref != 'refs/heads/main' }}
+        uses: stefanzweifel/git-auto-commit-action@v4

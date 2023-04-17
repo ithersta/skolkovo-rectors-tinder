@@ -124,5 +124,5 @@ object Strings {
 
     const val QuestionAreasList = "Список сфер по вашему профилю. Нажмите на сферу, чтобы посмотреть список вопросов."
     const val InterestingQuestionsList = "Список вопросов по вашим сферам. Нажмите на тему, чтобы посмотреть подробнее."
-    const val NoInterestingQuestions = "Пусто"
+    const val NoInterestingQuestions = "На данный момент нет вопросов по этой сфере"
 }
