@@ -75,7 +75,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
             deleteEventUseCase(data.id)
             val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
             val event = getEventByIdUseCase(data.id)
-            //пока не работает
+            // пока не работает
             edit(
                 message,
                 Strings.RemoveEvent.removedEventMessage(event),

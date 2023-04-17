@@ -2,9 +2,13 @@ package event.telegram
 
 import dev.inmo.tgbotapi.utils.*
 import event.domain.entities.Event
+import kotlinx.datetime.Instant
+import kotlinx.datetime.toJavaInstant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 object Strings {
-    //TODO если пользователь ввел НЕ ссылку, а просто текст, возникает проблема CommonRequestException
+    // TODO если пользователь ввел НЕ ссылку, а просто текст, возникает проблема CommonRequestException
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
         const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.ММ.гггг чч:мм"
@@ -25,10 +29,10 @@ object Strings {
             regular(event.name)
             regularln("")
             bold("Дата и время начала: ")
-            regular(event.timestampBegin.toString())
+            regular(formatInstant(event.timestampBegin))
             regularln("")
             bold("Дата и время окончания: ")
-            regular(event.timestampEnd.toString())
+            regular(formatInstant(event.timestampEnd))
             if (event.description != null) {
                 regularln("")
                 bold("Краткое описание: ")
@@ -45,15 +49,16 @@ object Strings {
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     object RemoveEvent {
         const val ChooseEvent = "Выберите мероприятие: "
-        //const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
-        //const val NotRemove = "❌ Мероприятие не удалено "
+
+        // const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
+        // const val NotRemove = "❌ Мероприятие не удалено "
         fun removeEventMessage(event: Event) = buildEntities {
             regular("📅 ")
             bold(event.name)
             regular("\n🕓 ")
             regular(
-                event.timestampBegin.toString() +
-                    " - " + event.timestampEnd.toString()
+                formatInstant(event.timestampBegin) +
+                    " - " + formatInstant(event.timestampEnd)
             )
             regularln("")
             event.description?.let { italicln(it) }
@@ -68,8 +73,8 @@ object Strings {
             strikethrough(event.name)
             regular("\n🕓 ")
             regular(
-                event.timestampBegin.toString() +
-                        " - " + event.timestampEnd.toString()
+                formatInstant(event.timestampBegin) +
+                    " - " + formatInstant(event.timestampEnd)
             )
             regularln("")
             event.description?.let { italicln(it) }
@@ -84,8 +89,8 @@ object Strings {
             bold(event.name)
             regular("\n🕓 ")
             regular(
-                event.timestampBegin.toString() +
-                        " - " + event.timestampEnd.toString()
+                formatInstant(event.timestampBegin) +
+                    " - " + formatInstant(event.timestampEnd)
             )
             regularln("")
             event.description?.let { italicln(it) }
@@ -97,18 +102,18 @@ object Strings {
     }
 
     // TODO придумать как выводить дату и время
-//    fun formatInstant(instant: Instant): String {
-//        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-//        return formatter.format(instant)
-//    }
+    fun formatInstant(instant: Instant): String {
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        return formatter.format(instant.toJavaInstant().atZone(ZoneId.systemDefault()))
+    }
 
     fun newEventMessage(event: Event) = buildEntities {
         regular("📨 Новое мероприятие ")
         boldln("\n\n📅 " + event.name)
         regular("🕓 ")
         regular(
-            event.timestampBegin.toString() +
-                " - " + event.timestampEnd.toString()
+            formatInstant(event.timestampBegin) +
+                " - " + formatInstant(event.timestampEnd)
         )
         regularln("")
         event.description?.let { italicln(it) }
@@ -121,8 +126,8 @@ object Strings {
         bold(event.name)
         regular("\n🕓 ")
         regular(
-            event.timestampBegin.toString() +
-                " - " + event.timestampEnd.toString()
+            formatInstant(event.timestampBegin) +
+                " - " + formatInstant(event.timestampEnd)
         )
         regularln("")
         event.description?.let { italicln(it) }
