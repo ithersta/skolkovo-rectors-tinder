@@ -5,6 +5,7 @@ import common.telegram.strings.CommonStrings
 import config.readBotConfig
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import generated.sqliteStateRepository
+import io.github.oshai.KotlinLogging
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -16,6 +17,8 @@ import org.koin.ksp.generated.defaultModule
 import qna.domain.usecases.AutoCloseOldQuestionsUseCase
 import qna.domain.usecases.GetNewResponseNotificationFlowUseCase
 import java.time.DayOfWeek
+
+private val kLogger = KotlinLogging.logger("Bot Handler")
 
 val dataModule = module(createdAtStart = true) {
     single {
@@ -37,8 +40,8 @@ val module = module(createdAtStart = true) {
         stateMachine.regularEngine(
             getUser = { get<GetUserRoleUseCase>()(it.chatId) },
             stateRepository = sqliteStateRepository(historyDepth = 1),
-            exceptionHandler = { userId, throwable ->
-                throwable.printStackTrace()
+            exceptionHandler = { userId, exception ->
+                kLogger.error("Exception in chat $userId", exception)
                 runCatching {
                     sendTextMessage(userId, CommonStrings.InternalError)
                 }

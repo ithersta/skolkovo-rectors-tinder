@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
+import io.github.oshai.KotlinLogging
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 import mute.domain.usecases.DeleteMuteSettingsUseCase
@@ -14,6 +15,8 @@ import mute.domain.usecases.GetEarliestMuteSettingsUseCase
 import mute.telegram.queries.YesNoMuteQuery
 import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.hours
+
+private val logger = KotlinLogging.logger {}
 
 @Single
 class UnmuteRunner(
@@ -37,6 +40,8 @@ class UnmuteRunner(
                             }
                         }
                     )
+                }.onFailure { exception ->
+                    logger.error("Couldn't send unmute notification to ${earliestRow.userId}", exception)
                 }
             } else {
                 delay(1.hours)

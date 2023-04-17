@@ -30,6 +30,7 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
+    implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-28")
     implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("dev.inmo:krontab:0.10.0")
     compileOnly("io.insert-koin:koin-annotations:1.2.0")

@@ -48,13 +48,5 @@ class UnselectQuestionQuery(val area: QuestionArea) : Query
 object FinishQuestionQuery : Query
 
 @Serializable
-@SerialName("sub")
-class SelectTopic(val questionId: Long) : Query
-
-@Serializable
-@SerialName("pN")
-class SelectRespondent(val name: String, val phoneNumber: String) : Query
-
-@Serializable
 @SerialName("start")
 object StartQuery : Query

@@ -1,11 +1,6 @@
 package qna.telegram.flows
 
 import auth.domain.entities.User
-import auth.telegram.Strings.OldQuestion.HaveNotOldQuestion
-import auth.telegram.Strings.OldQuestion.ListClosedQuestions
-import auth.telegram.Strings.OldQuestion.ListOfRespondents
-import auth.telegram.queries.SelectRespondent
-import auth.telegram.queries.SelectTopic
 import com.ithersta.tgbotapi.fsm.BaseStatefulContext
 import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.pagination.InlineKeyboardPager
@@ -22,9 +17,15 @@ import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
-import qna.domain.usecases.GetAuthorUseCase
 import qna.domain.usecases.GetClosedQuestionsUseCase
+import qna.domain.usecases.GetRespondentUseCase
+import qna.domain.usecases.GetUserDetailsUseCase
+import qna.telegram.queries.SelectOldQuestionRespondent
+import qna.telegram.queries.SelectTopic
 import qna.telegram.strings.Strings
+import qna.telegram.strings.Strings.OldQuestion.HaveNotOldQuestion
+import qna.telegram.strings.Strings.OldQuestion.ListClosedQuestions
+import qna.telegram.strings.Strings.OldQuestion.ListOfRespondents
 
 private lateinit var oldQuestionsPager: InlineKeyboardPager<Unit, DialogState, User, User.Normal>
 
@@ -41,7 +42,8 @@ suspend fun BaseStatefulContext<DialogState, User, *, out User.Normal>.sendOldQu
 
 fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() {
     val getClosedQuestions: GetClosedQuestionsUseCase by inject()
-    val getAuthor: GetAuthorUseCase by inject()
+    val getAuthor: GetRespondentUseCase by inject()
+    val getUserById: GetUserDetailsUseCase by inject()
     oldQuestionsPager = pager(id = "old_questions_pager") {
         val subjects = getClosedQuestions.invoke(context!!.user.id)
         val paginatedSubjects = subjects.drop(offset).take(limit)
@@ -66,7 +68,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                             row {
                                 dataButton(
                                     item.name,
-                                    SelectRespondent(name = item.name, phoneNumber = item.phoneNumber.toString())
+                                    SelectOldQuestionRespondent(item.id)
                                 )
                             }
                         }
@@ -78,8 +80,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                 state.override { DialogState.Empty }
             }
         }
-        onDataCallbackQuery(SelectRespondent::class) { (data, query) ->
-            sendContact(query.user.id, phoneNumber = data.phoneNumber, firstName = data.name)
+        onDataCallbackQuery(SelectOldQuestionRespondent::class) { (data, query) ->
+            val user = getUserById(data.responseId)
+            if (user != null) {
+                sendContact(query.user.id, phoneNumber = user.phoneNumber.toString(), firstName = user.name)
+            }
             answer(query)
         }
     }
