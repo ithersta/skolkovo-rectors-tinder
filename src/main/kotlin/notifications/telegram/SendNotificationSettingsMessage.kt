@@ -31,11 +31,12 @@ suspend fun TelegramBot.sendNotificationPreferencesMessage(
 
 fun notificationPreferencesInlineKeyboard(userId: Long) = inlineKeyboard {
     val notificationPreference = getNotificationPreference(userId)
+    val isMuted = containsByIdMuteSettings(userId)
     row {
         NotificationPreference.values().forEach {
             dataButton(
                 text = buildString {
-                    if (it == notificationPreference) append('✅')
+                    if (it == notificationPreference) append(if (isMuted) "☑️ " else "✅ ")
                     append(it.localizedString())
                 },
                 data = ChangeNotificationPreferenceQuery(it)
@@ -43,7 +44,7 @@ fun notificationPreferencesInlineKeyboard(userId: Long) = inlineKeyboard {
         }
     }
     row {
-        if (containsByIdMuteSettings(userId)) {
+        if (isMuted) {
             dataButton(Strings.Settings.TurnOn, OnOffMuteQuery(true))
         } else {
             dataButton(Strings.Settings.TurnOff, OnOffMuteQuery(false))
