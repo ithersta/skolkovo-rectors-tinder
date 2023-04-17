@@ -4,12 +4,16 @@ package auth.telegram
 
 import auth.domain.entities.Course
 import auth.domain.entities.OrganizationType
+import auth.domain.entities.User
 import auth.telegram.Strings.AccountInfo.NoQuestionArea
 import auth.telegram.Strings.Courses.EducationalProgramsCode
 import auth.telegram.Strings.Courses.LeadersOfBreakthrough
 import auth.telegram.Strings.Courses.ManagementSchool
 import auth.telegram.Strings.Courses.RectorsSchool
 import auth.telegram.Strings.Courses.StepToSchoolDevelopment
+import common.telegram.strings.accountInfo
+import dev.inmo.tgbotapi.utils.buildEntities
+import dev.inmo.tgbotapi.utils.regularln
 import qna.domain.entities.QuestionArea
 
 object Strings {
@@ -22,20 +26,45 @@ object Strings {
 
     object AccountInfo {
         const val WriteName = "Введите свои имя и фамилию"
-        const val ChooseCity =
-            "Выберите свой город, нажав на кнопку"
         const val WriteProfession = "Напишите Вашу должность"
-        const val WriteOrganization = "Выберите ваше место работы, нажав на кнопку"
-        const val ChooseProfessionalAreas = "Уточните Ваши профессиональные зоны компетенций (вы можете выбрать несколько)\n" +
-            "Когда вы выберете все Ваши профессиональные зоны компетенций, нажмите \"Закончить выбор\"\n" +
-            "\nРекомендуемое количество не более 5"
+        const val ChooseProfessionalAreas =
+            "Уточните Ваши профессиональные зоны компетенций (вы можете выбрать несколько)\n" +
+                "Когда вы выберете все Ваши профессиональные зоны компетенций, нажмите \"Закончить выбор\"\n" +
+                "\nРекомендуемое количество не более 5"
 
         const val NoQuestionArea =
-            "Вы не выбрали ни одной сферы, интересующей вас. Для регистрации необходимо выбрать хотя бы одну сферу."
+            "Вы не выбрали ни одной сферы, интересующей вас. Необходимо выбрать хотя бы одну сферу."
 
         const val WriteProfessionalActivity =
             "Напишите о своей деятельности - что именно Вы делаете на работе, с какими задачами сталкиваетесь"
+        const val PersonWantsAdd = "Пользователь хочет присоединиться к сообществу.\n"
+
+        fun writePersonInfo(userDetails: User.Details) =
+            buildEntities {
+                regularln(PersonWantsAdd)
+                addAll(accountInfo(userDetails))
+            }
+
+        const val Approved = "Новый пользователь был добавлен ✅"
+        const val NotApproved = "Новый пользователь не был добавлен ❌"
+
+        fun approvePersonInfo(userDetails: User.Details, boolean: Boolean) =
+            buildEntities {
+                regularln(if (boolean) Approved else NotApproved)
+                addAll(accountInfo(userDetails))
+            }
     }
+
+    const val ApproveButton = "Принять"
+    const val DisapproveButton = "Отклонить"
+
+    const val AccountWasVerified = "Ваш аккаунт успешно прошел верификацию"
+    const val StartButton = "Начать работу"
+
+    val AdminDoNotAccept = """
+        |Ваша заявка не была одобрена администратором.
+        |Если вы думаете, что произошла ошибка, напишите /start и заполните профайл ещё раз.
+    """.trimMargin()
 
     const val FinishChoosing = "Закончить выбор"
 
@@ -116,7 +145,8 @@ object Strings {
     )
 
     object AuthenticationResults {
-        const val OK = "Вы успешно зарегистрированы."
+        const val OK = "Вы успешно зарегистрированы"
+        const val RequiresApproval = "Ваш аккаунт на верификации"
         const val DuplicatePhoneNumber = "Аккаунт с вашим номером телефона уже существует. Обратитесь к администратору."
         const val AlreadyRegistered = "Вы уже зарегистрированы. Повторная регистрация невозможна."
         const val NoAreaSet = NoQuestionArea
@@ -124,14 +154,7 @@ object Strings {
 
     object RoleMenu {
         const val Admin = "Меню администратора"
-        const val Unauthenticated = "Неудачная попытка авторизации."
+        const val Unauthenticated = "Неудачная попытка авторизации"
         const val Normal = "Меню пользователя"
-    }
-
-    object OldQuestion {
-        const val ListClosedQuestions = "Нажмите на один из них, чтобы посмотреть всех, кто отвечал на данный вопрос."
-        const val HaveNotOldQuestion = "На данный момент нет вопросов, на которые вы бы получили ответ."
-        const val ListOfRespondents =
-            "Список всех, кто отвечал на вопрос. Нажмите на одного из них, чтобы посмотреть контакт."
     }
 }

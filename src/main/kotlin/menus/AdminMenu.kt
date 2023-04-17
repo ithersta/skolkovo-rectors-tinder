@@ -1,5 +1,7 @@
 package menus
 
+import addorganizations.telegram.states.CheckCityAdminState
+import addorganizations.telegram.states.ChooseCityOrganizationAdminState
 import auth.domain.entities.User
 import auth.telegram.Strings
 import common.telegram.DialogState
@@ -14,11 +16,11 @@ val adminMenu = menu<User.Admin>(Strings.RoleMenu.Admin, DialogState.Empty) {
     submenu(MenuStrings.AdminMenu.Main, MenuStrings.AdminMenu.Description, MenuState.AdminMenuState) {
         button(
             MenuStrings.AdminMenu.AddCity,
-            MenuState.AddCityState
+            CheckCityAdminState(null)
         )
         button(
             MenuStrings.AdminMenu.AddUniversity,
-            MenuState.AddUniversityState
+            ChooseCityOrganizationAdminState(null)
         )
         button(
             MenuStrings.AdminMenu.AddEvent,
