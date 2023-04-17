@@ -4,6 +4,7 @@ import dev.inmo.tgbotapi.utils.*
 import event.domain.entities.Event
 
 object Strings {
+    //TODO если пользователь ввел НЕ ссылку, а просто текст, возникает проблема CommonRequestException
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
         const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.ММ.гггг чч:мм"
@@ -44,8 +45,8 @@ object Strings {
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     object RemoveEvent {
         const val ChooseEvent = "Выберите мероприятие: "
-        const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
-        const val NotRemove = "❌ Мероприятие не удалено "
+        //const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
+        //const val NotRemove = "❌ Мероприятие не удалено "
         fun removeEventMessage(event: Event) = buildEntities {
             regular("📅 ")
             bold(event.name)
@@ -60,6 +61,38 @@ object Strings {
             link("Ссылка", event.url)
             regularln("\n")
             regular("Вы действительно хотите удалить мероприятие?")
+        }
+
+        fun removedEventMessage(event: Event) = buildEntities {
+            regular("📅 ")
+            strikethrough(event.name)
+            regular("\n🕓 ")
+            regular(
+                event.timestampBegin.toString() +
+                        " - " + event.timestampEnd.toString()
+            )
+            regularln("")
+            event.description?.let { italicln(it) }
+            regular("🔗")
+            link("Ссылка", event.url)
+            regularln("\n")
+            regular("Мероприятие успешно удалено ✅")
+        }
+
+        fun notRemovedEventMessage(event: Event) = buildEntities {
+            regular("📅 ")
+            bold(event.name)
+            regular("\n🕓 ")
+            regular(
+                event.timestampBegin.toString() +
+                        " - " + event.timestampEnd.toString()
+            )
+            regularln("")
+            event.description?.let { italicln(it) }
+            regular("🔗")
+            link("Ссылка", event.url)
+            regularln("\n")
+            regular("❌ Мероприятие не удалено")
         }
     }
 

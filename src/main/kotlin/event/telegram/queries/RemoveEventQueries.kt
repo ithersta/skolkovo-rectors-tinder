@@ -14,4 +14,4 @@ class DeleteEvent(val id: Long) : Query
 
 @Serializable
 @SerialName("nde")
-object NotDeleteEvent : Query
+class NotDeleteEvent(val id: Long) : Query
