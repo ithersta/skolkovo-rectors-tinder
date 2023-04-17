@@ -16,8 +16,14 @@ fun StateMachineBuilder<DialogState, User, UserId>.getEventsByUserFlow() {
     role<User.Normal> {
         state<MenuState.Events> {
             onEnter {
-                val entities = getEventsUseCase().flatMap { event -> Strings.eventMessage(event) }
-                sendTextMessage(it, entities)
+                if (getEventsUseCase().isEmpty()) {
+                    sendTextMessage(it, Strings.NoEvent)
+                } else {
+                    val entities = getEventsUseCase()
+                        .sortedBy { it.timestampBegin }
+                        .flatMap { event -> Strings.eventMessage(event) }
+                    sendTextMessage(it, entities)
+                }
                 state.override { DialogState.Empty }
             }
         }

@@ -18,7 +18,6 @@ import event.domain.usecases.DeleteEventUseCase
 import event.domain.usecases.GetEventByIdUseCase
 import event.domain.usecases.GetEventsPaginatedUseCase
 import event.telegram.Strings
-import event.telegram.Strings.eventMessage
 import event.telegram.queries.DeleteEvent
 import event.telegram.queries.NotDeleteEvent
 import event.telegram.queries.SelectEvent
@@ -32,7 +31,7 @@ suspend fun BaseStatefulContext<DialogState, User, *, out User.Admin>.sendListOf
 ) {
     val replyMarkup = eventPager.replyMarkup
     if (replyMarkup.keyboard.isEmpty()) {
-        sendTextMessage(chatIdentifier, Strings.RemoveEvent.NoEvent)
+        sendTextMessage(chatIdentifier, Strings.NoEvent)
         state.override { DialogState.Empty }
     } else {
         sendTextMessage(chatIdentifier, Strings.RemoveEvent.ChooseEvent, replyMarkup = replyMarkup)
@@ -60,7 +59,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
             val event = getEventByIdUseCase(data.id)
             sendTextMessage(
                 query.user.id,
-                Strings.RemoveEvent.Remove + eventMessage(event),
+                Strings.RemoveEvent.removeEventMessage(event),
                 replyMarkup = confirmationInlineKeyboard(
                     positiveData = DeleteEvent(data.id),
                     negativeData = NotDeleteEvent

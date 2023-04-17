@@ -41,12 +41,26 @@ object Strings {
         }
     }
 
+    const val NoEvent = "На данный момент нет актуальных мероприятий"
     object RemoveEvent {
         const val ChooseEvent = "Выберите мероприятие: "
-        const val NoEvent = "На данный момент нет актуальных мероприятий"
-        const val Remove = "Вы действительно хотите удалить мероприятие?\n"
         const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
         const val NotRemove = "❌ Мероприятие не удалено "
+        fun removeEventMessage(event: Event) = buildEntities {
+            regular("📅 ")
+            bold(event.name)
+            regular("\n🕓 ")
+            regular(
+                event.timestampBegin.toString() +
+                        " - " + event.timestampEnd.toString()
+            )
+            regularln("")
+            event.description?.let { italicln(it) }
+            regular("🔗")
+            link("Ссылка", event.url)
+            regularln("\n")
+            regular("Вы действительно хотите удалить мероприятие?")
+        }
     }
 
     // TODO придумать как выводить дату и время
@@ -56,9 +70,9 @@ object Strings {
 //    }
 
     fun newEventMessage(event: Event) = buildEntities {
-        regular("📅 Новое мероприятие  ")
-        bold(event.name)
-        regular("\n🕓 ")
+        regular("📨 Новое мероприятие ")
+        boldln("\n\n📅 " + event.name)
+        regular("🕓 ")
         regular(
             event.timestampBegin.toString() +
                 " - " + event.timestampEnd.toString()
