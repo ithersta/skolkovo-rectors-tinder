@@ -73,7 +73,7 @@ fun RoleFilterBuilder<User.Normal>.newResponseFlow() {
             sendContact(
                 chat = query.user,
                 phoneNumber = result.respondent.phoneNumber.value,
-                firstName = result.respondent.name,
+                firstName = result.respondent.name
             )
             answer(query)
         }

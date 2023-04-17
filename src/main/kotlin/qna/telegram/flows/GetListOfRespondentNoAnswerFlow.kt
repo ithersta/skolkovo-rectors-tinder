@@ -139,7 +139,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             sendContact(
                 chat = query.user,
                 phoneNumber = respondent.phoneNumber.value,
-                firstName = respondent.name,
+                firstName = respondent.name
             )
         }
     }
