@@ -141,7 +141,7 @@ object Strings {
         QuestionArea.Campus to Question.Campus,
         QuestionArea.Society to Question.Society,
         QuestionArea.Strategy to Question.Strategy,
-        QuestionArea.Other to Question.Others,
+        QuestionArea.Other to Question.Others
     )
 
     object AuthenticationResults {
