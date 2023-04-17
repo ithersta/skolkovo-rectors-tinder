@@ -1,15 +1,15 @@
 package menus
 
+import addorganizations.telegram.states.CheckCityAdminState
+import addorganizations.telegram.states.ChooseCityOrganizationAdminState
+import auth.domain.entities.User
+import auth.telegram.Strings
 import common.telegram.DialogState
 import common.telegram.strings.CommonStrings
 import generated.menu
 import menus.states.MenuState
 import menus.strings.MenuStrings
 import event.telegram.flows.sendListOfEvents
-import addorganizations.telegram.states.CheckCityAdminState
-import addorganizations.telegram.states.ChooseCityOrganizationAdminState
-import auth.domain.entities.User
-import auth.telegram.Strings
 
 val adminMenu = menu<User.Admin>(Strings.RoleMenu.Admin, DialogState.Empty) {
     menu()
