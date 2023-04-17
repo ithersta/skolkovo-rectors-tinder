@@ -7,10 +7,10 @@ import event.domain.repository.EventRepository
 import org.koin.core.annotation.Single
 
 @Single
-class GetEventsPaginatedUseCase (
+class GetEventsPaginatedUseCase(
     private val eventRepository: EventRepository,
     private val transaction: Transaction
-){
+) {
     operator fun invoke(offset: Int, limit: Int): Paginated<Event> = transaction {
         return@transaction eventRepository.getAllPaginated(offset, limit)
     }

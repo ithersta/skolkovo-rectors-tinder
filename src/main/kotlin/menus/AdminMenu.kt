@@ -1,9 +1,9 @@
 package menus
 
-import addorganizations.telegram.states.CheckCityAdminState
-import addorganizations.telegram.states.ChooseCityOrganizationAdminState
 import auth.domain.entities.User
 import auth.telegram.Strings
+import addorganizations.telegram.states.CheckCityAdminState
+import addorganizations.telegram.states.ChooseCityOrganizationAdminState
 import common.telegram.DialogState
 import common.telegram.strings.CommonStrings
 import generated.menu
@@ -26,7 +26,7 @@ val adminMenu = menu<User.Admin>(Strings.RoleMenu.Admin, DialogState.Empty) {
             MenuStrings.AdminMenu.AddEvent,
             MenuState.AddEventState
         )
-        button(MenuStrings.AdminMenu.RemoveEvent){
+        button(MenuStrings.AdminMenu.RemoveEvent) {
             sendListOfEvents(it.chat.id)
         }
         backButton(CommonStrings.Button.Back)
