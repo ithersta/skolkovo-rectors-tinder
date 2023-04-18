@@ -9,7 +9,10 @@ plugins {
     application
 }
 
-jib.to.image = "ithersta/skolkovo-rectors-tinder"
+jib {
+    to.image = "ithersta/skolkovo-rectors-tinder"
+    container.workingDirectory = "/db"
+}
 
 group = "ru.spbstu"
 version = "1.0-SNAPSHOT"
