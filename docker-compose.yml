@@ -6,8 +6,8 @@ secrets:
 
 services:
   bot:
-    build: .
-    restart: always
+    image: ithersta/skolkovo-rectors-tinder
+    restart: unless-stopped
     secrets:
       - token
     environment:
