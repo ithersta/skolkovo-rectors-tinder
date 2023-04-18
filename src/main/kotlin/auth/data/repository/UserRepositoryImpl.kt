@@ -7,6 +7,7 @@ import auth.domain.entities.OrganizationType
 import auth.domain.entities.PhoneNumber
 import auth.domain.entities.User
 import auth.domain.repository.UserRepository
+import mute.data.tables.MuteSettings
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.koin.core.annotation.Single
@@ -39,7 +40,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun getAllActiveExceptUser(id: Long): List<User.Details> {
-        val query = Users.select { Users.id.neq(id) }
+        val query = Users.select { Users.id.neq(id) and Users.isApproved.eq(true) }
+            .except(MuteSettings.slice(MuteSettings.userId).selectAll())
         return Users.Entity.wrapRows(query).map(Users.Entity::toDomainModel)
     }
 
