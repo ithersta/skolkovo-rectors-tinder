@@ -38,7 +38,7 @@ class UserRepositoryImpl : UserRepository {
         return Users.Entity.findById(id)?.toDomainModel()
     }
 
-    override fun getAllExceptUser(id: Long): List<User.Details> {
+    override fun getAllActiveExceptUser(id: Long): List<User.Details> {
         val query = Users.select { Users.id.neq(id) }
         return Users.Entity.wrapRows(query).map(Users.Entity::toDomainModel)
     }

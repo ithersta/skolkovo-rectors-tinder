@@ -15,7 +15,7 @@ import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import event.domain.entities.Event
 import event.domain.usecases.AddEventUseCase
-import event.domain.usecases.GetAllExceptAdminUseCase
+import event.domain.usecases.GetAllActiveExceptAdminUseCase
 import event.telegram.Strings
 import event.telegram.states.*
 import event.telegram.validation.IsLinkValid
@@ -30,7 +30,7 @@ import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val addEventUseCase: AddEventUseCase by inject()
-    val getAllExceptAdminUseCase: GetAllExceptAdminUseCase by inject()
+    val getAllActiveExceptAdminUseCase: GetAllActiveExceptAdminUseCase by inject()
     role<User.Admin> {
         state<MenuState.AddEventState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName, replyMarkup = ReplyKeyboardRemove()) }
@@ -159,7 +159,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     state.snapshot.url
                 )
                 addEventUseCase(event)
-                getAllExceptAdminUseCase(it.chat.id.chatId).forEach { user ->
+                getAllActiveExceptAdminUseCase(it.chat.id.chatId).forEach { user ->
                     val id = user?.id?.toChatId()
                     if (id != null) {
                         runCatching {

@@ -6,11 +6,11 @@ import common.domain.Transaction
 import org.koin.core.annotation.Single
 
 @Single
-class GetAllExceptAdminUseCase(
+class GetAllActiveExceptAdminUseCase(
     private val userRepository: UserRepository,
     private val transaction: Transaction
 ) {
     operator fun invoke(id: Long): List<User.Details?> = transaction {
-        return@transaction userRepository.getAllExceptUser(id)
+        return@transaction userRepository.getAllActiveExceptUser(id)
     }
 }

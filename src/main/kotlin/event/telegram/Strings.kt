@@ -50,8 +50,6 @@ object Strings {
     object RemoveEvent {
         const val ChooseEvent = "Выберите мероприятие: "
 
-        // const val SuccessfulRemove = "Мероприятие успешно удалено ✅"
-        // const val NotRemove = "❌ Мероприятие не удалено "
         fun removeEventMessage(event: Event) = buildEntities {
             regular("📅 ")
             bold(event.name)
@@ -101,7 +99,6 @@ object Strings {
         }
     }
 
-    // TODO придумать как выводить дату и время
     fun formatInstant(instant: Instant): String {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
         return formatter.format(instant.toJavaInstant().atZone(ZoneId.systemDefault()))
