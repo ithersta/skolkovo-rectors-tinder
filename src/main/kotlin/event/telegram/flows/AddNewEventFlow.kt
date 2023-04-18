@@ -133,7 +133,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                 )
                 sendTextMessage(
                     it,
-                    Strings.ScheduleEvent.message(event),
+                    Strings.ScheduleEvent.message(event, timeZone),
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
@@ -158,7 +158,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     val id = user?.id?.toChatId()
                     if (id != null) {
                         runCatching {
-                            sendTextMessage(id, Strings.newEventMessage(event))
+                            sendTextMessage(id, Strings.newEventMessage(event, timeZone))
                         }
                     }
                 }

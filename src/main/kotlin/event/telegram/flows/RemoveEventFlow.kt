@@ -27,6 +27,7 @@ import event.telegram.queries.NotDeleteEvent
 import event.telegram.queries.SelectEvent
 import generated.dataButton
 import generated.onDataCallbackQuery
+import kotlinx.datetime.TimeZone
 import org.koin.core.component.inject
 
 private lateinit var eventPager: InlineKeyboardPager<Unit, DialogState, User, User.Admin>
@@ -46,6 +47,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
     val getEventsPaginatedUseCase: GetEventsPaginatedUseCase by inject()
     val getEventByIdUseCase: GetEventByIdUseCase by inject()
     val deleteEventUseCase: DeleteEventUseCase by inject()
+    val timeZone: TimeZone by inject()
 
     eventPager = pager(id = "events") {
         val event = getEventsPaginatedUseCase(offset, limit)
@@ -63,7 +65,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
             val event = getEventByIdUseCase(data.id)
             sendTextMessage(
                 query.user.id,
-                Strings.RemoveEvent.removeEventMessage(event),
+                Strings.RemoveEvent.removeEventMessage(event, timeZone),
                 replyMarkup = confirmationInlineKeyboard(
                     positiveData = DeleteEvent(data.id),
                     negativeData = NotDeleteEvent(data.id)
@@ -76,7 +78,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
             deleteEventUseCase(data.id)
             edit(
                 query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>(),
-                Strings.RemoveEvent.removedEventMessage(event),
+                Strings.RemoveEvent.removedEventMessage(event, timeZone),
                 replyMarkup = null
             )
             answer(query)
@@ -85,7 +87,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
             val event = getEventByIdUseCase(data.id)
             edit(
                 query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>(),
-                Strings.RemoveEvent.notRemovedEventMessage(event),
+                Strings.RemoveEvent.notRemovedEventMessage(event, timeZone),
                 replyMarkup = null
             )
             answer(query)

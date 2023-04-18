@@ -8,11 +8,13 @@ import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
 import event.domain.usecases.GetEventsUseCase
 import event.telegram.Strings
+import kotlinx.datetime.TimeZone
 import menus.states.MenuState
 import org.koin.core.component.inject
 
 fun StateMachineBuilder<DialogState, User, UserId>.getEventsByUserFlow() {
     val getEventsUseCase: GetEventsUseCase by inject()
+    val timeZone: TimeZone by inject()
     role<User.Normal> {
         state<MenuState.Events> {
             onEnter {
@@ -22,7 +24,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.getEventsByUserFlow() {
                 } else {
                     val entities = events
                         .sortedBy { event -> event.timestampBegin }
-                        .flatMap { event -> Strings.eventMessage(event) }
+                        .flatMap { event -> Strings.eventMessage(event, timeZone) }
                     sendTextMessage(it, entities)
                 }
                 state.override { DialogState.Empty }

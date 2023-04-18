@@ -3,15 +3,17 @@ package event.telegram
 import dev.inmo.tgbotapi.utils.*
 import event.domain.entities.Event
 import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toJavaZoneId
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 object Strings {
     const val NoEvent = "На данный момент нет актуальных мероприятий"
-    fun formatInstant(instant: Instant): String {
+    fun formatInstant(instant: Instant, timeZone: TimeZone): String {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-        return formatter.format(instant.toJavaInstant().atZone(ZoneId.of("Europe/Moscow")))
+        return formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
     }
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
@@ -29,15 +31,15 @@ object Strings {
         const val InvalidTimeInterval = "Некорректно указан временной интервал"
         const val InvalidLink = "Неверный формат ссылки"
         const val InvalidDataFormat = "Введён неверный формат данных. "
-        fun message(event: Event) = buildEntities {
+        fun message(event: Event, timeZone: TimeZone) = buildEntities {
             bold("Название: ")
             regular(event.name)
             regularln("")
             bold("Дата и время начала: ")
-            regular(formatInstant(event.timestampBegin))
+            regular(formatInstant(event.timestampBegin, timeZone))
             regularln("")
             bold("Дата и время окончания: ")
-            regular(formatInstant(event.timestampEnd))
+            regular(formatInstant(event.timestampEnd, timeZone))
             if (event.description != null) {
                 regularln("")
                 bold("Краткое описание: ")
@@ -54,13 +56,13 @@ object Strings {
     object RemoveEvent {
         const val ChooseEvent = "Выберите мероприятие: "
 
-        fun removeEventMessage(event: Event) = buildEntities {
+        fun removeEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
             regular("📅 ")
             bold(event.name)
             regular("\n🕓 ")
             regular(
-                formatInstant(event.timestampBegin) +
-                    " - " + formatInstant(event.timestampEnd)
+                formatInstant(event.timestampBegin, timeZone) +
+                    " - " + formatInstant(event.timestampEnd, timeZone)
             )
             regularln("")
             event.description?.let { italicln(it) }
@@ -70,13 +72,13 @@ object Strings {
             regular("Вы действительно хотите удалить мероприятие?")
         }
 
-        fun removedEventMessage(event: Event) = buildEntities {
+        fun removedEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
             regular("📅 ")
             bold(event.name)
             regular("\n🕓 ")
             regular(
-                formatInstant(event.timestampBegin) +
-                    " - " + formatInstant(event.timestampEnd)
+                formatInstant(event.timestampBegin, timeZone) +
+                    " - " + formatInstant(event.timestampEnd, timeZone)
             )
             regularln("")
             event.description?.let { italicln(it) }
@@ -86,13 +88,13 @@ object Strings {
             regular("Мероприятие успешно удалено ✅")
         }
 
-        fun notRemovedEventMessage(event: Event) = buildEntities {
+        fun notRemovedEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
             regular("📅 ")
             bold(event.name)
             regular("\n🕓 ")
             regular(
-                formatInstant(event.timestampBegin) +
-                    " - " + formatInstant(event.timestampEnd)
+                formatInstant(event.timestampBegin, timeZone) +
+                    " - " + formatInstant(event.timestampEnd, timeZone)
             )
             regularln("")
             event.description?.let { italicln(it) }
@@ -103,13 +105,13 @@ object Strings {
         }
     }
 
-    fun newEventMessage(event: Event) = buildEntities {
+    fun newEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
         regular("📨 Новое мероприятие ")
         boldln("\n\n📅 " + event.name)
         regular("🕓 ")
         regular(
-            formatInstant(event.timestampBegin) +
-                " - " + formatInstant(event.timestampEnd)
+            formatInstant(event.timestampBegin, timeZone) +
+                " - " + formatInstant(event.timestampEnd, timeZone)
         )
         regularln("")
         event.description?.let { italicln(it) }
@@ -117,13 +119,13 @@ object Strings {
         link("Ссылка", event.url)
     }
 
-    fun eventMessage(event: Event) = buildEntities {
+    fun eventMessage(event: Event, timeZone: TimeZone) = buildEntities {
         regular("📅 ")
         bold(event.name)
         regular("\n🕓 ")
         regular(
-            formatInstant(event.timestampBegin) +
-                " - " + formatInstant(event.timestampEnd)
+            formatInstant(event.timestampBegin, timeZone) +
+                " - " + formatInstant(event.timestampEnd, timeZone)
         )
         regularln("")
         event.description?.let { italicln(it) }
