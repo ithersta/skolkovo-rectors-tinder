@@ -5,8 +5,11 @@ plugins {
     kotlin("plugin.serialization") version "1.8.20"
     id("com.google.devtools.ksp") version "1.8.20-1.0.10"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    id("com.google.cloud.tools.jib") version "3.3.1"
     application
 }
+
+jib.to.image = "ithersta/skolkovo-rectors-tinder"
 
 group = "ru.spbstu"
 version = "1.0-SNAPSHOT"
