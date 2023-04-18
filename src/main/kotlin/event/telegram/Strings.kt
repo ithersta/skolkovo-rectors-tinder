@@ -8,6 +8,11 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 object Strings {
+    const val NoEvent = "На данный момент нет актуальных мероприятий"
+    fun formatInstant(instant: Instant): String {
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        return formatter.format(instant.toJavaInstant().atZone(ZoneId.of("Europe/Moscow")))
+    }
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
         const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.ММ.гггг чч:мм"
@@ -46,7 +51,6 @@ object Strings {
         }
     }
 
-    const val NoEvent = "На данный момент нет актуальных мероприятий"
     object RemoveEvent {
         const val ChooseEvent = "Выберите мероприятие: "
 
@@ -97,11 +101,6 @@ object Strings {
             regularln("\n")
             regular("❌ Мероприятие не удалено")
         }
-    }
-
-    fun formatInstant(instant: Instant): String {
-        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-        return formatter.format(instant.toJavaInstant().atZone(ZoneId.of("Europe/Moscow")))
     }
 
     fun newEventMessage(event: Event) = buildEntities {
