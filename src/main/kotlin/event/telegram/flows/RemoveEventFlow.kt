@@ -73,21 +73,20 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
         }
         onDataCallbackQuery(DeleteEvent::class) { (data, query) ->
             deleteEventUseCase(data.id)
-            val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
             val event = getEventByIdUseCase(data.id)
-            // пока не работает
+            // пока не работает java.util.NoSuchElementException: List is empty.
             edit(
-                message,
+                query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>(),
                 Strings.RemoveEvent.removedEventMessage(event),
                 replyMarkup = null
             )
             answer(query)
         }
         onDataCallbackQuery(NotDeleteEvent::class) { (data, query) ->
-            val message = query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>()
             val event = getEventByIdUseCase(data.id)
+            // а тут работает
             edit(
-                message,
+                query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>(),
                 Strings.RemoveEvent.notRemovedEventMessage(event),
                 replyMarkup = null
             )

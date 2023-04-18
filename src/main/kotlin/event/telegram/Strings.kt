@@ -68,7 +68,7 @@ object Strings {
 
         fun removedEventMessage(event: Event) = buildEntities {
             regular("📅 ")
-            strikethrough(event.name)
+            bold(event.name)
             regular("\n🕓 ")
             regular(
                 formatInstant(event.timestampBegin) +
@@ -99,9 +99,10 @@ object Strings {
         }
     }
 
+    //не выводит правильно (прибавляет 3 часа)
     fun formatInstant(instant: Instant): String {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-        return formatter.format(instant.toJavaInstant().atZone(ZoneId.systemDefault()))
+        return formatter.format(instant.toJavaInstant().atZone(ZoneId.of("Europe/Moscow")))
     }
 
     fun newEventMessage(event: Event) = buildEntities {

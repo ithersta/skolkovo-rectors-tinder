@@ -40,7 +40,7 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override fun getAllActiveExceptUser(id: Long): List<User.Details> {
-        val query = Users.select { Users.id.neq(id) and Users.isApproved.eq(true) }
+        val query = Users.slice(Users.id).select { Users.id.neq(id) and Users.isApproved.eq(true) }
             .except(MuteSettings.slice(MuteSettings.userId).selectAll())
         return Users.Entity.wrapRows(query).map(Users.Entity::toDomainModel)
     }
