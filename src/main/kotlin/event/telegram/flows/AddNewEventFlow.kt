@@ -19,18 +19,17 @@ import event.domain.usecases.GetAllActiveExceptAdminUseCase
 import event.telegram.Strings
 import event.telegram.states.*
 import event.telegram.validation.IsLinkValid
-import kotlinx.datetime.toKotlinInstant
+import kotlinx.datetime.*
 import menus.states.MenuState
 import org.koin.core.component.inject
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val addEventUseCase: AddEventUseCase by inject()
     val getAllActiveExceptAdminUseCase: GetAllActiveExceptAdminUseCase by inject()
+    val timeZone: TimeZone by inject()
     role<User.Admin> {
         state<MenuState.AddEventState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName, replyMarkup = ReplyKeyboardRemove()) }
@@ -43,9 +42,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     LocalDateTime.parse(
                         it.content.text,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                            .withZone(ZoneId.of("Europe/Moscow"))
-                    )
-                        .toInstant(ZoneOffset.UTC).toKotlinInstant()
+                    ).toKotlinLocalDateTime().toInstant(timeZone)
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(
                         it.chat,
@@ -63,9 +60,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     LocalDateTime.parse(
                         it.content.text,
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                            .withZone(ZoneId.of("Europe/Moscow"))
-                    )
-                        .toInstant(ZoneOffset.UTC).toKotlinInstant()
+                    ).toKotlinLocalDateTime().toInstant(timeZone)
                 } catch (e: DateTimeParseException) {
                     sendTextMessage(
                         it.chat,

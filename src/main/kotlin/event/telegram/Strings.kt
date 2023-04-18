@@ -99,7 +99,6 @@ object Strings {
         }
     }
 
-    // не выводит правильно (прибавляет 3 часа)
     fun formatInstant(instant: Instant): String {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
         return formatter.format(instant.toJavaInstant().atZone(ZoneId.of("Europe/Moscow")))
