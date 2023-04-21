@@ -1,0 +1,33 @@
+name: Deployment
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-canary'
+      - 'v[0-9]+.[0-9]+.[0-9]+-canary.[0-9]+'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get tag
+        id: get_tag
+        run: |
+          if [[ "${GITHUB_REF_NAME}" =~ "-canary" ]]
+          then
+            echo "::set-output name=result::skolkovo-rectors-tinder-canary"
+          else
+            echo "::set-output name=result::skolkovo-rectors-tinder"
+          fi
+      - name: Checkout files
+        uses: actions/checkout@v3
+      - name: Build and push Docker image
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            jib \
+              -Djib.to.image=ithersta/projects:${{ steps.get_tag.outputs.result }} \
+              -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} \
+              -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
