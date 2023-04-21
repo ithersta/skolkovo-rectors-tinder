@@ -44,4 +44,4 @@ jobs:
       - name: Deploy
         run: |
           docker context create server --docker "host=ssh://${{ secrets.SSH_HOST }}"
-          docker --context server compose up -f ${{ steps.get_release_type.outputs.compose }} --pull -d
+          docker --context server compose -f ${{ steps.get_release_type.outputs.compose }} up --pull -d
