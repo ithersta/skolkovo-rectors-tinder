@@ -43,5 +43,6 @@ jobs:
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - name: Deploy
         run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker context create server --docker "host=ssh://${{ secrets.SSH_HOST }}"
           docker --context server compose -f ${{ steps.get_release_type.outputs.compose }} up --pull -d
