@@ -2,11 +2,11 @@ version: '3.9'
 
 secrets:
   token:
-    file: /root/.skolkovo-rectors-tinder-token
+    file: /root/.skolkovo-rectors-tinder-canary-token
 
 services:
   bot:
-    image: ithersta/projects:skolkovo-rectors-tinder
+    image: ithersta/projects:skolkovo-rectors-tinder-canary
     restart: unless-stopped
     secrets:
       - token
