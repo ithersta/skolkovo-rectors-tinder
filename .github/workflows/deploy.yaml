@@ -27,7 +27,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            jib \
-              -Djib.to.image=ithersta/projects:${{ steps.get_tag.outputs.result }} \
-              -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} \
+            jib
+              -Djib.to.image=ithersta/projects:${{ steps.get_tag.outputs.result }}
+              -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }}
               -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
