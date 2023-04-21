@@ -5,7 +5,7 @@ secrets:
     file: /root/.skolkovo-rectors-tinder-canary-token
 
 services:
-  bot:
+  bot-canary:
     image: ithersta/projects:skolkovo-rectors-tinder-canary
     restart: unless-stopped
     secrets:
@@ -15,7 +15,7 @@ services:
       CURATOR_ID: -1001697348515
       ADMIN_ID: 755706954
     volumes:
-      - bot:/db
+      - bot-canary:/db
 
 volumes:
-  bot:
+  bot-canary:

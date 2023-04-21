@@ -8,18 +8,20 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+-canary.[0-9]+'
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get tag
-        id: get_tag
+      - name: Get release type
+        id: get_release_type
         run: |
           if [[ "${GITHUB_REF_NAME}" =~ "-canary" ]]
           then
-            echo "::set-output name=result::skolkovo-rectors-tinder-canary"
+            echo "::set-output name=tag::skolkovo-rectors-tinder-canary"
+            echo "::set-output name=compose::docker-compose.canary.yml"
           else
-            echo "::set-output name=result::skolkovo-rectors-tinder"
+            echo "::set-output name=tag::skolkovo-rectors-tinder"
+            echo "::set-output name=compose::docker-compose.yml"
           fi
       - name: Checkout files
         uses: actions/checkout@v3
@@ -28,6 +30,18 @@ jobs:
         with:
           arguments: |
             jib
-              -Djib.to.image=ithersta/projects:${{ steps.get_tag.outputs.result }}
+              -Djib.to.image=ithersta/projects:${{ steps.get_release_type.outputs.tag }}
               -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }}
               -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
+      - name: Install Docker Compose
+        run: curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: id_ed25519
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Deploy
+        run: |
+          docker context create server --docker "host=ssh://${{ secrets.SSH_HOST }}"
+          docker --context server compose up -f ${{ steps.get_release_type.outputs.compose }} --pull -d
