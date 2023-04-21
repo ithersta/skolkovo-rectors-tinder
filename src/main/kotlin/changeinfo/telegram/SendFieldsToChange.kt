@@ -11,8 +11,9 @@ import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 
-suspend fun <S : User> StatefulContext<DialogState, User, *, S>
-    .sendFieldsToChange(message: CommonMessage<TextContent>) {
+suspend fun <S : User> StatefulContext<DialogState, User, *, S>.sendFieldsToChange(
+    message: CommonMessage<TextContent>
+) {
     sendTextMessage(
         message.chat,
         Strings.ChooseFieldToChange,
