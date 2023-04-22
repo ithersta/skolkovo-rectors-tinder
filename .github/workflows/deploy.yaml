@@ -4,8 +4,8 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
-      - 'v[0-9]+.[0-9]+.[0-9]+-canary'
-      - 'v[0-9]+.[0-9]+.[0-9]+-canary.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-staging'
+      - 'v[0-9]+.[0-9]+.[0-9]+-staging.[0-9]+'
 
 jobs:
   deploy:
@@ -15,10 +15,10 @@ jobs:
       - name: Get release type
         id: get_release_type
         run: |
-          if [[ "${GITHUB_REF_NAME}" =~ "-canary" ]]
+          if [[ "${GITHUB_REF_NAME}" =~ "-staging" ]]
           then
-            echo "::set-output name=tag::skolkovo-rectors-tinder-canary"
-            echo "::set-output name=compose::docker-compose.canary.yml"
+            echo "::set-output name=tag::skolkovo-rectors-tinder-staging"
+            echo "::set-output name=compose::docker-compose.staging.yml"
           else
             echo "::set-output name=tag::skolkovo-rectors-tinder"
             echo "::set-output name=compose::docker-compose.yml"
