@@ -1,7 +1,10 @@
 name: Deployment
+run-name: Deploy ${{ github.ref_name }}
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
       - 'v[0-9]+.[0-9]+.[0-9]+-staging'
