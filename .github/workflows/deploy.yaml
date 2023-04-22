@@ -20,11 +20,11 @@ jobs:
         run: |
           if [[ "${GITHUB_REF_NAME}" == "main" ]]
           then
-            echo "::set-output name=tag::skolkovo-rectors-tinder-staging"
-            echo "::set-output name=compose::docker-compose.staging.yml"
+            echo "{tag}={skolkovo-rectors-tinder-staging}" >> $GITHUB_OUTPUT
+            echo "{compose}={docker-compose.staging.yml}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=tag::skolkovo-rectors-tinder"
-            echo "::set-output name=compose::docker-compose.yml"
+            echo "{tag}={skolkovo-rectors-tinder}" >> $GITHUB_OUTPUT
+            echo "{compose}={docker-compose.yml}" >> $GITHUB_OUTPUT
           fi
       - name: Checkout files
         uses: actions/checkout@v3
