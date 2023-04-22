@@ -6,7 +6,7 @@ secrets:
 
 services:
   bot:
-    image: ithersta/skolkovo-rectors-tinder
+    image: ithersta/projects:skolkovo-rectors-tinder
     restart: unless-stopped
     secrets:
       - token

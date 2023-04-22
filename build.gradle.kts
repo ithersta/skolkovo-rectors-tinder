@@ -10,7 +10,6 @@ plugins {
 }
 
 jib {
-    to.image = "ithersta/skolkovo-rectors-tinder"
     container.workingDirectory = "/db"
 }
 
