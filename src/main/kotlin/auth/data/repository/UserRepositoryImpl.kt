@@ -39,10 +39,10 @@ class UserRepositoryImpl : UserRepository {
         return Users.Entity.findById(id)?.toDomainModel()
     }
 
-    override fun getAllActiveExceptUser(id: Long): List<User.Details> {
-        val query = Users.slice(Users.id).select { Users.id.neq(id) and Users.isApproved.eq(true) }
+    override fun getAllActiveExceptUser(id: Long): List<Long> {
+        return Users.slice(Users.id).select { Users.id.neq(id) and Users.isApproved.eq(true) }
             .except(MuteSettings.slice(MuteSettings.userId).selectAll())
-        return Users.Entity.wrapRows(query).map(Users.Entity::toDomainModel)
+            .map { it[Users.id].value }
     }
 
     override fun containsUserWithPhoneNumber(phoneNumber: PhoneNumber): Boolean {
