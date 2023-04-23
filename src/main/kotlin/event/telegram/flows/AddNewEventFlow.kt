@@ -19,7 +19,9 @@ import event.domain.usecases.GetAllActiveExceptAdminUseCase
 import event.telegram.Strings
 import event.telegram.states.*
 import event.telegram.validation.IsLinkValid
-import kotlinx.datetime.*
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toKotlinLocalDateTime
 import menus.states.MenuState
 import org.koin.core.component.inject
 import java.time.LocalDateTime
@@ -133,7 +135,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                 )
                 sendTextMessage(
                     it,
-                    Strings.ScheduleEvent.message(event, timeZone),
+                    Strings.ScheduleEvent.approveEventMessage(event, timeZone),
                     replyMarkup = replyKeyboard(
                         resizeKeyboard = true,
                         oneTimeKeyboard = true
@@ -154,7 +156,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     state.snapshot.url
                 )
                 addEventUseCase(event)
-                getAllActiveExceptAdminUseCase(it.chat.id.chatId).forEach { user ->
+                getAllActiveExceptAdminUseCase().forEach { user ->
                     val id = user?.id?.toChatId()
                     if (id != null) {
                         runCatching {

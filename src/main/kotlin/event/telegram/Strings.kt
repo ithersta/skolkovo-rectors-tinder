@@ -30,7 +30,7 @@ object Strings {
         const val InvalidTimeInterval = "Некорректно указан временной интервал"
         const val InvalidLink = "Неверный формат ссылки"
         const val InvalidDataFormat = "Введён неверный формат данных. "
-        fun message(event: Event, timeZone: TimeZone) = buildEntities {
+        fun approveEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
             bold("Название: ")
             regular(event.name)
             regularln("")
