@@ -2,6 +2,7 @@ package common.data.migrations
 
 import auth.data.tables.UserAreas
 import auth.data.tables.Users
+import event.data.tables.Events
 import mute.data.tables.MuteSettings
 import notifications.data.tables.NotificationPreferences
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -27,7 +28,8 @@ fun Transaction.runMigrations(organizationFiller: OrganizationFiller) {
         Responses,
         AcceptedResponses,
         MuteSettings,
-        NotificationPreferences
+        NotificationPreferences,
+        Events
     )
     OrganizationFiller::class.java.getResourceAsStream("/organizations.json")
         ?.let { organizationFiller.run { loadFromJson(it) } }

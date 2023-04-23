@@ -17,7 +17,9 @@ import common.telegram.DialogState
 import common.telegram.Query
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.types.UserId
-import event.telegram.eventFlow
+import event.telegram.flows.addEventFlow
+import event.telegram.flows.getEventsByUserFlow
+import event.telegram.flows.removeEventFlow
 import feedback.telegram.flows.feedbackFlow
 import menus.adminMenu
 import menus.flows.accountInfoFlow
@@ -54,6 +56,7 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         testNotificationsFlow()
         addCityOrganizationAdminFlow()
         approveUserFlow()
+        removeEventFlow()
     }
     role<User.Normal> {
         anyState {
@@ -74,7 +77,8 @@ val stateMachine = stateMachine<DialogState, User, UserId>(
         addCityOrganizationUserFlow()
     }
     accountInfoFlow()
+    getEventsByUserFlow()
     muteFlow()
-    eventFlow()
+    addEventFlow()
     fallback()
 }
