@@ -81,7 +81,7 @@ object Strings {
         regular("🕓 ")
         regular(
             formatInstant(event.timestampBegin, timeZone) +
-                    " - " + formatInstant(event.timestampEnd, timeZone)
+                " - " + formatInstant(event.timestampEnd, timeZone)
         )
         regularln("")
         event.description?.let { italicln(it) }
