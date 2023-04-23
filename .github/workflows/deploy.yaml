@@ -1,0 +1,51 @@
+name: Deployment
+run-name: Deploy ${{ github.ref_name }}
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+concurrency: deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get release type
+        id: get_release_type
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]
+          then
+            echo "tag=skolkovo-rectors-tinder-staging" >> "$GITHUB_ENV"
+            echo "compose=docker-compose.staging.yml" >> "$GITHUB_ENV"
+          else
+            echo "tag=skolkovo-rectors-tinder" >> "$GITHUB_ENV"
+            echo "compose=docker-compose.yml" >> "$GITHUB_ENV"
+          fi
+      - name: Checkout files
+        uses: actions/checkout@v3
+      - name: Build and push Docker image
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            jib
+              -Djib.to.image=ithersta/projects:${{ env.tag }}
+              -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }}
+              -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
+      - name: Install Docker Compose
+        run: curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2.5.1
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: id_ed25519
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Deploy
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker context create server --docker "host=ssh://${{ secrets.SSH_HOST }}"
+          docker --context server compose -f ${{ env.compose }} -p ${{ env.tag }} up --pull always -d --remove-orphans

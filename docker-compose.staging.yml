@@ -2,18 +2,18 @@ version: '3.9'
 
 secrets:
   token:
-    file: /root/.skolkovo-rectors-tinder-token
+    file: /root/.skolkovo-rectors-tinder-staging-token
 
 services:
   bot:
-    image: ithersta/projects:skolkovo-rectors-tinder
+    image: ithersta/projects:skolkovo-rectors-tinder-staging
     restart: unless-stopped
     secrets:
       - token
     environment:
       TOKEN_FILE: /run/secrets/token
-      CURATOR_ID: -1001697348515
-      ADMIN_ID: 755706954
+      CURATOR_ID: 105293829
+      ADMIN_ID: 105293829
     volumes:
       - bot:/db
 
