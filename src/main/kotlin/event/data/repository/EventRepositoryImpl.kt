@@ -10,14 +10,15 @@ import org.koin.core.annotation.Single
 
 @Single
 class EventRepositoryImpl : EventRepository {
-    override fun add(event: Event) {
-        Events.insert {
+    override fun add(event: Event): Long {
+        val id = Events.insertAndGetId {
             it[name] = event.name
             it[timestampBegin] = event.timestampBegin
             it[timestampEnd] = event.timestampEnd
             it[description] = event.description
             it[url] = event.url
         }
+        return id.value
     }
 
     override fun getById(id: Long): Event {

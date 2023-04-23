@@ -4,6 +4,7 @@ import config.readToken
 import dev.inmo.tgbotapi.bot.ktor.telegramBot
 import dev.inmo.tgbotapi.bot.settings.limiters.CommonLimiter
 import dev.inmo.tgbotapi.extensions.behaviour_builder.buildBehaviourWithLongPolling
+import event.telegram.NewEventNotificationSender
 import feedback.telegram.FeedbackRequester
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
@@ -26,6 +27,7 @@ suspend fun main() {
     val autoCloseOldQuestions: AutoCloseOldQuestionsUseCase = application.koin.get()
     val acceptedResponsesSender: AcceptedResponsesSender = application.koin.get()
     val newQuestionNotificationSender: NewQuestionNotificationSender = application.koin.get()
+    val newEventNotificationSender: NewEventNotificationSender = application.koin.get()
     telegramBot(readToken()) {
         requestsLimiter = CommonLimiter(lockCount = 30, regenTime = 1000)
         client = HttpClient(OkHttp)
@@ -38,6 +40,7 @@ suspend fun main() {
         with(unmuteRunner) { setup() }
         acceptedResponsesSender.setup()
         newQuestionNotificationSender.setup()
+        newEventNotificationSender.setup()
         autoCloseOldQuestions()
     }.join()
 }

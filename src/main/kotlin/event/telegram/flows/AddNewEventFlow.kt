@@ -6,16 +6,16 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import common.telegram.strings.CommonStrings
+import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.replyKeyboard
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.simpleButton
+import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
-import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.utils.row
 import event.domain.entities.Event
 import event.domain.usecases.AddEventUseCase
-import event.domain.usecases.GetAllActiveExceptAdminUseCase
 import event.telegram.Strings
 import event.telegram.states.*
 import event.telegram.validation.IsLinkValid
@@ -30,7 +30,6 @@ import java.time.format.DateTimeParseException
 
 fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val addEventUseCase: AddEventUseCase by inject()
-    val getAllActiveExceptAdminUseCase: GetAllActiveExceptAdminUseCase by inject()
     val timeZone: TimeZone by inject()
     role<User.Admin> {
         state<MenuState.AddEventState> {
@@ -156,14 +155,6 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                     state.snapshot.url
                 )
                 addEventUseCase(event)
-                getAllActiveExceptAdminUseCase().forEach { user ->
-                    val id = user?.id?.toChatId()
-                    if (id != null) {
-                        runCatching {
-                            sendTextMessage(id, Strings.newEventMessage(event, timeZone))
-                        }
-                    }
-                }
                 sendTextMessage(it.chat, Strings.ScheduleEvent.EventIsCreated)
                 state.override { DialogState.Empty }
             }
@@ -174,3 +165,12 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
         }
     }
 }
+
+suspend fun TelegramBot.sendEventMessage(
+    chatId: ChatId,
+    event: Event,
+    timeZone: TimeZone
+) = sendTextMessage(
+    chatId,
+    Strings.newEventMessage(event, timeZone)
+)
