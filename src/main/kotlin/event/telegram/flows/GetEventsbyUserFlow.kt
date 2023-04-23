@@ -24,7 +24,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.getEventsByUserFlow() {
                 } else {
                     val entities = events
                         .sortedBy { event -> event.timestampBegin }
-                        .flatMap { event -> Strings.eventMessage(event, timeZone) }
+                        .flatMap { event -> Strings.eventInfo(event, timeZone) }
                     sendTextMessage(it, entities)
                 }
                 state.override { DialogState.Empty }

@@ -56,75 +56,32 @@ object Strings {
         const val ChooseEvent = "Выберите мероприятие: "
 
         fun removeEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
-            regular("📅 ")
-            bold(event.name)
-            regular("\n🕓 ")
-            regular(
-                formatInstant(event.timestampBegin, timeZone) +
-                    " - " + formatInstant(event.timestampEnd, timeZone)
-            )
-            regularln("")
-            event.description?.let { italicln(it) }
-            regular("🔗")
-            link("Ссылка", event.url)
-            regularln("\n")
+            addAll(eventInfo(event, timeZone))
             regular("Вы действительно хотите удалить мероприятие?")
         }
 
         fun removedEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
-            regular("📅 ")
-            bold(event.name)
-            regular("\n🕓 ")
-            regular(
-                formatInstant(event.timestampBegin, timeZone) +
-                    " - " + formatInstant(event.timestampEnd, timeZone)
-            )
-            regularln("")
-            event.description?.let { italicln(it) }
-            regular("🔗")
-            link("Ссылка", event.url)
-            regularln("\n")
+            addAll(eventInfo(event, timeZone))
             regular("Мероприятие успешно удалено ✅")
         }
 
         fun notRemovedEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
-            regular("📅 ")
-            bold(event.name)
-            regular("\n🕓 ")
-            regular(
-                formatInstant(event.timestampBegin, timeZone) +
-                    " - " + formatInstant(event.timestampEnd, timeZone)
-            )
-            regularln("")
-            event.description?.let { italicln(it) }
-            regular("🔗")
-            link("Ссылка", event.url)
-            regularln("\n")
+            addAll(eventInfo(event, timeZone))
             regular("❌ Мероприятие не удалено")
         }
     }
 
     fun newEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
-        regular("📨 Новое мероприятие ")
-        boldln("\n\n📅 " + event.name)
+        regular("📨 Новое мероприятие \n\n")
+        addAll(eventInfo(event, timeZone))
+    }
+
+    fun eventInfo(event: Event, timeZone: TimeZone) = buildEntities {
+        boldln("📅 " + event.name)
         regular("🕓 ")
         regular(
             formatInstant(event.timestampBegin, timeZone) +
-                " - " + formatInstant(event.timestampEnd, timeZone)
-        )
-        regularln("")
-        event.description?.let { italicln(it) }
-        regular("🔗")
-        link("Ссылка", event.url)
-    }
-
-    fun eventMessage(event: Event, timeZone: TimeZone) = buildEntities {
-        regular("📅 ")
-        bold(event.name)
-        regular("\n🕓 ")
-        regular(
-            formatInstant(event.timestampBegin, timeZone) +
-                " - " + formatInstant(event.timestampEnd, timeZone)
+                    " - " + formatInstant(event.timestampEnd, timeZone)
         )
         regularln("")
         event.description?.let { italicln(it) }
