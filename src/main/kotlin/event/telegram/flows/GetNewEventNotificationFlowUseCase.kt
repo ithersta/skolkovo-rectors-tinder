@@ -23,6 +23,6 @@ class GetNewEventNotificationFlowUseCase(
         .flatMap { event ->
             transaction {
                 userRepository.getAllActiveExceptUser(botConfig.adminId)
-            }.map { Notification(it.id, event) }
+            }.map { Notification(it, event) }
         }
 }
