@@ -19,7 +19,7 @@ internal class GetUserRoleUseCaseTest {
         id = 0L,
         phoneNumber = PhoneNumber.of("79000000000")!!,
         course = Course.RectorsSchool,
-        name = "Александр",
+        name = User.Name.of("Александр").getOrNull()!!,
         city = City(1, "city"),
         job = "Главный специалист",
         organizationType = OrganizationType.School,
