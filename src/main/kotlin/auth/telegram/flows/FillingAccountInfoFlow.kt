@@ -97,9 +97,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
 
     state<WriteNameState> {
         onEnter { sendTextMessage(it, WriteName) }
-        onText { message ->
-            User.Name.fromMessage(message) { state.override { next(it) } }
-        }
+        onText { User.Name.fromMessage(it) { state.override { next(it) } } }
     }
 
     state<ChooseCity> {
