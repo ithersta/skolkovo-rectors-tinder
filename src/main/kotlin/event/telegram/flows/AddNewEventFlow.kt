@@ -5,6 +5,7 @@ import com.ithersta.tgbotapi.fsm.builders.StateMachineBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.functions.fromMessage
 import common.telegram.strings.CommonStrings
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -18,7 +19,6 @@ import event.domain.entities.Event
 import event.domain.usecases.AddEventUseCase
 import event.telegram.Strings
 import event.telegram.states.*
-import event.telegram.validation.IsLinkValid
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
@@ -34,7 +34,7 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     role<User.Admin> {
         state<MenuState.AddEventState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName, replyMarkup = ReplyKeyboardRemove()) }
-            onText { state.override { InputBeginDateTimeState(it.content.text) } }
+            onText { Event.Name.fromMessage(it) { state.override { InputBeginDateTimeState(it) } } }
         }
         state<InputBeginDateTimeState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputBeginDateTime) }
@@ -100,26 +100,32 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
             onText(Strings.ScheduleEvent.NoDescription) {
                 state.override { InputUrlState(name, beginDateTime, endDateTime) }
             }
-            onText {
-                state.override { InputUrlState(name, beginDateTime, endDateTime, it.content.text) }
+            onText { message ->
+                Event.Description.fromMessage(message) {
+                    state.override { InputUrlState(name, beginDateTime, endDateTime, it) }
+                }
             }
         }
         state<InputUrlState> {
             onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputUrl) }
             onText {
-                if (IsLinkValid(it.content.text)) {
+                Event.Url.of(it.content.text).onRight { url ->
                     state.override {
                         AskUserToCreateEvent(
                             name,
                             beginDateTime,
                             endDateTime,
                             description,
-                            it.content.text
+                            url
                         )
                     }
-                } else {
-                    sendTextMessage(it.chat, Strings.ScheduleEvent.InvalidLink)
-                    state.override { InputUrlState(name, beginDateTime, endDateTime, description) }
+                }.onLeft { error ->
+                    val text = when (error) {
+                        Event.Url.Error.InvalidUrl -> Strings.ScheduleEvent.InvalidLink
+                        is Event.Url.Error.MaxLengthExceeded -> CommonStrings.maxLengthExceeded(error.maxLength)
+                    }
+                    sendTextMessage(it.chat, text)
+                    state.override { this }
                 }
             }
         }
