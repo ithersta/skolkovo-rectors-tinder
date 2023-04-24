@@ -1,11 +1,19 @@
 package common.telegram.functions
 
 import arrow.core.Either
+import common.domain.LimitedStringCompanion
 import common.domain.MaxLengthExceeded
 import common.telegram.strings.CommonStrings
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.send
 import dev.inmo.tgbotapi.types.chat.Chat
+import dev.inmo.tgbotapi.types.message.content.TextMessage
+
+context(TelegramBot)
+suspend fun <T : Any> LimitedStringCompanion<T>.fromMessage(
+    message: TextMessage,
+    block: suspend (T) -> Unit
+) = of(message.content.text).handleMaxLengthExceededOr(message.chat, block)
 
 context(TelegramBot)
 suspend fun <T : Any> Either<MaxLengthExceeded, T>.handleMaxLengthExceededOr(

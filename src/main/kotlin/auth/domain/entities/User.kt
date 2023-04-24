@@ -1,6 +1,6 @@
 package auth.domain.entities
 
-import common.domain.ensureMaxLength
+import common.domain.LimitedStringCompanion
 import kotlinx.serialization.Serializable
 import organizations.domain.entities.City
 import organizations.domain.entities.Organization
@@ -42,9 +42,6 @@ sealed interface User {
     @Serializable
     @JvmInline
     value class Name private constructor(val value: String) {
-        companion object {
-            const val maxLength = 256
-            fun of(value: String) = value.ensureMaxLength(maxLength).map { Name(it) }
-        }
+        companion object : LimitedStringCompanion<Name>(maxLength = 256, { Name(it) })
     }
 }

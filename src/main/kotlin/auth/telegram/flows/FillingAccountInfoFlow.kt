@@ -98,9 +98,7 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
     state<WriteNameState> {
         onEnter { sendTextMessage(it, WriteName) }
         onText { message ->
-            User.Name.of(message.content.text).handleMaxLengthExceededOr(message.chat) {
-                state.override { next(it) }
-            }
+            User.Name.fromMessage(message) { state.override { next(it) } }
         }
     }
 

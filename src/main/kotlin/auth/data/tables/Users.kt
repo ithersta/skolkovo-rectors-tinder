@@ -42,9 +42,9 @@ object Users : LongIdTable() {
 
 fun Users.Entity.toDomainModel() = User.Details(
     id = id.value,
-    phoneNumber = requireNotNull(PhoneNumber.of(phoneNumber)),
+    phoneNumber = checkNotNull(PhoneNumber.of(phoneNumber)),
     course = course,
-    name = User.Name.of(name).getOrNull()!!,
+    name = checkNotNull(User.Name.of(name).getOrNull()),
     job = job,
     city = city.toDomainModel(),
     organizationType = organizationType,
