@@ -25,7 +25,7 @@ data class Event(
     @Serializable
     @JvmInline
     value class Description private constructor(val value: String) {
-        companion object : LimitedStringCompanion<Description>(maxLength = 256, { Description(it) })
+        companion object : LimitedStringCompanion<Description>(maxLength = 1024, { Description(it) })
     }
 
     @Serializable
