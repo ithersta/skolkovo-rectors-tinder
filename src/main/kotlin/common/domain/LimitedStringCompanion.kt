@@ -5,7 +5,7 @@ import arrow.core.raise.ensure
 
 data class MaxLengthExceeded(val maxLength: Int)
 
-abstract class LimitedStringCompanion<T : Any>(
+open class LimitedStringCompanion<T : Any>(
     val maxLength: Int,
     private val construct: (String) -> T
 ) {
