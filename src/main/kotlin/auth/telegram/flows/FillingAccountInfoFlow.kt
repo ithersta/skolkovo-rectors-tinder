@@ -108,9 +108,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         )
     }
 
-    state<WriteProfessionState> {
+    state<WriteJobState> {
         onEnter { sendTextMessage(it, WriteProfession, replyMarkup = ReplyKeyboardRemove()) }
-        onText { state.override { next(it.content.text) } }
+        onText { User.Job.fromMessage(it) { state.override { next(it) } } }
     }
 
     state<ChooseOrganizationTypeState> {
@@ -129,9 +129,9 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
         )
     }
 
-    state<WriteProfessionalDescriptionState> {
+    state<WriteActivityDescriptionState> {
         onEnter { sendTextMessage(it, WriteProfessionalActivity, replyMarkup = ReplyKeyboardRemove()) }
-        onText { state.override { next(it.content.text) } }
+        onText { User.ActivityDescription.fromMessage(it) { state.override { next(it) } } }
     }
     state<ChooseQuestionAreasState> {
         chooseQuestionAreas(
@@ -151,11 +151,11 @@ fun RoleFilterBuilder<DialogState, User, User.Unauthenticated, UserId>.fillingAc
                 state.snapshot.phoneNumber,
                 state.snapshot.course,
                 state.snapshot.name,
-                state.snapshot.profession,
+                state.snapshot.job,
                 state.snapshot.cityId,
                 state.snapshot.organizationType,
                 state.snapshot.organization,
-                state.snapshot.professionalDescription,
+                state.snapshot.activityDescription,
                 state.snapshot.questionAreas
             )
 

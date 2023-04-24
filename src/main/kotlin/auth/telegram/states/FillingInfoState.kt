@@ -35,17 +35,17 @@ data class ChooseCity(
     val course: Course,
     val name: User.Name
 ) : DialogState {
-    fun next(cityId: Long) = WriteProfessionState(phoneNumber, course, name, cityId)
+    fun next(cityId: Long) = WriteJobState(phoneNumber, course, name, cityId)
 }
 
 @Serializable
-data class WriteProfessionState(
+data class WriteJobState(
     val phoneNumber: PhoneNumber,
     val course: Course,
     val name: User.Name,
     val cityId: Long
 ) : DialogState {
-    fun next(profession: String) = ChooseOrganizationTypeState(phoneNumber, course, name, cityId, profession)
+    fun next(job: User.Job) = ChooseOrganizationTypeState(phoneNumber, course, name, cityId, job)
 }
 
 @Serializable
@@ -54,10 +54,10 @@ data class ChooseOrganizationTypeState(
     val course: Course,
     val name: User.Name,
     val cityId: Long,
-    val profession: String
+    val job: User.Job
 ) : DialogState {
     fun next(organizationType: OrganizationType) =
-        WriteOrganizationState(phoneNumber, course, name, cityId, profession, organizationType)
+        WriteOrganizationState(phoneNumber, course, name, cityId, job, organizationType)
 }
 
 @Serializable
@@ -66,34 +66,34 @@ data class WriteOrganizationState(
     val course: Course,
     val name: User.Name,
     val cityId: Long,
-    val profession: String,
+    val job: User.Job,
     val organizationType: OrganizationType
 
 ) : DialogState {
     fun next(organization: Long) =
-        WriteProfessionalDescriptionState(phoneNumber, course, name, cityId, profession, organizationType, organization)
+        WriteActivityDescriptionState(phoneNumber, course, name, cityId, job, organizationType, organization)
 }
 
 @Serializable
-data class WriteProfessionalDescriptionState(
+data class WriteActivityDescriptionState(
     val phoneNumber: PhoneNumber,
     val course: Course,
     val name: User.Name,
     val cityId: Long,
-    val profession: String,
+    val job: User.Job,
     val organizationType: OrganizationType,
     val organization: Long
 ) : DialogState {
-    fun next(professionalDescription: String) =
+    fun next(activityDescription: User.ActivityDescription) =
         ChooseQuestionAreasState(
             phoneNumber,
             course,
             name,
             cityId,
-            profession,
+            job,
             organizationType,
             organization,
-            professionalDescription
+            activityDescription
         )
 }
 
@@ -103,16 +103,16 @@ data class ChooseQuestionAreasState(
     val course: Course,
     val name: User.Name,
     val cityId: Long,
-    val profession: String,
+    val job: User.Job,
     val organizationType: OrganizationType,
     val organization: Long,
-    val professionalDescription: String,
+    val activityDescription: User.ActivityDescription,
     val questionAreas: Set<QuestionArea> = emptySet(),
     val messageId: MessageId? = null
 ) : DialogState {
     fun next() = AddAccountInfoToDataBaseState(
         phoneNumber, course, name, cityId,
-        profession, organizationType, organization, professionalDescription, questionAreas
+        job, organizationType, organization, activityDescription, questionAreas
     )
 }
 
@@ -122,9 +122,9 @@ data class AddAccountInfoToDataBaseState(
     val course: Course,
     val name: User.Name,
     val cityId: Long,
-    val profession: String,
+    val job: User.Job,
     val organizationType: OrganizationType,
     val organization: Long,
-    val professionalDescription: String,
+    val activityDescription: User.ActivityDescription,
     val questionAreas: Set<QuestionArea>
 ) : DialogState

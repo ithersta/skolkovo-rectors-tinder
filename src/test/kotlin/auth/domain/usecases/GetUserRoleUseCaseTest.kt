@@ -21,10 +21,10 @@ internal class GetUserRoleUseCaseTest {
         course = Course.RectorsSchool,
         name = User.Name.of("Александр").getOrNull()!!,
         city = City(1, "city"),
-        job = "Главный специалист",
+        job = User.Job.of("Главный специалист").getOrNull()!!,
         organizationType = OrganizationType.School,
         organization = Organization(1, "organization"),
-        activityDescription = "Описание деятельности",
+        activityDescription = User.ActivityDescription.of("Описание деятельности").getOrNull()!!,
         isApproved = true,
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
     )

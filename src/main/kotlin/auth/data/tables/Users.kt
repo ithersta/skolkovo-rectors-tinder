@@ -8,22 +8,21 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.select
 import organizations.data.tables.Cities
 import organizations.data.tables.Organizations
 import organizations.data.tables.toDomainModel
 
 object Users : LongIdTable() {
-    val phoneNumber: Column<String> = varchar("phone_number", length = 15).uniqueIndex()
-    val course: Column<Course> = enumeration<Course>("course").index()
-    val name: Column<String> = varchar("name", length = User.Name.maxLength)
-    val job: Column<String> = varchar("job", length = 256)
-    val cityId: Column<EntityID<Long>> = reference("city", Cities)
-    val organizationType: Column<OrganizationType> = enumeration<OrganizationType>("organization_type").index()
-    val organizationId: Column<EntityID<Long>> = reference("organization_id", Organizations)
-    val activityDescription: Column<String> = varchar("activity_description", length = 1024)
-    val isApproved: Column<Boolean> = bool("is_approved").default(false)
+    val phoneNumber = varchar("phone_number", length = 15).uniqueIndex()
+    val course = enumeration<Course>("course").index()
+    val name = varchar("name", length = User.Name.maxLength)
+    val job = varchar("job", length = User.Job.maxLength)
+    val cityId = reference("city", Cities)
+    val organizationType = enumeration<OrganizationType>("organization_type").index()
+    val organizationId = reference("organization_id", Organizations)
+    val activityDescription = varchar("activity_description", length = User.ActivityDescription.maxLength)
+    val isApproved = bool("is_approved").default(false)
 
     class Entity(id: EntityID<Long>) : LongEntity(id) {
         companion object : LongEntityClass<Entity>(Users)
@@ -45,11 +44,11 @@ fun Users.Entity.toDomainModel() = User.Details(
     phoneNumber = checkNotNull(PhoneNumber.of(phoneNumber)),
     course = course,
     name = checkNotNull(User.Name.of(name).getOrNull()),
-    job = job,
+    job = checkNotNull(User.Job.of(job).getOrNull()),
     city = city.toDomainModel(),
     organizationType = organizationType,
     organization = organization.toDomainModel(),
-    activityDescription = activityDescription,
+    activityDescription = checkNotNull(User.ActivityDescription.of(activityDescription).getOrNull()),
     isApproved = isApproved,
     areas = UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
 )

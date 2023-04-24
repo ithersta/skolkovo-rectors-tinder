@@ -26,11 +26,11 @@ fun accountInfo(userDetails: User.Details): TextSourcesList {
         bold("Город: ")
         regularln(userDetails.city.name)
         bold("Должность: ")
-        regularln(userDetails.job)
+        regularln(userDetails.job.value)
         bold("Организация: ")
         regularln(userDetails.organization.name)
         bold("Деятельность: ")
-        regularln(userDetails.activityDescription)
+        regularln(userDetails.activityDescription.value)
         regularln("")
     }
 }

@@ -17,11 +17,11 @@ sealed interface User {
         val phoneNumber: PhoneNumber,
         val course: Course,
         val name: Name,
-        val job: String,
+        val job: Job,
         val city: City,
         val organizationType: OrganizationType,
         val organization: Organization,
-        val activityDescription: String,
+        val activityDescription: ActivityDescription,
         val isApproved: Boolean,
         val areas: Set<QuestionArea>
     )
@@ -31,11 +31,11 @@ sealed interface User {
         val phoneNumber: PhoneNumber,
         val course: Course,
         val name: Name,
-        val job: String,
+        val job: Job,
         val cityId: Long,
         val organizationType: OrganizationType,
         val organizationId: Long,
-        val activityDescription: String,
+        val activityDescription: ActivityDescription,
         val areas: Set<QuestionArea>
     )
 
@@ -43,5 +43,17 @@ sealed interface User {
     @JvmInline
     value class Name private constructor(val value: String) {
         companion object : LimitedStringCompanion<Name>(maxLength = 256, { Name(it) })
+    }
+
+    @Serializable
+    @JvmInline
+    value class Job private constructor(val value: String) {
+        companion object : LimitedStringCompanion<Job>(maxLength = 256, { Job(it) })
+    }
+
+    @Serializable
+    @JvmInline
+    value class ActivityDescription private constructor(val value: String) {
+        companion object : LimitedStringCompanion<ActivityDescription>(maxLength = 1024, { ActivityDescription(it) })
     }
 }

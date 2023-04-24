@@ -24,10 +24,10 @@ internal class RegisterUserUseCaseTest {
         course = Course.RectorsSchool,
         name = User.Name.of("Александр").getOrNull()!!,
         cityId = 1,
-        job = "Главный специалист",
+        job = User.Job.of("Главный специалист").getOrNull()!!,
         organizationType = OrganizationType.School,
         organizationId = 1,
-        activityDescription = "Описание деятельности",
+        activityDescription = User.ActivityDescription.of("Описание деятельности").getOrNull()!!,
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
     )
 
@@ -65,11 +65,11 @@ internal class RegisterUserUseCaseTest {
             samplePhoneNumber,
             Course.RectorsSchool,
             User.Name.of("name").getOrNull()!!,
-            "job",
+            User.Job.of("job").getOrNull()!!,
             City(1, "city"),
             OrganizationType.ScientificOrganization,
             Organization(1, "organization"),
-            "activity",
+            User.ActivityDescription.of("activity").getOrNull()!!,
             false,
             setOf(QuestionArea.Campus)
         )

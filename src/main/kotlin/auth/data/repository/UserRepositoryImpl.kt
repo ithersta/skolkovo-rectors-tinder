@@ -22,11 +22,11 @@ class UserRepositoryImpl : UserRepository {
             it[phoneNumber] = user.phoneNumber.value
             it[course] = user.course
             it[name] = user.name.value
-            it[job] = user.job
+            it[job] = user.job.value
             it[cityId] = user.cityId
             it[organizationType] = user.organizationType
             it[organizationId] = user.organizationId
-            it[activityDescription] = user.activityDescription
+            it[activityDescription] = user.activityDescription.value
         }
         UserAreas.batchInsert(user.areas) {
             this[UserAreas.userId] = user.id
