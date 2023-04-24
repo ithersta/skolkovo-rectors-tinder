@@ -16,8 +16,8 @@ object Strings {
     }
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
-        const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.ММ.гггг чч:мм"
-        const val InputEndDateTime = "Введите дату и время окончания мероприятия в формате дд.ММ.гггг чч:мм"
+        const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.мм.гггг чч:мм"
+        const val InputEndDateTime = "Введите дату и время окончания мероприятия в формате дд.мм.гггг чч:мм"
         const val InputDescription =
             "Введите краткое описание мероприятия. " + "\nЕсли такого не имеется, нажмите соответствующую кнопку"
         const val NoDescription = "Нет описания"
