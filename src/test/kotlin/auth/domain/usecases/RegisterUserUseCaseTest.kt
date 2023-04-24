@@ -22,12 +22,12 @@ internal class RegisterUserUseCaseTest {
         id = sampleUserId,
         phoneNumber = samplePhoneNumber,
         course = Course.RectorsSchool,
-        name = User.Name.of("Александр").getOrNull()!!,
+        name = User.Name.ofTruncated("Александр"),
         cityId = 1,
-        job = User.Job.of("Главный специалист").getOrNull()!!,
+        job = User.Job.ofTruncated("Главный специалист"),
         organizationType = OrganizationType.School,
         organizationId = 1,
-        activityDescription = User.ActivityDescription.of("Описание деятельности").getOrNull()!!,
+        activityDescription = User.ActivityDescription.ofTruncated("Описание деятельности"),
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
     )
 
@@ -64,12 +64,12 @@ internal class RegisterUserUseCaseTest {
             sampleUserId,
             samplePhoneNumber,
             Course.RectorsSchool,
-            User.Name.of("name").getOrNull()!!,
-            User.Job.of("job").getOrNull()!!,
+            User.Name.ofTruncated("name"),
+            User.Job.ofTruncated("job"),
             City(1, "city"),
             OrganizationType.ScientificOrganization,
             Organization(1, "organization"),
-            User.ActivityDescription.of("activity").getOrNull()!!,
+            User.ActivityDescription.ofTruncated("activity"),
             false,
             setOf(QuestionArea.Campus)
         )

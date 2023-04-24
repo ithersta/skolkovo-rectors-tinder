@@ -50,7 +50,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
         inlineKeyboard {
             paginatedSubjects.forEach { item ->
                 row {
-                    dataButton(item.subject, SelectTopic(item.id!!))
+                    dataButton(item.subject.value, SelectTopic(item.id!!))
                 }
             }
             navigationRow(itemCount = subjects.size)

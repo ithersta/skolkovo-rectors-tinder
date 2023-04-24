@@ -20,8 +20,8 @@ internal class AddResponseUseCaseTest {
     private val sampleQuestion = Question(
         authorId = 12L,
         intent = QuestionIntent.FreeForm,
-        subject = "Тема",
-        text = "Текст",
+        subject = Question.Subject.ofTruncated("Тема"),
+        text = Question.Text.ofTruncated("Текст"),
         isClosed = false,
         areas = setOf(QuestionArea.Finance, QuestionArea.Education),
         at = Clock.System.now(),

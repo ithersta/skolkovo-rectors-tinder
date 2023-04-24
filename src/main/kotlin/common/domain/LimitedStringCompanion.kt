@@ -13,4 +13,6 @@ open class LimitedStringCompanion<T : Any>(
         ensure(value.length <= maxLength) { MaxLengthExceeded(maxLength) }
         construct(value)
     }
+
+    fun ofTruncated(value: String) = construct(value.take(maxLength))
 }

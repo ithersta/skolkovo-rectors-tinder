@@ -25,8 +25,8 @@ class QuestionRepositoryImpl : QuestionRepository {
         val id = Questions.insertAndGetId {
             it[authorId] = question.authorId
             it[intent] = question.intent
-            it[subject] = question.subject
-            it[text] = question.text
+            it[subject] = question.subject.value
+            it[text] = question.text.value
             it[isClosed] = question.isClosed
             it[at] = question.at
             it[hideFrom] = question.hideFrom
@@ -169,8 +169,8 @@ class QuestionRepositoryImpl : QuestionRepository {
             return Question(
                 authorId = row[Questions.authorId].value,
                 intent = row[Questions.intent],
-                subject = row[Questions.subject],
-                text = row[Questions.text],
+                subject = Question.Subject.ofTruncated(row[Questions.subject]),
+                text = Question.Text.ofTruncated(row[Questions.text]),
                 isClosed = row[Questions.isClosed],
                 areas = areas,
                 at = row[Questions.at],

@@ -43,12 +43,12 @@ fun Users.Entity.toDomainModel() = User.Details(
     id = id.value,
     phoneNumber = checkNotNull(PhoneNumber.of(phoneNumber)),
     course = course,
-    name = checkNotNull(User.Name.of(name).getOrNull()),
-    job = checkNotNull(User.Job.of(job).getOrNull()),
+    name = User.Name.ofTruncated(name),
+    job = User.Job.ofTruncated(job),
     city = city.toDomainModel(),
     organizationType = organizationType,
     organization = organization.toDomainModel(),
-    activityDescription = checkNotNull(User.ActivityDescription.of(activityDescription).getOrNull()),
+    activityDescription = User.ActivityDescription.ofTruncated(activityDescription),
     isApproved = isApproved,
     areas = UserAreas.select { UserAreas.userId eq id }.map { it[UserAreas.area] }.toSet()
 )

@@ -1,15 +1,29 @@
 package qna.domain.entities
 
+import common.domain.LimitedStringCompanion
 import kotlinx.datetime.Instant
+import kotlinx.serialization.Serializable
 
 data class Question(
     val authorId: Long,
     val intent: QuestionIntent,
-    val subject: String,
-    val text: String,
+    val subject: Subject,
+    val text: Text,
     val isClosed: Boolean,
     val areas: Set<QuestionArea>,
     val at: Instant,
     val hideFrom: HideFrom,
     val id: Long? = null
-)
+) {
+    @Serializable
+    @JvmInline
+    value class Subject private constructor(val value: String) {
+        companion object : LimitedStringCompanion<Subject>(maxLength = 256, { Subject(it) })
+    }
+
+    @Serializable
+    @JvmInline
+    value class Text private constructor(val value: String) {
+        companion object : LimitedStringCompanion<Text>(maxLength = 2048, { Text(it) })
+    }
+}

@@ -58,7 +58,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         inlineKeyboard {
             subject.slice.forEach { item ->
                 row {
-                    dataButton(item.subject, SelectSubject(item.authorId, item.id!!))
+                    dataButton(item.subject.value, SelectSubject(item.authorId, item.id!!))
                 }
             }
             navigationRow(itemCount = subject.count)
