@@ -19,6 +19,7 @@ import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import org.koin.core.component.inject
 import organizations.domain.entities.City
+import organizations.domain.entities.Organization
 
 fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrganizationUserFlow() {
     val botConfig: BotConfig by inject()
@@ -71,21 +72,23 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
             }
         }
         onText { message ->
-            sendTextMessage(
-                message.chat.id,
-                AddingStrings.sentOrganization(
-                    message.content.text,
-                    state.snapshot.cityName
+            Organization.Name.fromMessage(message) { organizationName ->
+                sendTextMessage(
+                    message.chat.id,
+                    AddingStrings.sentOrganization(
+                        organizationName,
+                        state.snapshot.cityName
+                    )
                 )
-            )
-            sendConfirmAdding(
-                message.chat.id.chatId,
-                botConfig.adminId,
-                state.snapshot.cityName,
-                false,
-                message.content.text
-            )
-            state.override { DialogState.Empty }
+                sendConfirmAdding(
+                    message.chat.id.chatId,
+                    botConfig.adminId,
+                    state.snapshot.cityName,
+                    false,
+                    organizationName
+                )
+                state.override { DialogState.Empty }
+            }
         }
     }
     state<AddOrganizationUserState> {
@@ -97,22 +100,21 @@ fun <Role : User> RoleFilterBuilder<DialogState, User, Role, UserId>.addCityOrga
             )
         }
         onText { message ->
-            val city = getCityByIdUseCase(state.snapshot.cityId)!!.name
-            sendTextMessage(
-                message.chat.id,
-                AddingStrings.sentOrganization(
-                    message.content.text,
-                    city
+            Organization.Name.fromMessage(message) { organizationName ->
+                val city = getCityByIdUseCase(state.snapshot.cityId)!!.name
+                sendTextMessage(
+                    message.chat.id,
+                    AddingStrings.sentOrganization(organizationName, city)
                 )
-            )
-            sendConfirmAdding(
-                message.chat.id.chatId,
-                botConfig.adminId,
-                city,
-                true,
-                message.content.text
-            )
-            state.override { DialogState.Empty }
+                sendConfirmAdding(
+                    message.chat.id.chatId,
+                    botConfig.adminId,
+                    city,
+                    true,
+                    organizationName
+                )
+                state.override { DialogState.Empty }
+            }
         }
     }
 }

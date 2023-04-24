@@ -68,7 +68,7 @@ internal class RegisterUserUseCaseTest {
             User.Job.ofTruncated("job"),
             City(1, City.Name.ofTruncated("city")),
             OrganizationType.ScientificOrganization,
-            Organization(1, "organization"),
+            Organization(1, Organization.Name.ofTruncated("organization")),
             User.ActivityDescription.ofTruncated("activity"),
             false,
             setOf(QuestionArea.Campus)
@@ -125,7 +125,7 @@ internal class RegisterUserUseCaseTest {
             job = newDetails.job,
             city = City(newDetails.cityId, City.Name.ofTruncated("")),
             organizationType = newDetails.organizationType,
-            organization = Organization(newDetails.organizationId, ""),
+            organization = Organization(newDetails.organizationId, Organization.Name.ofTruncated("")),
             activityDescription = newDetails.activityDescription,
             isApproved = false,
             areas = newDetails.areas

@@ -23,7 +23,7 @@ internal class GetUserRoleUseCaseTest {
         city = City(1, City.Name.ofTruncated("city")),
         job = User.Job.ofTruncated("Главный специалист"),
         organizationType = OrganizationType.School,
-        organization = Organization(1, "organization"),
+        organization = Organization(1, Organization.Name.ofTruncated("organization")),
         activityDescription = User.ActivityDescription.ofTruncated("Описание деятельности"),
         isApproved = true,
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)

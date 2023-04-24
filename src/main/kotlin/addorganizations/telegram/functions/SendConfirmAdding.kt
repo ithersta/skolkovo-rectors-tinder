@@ -12,15 +12,16 @@ import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
 import organizations.domain.entities.City
+import organizations.domain.entities.Organization
 
 suspend fun <State : DialogState, Role : User> BaseStatefulContext<DialogState, User, State, Role>.sendConfirmAdding(
     userId: Long,
     adminId: Long,
     cityName: City.Name,
     havingCity: Boolean,
-    organization: String?
+    organizationName: Organization.Name?
 ) {
-    if (organization == null) {
+    if (organizationName == null) {
         sendTextMessage(
             UserId(adminId),
             AddingStrings.confirmationAddingCityAdmin(cityName),
@@ -33,7 +34,7 @@ suspend fun <State : DialogState, Role : User> BaseStatefulContext<DialogState, 
     } else {
         sendTextMessage(
             UserId(adminId),
-            AddingStrings.confirmationAddingOrganizationAdmin(havingCity, cityName, organization),
+            AddingStrings.confirmationAddingOrganizationAdmin(havingCity, cityName, organizationName),
             replyMarkup = inlineKeyboard {
                 row {
                     dataButton(AddingStrings.Confirmation, AddOrganizationQuery(userId))
