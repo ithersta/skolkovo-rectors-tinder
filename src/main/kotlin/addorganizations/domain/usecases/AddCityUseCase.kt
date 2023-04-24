@@ -10,7 +10,7 @@ class AddCityUseCase(
     private val cityRepository: CityRepository,
     private val transaction: Transaction
 ) {
-    operator fun invoke(city: String) = transaction {
-        cityRepository.add(City.New(city))
+    operator fun invoke(name: City.Name) = transaction {
+        cityRepository.add(City.New(name))
     }
 }

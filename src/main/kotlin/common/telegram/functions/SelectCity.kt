@@ -30,7 +30,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
             replyMarkup = flatReplyKeyboard(oneTimeKeyboard = true) {
                 dropdownWebAppButton(
                     stringsCity.button,
-                    options = transaction { cityRepository.getAll() }.map { DropdownOption(it.id, it.name) },
+                    options = transaction { cityRepository.getAll() }.map { DropdownOption(it.id, it.name.value) },
                     noneConfirmationMessage = stringsCity.confirmation,
                     noneOption = stringsCity.noCity
                 )

@@ -11,18 +11,19 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.inlineKeyboard
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.utils.row
 import generated.dataButton
+import organizations.domain.entities.City
 
 suspend fun <State : DialogState, Role : User> BaseStatefulContext<DialogState, User, State, Role>.sendConfirmAdding(
     userId: Long,
     adminId: Long,
-    city: String,
+    cityName: City.Name,
     havingCity: Boolean,
     organization: String?
 ) {
     if (organization == null) {
         sendTextMessage(
             UserId(adminId),
-            AddingStrings.confirmationAddingCityAdmin(city),
+            AddingStrings.confirmationAddingCityAdmin(cityName),
             replyMarkup = inlineKeyboard {
                 row {
                     dataButton(AddingStrings.Confirmation, AddCityQuery(userId))
@@ -32,7 +33,7 @@ suspend fun <State : DialogState, Role : User> BaseStatefulContext<DialogState, 
     } else {
         sendTextMessage(
             UserId(adminId),
-            AddingStrings.confirmationAddingOrganizationAdmin(havingCity, city, organization),
+            AddingStrings.confirmationAddingOrganizationAdmin(havingCity, cityName, organization),
             replyMarkup = inlineKeyboard {
                 row {
                     dataButton(AddingStrings.Confirmation, AddOrganizationQuery(userId))

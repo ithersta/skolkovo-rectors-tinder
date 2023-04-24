@@ -10,6 +10,7 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
+import common.telegram.functions.fromMessage
 import common.telegram.functions.selectCity
 import common.telegram.functions.selectOrganization
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -18,6 +19,7 @@ import dev.inmo.tgbotapi.types.buttons.ReplyKeyboardRemove
 import dev.inmo.tgbotapi.types.toChatId
 import generated.onDataCallbackQuery
 import org.koin.core.component.inject
+import organizations.domain.entities.City
 
 fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganizationAdminFlow() {
     val getCityByIdUseCase: GetCityByIdUseCase by inject()
@@ -62,18 +64,20 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.addCityOrganization
             )
         }
         onText { message ->
-            addCityUseCase(message.content.text)
-            sendTextMessage(
-                message.chat.id,
-                AddingStrings.addCityAdmin(message.content.text)
-            )
-            state.snapshot.userId?.let { userId ->
+            City.Name.fromMessage(message) { name ->
+                addCityUseCase(name)
                 sendTextMessage(
-                    userId.toChatId(),
-                    AddingStrings.addCityUser(message.content.text)
+                    message.chat.id,
+                    AddingStrings.addCityAdmin(name)
                 )
+                state.snapshot.userId?.let { userId ->
+                    sendTextMessage(
+                        userId.toChatId(),
+                        AddingStrings.addCityUser(name)
+                    )
+                }
+                state.override { DialogState.Empty }
             }
-            state.override { DialogState.Empty }
         }
     }
     state<ChooseCityOrganizationAdminState> {

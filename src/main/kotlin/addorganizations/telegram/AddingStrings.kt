@@ -3,6 +3,7 @@ package addorganizations.telegram
 import common.telegram.functions.StringsCity
 import common.telegram.functions.StringsOrganization
 import common.telegram.strings.DropdownWebAppStrings
+import organizations.domain.entities.City
 
 @Suppress("TooManyFunctions")
 object AddingStrings {
@@ -31,35 +32,35 @@ object AddingStrings {
         chooseOrganization = "Просмотрите список организаций и проверьте её отсутствие"
     )
     private const val tipStart = "Если вы прервали регистрацию, введите /start."
-    fun havingOrganizationAdmin(city: String, organization: String) = "Вы привязали организацию: $organization\n\n" +
-        "к городу: $city."
-    fun havingOrganizationUser(city: String, organization: String) = "Вашу организацию: $organization\n\n" +
-        "привязали к городу: $city.\n\n$tipStart"
-    fun havingCityAdmin(city: String) = "Вы выбрали существующий город: $city"
-    fun havingCityUser(city: String) = "Ваш город нашли в таблице под названием: $city.\n\n$tipStart"
-    fun addCityAdmin(city: String) = "Вы добавили город: $city."
-    fun addCityUser(city: String) = "Ваш город добавили: $city.\n\n" +
+    fun havingOrganizationAdmin(city: City.Name, organization: String) = "Вы привязали организацию: $organization\n\n" +
+        "к городу: ${city.value}."
+    fun havingOrganizationUser(city: City.Name, organization: String) = "Вашу организацию: $organization\n\n" +
+        "привязали к городу: ${city.value}.\n\n$tipStart"
+    fun havingCityAdmin(city: City.Name) = "Вы выбрали существующий город: ${city.value}"
+    fun havingCityUser(city: City.Name) = "Ваш город нашли в таблице под названием: ${city.value}.\n\n$tipStart"
+    fun addCityAdmin(city: City.Name) = "Вы добавили город: ${city.value}."
+    fun addCityUser(city: City.Name) = "Ваш город добавили: ${city.value}.\n\n" +
         "Этот город теперь можно выбрать в своем профиле.$tipStart"
-    fun addOrganizationAdmin(city: String, organization: String) = "Вы создали организацию: $organization\n\n" +
-        "и привязали её к городу: $city."
-    fun addOrganizationUser(city: String, organization: String) = "Вашу организацию добавили: $organization\n\n" +
-        "и привязали её к городу: $city.\n\n$tipStart"
-    fun confirmationAddingCityAdmin(city: String) =
-        "Предложено добавить новый город: $city"
-    fun sentCity(city: String) = "Вы отправили запрос на добавление города: $city.\n\n" +
+    fun addOrganizationAdmin(city: City.Name, organization: String) = "Вы создали организацию: $organization\n\n" +
+        "и привязали её к городу: ${city.value}."
+    fun addOrganizationUser(city: City.Name, organization: String) = "Вашу организацию добавили: $organization\n\n" +
+        "и привязали её к городу: ${city.value}.\n\n$tipStart"
+    fun confirmationAddingCityAdmin(city: City.Name) =
+        "Предложено добавить новый город: ${city.value}"
+    fun sentCity(city: City.Name) = "Вы отправили запрос на добавление города: ${city.value}.\n\n" +
         "Пожалуйста, подождите, пока администраторы добавят его, когда это произойдёт, вам прийдет уведомление и вы" +
         " сможете зарегистрироваться"
-    fun sentOrganization(organization: String, city: String) = "Вы отправили запрос на добавление организации:" +
-        " $organization.\n\nВ городе: $city\n\n" +
+    fun sentOrganization(organization: String, city: City.Name) = "Вы отправили запрос на добавление организации:" +
+        " $organization.\n\nВ городе: ${city.value}\n\n" +
         "Пожалуйста, подождите, пока администраторы добавят её, когда это произойдёт, вам прийдет уведомление и вы" +
         " сможете зарегистрироваться"
 
-    fun confirmationAddingOrganizationAdmin(having: Boolean, city: String, organization: String) =
+    fun confirmationAddingOrganizationAdmin(having: Boolean, city: City.Name, organization: String) =
         "${
             if (having) {
-                "Предложено добавить в старый город: $city\n"
+                "Предложено добавить в старый город: ${city.value}\n"
             } else {
-                "Предложено добавить в новый город: $city\n\n" +
+                "Предложено добавить в новый город: ${city.value}\n\n" +
                     "Это значит, что выше должно быть предложение добавить этот город."
             }
         }\nОрганизацию: $organization"

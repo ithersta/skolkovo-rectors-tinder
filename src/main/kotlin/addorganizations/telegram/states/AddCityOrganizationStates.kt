@@ -2,20 +2,21 @@ package addorganizations.telegram.states
 
 import common.telegram.DialogState
 import kotlinx.serialization.Serializable
+import organizations.domain.entities.City
 
 @Serializable
 class AddCityUserState : DialogState
 
 @Serializable
-data class ChooseOrganizationInputState(val city: String) : DialogState {
+data class ChooseOrganizationInputState(val cityName: City.Name) : DialogState {
     fun next(organizationId: Long?): DialogState {
-        return AddOrganizationCityUserState(city, organizationId)
+        return AddOrganizationCityUserState(cityName, organizationId)
     }
 }
 
 @Serializable
 data class AddOrganizationCityUserState(
-    val city: String,
+    val cityName: City.Name,
     val organizationId: Long?
 ) : DialogState
 

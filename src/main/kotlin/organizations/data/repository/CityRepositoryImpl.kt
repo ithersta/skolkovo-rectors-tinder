@@ -10,7 +10,7 @@ import organizations.domain.repository.CityRepository
 class CityRepositoryImpl : CityRepository {
     override fun add(city: City.New): City {
         return Cities.Entity.new {
-            name = city.name
+            name = city.name.value
         }.toDomainModel()
     }
 

@@ -24,7 +24,7 @@ fun accountInfo(userDetails: User.Details): TextSourcesList {
         bold("Имя: ")
         regularln(userDetails.name.value)
         bold("Город: ")
-        regularln(userDetails.city.name)
+        regularln(userDetails.city.name.value)
         bold("Должность: ")
         regularln(userDetails.job.value)
         bold("Организация: ")
