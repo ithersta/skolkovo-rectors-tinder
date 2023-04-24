@@ -21,7 +21,7 @@ class UserRepositoryImpl : UserRepository {
             it[id] = user.id
             it[phoneNumber] = user.phoneNumber.value
             it[course] = user.course
-            it[name] = user.name
+            it[name] = user.name.value
             it[job] = user.job
             it[cityId] = user.cityId
             it[organizationType] = user.organizationType

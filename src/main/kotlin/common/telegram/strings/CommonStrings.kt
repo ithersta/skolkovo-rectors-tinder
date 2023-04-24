@@ -14,12 +14,15 @@ object CommonStrings {
     }
 
     const val InternalError = "Произошла внутренняя ошибка бота"
+
+    fun maxLengthExceeded(maxLength: Int) =
+        "Максимальная длина $maxLength превышена. Сократите сообщение и попробуйте ещё раз."
 }
 
 fun accountInfo(userDetails: User.Details): TextSourcesList {
     return buildEntities {
         bold("Имя: ")
-        regularln(userDetails.name)
+        regularln(userDetails.name.value)
         bold("Город: ")
         regularln(userDetails.city.name)
         bold("Должность: ")

@@ -67,7 +67,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
                         getAuthor.invoke(data.questionId).forEach { item ->
                             row {
                                 dataButton(
-                                    item.name,
+                                    item.name.value,
                                     SelectOldQuestionRespondent(item.id)
                                 )
                             }
@@ -83,7 +83,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.oldQuestionFlow() 
         onDataCallbackQuery(SelectOldQuestionRespondent::class) { (data, query) ->
             val user = getUserById(data.responseId)
             if (user != null) {
-                sendContact(query.user.id, phoneNumber = user.phoneNumber.toString(), firstName = user.name)
+                sendContact(query.user.id, phoneNumber = user.phoneNumber.toString(), firstName = user.name.value)
             }
             answer(query)
         }

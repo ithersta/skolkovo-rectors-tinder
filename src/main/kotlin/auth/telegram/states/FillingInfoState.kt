@@ -3,6 +3,7 @@ package auth.telegram.states
 import auth.domain.entities.Course
 import auth.domain.entities.OrganizationType
 import auth.domain.entities.PhoneNumber
+import auth.domain.entities.User
 import common.telegram.DialogState
 import dev.inmo.tgbotapi.types.MessageId
 import kotlinx.serialization.Serializable
@@ -25,14 +26,14 @@ data class WriteNameState(
     val phoneNumber: PhoneNumber,
     val course: Course
 ) : DialogState {
-    fun next(name: String) = ChooseCity(phoneNumber, course, name)
+    fun next(name: User.Name) = ChooseCity(phoneNumber, course, name)
 }
 
 @Serializable
 data class ChooseCity(
     val phoneNumber: PhoneNumber,
     val course: Course,
-    val name: String
+    val name: User.Name
 ) : DialogState {
     fun next(cityId: Long) = WriteProfessionState(phoneNumber, course, name, cityId)
 }
@@ -41,7 +42,7 @@ data class ChooseCity(
 data class WriteProfessionState(
     val phoneNumber: PhoneNumber,
     val course: Course,
-    val name: String,
+    val name: User.Name,
     val cityId: Long
 ) : DialogState {
     fun next(profession: String) = ChooseOrganizationTypeState(phoneNumber, course, name, cityId, profession)
@@ -51,7 +52,7 @@ data class WriteProfessionState(
 data class ChooseOrganizationTypeState(
     val phoneNumber: PhoneNumber,
     val course: Course,
-    val name: String,
+    val name: User.Name,
     val cityId: Long,
     val profession: String
 ) : DialogState {
@@ -63,7 +64,7 @@ data class ChooseOrganizationTypeState(
 data class WriteOrganizationState(
     val phoneNumber: PhoneNumber,
     val course: Course,
-    val name: String,
+    val name: User.Name,
     val cityId: Long,
     val profession: String,
     val organizationType: OrganizationType
@@ -77,7 +78,7 @@ data class WriteOrganizationState(
 data class WriteProfessionalDescriptionState(
     val phoneNumber: PhoneNumber,
     val course: Course,
-    val name: String,
+    val name: User.Name,
     val cityId: Long,
     val profession: String,
     val organizationType: OrganizationType,
@@ -100,7 +101,7 @@ data class WriteProfessionalDescriptionState(
 data class ChooseQuestionAreasState(
     val phoneNumber: PhoneNumber,
     val course: Course,
-    val name: String,
+    val name: User.Name,
     val cityId: Long,
     val profession: String,
     val organizationType: OrganizationType,
@@ -119,7 +120,7 @@ data class ChooseQuestionAreasState(
 data class AddAccountInfoToDataBaseState(
     val phoneNumber: PhoneNumber,
     val course: Course,
-    val name: String,
+    val name: User.Name,
     val cityId: Long,
     val profession: String,
     val organizationType: OrganizationType,

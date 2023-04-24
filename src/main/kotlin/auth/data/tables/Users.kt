@@ -17,7 +17,7 @@ import organizations.data.tables.toDomainModel
 object Users : LongIdTable() {
     val phoneNumber: Column<String> = varchar("phone_number", length = 15).uniqueIndex()
     val course: Column<Course> = enumeration<Course>("course").index()
-    val name: Column<String> = varchar("name", length = 256)
+    val name: Column<String> = varchar("name", length = User.Name.maxLength)
     val job: Column<String> = varchar("job", length = 256)
     val cityId: Column<EntityID<Long>> = reference("city", Cities)
     val organizationType: Column<OrganizationType> = enumeration<OrganizationType>("organization_type").index()
@@ -44,7 +44,7 @@ fun Users.Entity.toDomainModel() = User.Details(
     id = id.value,
     phoneNumber = requireNotNull(PhoneNumber.of(phoneNumber)),
     course = course,
-    name = name,
+    name = User.Name.of(name).getOrNull()!!,
     job = job,
     city = city.toDomainModel(),
     organizationType = organizationType,

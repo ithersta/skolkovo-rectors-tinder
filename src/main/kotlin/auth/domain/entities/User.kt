@@ -1,5 +1,7 @@
 package auth.domain.entities
 
+import common.domain.ensureMaxLength
+import kotlinx.serialization.Serializable
 import organizations.domain.entities.City
 import organizations.domain.entities.Organization
 import qna.domain.entities.QuestionArea
@@ -14,7 +16,7 @@ sealed interface User {
         val id: Long,
         val phoneNumber: PhoneNumber,
         val course: Course,
-        val name: String,
+        val name: Name,
         val job: String,
         val city: City,
         val organizationType: OrganizationType,
@@ -28,7 +30,7 @@ sealed interface User {
         val id: Long,
         val phoneNumber: PhoneNumber,
         val course: Course,
-        val name: String,
+        val name: Name,
         val job: String,
         val cityId: Long,
         val organizationType: OrganizationType,
@@ -36,4 +38,13 @@ sealed interface User {
         val activityDescription: String,
         val areas: Set<QuestionArea>
     )
+
+    @Serializable
+    @JvmInline
+    value class Name private constructor(val value: String) {
+        companion object {
+            const val maxLength = 256
+            fun of(value: String) = value.ensureMaxLength(maxLength).map { Name(it) }
+        }
+    }
 }

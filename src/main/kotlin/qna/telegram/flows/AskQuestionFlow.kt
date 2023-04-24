@@ -162,7 +162,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendContact(
                 UserId(botConfig.curatorId),
                 phoneNumber = userDetails.phoneNumber.value,
-                firstName = userDetails.name
+                firstName = userDetails.name.value
             )
             state.override { DialogState.Empty }
         }
