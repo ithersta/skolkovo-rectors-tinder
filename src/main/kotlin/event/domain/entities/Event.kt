@@ -2,7 +2,7 @@ package event.domain.entities
 
 import arrow.core.raise.either
 import arrow.core.raise.ensure
-import common.domain.LimitedStringCompanion
+import common.domain.LimitedLengthStringType
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import org.apache.commons.validator.routines.UrlValidator
@@ -19,13 +19,13 @@ data class Event(
     @Serializable
     @JvmInline
     value class Name private constructor(val value: String) {
-        companion object : LimitedStringCompanion<Name>(maxLength = 256, { Name(it) })
+        companion object : LimitedLengthStringType<Name>(maxLength = 256, { Name(it) })
     }
 
     @Serializable
     @JvmInline
     value class Description private constructor(val value: String) {
-        companion object : LimitedStringCompanion<Description>(maxLength = 1024, { Description(it) })
+        companion object : LimitedLengthStringType<Description>(maxLength = 1024, { Description(it) })
     }
 
     @Serializable

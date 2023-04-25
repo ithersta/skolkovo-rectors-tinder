@@ -1,6 +1,6 @@
 package qna.domain.entities
 
-import common.domain.LimitedStringCompanion
+import common.domain.LimitedLengthStringType
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
@@ -18,12 +18,12 @@ data class Question(
     @Serializable
     @JvmInline
     value class Subject private constructor(val value: String) {
-        companion object : LimitedStringCompanion<Subject>(maxLength = 256, { Subject(it) })
+        companion object : LimitedLengthStringType<Subject>(maxLength = 256, { Subject(it) })
     }
 
     @Serializable
     @JvmInline
     value class Text private constructor(val value: String) {
-        companion object : LimitedStringCompanion<Text>(maxLength = 2048, { Text(it) })
+        companion object : LimitedLengthStringType<Text>(maxLength = 2048, { Text(it) })
     }
 }

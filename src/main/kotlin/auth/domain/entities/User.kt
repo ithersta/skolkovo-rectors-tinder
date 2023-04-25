@@ -1,6 +1,6 @@
 package auth.domain.entities
 
-import common.domain.LimitedStringCompanion
+import common.domain.LimitedLengthStringType
 import kotlinx.serialization.Serializable
 import organizations.domain.entities.City
 import organizations.domain.entities.Organization
@@ -42,18 +42,18 @@ sealed interface User {
     @Serializable
     @JvmInline
     value class Name private constructor(val value: String) {
-        companion object : LimitedStringCompanion<Name>(maxLength = 256, { Name(it) })
+        companion object : LimitedLengthStringType<Name>(maxLength = 256, { Name(it) })
     }
 
     @Serializable
     @JvmInline
     value class Job private constructor(val value: String) {
-        companion object : LimitedStringCompanion<Job>(maxLength = 256, { Job(it) })
+        companion object : LimitedLengthStringType<Job>(maxLength = 256, { Job(it) })
     }
 
     @Serializable
     @JvmInline
     value class ActivityDescription private constructor(val value: String) {
-        companion object : LimitedStringCompanion<ActivityDescription>(maxLength = 1024, { ActivityDescription(it) })
+        companion object : LimitedLengthStringType<ActivityDescription>(maxLength = 1024, { ActivityDescription(it) })
     }
 }

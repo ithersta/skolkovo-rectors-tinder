@@ -1,6 +1,6 @@
 package organizations.domain.entities
 
-import common.domain.LimitedStringCompanion
+import common.domain.LimitedLengthStringType
 import kotlinx.serialization.Serializable
 
 data class City(
@@ -14,6 +14,6 @@ data class City(
     @Serializable
     @JvmInline
     value class Name private constructor(val value: String) {
-        companion object : LimitedStringCompanion<Name>(maxLength = 256, { Name(it) })
+        companion object : LimitedLengthStringType<Name>(maxLength = 256, { Name(it) })
     }
 }
