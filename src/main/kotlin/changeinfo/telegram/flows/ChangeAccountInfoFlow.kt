@@ -11,10 +11,7 @@ import com.ithersta.tgbotapi.fsm.builders.RoleFilterBuilder
 import com.ithersta.tgbotapi.fsm.entities.triggers.onEnter
 import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
-import common.telegram.functions.chooseOrganizationType
-import common.telegram.functions.chooseQuestionAreas
-import common.telegram.functions.selectCity
-import common.telegram.functions.selectOrganization
+import common.telegram.functions.*
 import common.telegram.strings.DropdownWebAppStrings
 import dev.inmo.tgbotapi.extensions.api.answers.answer
 import dev.inmo.tgbotapi.extensions.api.send.sendTextMessage
@@ -71,9 +68,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
                 Strings.Fields.Name.Message
             )
         }
-        onText {
-            changeAccountInfoInteractor.changeName(it.chat.id.chatId, it.content.text)
-            state.override { DialogState.Empty }
+        onText { message ->
+            User.Name.fromMessage(message) { name ->
+                changeAccountInfoInteractor.changeName(message.chat.id.chatId, name)
+                state.override { DialogState.Empty }
+            }
         }
     }
     state<WaitingForProfessionState> {
@@ -83,9 +82,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
                 Strings.Fields.Job.Message
             )
         }
-        onText {
-            changeAccountInfoInteractor.changeJob(it.chat.id.chatId, it.content.text)
-            state.override { DialogState.Empty }
+        onText { message ->
+            User.Job.fromMessage(message) { job ->
+                changeAccountInfoInteractor.changeJob(message.chat.id.chatId, job)
+                state.override { DialogState.Empty }
+            }
         }
     }
 
@@ -130,9 +131,11 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.changeAccountInfoF
                 Strings.Fields.ActivityDescription.Message
             )
         }
-        onText {
-            changeAccountInfoInteractor.changeActivityDescription(it.chat.id.chatId, it.content.text)
-            state.override { DialogState.Empty }
+        onText { message ->
+            User.ActivityDescription.fromMessage(message) { activityDescription ->
+                changeAccountInfoInteractor.changeActivityDescription(message.chat.id.chatId, activityDescription)
+                state.override { DialogState.Empty }
+            }
         }
     }
     state<WaitingForQuestionAreasState> {
