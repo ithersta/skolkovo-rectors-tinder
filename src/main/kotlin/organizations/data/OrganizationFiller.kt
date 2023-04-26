@@ -28,7 +28,7 @@ class OrganizationFiller(
         if (cityRepository.getAll().isNotEmpty()) return
         val cities = Json.decodeFromStream<List<JsonCity>>(inputStream)
         cities.forEach { jsonCity ->
-            val city = cityRepository.add(City.New(name = jsonCity.city))
+            val city = cityRepository.add(City.New(name = City.Name.ofTruncated(jsonCity.city)))
             jsonCity.universities.forEach { jsonUniversity ->
                 val organization = organizationRepository.getByName(jsonUniversity) ?: run {
                     organizationRepository.add(Organization.New(name = jsonUniversity))

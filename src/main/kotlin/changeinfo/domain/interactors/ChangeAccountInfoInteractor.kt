@@ -1,6 +1,7 @@
 package changeinfo.domain.interactors
 
 import auth.domain.entities.OrganizationType
+import auth.domain.entities.User
 import auth.domain.repository.UserRepository
 import common.domain.Transaction
 import org.koin.core.annotation.Single
@@ -11,7 +12,7 @@ class ChangeAccountInfoInteractor(
     private val userRepository: UserRepository,
     private val transaction: Transaction
 ) {
-    fun changeName(id: Long, newName: String) = transaction {
+    fun changeName(id: Long, newName: User.Name) = transaction {
         userRepository.changeName(id, newName)
     }
 
@@ -19,7 +20,7 @@ class ChangeAccountInfoInteractor(
         userRepository.changeCityId(id, newCityId)
     }
 
-    fun changeJob(id: Long, newJob: String) = transaction {
+    fun changeJob(id: Long, newJob: User.Job) = transaction {
         userRepository.changeJob(id, newJob)
     }
 
@@ -31,7 +32,7 @@ class ChangeAccountInfoInteractor(
         userRepository.changeOrganizationId(id, newOrganizationId)
     }
 
-    fun changeActivityDescription(id: Long, newDescription: String) = transaction {
+    fun changeActivityDescription(id: Long, newDescription: User.ActivityDescription) = transaction {
         userRepository.changeActivityDescription(id, newDescription)
     }
 

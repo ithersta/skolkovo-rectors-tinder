@@ -32,7 +32,7 @@ object Strings {
         const val InvalidDataFormat = "Введён неверный формат данных. "
         fun approveEventMessage(event: Event, timeZone: TimeZone) = buildEntities {
             bold("Название: ")
-            regular(event.name)
+            regular(event.name.value)
             regularln("")
             bold("Дата и время начала: ")
             regular(formatInstant(event.timestampBegin, timeZone))
@@ -42,11 +42,11 @@ object Strings {
             if (event.description != null) {
                 regularln("")
                 bold("Краткое описание: ")
-                regular(event.description)
+                regular(event.description.value)
             }
             regularln("")
             bold("Ссылка: ")
-            regular(event.url)
+            regular(event.url.value)
             regularln("")
             italicln("\nВсе верно?")
         }
@@ -84,9 +84,9 @@ object Strings {
                 " - " + formatInstant(event.timestampEnd, timeZone)
         )
         regularln("")
-        event.description?.let { italicln(it) }
+        event.description?.let { italicln(it.value) }
         regular("🔗")
-        link("Ссылка", event.url)
+        link("Ссылка", event.url.value)
         regularln("\n")
     }
 }

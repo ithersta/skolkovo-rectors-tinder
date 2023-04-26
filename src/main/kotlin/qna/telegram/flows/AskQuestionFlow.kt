@@ -7,6 +7,7 @@ import com.ithersta.tgbotapi.fsm.entities.triggers.onText
 import common.telegram.DialogState
 import common.telegram.functions.chooseQuestionAreas
 import common.telegram.functions.confirmationInlineKeyboard
+import common.telegram.functions.fromMessage
 import config.BotConfig
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.answers.answer
@@ -55,7 +56,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
         }
         onText { message ->
-            state.override { AskFullQuestion(message.content.text) }
+            Question.Subject.fromMessage(message) { state.override { AskFullQuestion(it) } }
         }
     }
     state<AskFullQuestion> {
@@ -63,7 +64,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             sendTextMessage(it, Strings.Question.WordingQuestion)
         }
         onText { message ->
-            state.override { ChooseQuestionAreas(subject, message.content.text, emptySet()) }
+            Question.Text.fromMessage(message) { state.override { ChooseQuestionAreas(subject, it, emptySet()) } }
         }
     }
     state<ChooseQuestionAreas> {
@@ -73,7 +74,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             getMessageId = { it.messageId },
             onSelectionChanged = { state, areas -> state.copy(areas = areas) },
             onMessageIdSet = { state, messageId -> state.copy(messageId = messageId) },
-            onFinish = { ChooseQuestionIntent(it.subject, it.question, it.areas) }
+            onFinish = { ChooseQuestionIntent(it.subject, it.questionText, it.areas) }
         )
     }
     state<ChooseQuestionIntent> {
@@ -94,13 +95,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             val intent = ButtonStrings.Question.stringToQuestionIntent[message.content.text]
             if (intent != null) {
                 if (intent == QuestionIntent.QuestionToColleagues) {
-                    state.override { SendQuestionToCurator(subject, question) }
+                    state.override { SendQuestionToCurator(subject, questionText) }
                 } else {
-                    state.override { SendQuestionToCommunity(subject, question, areas, intent) }
+                    state.override { SendQuestionToCommunity(subject, questionText, areas, intent) }
                 }
             } else {
                 sendTextMessage(message.chat, Strings.Question.InvalidQuestionIntent)
-                state.override { ChooseQuestionIntent(subject, question, areas) }
+                state.override { ChooseQuestionIntent(subject, questionText, areas) }
             }
         }
     }
@@ -131,7 +132,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
                 authorId = message.chat.id.chatId,
                 intent = state.snapshot.intent,
                 subject = state.snapshot.subject,
-                text = state.snapshot.question,
+                text = state.snapshot.questionText,
                 areas = state.snapshot.areas,
                 hideFrom = hideFrom
             )
@@ -156,13 +157,13 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             )
             sendTextMessage(
                 UserId(botConfig.curatorId),
-                Strings.QuestionToCurator.message(state.snapshot.subject, state.snapshot.question)
+                Strings.QuestionToCurator.message(state.snapshot.subject, state.snapshot.questionText)
             )
             val userDetails = getUserDetailsUseCase(message.chat.id.chatId)!!
             sendContact(
                 UserId(botConfig.curatorId),
                 phoneNumber = userDetails.phoneNumber.value,
-                firstName = userDetails.name
+                firstName = userDetails.name.value
             )
             state.override { DialogState.Empty }
         }
@@ -179,7 +180,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.askQuestionFlow() 
             message?.let {
                 edit(
                     it,
-                    entities = Strings.ToAnswerUser.editMessage(question!!.subject, question.text),
+                    entities = Strings.ToAnswerUser.editMessage(question!!),
                     replyMarkup = null
                 )
             }

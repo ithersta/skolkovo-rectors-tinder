@@ -1,5 +1,7 @@
 package auth.domain.entities
 
+import common.domain.LimitedLengthStringType
+import kotlinx.serialization.Serializable
 import organizations.domain.entities.City
 import organizations.domain.entities.Organization
 import qna.domain.entities.QuestionArea
@@ -14,12 +16,12 @@ sealed interface User {
         val id: Long,
         val phoneNumber: PhoneNumber,
         val course: Course,
-        val name: String,
-        val job: String,
+        val name: Name,
+        val job: Job,
         val city: City,
         val organizationType: OrganizationType,
         val organization: Organization,
-        val activityDescription: String,
+        val activityDescription: ActivityDescription,
         val isApproved: Boolean,
         val areas: Set<QuestionArea>
     )
@@ -28,12 +30,30 @@ sealed interface User {
         val id: Long,
         val phoneNumber: PhoneNumber,
         val course: Course,
-        val name: String,
-        val job: String,
+        val name: Name,
+        val job: Job,
         val cityId: Long,
         val organizationType: OrganizationType,
         val organizationId: Long,
-        val activityDescription: String,
+        val activityDescription: ActivityDescription,
         val areas: Set<QuestionArea>
     )
+
+    @Serializable
+    @JvmInline
+    value class Name private constructor(val value: String) {
+        companion object : LimitedLengthStringType<Name>(maxLength = 256, { Name(it) })
+    }
+
+    @Serializable
+    @JvmInline
+    value class Job private constructor(val value: String) {
+        companion object : LimitedLengthStringType<Job>(maxLength = 256, { Job(it) })
+    }
+
+    @Serializable
+    @JvmInline
+    value class ActivityDescription private constructor(val value: String) {
+        companion object : LimitedLengthStringType<ActivityDescription>(maxLength = 1024, { ActivityDescription(it) })
+    }
 }

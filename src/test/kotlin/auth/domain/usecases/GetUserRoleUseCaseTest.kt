@@ -19,12 +19,12 @@ internal class GetUserRoleUseCaseTest {
         id = 0L,
         phoneNumber = PhoneNumber.of("79000000000")!!,
         course = Course.RectorsSchool,
-        name = "Александр",
-        city = City(1, "city"),
-        job = "Главный специалист",
+        name = User.Name.ofTruncated("Александр"),
+        city = City(1, City.Name.ofTruncated("city")),
+        job = User.Job.ofTruncated("Главный специалист"),
         organizationType = OrganizationType.School,
-        organization = Organization(1, "organization"),
-        activityDescription = "Описание деятельности",
+        organization = Organization(1, Organization.Name.ofTruncated("organization")),
+        activityDescription = User.ActivityDescription.ofTruncated("Описание деятельности"),
         isApproved = true,
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
     )

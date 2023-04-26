@@ -23,8 +23,8 @@ class AddQuestionUseCase(
     suspend operator fun invoke(
         authorId: Long,
         intent: QuestionIntent,
-        subject: String,
-        text: String,
+        subject: Question.Subject,
+        text: Question.Text,
         areas: Set<QuestionArea>,
         hideFrom: HideFrom
     ): Question = transaction {

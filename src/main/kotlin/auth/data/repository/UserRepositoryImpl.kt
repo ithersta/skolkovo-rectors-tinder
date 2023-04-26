@@ -21,12 +21,12 @@ class UserRepositoryImpl : UserRepository {
             it[id] = user.id
             it[phoneNumber] = user.phoneNumber.value
             it[course] = user.course
-            it[name] = user.name
-            it[job] = user.job
+            it[name] = user.name.value
+            it[job] = user.job.value
             it[cityId] = user.cityId
             it[organizationType] = user.organizationType
             it[organizationId] = user.organizationId
-            it[activityDescription] = user.activityDescription
+            it[activityDescription] = user.activityDescription.value
         }
         UserAreas.batchInsert(user.areas) {
             this[UserAreas.userId] = user.id
@@ -49,9 +49,9 @@ class UserRepositoryImpl : UserRepository {
         return Users.select { Users.phoneNumber eq phoneNumber.value }.empty().not()
     }
 
-    override fun changeName(id: Long, newName: String) {
+    override fun changeName(id: Long, newName: User.Name) {
         Users.update({ Users.id eq id }) {
-            it[name] = newName
+            it[name] = newName.value
         }
     }
 
@@ -61,9 +61,9 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override fun changeJob(id: Long, newJob: String) {
+    override fun changeJob(id: Long, newJob: User.Job) {
         Users.update({ Users.id eq id }) {
-            it[job] = newJob
+            it[job] = newJob.value
         }
     }
 
@@ -87,9 +87,9 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override fun changeActivityDescription(id: Long, newActivityDescription: String) {
+    override fun changeActivityDescription(id: Long, newActivityDescription: User.ActivityDescription) {
         Users.update({ Users.id eq id }) {
-            it[activityDescription] = newActivityDescription
+            it[activityDescription] = newActivityDescription.value
         }
     }
 

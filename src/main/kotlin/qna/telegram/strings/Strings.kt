@@ -9,12 +9,12 @@ import qna.domain.entities.Question as DomainQuestion
 
 object Strings {
     object QuestionToCurator {
-        fun message(subject: String, question: String) =
+        fun message(subject: DomainQuestion.Subject, questionText: DomainQuestion.Text) =
             buildEntities {
                 regular("Добрый день, поступил новый вопрос ")
                 bold("центру трансформации образования\n\n")
-                boldln(subject)
-                regularln(question)
+                boldln(subject.value)
+                regularln(questionText.value)
             }
     }
 
@@ -32,22 +32,22 @@ object Strings {
 
                 regularln("")
 
-                boldln(question.subject)
-                regularln(question.text + "\n")
+                boldln(question.subject.value)
+                regularln(question.text.value + "\n")
                 boldln("Готовы ответить?")
             }
 
-        fun editMessage(subject: String, question: String) =
+        fun editMessage(question: DomainQuestion) =
             buildEntities {
                 regular("Вы согласились ответить на вопрос:\n\n")
-                boldln(subject)
-                regularln(question)
+                boldln(question.subject.value)
+                regularln(question.text.value)
             }
 
-        fun waitingForCompanion(subject: String) =
+        fun waitingForCompanion(subject: DomainQuestion.Subject) =
             buildEntities {
                 regular("Владелец вопроса ")
-                bold("\"$subject\"")
+                bold("\"${subject.value}\"")
                 regular(" свяжется с Вами")
             }
 
@@ -104,10 +104,10 @@ object Strings {
         val CopyQuestion = buildEntities { bold("Скопируйте вопрос для отправки собеседникам") }
     }
 
-    fun question(question: qna.domain.entities.Question) = buildEntities {
+    fun question(question: DomainQuestion) = buildEntities {
         if (question.isClosed) regularln("❌ Вопрос закрыт")
-        boldln(question.subject)
-        regularln(question.text)
+        boldln(question.subject.value)
+        regularln(question.text.value)
     }
 
     fun respondedQuestion(question: qna.domain.entities.Question) = buildEntities {

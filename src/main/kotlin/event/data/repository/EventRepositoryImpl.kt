@@ -12,11 +12,11 @@ import org.koin.core.annotation.Single
 class EventRepositoryImpl : EventRepository {
     override fun add(event: Event): Long {
         val id = Events.insertAndGetId {
-            it[name] = event.name
+            it[name] = event.name.value
             it[timestampBegin] = event.timestampBegin
             it[timestampEnd] = event.timestampEnd
-            it[description] = event.description
-            it[url] = event.url
+            it[description] = event.description?.value
+            it[url] = event.url.value
         }
         return id.value
     }
@@ -46,11 +46,11 @@ class EventRepositoryImpl : EventRepository {
     companion object {
         fun mapper(row: ResultRow): Event {
             return Event(
-                name = row[Events.name],
+                name = Event.Name.ofTruncated(row[Events.name]),
                 timestampBegin = row[Events.timestampBegin],
                 timestampEnd = row[Events.timestampEnd],
-                description = row[Events.description],
-                url = row[Events.url],
+                description = row[Events.description]?.let { Event.Description.ofTruncated(it) },
+                url = checkNotNull(Event.Url.of(row[Events.url]).getOrNull()),
                 id = row[Events.id].value
             )
         }

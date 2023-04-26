@@ -5,6 +5,7 @@ import dev.inmo.tgbotapi.utils.buildEntities
 import dev.inmo.tgbotapi.utils.regular
 import dev.inmo.tgbotapi.utils.regularln
 import feedback.domain.entities.FeedbackRequest
+import qna.domain.entities.Question
 
 object Strings {
     const val IfSuccessful = "Отлично, мы рады!"
@@ -19,6 +20,6 @@ object Strings {
         regularln("?")
     }
 
-    fun shouldCloseQuestion(subject: String) =
-        "Отлично, мы рады! Получили ли вы удовлетворительный ответ на свой вопрос «$subject»?"
+    fun shouldCloseQuestion(subject: Question.Subject) =
+        "Отлично, мы рады! Получили ли вы удовлетворительный ответ на свой вопрос «${subject.value}»?"
 }

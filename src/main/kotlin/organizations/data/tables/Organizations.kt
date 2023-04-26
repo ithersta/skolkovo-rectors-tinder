@@ -7,7 +7,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import organizations.domain.entities.Organization
 
 object Organizations : LongIdTable() {
-    val name = varchar("name", length = 256).uniqueIndex()
+    val name = varchar("name", length = Organization.Name.maxLength).uniqueIndex()
 
     class Entity(id: EntityID<Long>) : LongEntity(id) {
         companion object : LongEntityClass<Entity>(Organizations)
@@ -18,5 +18,5 @@ object Organizations : LongIdTable() {
 
 fun Organizations.Entity.toDomainModel() = Organization(
     id = id.value,
-    name = name
+    name = Organization.Name.ofTruncated(name)
 )

@@ -58,7 +58,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
         inlineKeyboard {
             subject.slice.forEach { item ->
                 row {
-                    dataButton(item.subject, SelectSubject(item.authorId, item.id!!))
+                    dataButton(item.subject.value, SelectSubject(item.authorId, item.id!!))
                 }
             }
             navigationRow(itemCount = subject.count)
@@ -70,7 +70,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             respondent.slice.forEach { item ->
                 val user = getUserDetailsUseCase(item.respondentId)
                 row {
-                    dataButton(user!!.name, SelectRespondent(item.id))
+                    dataButton(user!!.name.value, SelectRespondent(item.id))
                 }
             }
             navigationRow(itemCount = respondent.count)
@@ -139,7 +139,7 @@ fun RoleFilterBuilder<DialogState, User, User.Normal, UserId>.getListOfResponden
             sendContact(
                 chat = query.user,
                 phoneNumber = respondent.phoneNumber.value,
-                firstName = respondent.name
+                firstName = respondent.name.value
             )
         }
     }

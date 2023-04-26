@@ -54,7 +54,7 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
         inlineKeyboard {
             event.slice.forEach { item ->
                 row {
-                    item.id?.let { SelectEvent(it) }?.let { dataButton(item.name, it) }
+                    item.id?.let { SelectEvent(it) }?.let { dataButton(item.name.value, it) }
                 }
             }
             navigationRow(itemCount = event.count)

@@ -53,7 +53,7 @@ fun RoleFilterBuilder<User.Normal>.newResponseFlow() {
                     deleteAfterDelay(ephemeralMessage)
                     send(message.chat, Strings.NewResponses.WriteToCompanion)
                     getQuestionById(data.questionId)?.let { question ->
-                        send(message.chat, question.text)
+                        send(message.chat, question.text.value)
                         send(message.chat, Strings.NewResponses.CopyQuestion)
                     }
                 }
@@ -73,7 +73,7 @@ fun RoleFilterBuilder<User.Normal>.newResponseFlow() {
             sendContact(
                 chat = query.user,
                 phoneNumber = result.respondent.phoneNumber.value,
-                firstName = result.respondent.name
+                firstName = result.respondent.name.value
             )
             answer(query)
         }

@@ -22,12 +22,12 @@ internal class RegisterUserUseCaseTest {
         id = sampleUserId,
         phoneNumber = samplePhoneNumber,
         course = Course.RectorsSchool,
-        name = "Александр",
+        name = User.Name.ofTruncated("Александр"),
         cityId = 1,
-        job = "Главный специалист",
+        job = User.Job.ofTruncated("Главный специалист"),
         organizationType = OrganizationType.School,
         organizationId = 1,
-        activityDescription = "Описание деятельности",
+        activityDescription = User.ActivityDescription.ofTruncated("Описание деятельности"),
         areas = setOf(QuestionArea.Campus, QuestionArea.Finance)
     )
 
@@ -64,12 +64,12 @@ internal class RegisterUserUseCaseTest {
             sampleUserId,
             samplePhoneNumber,
             Course.RectorsSchool,
-            "name",
-            "job",
-            City(1, "city"),
+            User.Name.ofTruncated("name"),
+            User.Job.ofTruncated("job"),
+            City(1, City.Name.ofTruncated("city")),
             OrganizationType.ScientificOrganization,
-            Organization(1, "organization"),
-            "activity",
+            Organization(1, Organization.Name.ofTruncated("organization")),
+            User.ActivityDescription.ofTruncated("activity"),
             false,
             setOf(QuestionArea.Campus)
         )
@@ -123,9 +123,9 @@ internal class RegisterUserUseCaseTest {
             course = newDetails.course,
             name = newDetails.name,
             job = newDetails.job,
-            city = City(newDetails.cityId, ""),
+            city = City(newDetails.cityId, City.Name.ofTruncated("")),
             organizationType = newDetails.organizationType,
-            organization = Organization(newDetails.organizationId, ""),
+            organization = Organization(newDetails.organizationId, Organization.Name.ofTruncated("")),
             activityDescription = newDetails.activityDescription,
             isApproved = false,
             areas = newDetails.areas

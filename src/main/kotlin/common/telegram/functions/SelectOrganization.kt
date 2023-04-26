@@ -32,7 +32,7 @@ fun <State : DialogState> StateFilterBuilder<DialogState, User, State, *, UserId
                         cityId(state.snapshot)?.let { cityId ->
                             organizationRepository.getByCityId(cityId)
                         } ?: organizationRepository.getAll()
-                    }.map { DropdownOption(it.id, it.name) },
+                    }.map { DropdownOption(it.id, it.name.value) },
                     noneConfirmationMessage = stringsOrganization.confirmation,
                     noneOption = stringsOrganization.noOrganization
                 )
