@@ -10,6 +10,10 @@ data class InputBeginDateTimeState(
     val name: Event.Name
 ) : DialogState
 
+data class ChooseOptionDateTime(
+    val name: Event.Name
+): DialogState
+
 @Serializable
 data class InputEndDateTimeState(
     val name: Event.Name,
