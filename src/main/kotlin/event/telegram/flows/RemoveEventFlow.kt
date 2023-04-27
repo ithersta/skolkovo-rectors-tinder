@@ -63,8 +63,8 @@ fun RoleFilterBuilder<DialogState, User, User.Admin, UserId>.removeEventFlow() {
     anyState {
         onDataCallbackQuery(SelectEvent::class) { (data, query) ->
             val event = getEventByIdUseCase(data.id)
-            sendTextMessage(
-                query.user.id,
+            edit(
+                query.messageCallbackQueryOrThrow().message.withContentOrThrow<TextContent>(),
                 Strings.RemoveEvent.removeEventMessage(event, timeZone),
                 replyMarkup = confirmationInlineKeyboard(
                     positiveData = DeleteEvent(data.id),
