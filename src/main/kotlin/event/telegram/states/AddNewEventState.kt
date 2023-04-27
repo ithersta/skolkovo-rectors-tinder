@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ChooseOptionDateTime(
     val name: Event.Name
-): DialogState
+) : DialogState
 
 @Serializable
 data class InputBeginDateState(

@@ -9,11 +9,13 @@ import kotlinx.datetime.toJavaZoneId
 import java.time.format.DateTimeFormatter
 
 object Strings {
+    const val NumOfCharDateString = 10
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     fun formatInstant(instant: Instant, timeZone: TimeZone): String {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
         return formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
     }
+
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
         const val ChooseOptionDateTime = "Выберите опцию: "
@@ -39,11 +41,20 @@ object Strings {
             bold("Название: ")
             regular(event.name.value)
             regularln("")
-            bold("Дата и время начала: ")
-            regular(formatInstant(event.timestampBegin, timeZone))
-            regularln("")
-            bold("Дата и время окончания: ")
-            regular(formatInstant(event.timestampEnd, timeZone))
+            val time = formatInstant(event.timestampBegin, timeZone)
+            if (time.substring(time.length - 5) != "00:00") {
+                bold("Дата и время начала: ")
+                regular(formatInstant(event.timestampBegin, timeZone))
+                regularln("")
+                bold("Дата и время окончания: ")
+                regular(formatInstant(event.timestampEnd, timeZone))
+            } else {
+                bold("Дата начала: ")
+                regular(time.substring(0, NumOfCharDateString))
+                regularln("")
+                bold("Дата окончания: ")
+                regular(formatInstant(event.timestampEnd, timeZone).substring(0, NumOfCharDateString))
+            }
             if (event.description != null) {
                 regularln("")
                 bold("Краткое описание: ")
@@ -82,13 +93,27 @@ object Strings {
     }
 
     fun eventInfo(event: Event, timeZone: TimeZone) = buildEntities {
-        boldln("📅 " + event.name)
         regular("🕓 ")
-        regular(
-            formatInstant(event.timestampBegin, timeZone) +
-                " - " + formatInstant(event.timestampEnd, timeZone)
-        )
+        val timeBegin = formatInstant(event.timestampBegin, timeZone)
+        val timeEnd = formatInstant(event.timestampEnd, timeZone)
+        if (timeBegin.substring(timeBegin.length - 5) == "00:00") {
+            regular(
+                timeBegin.substring(0, NumOfCharDateString) +
+                    " - " + timeEnd.substring(0, NumOfCharDateString)
+            )
+        } else if (timeBegin.substring(0, NumOfCharDateString) == timeEnd.substring(0, NumOfCharDateString)) {
+            regular(
+                timeBegin +
+                    " - " + timeEnd.substring(timeBegin.length - 5)
+            )
+        } else {
+            regular(
+                timeBegin +
+                    " - " + timeEnd
+            )
+        }
         regularln("")
+        boldln("📅 " + event.name.value)
         event.description?.let { italicln(it.value) }
         regular("🔗")
         link("Ссылка", event.url.value)

@@ -33,39 +33,44 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val timeZone: TimeZone by inject()
     role<User.Admin> {
         state<MenuState.AddEventState> {
-            onEnter { sendTextMessage(
-                it,
-                Strings.ScheduleEvent.InputName,
-                replyMarkup = ReplyKeyboardRemove())
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.ScheduleEvent.InputName,
+                    replyMarkup = ReplyKeyboardRemove()
+                )
             }
             onText { Event.Name.fromMessage(it) { state.override { ChooseOptionDateTime(it) } } }
         }
-        state<ChooseOptionDateTime>{
-            onEnter{
-                sendTextMessage(it,
+        state<ChooseOptionDateTime> {
+            onEnter {
+                sendTextMessage(
+                    it,
                     Strings.ScheduleEvent.ChooseOptionDateTime,
                     replyMarkup = replyKeyboard {
-                        row{
+                        row {
                             simpleButton(Strings.ScheduleEvent.InputDate)
                         }
-                        row{
+                        row {
                             simpleButton(Strings.ScheduleEvent.InputDateTime)
                         }
                     }
                 )
             }
-            onText(Strings.ScheduleEvent.InputDate){
+            onText(Strings.ScheduleEvent.InputDate) {
                 state.override { InputBeginDateState(name) }
             }
-            onText(Strings.ScheduleEvent.InputDateTime){
+            onText(Strings.ScheduleEvent.InputDateTime) {
                 state.override { InputBeginDateTimeState(name) }
             }
         }
         state<InputBeginDateState> {
-            onEnter { sendTextMessage(
-                it,
-                Strings.ScheduleEvent.InputBeginDate,
-                replyMarkup = ReplyKeyboardRemove())
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.ScheduleEvent.InputBeginDate,
+                    replyMarkup = ReplyKeyboardRemove()
+                )
             }
             onText {
                 val dateTime = it.content.text + " 00:00"
@@ -114,10 +119,12 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
             }
         }
         state<InputBeginDateTimeState> {
-            onEnter { sendTextMessage(
-                it,
-                Strings.ScheduleEvent.InputBeginDateTime,
-                replyMarkup = ReplyKeyboardRemove())
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.ScheduleEvent.InputBeginDateTime,
+                    replyMarkup = ReplyKeyboardRemove()
+                )
             }
             onText {
                 val beginDateTime = try {
