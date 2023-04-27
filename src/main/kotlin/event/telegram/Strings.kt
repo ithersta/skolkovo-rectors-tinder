@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter
 
 object Strings {
     const val NumOfCharDateString = 10
+    const val NumOfCharTimeString = 5
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     fun formatInstant(instant: Instant, timeZone: TimeZone): String {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
@@ -42,7 +43,7 @@ object Strings {
             regular(event.name.value)
             regularln("")
             val time = formatInstant(event.timestampBegin, timeZone)
-            if (time.substring(time.length - 5) != "00:00") {
+            if (time.substring(time.length - NumOfCharTimeString) != "00:00") {
                 bold("Дата и время начала: ")
                 regular(formatInstant(event.timestampBegin, timeZone))
                 regularln("")
@@ -96,7 +97,7 @@ object Strings {
         regular("🕓 ")
         val timeBegin = formatInstant(event.timestampBegin, timeZone)
         val timeEnd = formatInstant(event.timestampEnd, timeZone)
-        if (timeBegin.substring(timeBegin.length - 5) == "00:00") {
+        if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) == "00:00") {
             regular(
                 timeBegin.substring(0, NumOfCharDateString) +
                     " - " + timeEnd.substring(0, NumOfCharDateString)
@@ -104,7 +105,7 @@ object Strings {
         } else if (timeBegin.substring(0, NumOfCharDateString) == timeEnd.substring(0, NumOfCharDateString)) {
             regular(
                 timeBegin +
-                    " - " + timeEnd.substring(timeBegin.length - 5)
+                    " - " + timeEnd.substring(timeBegin.length - NumOfCharTimeString)
             )
         } else {
             regular(
