@@ -19,8 +19,8 @@ object Strings {
         const val ChooseOptionDateTime = "Выберите опцию: "
         const val InputDate = "Ввести дату мероприятия"
         const val InputDateTime = "Ввести дату и время мероприятия"
-        const val InputBeginDate = "Введите дату начала мероприятия в формате дд.мм.гггг чч:мм"
-        const val InputEndDate = "Введите дату окончания мероприятия в формате дд.мм.гггг чч:мм"
+        const val InputBeginDate = "Введите дату начала мероприятия в формате дд.мм.гггг"
+        const val InputEndDate = "Введите дату окончания мероприятия в формате дд.мм.гггг"
         const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.мм.гггг чч:мм"
         const val InputEndDateTime = "Введите дату и время окончания мероприятия в формате дд.мм.гггг чч:мм"
         const val InputDescription =

@@ -6,13 +6,25 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class ChooseOptionDateTime(
+    val name: Event.Name
+): DialogState
+
+@Serializable
+data class InputBeginDateState(
+    val name: Event.Name
+) : DialogState
+
+@Serializable
 data class InputBeginDateTimeState(
     val name: Event.Name
 ) : DialogState
 
-data class ChooseOptionDateTime(
-    val name: Event.Name
-): DialogState
+@Serializable
+data class InputEndDateState(
+    val name: Event.Name,
+    val beginDateTime: Instant
+) : DialogState
 
 @Serializable
 data class InputEndDateTimeState(

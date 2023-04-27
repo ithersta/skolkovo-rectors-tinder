@@ -33,11 +33,92 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val timeZone: TimeZone by inject()
     role<User.Admin> {
         state<MenuState.AddEventState> {
-            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName, replyMarkup = ReplyKeyboardRemove()) }
-            onText { Event.Name.fromMessage(it) { state.override { InputBeginDateTimeState(it) } } }
+            onEnter { sendTextMessage(
+                it,
+                Strings.ScheduleEvent.InputName,
+                replyMarkup = ReplyKeyboardRemove())
+            }
+            onText { Event.Name.fromMessage(it) { state.override { ChooseOptionDateTime(it) } } }
+        }
+        state<ChooseOptionDateTime>{
+            onEnter{
+                sendTextMessage(it,
+                    Strings.ScheduleEvent.ChooseOptionDateTime,
+                    replyMarkup = replyKeyboard {
+                        row{
+                            simpleButton(Strings.ScheduleEvent.InputDate)
+                        }
+                        row{
+                            simpleButton(Strings.ScheduleEvent.InputDateTime)
+                        }
+                    }
+                )
+            }
+            onText(Strings.ScheduleEvent.InputDate){
+                state.override { InputBeginDateState(name) }
+            }
+            onText(Strings.ScheduleEvent.InputDateTime){
+                state.override { InputBeginDateTimeState(name) }
+            }
+        }
+        state<InputBeginDateState> {
+            onEnter { sendTextMessage(
+                it,
+                Strings.ScheduleEvent.InputBeginDate,
+                replyMarkup = ReplyKeyboardRemove())
+            }
+            onText {
+                val dateTime = it.content.text + " 00:00"
+                val beginDateTime = try {
+                    LocalDateTime.parse(
+                        dateTime,
+                        DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                    ).toKotlinLocalDateTime().toInstant(timeZone)
+                } catch (e: DateTimeParseException) {
+                    sendTextMessage(
+                        it.chat,
+                        Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputBeginDateTime
+                    )
+                    return@onText
+                }
+                state.override { InputEndDateState(name, beginDateTime) }
+            }
+        }
+        state<InputEndDateState> {
+            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputEndDate) }
+            onText {
+                val dateTime = it.content.text + " 00:00"
+                val endDateTime = try {
+                    LocalDateTime.parse(
+                        dateTime,
+                        DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                    ).toKotlinLocalDateTime().toInstant(timeZone)
+                } catch (e: DateTimeParseException) {
+                    sendTextMessage(
+                        it.chat,
+                        Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputEndDateTime
+                    )
+                    return@onText
+                }
+                if (endDateTime.epochSeconds < state.snapshot.beginDateTime.epochSeconds) {
+                    sendTextMessage(
+                        it.chat,
+                        Strings.ScheduleEvent.InvalidTimeInterval
+                    )
+                    state.override { InputBeginDateTimeState(state.snapshot.name) }
+                } else {
+                    state.override {
+                        InputDescriptionState(name, beginDateTime, endDateTime)
+                    }
+                }
+            }
         }
         state<InputBeginDateTimeState> {
-            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputBeginDateTime) }
+            onEnter { sendTextMessage(
+                it,
+                Strings.ScheduleEvent.InputBeginDateTime,
+                replyMarkup = ReplyKeyboardRemove())
+            }
             onText {
                 val beginDateTime = try {
                     LocalDateTime.parse(
