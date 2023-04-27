@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter
 object Strings {
     const val NumOfCharDateString = 10
     const val NumOfCharTimeString = 5
+    const val Midnight = "00:00"
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     fun formatInstant(instant: Instant, timeZone: TimeZone): String {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
@@ -44,20 +45,20 @@ object Strings {
             regularln("")
             val timeBegin = formatInstant(event.timestampBegin, timeZone)
             val timeEnd = formatInstant(event.timestampEnd, timeZone)
-            if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) != "00:00" &&
-                timeEnd.substring(timeBegin.length - NumOfCharTimeString) != "00:00"
+            if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) == Midnight &&
+                timeEnd.substring(timeBegin.length - NumOfCharTimeString) == Midnight
             ) {
-                bold("Дата и время начала: ")
-                regular(timeBegin)
-                regularln("")
-                bold("Дата и время окончания: ")
-                regular(timeEnd)
-            } else {
                 bold("Дата начала: ")
                 regular(timeBegin.substring(0, NumOfCharDateString))
                 regularln("")
                 bold("Дата окончания: ")
                 regular(timeEnd.substring(0, NumOfCharDateString))
+            } else {
+                bold("Дата и время начала: ")
+                regular(timeBegin)
+                regularln("")
+                bold("Дата и время окончания: ")
+                regular(timeEnd)
             }
             if (event.description != null) {
                 regularln("")
@@ -100,8 +101,8 @@ object Strings {
         regular("🕓 ")
         val timeBegin = formatInstant(event.timestampBegin, timeZone)
         val timeEnd = formatInstant(event.timestampEnd, timeZone)
-        if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) == "00:00" &&
-            timeEnd.substring(timeBegin.length - NumOfCharTimeString) == "00:00"
+        if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) == Midnight &&
+            timeEnd.substring(timeBegin.length - NumOfCharTimeString) == Midnight
         ) {
             regular(
                 timeBegin.substring(0, NumOfCharDateString) +
