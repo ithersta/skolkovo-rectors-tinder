@@ -42,19 +42,22 @@ object Strings {
             bold("Название: ")
             regular(event.name.value)
             regularln("")
-            val time = formatInstant(event.timestampBegin, timeZone)
-            if (time.substring(time.length - NumOfCharTimeString) != "00:00") {
+            val timeBegin = formatInstant(event.timestampBegin, timeZone)
+            val timeEnd = formatInstant(event.timestampEnd, timeZone)
+            if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) != "00:00" &&
+                timeEnd.substring(timeBegin.length - NumOfCharTimeString) != "00:00"
+            ) {
                 bold("Дата и время начала: ")
-                regular(formatInstant(event.timestampBegin, timeZone))
+                regular(timeBegin)
                 regularln("")
                 bold("Дата и время окончания: ")
-                regular(formatInstant(event.timestampEnd, timeZone))
+                regular(timeEnd)
             } else {
                 bold("Дата начала: ")
-                regular(time.substring(0, NumOfCharDateString))
+                regular(timeBegin.substring(0, NumOfCharDateString))
                 regularln("")
                 bold("Дата окончания: ")
-                regular(formatInstant(event.timestampEnd, timeZone).substring(0, NumOfCharDateString))
+                regular(timeEnd.substring(0, NumOfCharDateString))
             }
             if (event.description != null) {
                 regularln("")
@@ -97,7 +100,9 @@ object Strings {
         regular("🕓 ")
         val timeBegin = formatInstant(event.timestampBegin, timeZone)
         val timeEnd = formatInstant(event.timestampEnd, timeZone)
-        if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) == "00:00") {
+        if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) == "00:00" &&
+            timeEnd.substring(timeBegin.length - NumOfCharTimeString) == "00:00"
+        ) {
             regular(
                 timeBegin.substring(0, NumOfCharDateString) +
                     " - " + timeEnd.substring(0, NumOfCharDateString)
