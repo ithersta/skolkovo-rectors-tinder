@@ -2,16 +2,13 @@ package event.telegram
 
 import dev.inmo.tgbotapi.utils.*
 import event.domain.entities.Event
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaInstant
-import kotlinx.datetime.toJavaZoneId
+import kotlinx.datetime.*
 import java.time.format.DateTimeFormatter
 
 object Strings {
-    const val NumOfCharDateString = 10
-    const val NumOfCharTimeString = 5
-    const val Midnight = "00:00"
+    private const val NumOfCharDateString = 10
+    private const val NumOfCharTimeString = 5
+
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     fun formatInstant(instant: Instant, timeZone: TimeZone): String {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
@@ -45,8 +42,9 @@ object Strings {
             regularln("")
             val timeBegin = formatInstant(event.timestampBegin, timeZone)
             val timeEnd = formatInstant(event.timestampEnd, timeZone)
-            if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) == Midnight &&
-                timeEnd.substring(timeBegin.length - NumOfCharTimeString) == Midnight
+            val midnight = LocalTime(0, 0)
+            if (event.timestampBegin.toLocalDateTime(timeZone).time == midnight &&
+                event.timestampEnd.toLocalDateTime(timeZone).time == midnight
             ) {
                 bold("Дата начала: ")
                 regular(timeBegin.substring(0, NumOfCharDateString))
@@ -101,14 +99,15 @@ object Strings {
         regular("🕓 ")
         val timeBegin = formatInstant(event.timestampBegin, timeZone)
         val timeEnd = formatInstant(event.timestampEnd, timeZone)
-        if (timeBegin.substring(timeBegin.length - NumOfCharTimeString) == Midnight &&
-            timeEnd.substring(timeBegin.length - NumOfCharTimeString) == Midnight
-        ) {
+        val beginLocalDateTime = event.timestampBegin.toLocalDateTime(timeZone)
+        val endLocalDateTime = event.timestampBegin.toLocalDateTime(timeZone)
+        val midnight = LocalTime(0, 0)
+        if (beginLocalDateTime.time == midnight && endLocalDateTime.time == midnight) {
             regular(
                 timeBegin.substring(0, NumOfCharDateString) +
                     " - " + timeEnd.substring(0, NumOfCharDateString)
             )
-        } else if (timeBegin.substring(0, NumOfCharDateString) == timeEnd.substring(0, NumOfCharDateString)) {
+        } else if (beginLocalDateTime.date == endLocalDateTime.date) {
             regular(
                 timeBegin +
                     " - " + timeEnd.substring(timeBegin.length - NumOfCharTimeString)
