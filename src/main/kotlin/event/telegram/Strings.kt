@@ -6,7 +6,7 @@ import kotlinx.datetime.*
 import java.time.format.DateTimeFormatter
 
 object Strings {
-    private const val NumOfCharDateString = 10
+    const val NumOfCharDateString = 10
     private const val NumOfCharTimeString = 5
 
     const val NoEvent = "На данный момент нет актуальных мероприятий"
@@ -17,12 +17,8 @@ object Strings {
 
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
-        const val ChooseOptionDateTime = "Выберите опцию: "
-        const val InputDate = "Ввести дату мероприятия"
-        const val InputDateTime = "Ввести дату и время мероприятия"
-        const val InputBeginDate = "Введите дату начала мероприятия в формате дд.мм.гггг"
+        const val InputBeginDateTime = "Введите дату или дату и время начала мероприятия в формате дд.мм.гггг чч:мм"
         const val InputEndDate = "Введите дату окончания мероприятия в формате дд.мм.гггг"
-        const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.мм.гггг чч:мм"
         const val InputEndDateTime = "Введите дату и время окончания мероприятия в формате дд.мм.гггг чч:мм"
         const val InputDescription =
             "Введите краткое описание мероприятия. " + "\nЕсли такого не имеется, нажмите соответствующую кнопку"
