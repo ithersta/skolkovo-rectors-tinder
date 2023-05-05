@@ -10,7 +10,7 @@ object Strings {
 
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     fun formatInstant(instant: Instant, timeZone: TimeZone): String {
-        return if(instant.toLocalDateTime(timeZone).time == midnight){
+        return if (instant.toLocalDateTime(timeZone).time == midnight) {
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
             formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
         } else {
