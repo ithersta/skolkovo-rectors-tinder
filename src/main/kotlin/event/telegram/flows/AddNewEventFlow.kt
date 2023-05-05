@@ -84,9 +84,9 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
         }
         state<InputEndDateTimeState> {
             onEnter {
-                if(state.snapshot.beginDateTime.toLocalDateTime(timeZone).time == midnight) {
+                if (state.snapshot.beginDateTime.toLocalDateTime(timeZone).time == midnight) {
                     sendTextMessage(it, Strings.ScheduleEvent.InputEndDate)
-                } else{
+                } else {
                     sendTextMessage(it, Strings.ScheduleEvent.InputEndDateTime)
                 }
             }
