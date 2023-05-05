@@ -109,7 +109,7 @@ object Strings {
         } else if (beginLocalDateTime.date == endLocalDateTime.date) {
             regular(
                 timeBegin +
-                    " - " + timeEnd.toLocalDateTime().date
+                    " - " // + timeEnd.substring(timeBegin.length - 5)
             )
         } else {
             regular(
