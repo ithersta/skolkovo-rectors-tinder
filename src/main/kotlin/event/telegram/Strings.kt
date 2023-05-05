@@ -6,13 +6,17 @@ import kotlinx.datetime.*
 import java.time.format.DateTimeFormatter
 
 object Strings {
-    const val NumOfCharDateString = 10
-    private const val NumOfCharTimeString = 5
+    private val midnight = LocalTime(0, 0)
 
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     fun formatInstant(instant: Instant, timeZone: TimeZone): String {
-        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-        return formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
+        return if(instant.toLocalDateTime(timeZone).time == midnight){
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+            formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
+        } else {
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+            formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
+        }
     }
 
     object ScheduleEvent {
@@ -43,10 +47,10 @@ object Strings {
                 event.timestampEnd.toLocalDateTime(timeZone).time == midnight
             ) {
                 bold("Дата начала: ")
-                regular(timeBegin.substring(0, NumOfCharDateString))
+                regular(timeBegin)
                 regularln("")
                 bold("Дата окончания: ")
-                regular(timeEnd.substring(0, NumOfCharDateString))
+                regular(timeEnd)
             } else {
                 bold("Дата и время начала: ")
                 regular(timeBegin)
@@ -97,16 +101,15 @@ object Strings {
         val timeEnd = formatInstant(event.timestampEnd, timeZone)
         val beginLocalDateTime = event.timestampBegin.toLocalDateTime(timeZone)
         val endLocalDateTime = event.timestampBegin.toLocalDateTime(timeZone)
-        val midnight = LocalTime(0, 0)
         if (beginLocalDateTime.time == midnight && endLocalDateTime.time == midnight) {
             regular(
-                timeBegin.substring(0, NumOfCharDateString) +
-                    " - " + timeEnd.substring(0, NumOfCharDateString)
+                timeBegin +
+                    " - " + timeEnd
             )
         } else if (beginLocalDateTime.date == endLocalDateTime.date) {
             regular(
                 timeBegin +
-                    " - " + timeEnd.substring(timeBegin.length - NumOfCharTimeString)
+                    " - " + timeEnd.toLocalDateTime().date
             )
         } else {
             regular(

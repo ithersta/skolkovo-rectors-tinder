@@ -51,7 +51,12 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                 )
             }
             onText {
-                if (it.content.text.length == Strings.NumOfCharDateString) {
+                val beginDateTime = try {
+                    LocalDateTime.parse(
+                        it.content.text,
+                        DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                    ).toKotlinLocalDateTime().toInstant(timeZone)
+                } catch (e: DateTimeParseException) {
                     val beginDate = try {
                         LocalDate.parse(
                             it.content.text,
@@ -65,21 +70,9 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                         return@onText
                     }
                     state.override { InputEndDateTimeState(name, beginDate) }
-                } else {
-                    val beginDateTime = try {
-                        LocalDateTime.parse(
-                            it.content.text,
-                            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                        ).toKotlinLocalDateTime().toInstant(timeZone)
-                    } catch (e: DateTimeParseException) {
-                        sendTextMessage(
-                            it.chat,
-                            Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputBeginDateTime
-                        )
-                        return@onText
-                    }
-                    state.override { InputEndDateTimeState(name, beginDateTime) }
+                    return@onText
                 }
+                state.override { InputEndDateTimeState(name, beginDateTime) }
             }
         }
         state<InputEndDateTimeState> {
