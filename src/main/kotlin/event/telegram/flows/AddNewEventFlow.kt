@@ -19,11 +19,10 @@ import event.domain.entities.Event
 import event.domain.usecases.AddEventUseCase
 import event.telegram.Strings
 import event.telegram.states.*
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toKotlinLocalDateTime
+import kotlinx.datetime.*
 import menus.states.MenuState
 import org.koin.core.component.inject
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -31,13 +30,26 @@ import java.time.format.DateTimeParseException
 fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
     val addEventUseCase: AddEventUseCase by inject()
     val timeZone: TimeZone by inject()
+    val midnight = LocalTime(0, 0)
     role<User.Admin> {
         state<MenuState.AddEventState> {
-            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputName, replyMarkup = ReplyKeyboardRemove()) }
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.ScheduleEvent.InputName,
+                    replyMarkup = ReplyKeyboardRemove()
+                )
+            }
             onText { Event.Name.fromMessage(it) { state.override { InputBeginDateTimeState(it) } } }
         }
         state<InputBeginDateTimeState> {
-            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputBeginDateTime) }
+            onEnter {
+                sendTextMessage(
+                    it,
+                    Strings.ScheduleEvent.InputBeginDateTime,
+                    replyMarkup = ReplyKeyboardRemove()
+                )
+            }
             onText {
                 val beginDateTime = try {
                     LocalDateTime.parse(
@@ -45,39 +57,80 @@ fun StateMachineBuilder<DialogState, User, UserId>.addEventFlow() {
                         DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
                     ).toKotlinLocalDateTime().toInstant(timeZone)
                 } catch (e: DateTimeParseException) {
-                    sendTextMessage(
-                        it.chat,
-                        Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputBeginDateTime
-                    )
+                    val beginDate = try {
+                        LocalDate.parse(
+                            it.content.text,
+                            DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                        ).toKotlinLocalDate().atStartOfDayIn(timeZone)
+                    } catch (e: DateTimeParseException) {
+                        sendTextMessage(
+                            it.chat,
+                            Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputBeginDateTime
+                        )
+                        return@onText
+                    }
+                    state.override { InputEndDateTimeState(name, beginDate) }
                     return@onText
                 }
                 state.override { InputEndDateTimeState(name, beginDateTime) }
             }
         }
         state<InputEndDateTimeState> {
-            onEnter { sendTextMessage(it, Strings.ScheduleEvent.InputEndDateTime) }
-            onText {
-                val endDateTime = try {
-                    LocalDateTime.parse(
-                        it.content.text,
-                        DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                    ).toKotlinLocalDateTime().toInstant(timeZone)
-                } catch (e: DateTimeParseException) {
-                    sendTextMessage(
-                        it.chat,
-                        Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputEndDateTime
-                    )
-                    return@onText
-                }
-                if (endDateTime.epochSeconds < state.snapshot.beginDateTime.epochSeconds) {
-                    sendTextMessage(
-                        it.chat,
-                        Strings.ScheduleEvent.InvalidTimeInterval
-                    )
-                    state.override { InputBeginDateTimeState(state.snapshot.name) }
+            onEnter {
+                if (state.snapshot.beginDateTime.toLocalDateTime(timeZone).time == midnight) {
+                    sendTextMessage(it, Strings.ScheduleEvent.InputEndDate)
                 } else {
-                    state.override {
-                        InputDescriptionState(name, beginDateTime, endDateTime)
+                    sendTextMessage(it, Strings.ScheduleEvent.InputEndDateTime)
+                }
+            }
+            onText {
+                if (state.snapshot.beginDateTime.toLocalDateTime(timeZone).time == midnight) {
+                    val endDate = try {
+                        LocalDate.parse(
+                            it.content.text,
+                            DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                        ).toKotlinLocalDate().atStartOfDayIn(timeZone)
+                    } catch (e: DateTimeParseException) {
+                        sendTextMessage(
+                            it.chat,
+                            Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputEndDate
+                        )
+                        return@onText
+                    }
+                    if (endDate.epochSeconds <= state.snapshot.beginDateTime.epochSeconds) {
+                        sendTextMessage(
+                            it.chat,
+                            Strings.ScheduleEvent.InvalidTimeInterval
+                        )
+                        state.override { InputBeginDateTimeState(state.snapshot.name) }
+                    } else {
+                        state.override {
+                            InputDescriptionState(name, beginDateTime, endDate)
+                        }
+                    }
+                } else {
+                    val endDateTime = try {
+                        LocalDateTime.parse(
+                            it.content.text,
+                            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                        ).toKotlinLocalDateTime().toInstant(timeZone)
+                    } catch (e: DateTimeParseException) {
+                        sendTextMessage(
+                            it.chat,
+                            Strings.ScheduleEvent.InvalidDataFormat + Strings.ScheduleEvent.InputEndDateTime
+                        )
+                        return@onText
+                    }
+                    if (endDateTime.epochSeconds <= state.snapshot.beginDateTime.epochSeconds) {
+                        sendTextMessage(
+                            it.chat,
+                            Strings.ScheduleEvent.InvalidTimeInterval
+                        )
+                        state.override { InputBeginDateTimeState(state.snapshot.name) }
+                    } else {
+                        state.override {
+                            InputDescriptionState(name, beginDateTime, endDateTime)
+                        }
                     }
                 }
             }

@@ -2,21 +2,27 @@ package event.telegram
 
 import dev.inmo.tgbotapi.utils.*
 import event.domain.entities.Event
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaInstant
-import kotlinx.datetime.toJavaZoneId
+import kotlinx.datetime.*
 import java.time.format.DateTimeFormatter
 
 object Strings {
+    private val midnight = LocalTime(0, 0)
+
     const val NoEvent = "На данный момент нет актуальных мероприятий"
     fun formatInstant(instant: Instant, timeZone: TimeZone): String {
-        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-        return formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
+        return if (instant.toLocalDateTime(timeZone).time == midnight) {
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+            formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
+        } else {
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+            formatter.format(instant.toJavaInstant().atZone(timeZone.toJavaZoneId()))
+        }
     }
+
     object ScheduleEvent {
         const val InputName = "Введите название мероприятия"
-        const val InputBeginDateTime = "Введите дату и время начала мероприятия в формате дд.мм.гггг чч:мм"
+        const val InputBeginDateTime = "Введите дату или дату и время начала мероприятия в формате дд.мм.гггг чч:мм"
+        const val InputEndDate = "Введите дату окончания мероприятия в формате дд.мм.гггг"
         const val InputEndDateTime = "Введите дату и время окончания мероприятия в формате дд.мм.гггг чч:мм"
         const val InputDescription =
             "Введите краткое описание мероприятия. " + "\nЕсли такого не имеется, нажмите соответствующую кнопку"
@@ -34,11 +40,24 @@ object Strings {
             bold("Название: ")
             regular(event.name.value)
             regularln("")
-            bold("Дата и время начала: ")
-            regular(formatInstant(event.timestampBegin, timeZone))
-            regularln("")
-            bold("Дата и время окончания: ")
-            regular(formatInstant(event.timestampEnd, timeZone))
+            val timeBegin = formatInstant(event.timestampBegin, timeZone)
+            val timeEnd = formatInstant(event.timestampEnd, timeZone)
+            val midnight = LocalTime(0, 0)
+            if (event.timestampBegin.toLocalDateTime(timeZone).time == midnight &&
+                event.timestampEnd.toLocalDateTime(timeZone).time == midnight
+            ) {
+                bold("Дата начала: ")
+                regular(timeBegin)
+                regularln("")
+                bold("Дата окончания: ")
+                regular(timeEnd)
+            } else {
+                bold("Дата и время начала: ")
+                regular(timeBegin)
+                regularln("")
+                bold("Дата и время окончания: ")
+                regular(timeEnd)
+            }
             if (event.description != null) {
                 regularln("")
                 bold("Краткое описание: ")
@@ -77,13 +96,29 @@ object Strings {
     }
 
     fun eventInfo(event: Event, timeZone: TimeZone) = buildEntities {
-        boldln("📅 " + event.name)
         regular("🕓 ")
-        regular(
-            formatInstant(event.timestampBegin, timeZone) +
-                " - " + formatInstant(event.timestampEnd, timeZone)
-        )
+        val timeBegin = formatInstant(event.timestampBegin, timeZone)
+        val timeEnd = formatInstant(event.timestampEnd, timeZone)
+        val beginLocalDateTime = event.timestampBegin.toLocalDateTime(timeZone)
+        val endLocalDateTime = event.timestampEnd.toLocalDateTime(timeZone)
+        if (beginLocalDateTime.time == midnight && endLocalDateTime.time == midnight) {
+            regular(
+                timeBegin +
+                    " - " + timeEnd
+            )
+        } else if (beginLocalDateTime.date == endLocalDateTime.date) {
+            regular(
+                timeBegin +
+                    " - " + endLocalDateTime.time
+            )
+        } else {
+            regular(
+                timeBegin +
+                    " - " + timeEnd
+            )
+        }
         regularln("")
+        boldln("📅 " + event.name.value)
         event.description?.let { italicln(it.value) }
         regular("🔗")
         link("Ссылка", event.url.value)

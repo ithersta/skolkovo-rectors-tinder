@@ -6,7 +6,6 @@ import common.domain.LimitedLengthStringType
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import org.apache.commons.validator.routines.UrlValidator
-import org.apache.commons.validator.routines.UrlValidator.*
 
 data class Event(
     val name: Name,
@@ -39,7 +38,7 @@ data class Event(
         companion object {
             const val maxLength = 1024
             private val urlValidator =
-                UrlValidator(ALLOW_2_SLASHES + NO_FRAGMENTS + ALLOW_LOCAL_URLS + ALLOW_ALL_SCHEMES)
+                UrlValidator()
 
             fun of(value: String) = either {
                 ensure(value.length <= maxLength) { Error.MaxLengthExceeded(maxLength) }
