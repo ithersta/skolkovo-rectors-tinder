@@ -109,7 +109,7 @@ object Strings {
         } else if (beginLocalDateTime.date == endLocalDateTime.date) {
             regular(
                 timeBegin +
-                    " - "  + endLocalDateTime.time
+                    " - " + endLocalDateTime.time
             )
         } else {
             regular(
@@ -125,4 +125,3 @@ object Strings {
         regularln("\n")
     }
 }
-
