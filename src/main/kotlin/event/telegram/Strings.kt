@@ -100,7 +100,7 @@ object Strings {
         val timeBegin = formatInstant(event.timestampBegin, timeZone)
         val timeEnd = formatInstant(event.timestampEnd, timeZone)
         val beginLocalDateTime = event.timestampBegin.toLocalDateTime(timeZone)
-        val endLocalDateTime = event.timestampBegin.toLocalDateTime(timeZone)
+        val endLocalDateTime = event.timestampEnd.toLocalDateTime(timeZone)
         if (beginLocalDateTime.time == midnight && endLocalDateTime.time == midnight) {
             regular(
                 timeBegin +
@@ -109,7 +109,7 @@ object Strings {
         } else if (beginLocalDateTime.date == endLocalDateTime.date) {
             regular(
                 timeBegin +
-                    " - " // + timeEnd.substring(timeBegin.length - 5)
+                    " - "  + endLocalDateTime.time
             )
         } else {
             regular(
@@ -125,3 +125,4 @@ object Strings {
         regularln("\n")
     }
 }
+
