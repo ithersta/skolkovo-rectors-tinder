@@ -44,7 +44,7 @@ dependencies {
     compileOnly("io.insert-koin:koin-annotations:1.2.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.2.0")
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("io.insert-koin:koin-test-junit5:3.4.0")
     testImplementation("io.mockk:mockk:1.13.5")
     testImplementation("app.cash.turbine:turbine:0.12.3")
