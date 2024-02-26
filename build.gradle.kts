@@ -5,7 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "1.8.20"
     id("com.google.devtools.ksp") version "1.8.20-1.0.11"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
-    id("com.google.cloud.tools.jib") version "3.3.1"
+    id("com.google.cloud.tools.jib") version "3.4.1"
     application
 }
 
