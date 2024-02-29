@@ -39,7 +39,7 @@ dependencies {
     implementation("org.apache.poi:poi-ooxml:5.2.3")
     implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-28")
     implementation("org.slf4j:slf4j-simple:2.0.7")
-    implementation("io.arrow-kt:arrow-core:1.2.0-RC")
+    implementation("io.arrow-kt:arrow-core:1.2.3")
     implementation("dev.inmo:krontab:1.0.0")
     compileOnly("io.insert-koin:koin-annotations:1.2.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.2.0")
