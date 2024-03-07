@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "1.9.23"
     kotlin("plugin.serialization") version "1.8.20"
     id("com.google.devtools.ksp") version "1.8.20-1.0.11"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
