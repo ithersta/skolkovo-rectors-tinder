@@ -40,7 +40,7 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-28")
     implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("io.arrow-kt:arrow-core:1.2.0-RC")
-    implementation("dev.inmo:krontab:1.0.0")
+    implementation("dev.inmo:krontab:2.2.9")
     compileOnly("io.insert-koin:koin-annotations:1.2.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.2.0")
     ksp("com.ithersta.tgbotapi:boot-ksp:0.1.11")
